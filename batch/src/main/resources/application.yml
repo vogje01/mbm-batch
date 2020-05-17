@@ -1,0 +1,105 @@
+# General spring configurations
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    show-sql: false
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fisdata
+    password: Dilbert_01
+    username: root
+  # Flyway configurations
+  flyway:
+    url: jdbc:mysql://localhost:3306/fisdata
+    user: root
+    password: Dilbert_01
+    schemas: fisdata
+    baselineOnMigrate: false
+  # Spring batch configurations
+  batch:
+    initialize-schema: never
+  cache:
+    cache-names: Users,UserRole,UserAuthorization,ClientRole,ClientAuthorization,SecurityOrganization,OrganizationPlace,Location,GeoHierarchy,FunctionalUnit,PlannedShipment,TransportUnitPoint,DocRequest,DocInstruction,DocLifecycle
+    caffeine:
+      spec: initialCapacity=1000,maximumSize=10000,expireAfterAccess=300s,recordStats
+
+# DB2 configuration
+db2:
+  datasource:
+    jdbc-url: jdbc:db2://kswfosa0.hlcl.com:5021/DEHALODDFAP:currentSchema=DB2PROD;allowNextOnExhaustedResultSet=1;
+    username: vogtjn
+    password: Dilbertb
+    driverClassName: com.ibm.db2.jcc.DB2Driver
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    database-platform: DB2Platform
+    hibernate:
+      ddl-auto: none
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      dialect: org.hibernate.dialect.DB2Dialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.DB2Dialect
+
+# MySQL configuration
+mysql:
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:3306/fisdata
+    username: vogje01
+    password: Dilbert_01
+    driverClassName: com.mysql.cj.jdbc.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
+  jpa:
+    show-sql: false
+    generate-ddl: false
+    database-platform: MySQLPlatform
+    hibernate:
+      ddl-auto: validate
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      id:
+        new_generator_mappings: false
+    properties:
+      hibernate.cache.use_second_level_cache: true
+      hibernate:
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+        order_updates: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# Logging setup
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    org.apache.kafka: WARN
+    com.hlag.fis.batch: INFO
+
+# Batch Kafka configuration
+# bootstrapAddress: Kafka server URL
+# maxRequestSize: Maximal request size (default: 4MB)
+# retentionDays: Number of days the logs are kept
+# deletionDays: Number of days after which the logs are deleted
+# job: Job message configuration
+# step: Step message configuration
+# chunk: Step message configuration
+kafka:
+  bootstrapAddress: localhost:9090
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  job:
+    topic: batchJobExecution
+    partitions: 1
+    replicas: 1
+  step:
+    topic: batchStepExecution
+    partitions: 1
+    replicas: 1
+  chunk:
+    topic: batchChunkExecution
+    partitions: 1
+    replicas: 1

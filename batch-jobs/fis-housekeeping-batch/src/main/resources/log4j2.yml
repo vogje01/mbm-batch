@@ -1,0 +1,38 @@
+Configuration:
+  name: Default
+  Properties:
+    Property:
+      name: log-path
+      value: "/opt/batch/log"
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+    File:
+      name: File_Appender
+      fileName: ${log-path}/fis-housekeeping-batch.log
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+    Kafka:
+      name: Kafka_Appender
+      topic: batchJobExecutionLog
+      ExtendedJsonLayout:
+        compact: true
+        complete: false
+        jsonAdapterClassName: org.apache.logging.log4j.core.layout.ExtendedJsonAdapter
+      property:
+        name: bootstrap.servers
+        value: localhost:9092
+  Loggers:
+    Root:
+      level: warn
+      AppenderRef:
+        - ref: Console_Appender
+    Logger:
+      - name: com.hlag.fis.batch
+        level: debug
+        AppenderRef:
+          - ref: File_Appender
+          - ref: Kafka_Appender

@@ -1,0 +1,44 @@
+# Shipment module
+shipment:
+  booking:
+    # Planned shipment, will also remove all related transport unit points.
+    plannedShipment:
+      entityActive: true
+      houseKeepingDays: 20
+      chunkSize: 1000
+      kafka:
+        active: false
+        topic: plannedShipment
+        partitions: 1
+        replicas: 1
+  documentation:
+    # Documentation life cycles.
+    documentationLifecycle:
+      entityActive: true
+      houseKeepingDays: 20
+      chunkSize: 1000
+      kafka:
+        active: false
+        topic: documentationLifecycle
+        partitions: 1
+        replicas: 1
+    # Documentation life cycles, will also remove all related documentation life cycles.
+    documentationInstruction:
+      entityActive: true
+      houseKeepingDays: 20
+      chunkSize: 1000
+      kafka:
+        active: false
+        topic: documentationInstruction
+        partitions: 1
+        replicas: 1
+    # Documentation life cycles, will also remove all related documentation life cycles and document instructions.
+    documentationRequest:
+      entityActive: true
+      houseKeepingDays: 20
+      chunkSize: 1000
+      kafka:
+        active: false
+        topic: documentationRequest
+        partitions: 1
+        replicas: 1

@@ -1,0 +1,33 @@
+# fullSync: last_change on received entities is neglected.
+# cutOffDays: number of days to synchronize, 0 means all.
+# chunkSize: number of entities to process per chunk.
+# Consists of: plannedShipment, transportUnitPoints
+# If shipment.entityActive=true, all shipment entities are processed
+shipment:
+  entityActive: false
+plannedShipment:
+  entityActive: false
+  fullSync: false
+  cutOffHours: 5
+  chunkSize: 1000
+transportUnitPoint:
+  entityActive: false
+  fullSync: false
+  cutOffHours: 5
+  chunkSize: 1000
+
+documentationRequest:
+  entityActive: false
+  fullSync: false
+  cutOffHours: 5
+  chunkSize: 1000
+documentationInstruction:
+  entityActive: false
+  fullSync: false
+  cutOffHours: 5
+  chunkSize: 1000
+documentationLifecycle:
+  entityActive: false
+  fullSync: false
+  cutOffHours: 5
+  chunkSize: 1000

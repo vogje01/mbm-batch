@@ -1,0 +1,48 @@
+# General spring configurations
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+  # Spring batch configurations
+  batch:
+    initialize-schema: never
+  cache:
+    cache-names: Users,UserRole,UserAuthorization,ClientRole,ClientAuthorization,SecurityOrganization,OrganizationPlace,Location,GeoHierarchy,FunctionalUnit,PlannedShipment,TransportUnitPoint,DocRequest,DocInstruction,DocLifecycle
+    caffeine:
+      spec: initialCapacity=1000,maximumSize=10000,expireAfterAccess=300s,recordStats
+
+# MySQL configuration
+mysql:
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:3306/fisdata
+    username: root
+    password: Hlag123
+    driverClassName: com.mysql.cj.jdbc.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
+
+# Batch Kafka configuration
+# bootstrapAddress: Kafka server URL
+# maxRequestSize: Maximal request size (default: 4MB)
+# retentionDays: Number of days the logs are kept
+# deletionDays: Number of days after which the logs are deleted
+# job: Job message configuration
+# step: Step message configuration
+# chunk: Step message configuration
+# control: Start/stop message configuration
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 1
+    replicas: 1

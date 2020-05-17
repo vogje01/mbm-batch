@@ -1,0 +1,58 @@
+{
+  "name": "batch-manager-ui",
+  "description": "Batch management React UI",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "directory": "c:"
+  },
+  "version": "0.0.3",
+  "private": false,
+  "dependencies": {
+    "bootstrap": "^4.5.0",
+    "devextreme": "19.2.6-build-20023-1613",
+    "devextreme-react": "19.2.6-build-20023-1613",
+    "env-cmd": "^10.1.0",
+    "history": "latest",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.25.3",
+    "moment-timezone": "^0.5.29",
+    "react": "^16.13.1",
+    "react-async": "^10.0.1",
+    "react-bootstrap": "^1.0.1",
+    "react-dom": "^16.13.1",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
+    "rest": "^2.0.0",
+    "rxjs": "^6.5.5",
+    "webpack-cli": "^3.3.11"
+  },
+  "scripts": {
+    "start:development": "env-cmd -f .env.development react-scripts start",
+    "build:development": "react-scripts build",
+    "start:production": "env-cmd -f .env.production react-scripts start",
+    "build:production": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "cldr": "^5.6.0",
+    "devextreme-cldr-data": "^1.0.2",
+    "globalize": "^1.5.0"
+  }
+}

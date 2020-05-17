@@ -1,0 +1,15 @@
+--
+-- Insert planned shipment
+--
+INSERT INTO planned_shipment(ID, NUMBER, CLIENT, CHANGED_BY, LAST_CHANGE, BUSINESS_LAST_CHANGE, US_GRID_CODE,
+                             LC_VALID_STATE_A)
+VALUES ('634644f3-9e3e-444f-b863-24f0999f0cfd', 1, 'T', 'TESTUSER', 1, 1, 0, 'A');
+INSERT INTO planned_shipment(ID, NUMBER, CLIENT, CHANGED_BY, LAST_CHANGE, BUSINESS_LAST_CHANGE, US_GRID_CODE,
+                             LC_VALID_STATE_A)
+VALUES ('6e9ae48a-e84c-495d-808b-fe35f874daa3', 2, 'T', 'TESTUSER', 1, 1, 0, 'D');
+INSERT INTO planned_shipment(ID, NUMBER, CLIENT, CHANGED_BY, LAST_CHANGE, BUSINESS_LAST_CHANGE, US_GRID_CODE,
+                             LC_VALID_STATE_A, CANCELLED_FLAG)
+VALUES ('693b5189-04ee-428f-8e5c-0c6a3df13b6a', 3, 'T', 'TESTUSER', 1, 1, 0, 'A', true);
+INSERT INTO planned_shipment(ID, NUMBER, CLIENT, CHANGED_BY, LAST_CHANGE, BUSINESS_LAST_CHANGE, US_GRID_CODE,
+                             LC_VALID_STATE_A, SPLIT_FLAG)
+VALUES ('e0cc7279-7d36-4469-a113-bf5fe431feed', 4, 'T', 'TESTUSER', 1, 1, 0, 'A', true);

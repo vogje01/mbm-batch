@@ -1,0 +1,147 @@
+package com.hlag.fis.db.attribute.documenationtinstruction;
+
+import com.hlag.fis.db.converter.LegacyEnumConverter;
+import com.hlag.fis.db.converter.PersistableEnum;
+
+public enum MtdNoSuffix implements PersistableEnum<String> {
+    NONE(" "),
+	A("A"),
+	AA("AA"),
+	AB("AB"),
+	AC("AC"),
+	AD("AD"),
+	AE("AE"),
+	AF("AF"),
+	AG("AG"),
+	AH("AH"),
+	AI("AI"),
+	AJ("AJ"),
+	AK("AK"),
+	AL("AL"),
+	AM("AM"),
+	AN("AN"),
+	AO("AO"),
+	AP("AP"),
+	AQ("AQ"),
+	AR("AR"),
+	AS("AS"),
+	AT("AT"),
+	AU("AU"),
+	AV("AV"),
+	AW("AW"),
+	AX("AX"),
+	AY("AY"),
+	AZ("AZ"),
+	B("B"),
+	BA("BA"),
+	BB("BB"),
+	BC("BC"),
+	BD("BD"),
+	BE("BE"),
+	BF("BF"),
+	BG("BG"),
+	BH("BH"),
+	BI("BI"),
+	BJ("BJ"),
+	BK("BK"),
+	BL("BL"),
+	BM("BM"),
+	BN("BN"),
+	BO("BO"),
+	BP("BP"),
+	BQ("BQ"),
+	BR("BR"),
+	BS("BS"),
+	BT("BT"),
+	BU("BU"),
+	BV("BV"),
+	BW("BW"),
+	BX("BX"),
+	BY("BY"),
+	BZ("BZ"),
+	C("C"),
+	CA("CA"),
+	CB("CB"),
+	CC("CC"),
+	CD("CD"),
+	CE("CE"),
+	CF("CF"),
+	CG("CG"),
+	CH("CH"),
+	CI("CI"),
+	CJ("CJ"),
+	CK("CK"),
+	CL("CL"),
+	CM("CM"),
+	CN("CN"),
+	CO("CO"),
+	CP("CP"),
+	CQ("CQ"),
+	CR("CR"),
+	CS("CS"),
+	CT("CT"),
+	CU("CU"),
+	CV("CV"),
+	CW("CW"),
+	CX("CX"),
+	CY("CY"),
+	CZ("CZ"),
+	D("D"),
+	DA("DA"),
+	DB("DB"),
+	DC("DC"),
+	DD("DD"),
+	DE("DE"),
+	DF("DF"),
+	DG("DG"),
+	DH("DH"),
+	DI("DI"),
+	DJ("DJ"),
+	DK("DK"),
+	DL("DL"),
+	DM("DM"),
+	DN("DN"),
+	DO("DO"),
+	E("E"),
+	F("F"),
+	G("G"),
+	H("H"),
+	I("I"),
+	J("J"),
+	K("K"),
+	L("L"),
+	M("M"),
+	N("N"),
+	O("O"),
+	P("P"),
+	Q("Q"),
+	R("R"),
+	S("S"),
+	T("T"),
+	U("U"),
+	V("V"),
+	W("W"),
+	X("X"),
+	Y("Y"),
+	Z("Z");
+
+	String value;
+
+	MtdNoSuffix(String value) {
+		this.value = value;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+    public String getNullValue() {
+        return NONE.value;
+    }
+
+	public static class Converter extends LegacyEnumConverter<MtdNoSuffix, String> {
+		public Converter() {
+			super(MtdNoSuffix.class);
+		}
+	}
+}

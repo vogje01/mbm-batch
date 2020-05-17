@@ -1,0 +1,63 @@
+# Basis components
+# Consists of: users, client, userRole, clientRoleOwnership, functionalUnit, roleFunctionalUnit, userAuthorization,
+#              securityOrganization, clientAuthorization, trustworthExclusion, message
+# fullSync: last_change on received entities is neglected.
+# cutOffDays: number of days to synchronize, 0 means all.
+# chunkSize: number of entities to process per chunk.
+basis:
+  entityActive: true
+client:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+users:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+userRole:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+clientRole:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+functionalUnit:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+userAuthorization:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+securityOrganization:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+clientAuthorization:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+trustworthExclusion:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+message:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000
+messageSpecification:
+  entityActive: false
+  fullSync: false
+  cutOffDays: 2
+  chunkSize: 1000

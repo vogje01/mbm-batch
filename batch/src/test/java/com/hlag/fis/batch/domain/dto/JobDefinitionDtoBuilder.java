@@ -1,0 +1,32 @@
+package com.hlag.fis.batch.domain.dto;
+
+import java.util.UUID;
+
+public class JobDefinitionDtoBuilder {
+
+    private JobDefinitionDto jobDefinitionDto = new JobDefinitionDto();
+
+    public JobDefinitionDtoBuilder withId(String id) {
+        jobDefinitionDto.setId(id);
+        return this;
+    }
+
+    public JobDefinitionDtoBuilder withRandomId() {
+        jobDefinitionDto.setId(UUID.randomUUID().toString());
+        return this;
+    }
+
+    public JobDefinitionDtoBuilder withName(String name) {
+        jobDefinitionDto.setName(name);
+        return this;
+    }
+
+    public JobDefinitionDtoBuilder addParam(JobDefinitionParamDto parameterDto) {
+        jobDefinitionDto.addJobDefinitionParam(parameterDto);
+        return this;
+    }
+
+    public JobDefinitionDto build() {
+        return jobDefinitionDto;
+    }
+}

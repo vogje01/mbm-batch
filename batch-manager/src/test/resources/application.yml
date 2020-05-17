@@ -1,0 +1,42 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: "off"
+  data:
+    rest:
+      base-path: /api
+  jpa:
+    show-sql: false
+  quartz:
+    job-store-type: memory
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+jwt:
+  secret: javainuse
+
+ldap:
+  server: ldapd-rw.hlcl.com
+  port: 1391
+
+server:
+  port: 8090
+
+# Kafka configuration.
+# bootstrapAddress: Kafka server URL.
+# maxRequestSize: Maximal request size (default: 4MB).
+# retentionDays: Number of days the logs are kept.
+# deletionDays: Number of days after which the logs are deleted.
+# topic: Apache Kafka topic name.
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  serverCommand:
+    offsetReset: latest
+    topic: batchServerCommand
+    partitions: 1
+    replicas: 1

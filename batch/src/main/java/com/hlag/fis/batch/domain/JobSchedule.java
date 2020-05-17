@@ -1,0 +1,205 @@
+package com.hlag.fis.batch.domain;
+
+import com.fasterxml.jackson.annotation.*;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+import com.hlag.fis.db.mysql.model.PrimaryKeyIdentifier;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.hateoas.RepresentationModel;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "BATCH_JOB_SCHEDULE")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class JobSchedule extends RepresentationModel<JobSchedule> implements PrimaryKeyIdentifier<String> {
+
+    @Id
+    @Column(name = "ID")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    private String id;
+
+    @Version
+    @Column(name = "VERSION")
+    private Long version;
+
+    @Column(name = "SCHEDULE")
+    private String schedule;
+
+    @Column(name = "LAST_EXECUTION")
+    private Date lastExecution;
+
+    @Column(name = "NEXT_EXECUTION")
+    private Date nextExecution;
+
+    @Column(name = "NAME")
+    private String name;
+
+    @Column(name = "GROUP_NAME")
+    private String groupName;
+
+    @Column(name = "ACTIVE")
+    private Boolean active;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "JOB_DEFINITION_ID", nullable = false)
+    private JobDefinition jobDefinition;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_AGENT_SCHEDULE",
+            joinColumns = @JoinColumn(name = "SCHEDULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "AGENT_ID"))
+    private List<Agent> agents = new ArrayList<>();
+
+    @JsonCreator
+    public JobSchedule() {
+        // JSON constructor
+    }
+
+    /**
+     * Updates only the native data, not the relationships.
+     *
+     * @param origin original to copy from.
+     */
+    public void update(JobSchedule origin) {
+        this.schedule = origin.schedule;
+        this.lastExecution = origin.lastExecution;
+        this.nextExecution = origin.nextExecution;
+        this.name = origin.name;
+        this.groupName = origin.groupName;
+        this.active = origin.active;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public JobDefinition getJobDefinition() {
+        return jobDefinition;
+    }
+
+    public void setJobDefinition(JobDefinition jobDefinition) {
+        this.jobDefinition = jobDefinition;
+    }
+
+    public String getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(String label) {
+        this.schedule = label;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String hostName) {
+        this.name = hostName;
+    }
+
+    public Date getNextExecution() {
+        return nextExecution;
+    }
+
+    public void setNextExecution(Date nextExecution) {
+        this.nextExecution = nextExecution;
+    }
+
+    public Date getLastExecution() {
+        return lastExecution;
+    }
+
+    public void setLastExecution(Date lastExecution) {
+        this.lastExecution = lastExecution;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Boolean isActive() {
+        return active;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public void addAgent(Agent agent) {
+        if (!agents.contains(agent)) {
+            agents.add(agent);
+        }
+    }
+
+    public void removeAgent(Agent agent) {
+        if (agents.contains(agent)) {
+            agents.remove(agent);
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        JobSchedule that = (JobSchedule) o;
+        return Objects.equal(id, that.id) &&
+                Objects.equal(version, that.version) &&
+                Objects.equal(schedule, that.schedule) &&
+                Objects.equal(lastExecution, that.lastExecution) &&
+                Objects.equal(nextExecution, that.nextExecution) &&
+                Objects.equal(name, that.name) &&
+                Objects.equal(groupName, that.groupName) &&
+                Objects.equal(active, that.active) &&
+                Objects.equal(jobDefinition, that.jobDefinition) &&
+                Objects.equal(agents, that.agents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, version, schedule, lastExecution, nextExecution, name, groupName, active, jobDefinition, agents);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("version", version)
+                .add("schedule", schedule)
+                .add("lastExecution", lastExecution)
+                .add("nextExecution", nextExecution)
+                .add("name", name)
+                .add("groupName", groupName)
+                .add("active", active)
+                .toString();
+    }
+}

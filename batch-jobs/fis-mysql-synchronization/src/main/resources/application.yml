@@ -1,0 +1,70 @@
+# General spring configurations
+spring:
+  # Spring main configurations
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+  # JPA configurations
+  jpa:
+    show-sql: false
+    hibernate:
+      enable_lazy_load_no_trans: true
+  # Spring batch configurations
+  batch:
+    initialize-schema: never
+  # JSON configurations
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  application:
+    name: fis-mysql-synchronization
+# DB2 configuration
+db2deve:
+  datasource:
+    jdbcUrl: jdbc:db2://kswfosb0.hlcl.com:5041/DEHALODDFAT:currentSchema=DEVELOP;allowNextOnExhaustedResultSet=2;
+    username: WASDEVE
+    password: rudi42x
+    driverClassName: com.ibm.db2.jcc.DB2Driver
+
+# MySQL configuration
+mysql:
+  datasource:
+    jdbcUrl: jdbc:mysql://fis-batch-db:3306/fisdata
+    username: root
+    password: Hlag123
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+    hibernate:
+      enable_lazy_load_no_trans: true
+
+# Batch Kafka configuration
+# bootstrapAddress: Kafka server URL
+# maxRequestSize: Maximal request size (default: 4MB)
+# retentionDays: Number of days the logs are kept
+# deletionDays: Number of days after which the logs are deleted
+# job: Job message configuration
+# step: Step message configuration
+# chunk: Step message configuration
+# control: Start/stop message configuration
+kafka:
+  bootstrapAddress: fis-batch-kafka:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 1
+    replicas: 1
+  logging:
+    topic: batchExecutionLog
+    partitions: 1
+    replicas: 1
+  control:
+    topic: batchControl
+    partitions: 1
+    replicas: 1
+

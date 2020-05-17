@@ -1,0 +1,49 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+  datasource:
+    url: jdbc:mysql://localhost:3306/fisbatch
+    username: root
+    password: Dilbert_01
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+# Kafka configuration.
+# bootstrapAddress: Kafka server URL.
+# maxRequestSize: Maximal request size (default: 4MB).
+# retentionDays: Number of days the logs are kept.
+# deletionDays: Number of days after which the logs are deleted.
+# topic: Apache Kafka topic name.
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  logging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 1
+    replicas: 1
+    level: DEBUG
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 1
+    replicas: 1
+  agentCommand:
+    offsetReset: latest
+    topic: batchAgentCommand
+    partitions: 1
+    replicas: 1
+  serverCommand:
+    offsetReset: latest
+    topic: batchServerCommand
+    partitions: 1
+    replicas: 1

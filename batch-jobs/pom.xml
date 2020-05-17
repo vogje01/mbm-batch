@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.hlag</groupId>
+		<artifactId>fis</artifactId>
+        <version>0.0.3</version>
+	</parent>
+
+	<groupId>com.hlag.fis.batch</groupId>
+	<artifactId>jobs</artifactId>
+	<name>fis-batch-jobs</name>
+	<packaging>pom</packaging>
+
+	<modules>
+        <module>fis-performance-consolidation</module>
+        <module>fis-housekeeping-batch</module>
+        <module>fis-housekeeping-data</module>
+        <module>fis-mysql-synchronization</module>
+        <module>fis-db2-synchronization</module>
+    </modules>
+
+</project>

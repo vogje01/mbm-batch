@@ -1,0 +1,43 @@
+# General spring configurations
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+  jpa:
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+  cache:
+    cache-names: JobExecutionInfo,StepExecutionInfo,JobExecutionLog
+    caffeine:
+      spec: initialCapacity=1000,maximumSize=10000,expireAfterAccess=300s,recordStats
+  batch:
+    initialize-schema: never
+
+mysql:
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:3306/fisbatch
+    username: root
+    password: Dilbert_01
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+# Batch Kafka configuration
+# bootstrapAddress: Kafka server URL
+# maxRequestSize: Maximal request size (default: 4MB)
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 1
+    replicas: 1
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 1
+    replicas: 1
