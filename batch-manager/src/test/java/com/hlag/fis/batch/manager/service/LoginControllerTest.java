@@ -1,21 +1,31 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.manager.controller.LoginController;
 import com.hlag.fis.batch.manager.service.util.JwtRequest;
 import com.hlag.fis.batch.manager.service.util.JwtTokenUtil;
+import com.hlag.fis.batch.repository.UserRepository;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Collection;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,13 +41,13 @@ public class LoginControllerTest {
     private MockMvc mockMvc;
 
     @Spy
-    private AuthenticationManager authenticationManager;
-
-    @Spy
     private JwtTokenUtil jwtTokenUtil;
 
-    @Spy
+    @Mock
     private JwtUserDetailsService jwtUserDetailsService;
+
+    @Mock
+    private UserDetails userDetails;
 
     @InjectMocks
     private LoginController loginController;
@@ -49,6 +59,10 @@ public class LoginControllerTest {
         ReflectionTestUtils.setField(jwtUserDetailsService, "ldapServerHost", "ldapd-rw.hlcl.com");
         ReflectionTestUtils.setField(jwtUserDetailsService, "ldapServerPort", 1391);
         ReflectionTestUtils.setField(jwtTokenUtil, "secret", "javainuse");
+
+        // Mock user details
+        when(userDetails.getUsername()).thenReturn("vogje01");
+        when(jwtUserDetailsService.loadUserByUsername(any(), any(), any())).thenReturn(userDetails);
     }
 
     @Test
