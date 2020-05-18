@@ -1,17 +1,21 @@
 package com.hlag.fis.batch.manager.service;
 
+import com.hlag.fis.batch.repository.JobScheduleRepository;
+import com.hlag.fis.batch.repository.UserRepository;
 import com.unboundid.ldap.sdk.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static com.unboundid.ldap.sdk.Filter.*;
@@ -43,8 +47,18 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Value("${ldap.port}")
 	private int ldapServerPort;
 
-	public UserDetails loadUserByUsername(String userName) {
-		return new User("vogtjn", "Dilbert6", emptyList());
+	private UserRepository userRepository;
+
+	@Autowired
+	public JwtUserDetailsService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+
+	public UserDetails loadUserByUsername(String userId) {
+		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserId(userId);
+		if(userOptional.isPresent()) {
+			return new User(userId, "", emptyList());
+		}
 /*		try (LDAPConnection ldapConnection = new LDAPConnection(ldapServerHost, ldapServerPort)) {
 			SearchResultEntry userEntry = findUserEntry(userName, null, ldapConnection);
 			if (userEntry == null) {
@@ -55,10 +69,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 		} catch (LDAPException le) {
 			throw new IllegalStateException(le);
 		}*/
+		return null;
 	}
 
-	public UserDetails loadUserByUsername(String userName, String password, String userOrg) {
-		return new User("vogtjn", "Dilbert6", emptyList());
+	public UserDetails loadUserByUsername(String userId, String password, String userOrg) {
+
+		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserId(userId);
+		if(userOptional.isPresent()) {
+			return new User(userId, password, emptyList());
+		}
 		/*try (LDAPConnection ldapConnection = new LDAPConnection(ldapServerHost, ldapServerPort)) {
 			SearchResultEntry userEntry = findUserEntry(userName, userOrg, ldapConnection);
 			if (userEntry == null) {
@@ -70,6 +89,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 		} catch (LDAPException le) {
 			throw new IllegalStateException(le);
 		}*/
+		return null;
+	}
+
+	public UserDetails loadUserByUsername(String userId, String password) {
+		String encPassword = encryptPassword(password);
+		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserIdAndPasswordAndActive(userId, encPassword);
+		if(userOptional.isPresent()) {
+			return new User(userId, password, emptyList());
+		}
+		return null;
 	}
 
 	public SearchResultEntry findUserEntry(String userUniqueName, String userOrgUnit, LDAPConnection ldapConnection) {
@@ -133,5 +162,34 @@ public class JwtUserDetailsService implements UserDetailsService {
 		}
 
 		return new User(userId, password, emptyList());
+	}
+
+	private static String encryptPassword(String password)
+	{
+		try
+		{
+			MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+			crypt.reset();
+			crypt.update(password.getBytes("UTF-8"));
+			return byteToHex(crypt.digest());
+		}
+		catch(NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private static String byteToHex(final byte[] hash)
+	{
+		Formatter formatter = new Formatter();
+		for (byte b : hash) {
+			formatter.format("%02x", b);
+		}
+		String result = formatter.toString();
+		formatter.close();
+		return result;
 	}
 }

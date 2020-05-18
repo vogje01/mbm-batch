@@ -46,7 +46,8 @@ const checkAuthentication = () => {
 
 const loginRequest = (basicAuthentication, authRequest) => {
     StartTimer();
-    let tokenBody = {sub: authRequest.userId, exp: Math.floor(Date.now() / 1000) + 300, iat: Math.floor(Date.now() / 1000)};
+    let subject = authRequest.userId + ":" + authRequest.password + ":" + authRequest.orgUnit;
+    let tokenBody = {sub: subject, exp: Math.floor(Date.now() / 1000) + 300, iat: Math.floor(Date.now() / 1000)};
     let token = 'Bearer ' + jwt.sign(tokenBody, process.env.REACT_APP_WEBTOKEN_SECRET, {algorithm: 'HS512'});
     return fetch(process.env.REACT_APP_API_URL + 'authenticate', initPost(token, JSON.stringify(authRequest)))
         .then((response) => {

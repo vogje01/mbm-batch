@@ -55,7 +55,7 @@ public class LoginControllerTest {
     public void whenAuthenticateThenReturnWebToken() throws Exception {
 
         // Build JSON request
-        JwtRequest request = new JwtRequest("vogtjn", "Dilbert4", "EXT");
+        JwtRequest request = new JwtRequest("vogje01", "Dilbert_01", "EXT");
         String json = mapper.writeValueAsString(request);
 
         mockMvc.perform(post("/api/authenticate").contentType(HAL_JSON).content(json)) //

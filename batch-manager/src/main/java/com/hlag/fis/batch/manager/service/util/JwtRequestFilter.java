@@ -58,7 +58,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String password = userFields[1];
             String orgUnit = userFields[2];
             logger.debug(format("Basic authentication - userName: {0} orgUnit: {1}", username, orgUnit));
-            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
@@ -84,6 +84,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             // Once we get the token validate it.
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                //String password = jwtTokenUtil.getPasswordFromToken(jwtToken);
                 UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
                 // If token is valid configure Spring Security to manually set authentication
                 if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {

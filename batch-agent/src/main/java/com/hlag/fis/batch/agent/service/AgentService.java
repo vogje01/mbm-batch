@@ -99,13 +99,13 @@ public class AgentService {
     @Scheduled(fixedRateString = "${agent.performanceInterval}")
     private void performance() {
         agentCommandDto.setType(AgentCommandType.PERFORMANCE);
-        agentCommandDto.setSystemLoad(osBean.getSystemCpuLoad());
-        agentCommandDto.setTotalRealMemory(osBean.getTotalPhysicalMemorySize());
-        agentCommandDto.setFreeRealMemory(osBean.getFreePhysicalMemorySize());
-        agentCommandDto.setUsedRealMemory(osBean.getTotalPhysicalMemorySize() - osBean.getFreePhysicalMemorySize());
+        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
+        agentCommandDto.setTotalRealMemory(osBean.getTotalMemorySize());
+        agentCommandDto.setFreeRealMemory(osBean.getFreeMemorySize());
+        agentCommandDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
 
-        agentCommandDto.setTotalVirtMemory(osBean.getTotalPhysicalMemorySize() + osBean.getTotalSwapSpaceSize());
-        agentCommandDto.setFreeVirtMemory(osBean.getTotalPhysicalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
+        agentCommandDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
+        agentCommandDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
         agentCommandDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
 
         agentCommandDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
