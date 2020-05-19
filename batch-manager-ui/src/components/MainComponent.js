@@ -8,7 +8,7 @@ import JobExecutionView from "../views/jobexecutions/JobExecutionView";
 import StepExecutionView from "../views/stepexecutions/StepExecutionView";
 import JobSchedulerView from "../views/scheduler/JobSchedulerView";
 import SettingsView from "../views/settings/SettingsView";
-import UserManagementView from "../views/user/UserManagementView";
+import UserManagementView from "../views/users/UserManagementView";
 import PerformanceView from "../views/performance/PerformanceView";
 
 import history from "./History";

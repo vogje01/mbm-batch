@@ -1,10 +1,10 @@
 import React from 'react';
 import Tabs from 'devextreme-react/tabs';
+import Toolbar, {Item} from "devextreme-react/toolbar";
 
 import JobDefinitionView from "../jobdefinitions/JobDefinitionView";
 import JobSchedulerView from "../scheduler/JobSchedulerView";
 import AgentView from "../agent/AgentView";
-import Toolbar, {Item} from "devextreme-react/toolbar";
 import JobGroupView from "../jobgroup/JobGroupView";
 
 const tabs = [

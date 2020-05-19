@@ -19,8 +19,6 @@ class FisPage extends React.Component {
     render() {
         if (localStorage.getItem('webToken') === undefined) {
             return <Redirect to={'/'}/>;
-        } else if (localStorage.getItem('webToken')) {
-
         }
         super.render();
     }

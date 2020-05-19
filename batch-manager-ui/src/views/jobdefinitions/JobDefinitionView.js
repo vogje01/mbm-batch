@@ -52,7 +52,7 @@ class JobDefinitionView extends FisPage {
         this.unsub.unsubscribe()
     }
 
-    shouldComponentUpdate(nextProps, nextStatenext, nextContext) {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
         jobDefinitionDataSource().reload();
         return true;
     }

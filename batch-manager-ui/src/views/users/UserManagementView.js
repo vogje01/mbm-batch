@@ -1,5 +1,4 @@
 import React from 'react';
-import FisPage from "../../components/FisPage";
 import Tabs from "devextreme-react/tabs";
 import UserView from "./UserView";
 import UserGroupView from "./UserGroupView";
@@ -9,13 +8,12 @@ const tabs = [
     {id: 'UserGroups', text: 'User Groups', icon: 'material-icons-outlined ic-group md-18'}
 ];
 
-class UserManagementView extends FisPage {
+class UserManagementView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedIndex: 0,
-            refreshLists: {}
+            selectedIndex: 0
         };
         this.onTabsSelectionChanged = this.onTabsSelectionChanged.bind(this);
     }
