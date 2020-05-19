@@ -67,6 +67,10 @@
     content: 'device_hub';
 }
 
+.ic-people:before {
+    content: 'people_outline';
+}
+
 .error:before {
     content: 'error';
 }
