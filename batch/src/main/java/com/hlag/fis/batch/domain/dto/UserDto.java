@@ -50,6 +50,10 @@ public class UserDto extends RepresentationModel<UserDto> {
      * Active
      */
     private Boolean active;
+    /**
+     * Total count
+     */
+    private Long totalSize;
 
     public UserDto() {
         // Default constructor
@@ -119,24 +123,34 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.description = description;
     }
 
+    public Long getTotalSize() {
+        return totalSize;
+    }
+
+    public void setTotalSize(Long totalSize) {
+        this.totalSize = totalSize;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDto user = (UserDto) o;
-        return Objects.equal(id, user.id) &&
-                Objects.equal(version, user.version) &&
-                Objects.equal(userId, user.userId) &&
-                Objects.equal(password, user.password) &&
-                Objects.equal(lastName, user.lastName) &&
-                Objects.equal(firstName, user.firstName) &&
-                Objects.equal(description, user.description) &&
-                Objects.equal(active, user.active);
+        if (!super.equals(o)) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equal(id, userDto.id) &&
+                Objects.equal(version, userDto.version) &&
+                Objects.equal(userId, userDto.userId) &&
+                Objects.equal(password, userDto.password) &&
+                Objects.equal(lastName, userDto.lastName) &&
+                Objects.equal(firstName, userDto.firstName) &&
+                Objects.equal(description, userDto.description) &&
+                Objects.equal(active, userDto.active) &&
+                Objects.equal(totalSize, userDto.totalSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, userId, password, lastName, firstName, description, active);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, description, active, totalSize);
     }
 
     public Boolean getActive() {
@@ -158,6 +172,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("firstName", firstName)
                 .add("description", description)
                 .add("active", active)
+                .add("totalSize", totalSize)
                 .toString();
     }
 }

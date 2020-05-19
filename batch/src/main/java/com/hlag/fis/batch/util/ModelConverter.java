@@ -355,7 +355,9 @@ public class ModelConverter {
     }
 
     public UserDto convertUserToDto(User user, long totalCount) {
-        return convertUserToDto(user);
+        UserDto userDto = convertUserToDto(user);
+        userDto.setTotalSize(totalCount);
+        return userDto;
     }
 
     public User convertUserToEntity(UserDto userDto) {

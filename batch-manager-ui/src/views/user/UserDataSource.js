@@ -7,7 +7,7 @@ export const userDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions);
+                let params = getParams(loadOptions, 'userId');
                 return listItems('users' + params, 'userDtoes');
             },
             update: function (user, values) {

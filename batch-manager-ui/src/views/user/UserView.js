@@ -4,6 +4,8 @@ import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} 
 import {userDataSource} from "./UserDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
+import {refreshSubject} from "../../components/MainComponent";
+import {filter} from "rxjs/operators";
 
 class UserView extends FisPage {
 
@@ -15,16 +17,19 @@ class UserView extends FisPage {
             showDetails: false,
             selectedIndex: 0
         };
-        this.onTabsSelectionChanged = this.onTabsSelectionChanged.bind(this);
         this.toggleDetails = this.toggleDetails.bind(this);
+        this.unsub = refreshSubject
+            .pipe(filter(f => f.topic === 'Refresh'))
+            .subscribe(() => this.setState({refreshLists: {}}));
     }
 
-    onTabsSelectionChanged(args) {
-        if (args.name === 'selectedIndex') {
-            this.setState({
-                selectedIndex: args.value
-            });
-        }
+    componentWillUnmount() {
+        this.unsub.unsubscribe()
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        userDataSource().reload();
+        return true;
     }
 
     toggleDetails(e) {
@@ -42,7 +47,6 @@ class UserView extends FisPage {
             <React.Fragment>
                 <DataGrid
                     id={'UserTable'}
-                    keyExpr={'id'}
                     dataSource={userDataSource()}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -91,12 +95,11 @@ class UserView extends FisPage {
                         paging={true}/>
                     <Paging defaultPageSize={5}/>
                     <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
-                </DataGrid>
+                </DataGrid>*/
                 <UpdateTimer/>
             </React.Fragment>
         );
     }
-
 }
 
 export default UserView;

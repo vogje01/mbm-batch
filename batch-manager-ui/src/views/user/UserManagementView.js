@@ -34,7 +34,7 @@ class UserManagementView extends FisPage {
                 <Toolbar>
                     <Item location="before"
                           locateInMenu="never">
-                        <div className="toolbar-label"><b>Settings</b></div>
+                        <div className="toolbar-label"><b>Uer Management</b></div>
                     </Item>
                 </Toolbar>
                 <Tabs dataSource={tabs} selectedIndex={this.state.selectedIndex}

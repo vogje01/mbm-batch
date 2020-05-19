@@ -3,7 +3,6 @@ import {DataGrid, Menu} from "devextreme-react";
 import {Column, Editing, FilterRow, Lookup, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {filter} from "rxjs/operators";
 import {refreshSubject} from "../../components/MainComponent";
-import {errorMessage, infoMessage} from "../../util/MessageUtil";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobDefinitionDetails from "./JobDefinitionDetails";
 import JobDefinitionExport from "./JobDefinitionExport";
@@ -103,7 +102,6 @@ class JobDefinitionView extends FisPage {
                       onItemClick={this.onMenuItemClick}/>
                 <DataGrid
                     id={'jobDefinitionTable'}
-                    keyExpr={'id'}
                     dataSource={jobDefinitionDataSource()}
                     hoverStateEnabled={true}
                     //onRowDblClick={this.toggleDetails}
