@@ -1,16 +1,11 @@
-package com.hlag.fis.batch.domain;
+package com.hlag.fis.batch.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.hlag.fis.db.mysql.model.PrimaryKeyIdentifier;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.io.Serializable;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * Batch user entity.
@@ -19,65 +14,48 @@ import java.io.Serializable;
  * @version 0.0.3
  * @since 0.0.3
  */
-@Entity
-@Table(name = "BATCH_USER")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class User implements PrimaryKeyIdentifier<String>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class UserDto extends RepresentationModel<UserDto> {
 
     /**
      * Primary key
      */
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
     /**
      * Version
      */
-    @Version
-    @Column(name = "VERSION")
     private Long version;
     /**
      * User ID
      */
-    @Column(name = "USERID")
     private String userId;
     /**
      * Password
      */
-    @Column(name = "PASSWORD")
     private String password;
     /**
      * Last name
      */
-    @Column(name = "LAST_NAME")
     private String lastName;
     /**
      * First name
      */
-    @Column(name = "FIRST_NAME")
     private String firstName;
     /**
      * Description
      */
-    @Column(name = "DESCRIPTION")
     private String description;
     /**
      * Active
      */
-    @Column(name = "ACTIVE")
     private Boolean active;
 
-    public User() {
+    public UserDto() {
         // Default constructor
     }
 
-    public void update(User user) {
+    public void update(UserDto user) {
         this.userId = user.userId;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
@@ -85,7 +63,6 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
         this.active = user.active;
     }
 
-    @Override
     public String getId() {
         return id;
     }
@@ -146,7 +123,7 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        UserDto user = (UserDto) o;
         return Objects.equal(id, user.id) &&
                 Objects.equal(version, user.version) &&
                 Objects.equal(userId, user.userId) &&

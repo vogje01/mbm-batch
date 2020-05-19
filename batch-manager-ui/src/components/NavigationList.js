@@ -34,17 +34,17 @@ const navigation = [
     },
     {
         id: 5,
-        text: "Performance",
-        icon: 'material-icons-outlined ic-performance',
-        filePath: "performance",
-        hint: "Performance data"
-    },
-    {
-        id: 6,
         text: "Users",
         icon: 'material-icons-outlined ic-people',
         filePath: "users",
         hint: "User administration"
+    },
+    {
+        id: 6,
+        text: "Performance",
+        icon: 'material-icons-outlined ic-performance',
+        filePath: "performance",
+        hint: "Performance data"
     }
 ];
 

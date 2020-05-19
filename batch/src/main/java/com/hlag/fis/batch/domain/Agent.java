@@ -82,6 +82,7 @@ public class Agent implements PrimaryKeyIdentifier<String>, Serializable {
 	private List<JobSchedule> schedules = new ArrayList<>();
 
 	public Agent() {
+        // Default constructor
 	}
 
 	public void update(Agent agent) {

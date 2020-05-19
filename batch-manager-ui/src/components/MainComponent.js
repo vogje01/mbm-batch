@@ -16,6 +16,7 @@ import {Subject} from "rxjs";
 import NavigationList from "./NavigationList.js";
 import * as jwt from "jsonwebtoken";
 import {logout} from "./ServerConnection";
+import UserManagementView from "../views/user/UserManagementView";
 
 export const refreshSubject = new Subject();
 export const publish = (topic, data) => refreshSubject.next({topic, data});
@@ -27,6 +28,7 @@ const routing = (
             <Route exact path="/stepexecutions" component={StepExecutionView}/>
             <Route exact path="/jobschedules" component={JobSchedulerView}/>
             <Route exact path="/settings" component={SettingsView}/>
+            <Route exact path="/users" component={UserManagementView}/>
             <Route exact path="/performance" component={PerformanceView}/>
         </div>
     </Router>

@@ -1,18 +1,17 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {agentDataSource} from "./AgentDataSource";
+import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import {userGroupDataSource} from "./UserGroupDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import AgentDetails from "./AgentDetails";
 
-class AgentView extends FisPage {
+class UserGroupView extends FisPage {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentAgent: {},
-            currentAgents: [],
+            currentUserGroup: {},
+            currentUserGroups: [],
             showDetails: false,
             selectedIndex: 0
         };
@@ -31,7 +30,7 @@ class AgentView extends FisPage {
     toggleDetails(e) {
         this.setState({
             showDetails: !this.state.showDetails,
-            currentAgent: e ? e.data : null
+            currentUser: e ? e.data : null
         });
     }
 
@@ -42,9 +41,9 @@ class AgentView extends FisPage {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'AgentTable'}
+                    id={'UserTable'}
                     keyExpr={'id'}
-                    dataSource={agentDataSource()}
+                    dataSource={userGroupDataSource()}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -64,55 +63,12 @@ class AgentView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}/>
                     <Column
-                        caption={'Nodename'}
-                        dataField={'nodeName'}
+                        caption={'UserID'}
+                        dataField={'userId'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
-                    <Column
-                        caption={'Hostname'}
-                        dataField={'hostName'}
-                        allowEditing={true}
-                        allowFiltering={true}
-                        allowSorting={true}
-                        allowReordering={true}/>
-                    <Column
-                        caption={'PID'}
-                        dataField={'pid'}
-                        allowEditing={false}
-                        allowSorting={true}
-                        allowReordering={true}
-                        allowFiltering={false}
-                        width={80}/>
-                    <Column
-                        dataField={'lastStart'}
-                        caption={'Last Start'}
-                        dataType={'datetime'}
-                        allowEditing={false}
-                        allowSorting={true}
-                        allowReordering={true}
-                        allowFiltering={false}
-                        width={120}/>
-                    <Column
-                        dataField={'lastPing'}
-                        caption={'Last Ping'}
-                        dataType={'datetime'}
-                        allowEditing={false}
-                        allowSorting={true}
-                        allowReordering={true}
-                        allowFiltering={false}
-                        width={120}/>
-                    <Column
-                        dataField={'active'}
-                        caption={'Active'}
-                        dataType={'boolean'}
-                        allowEditing={true}
-                        allowSorting={true}
-                        allowReordering={true}
-                        width={80}>
-                        <FormItem editorType="dxCheckBox"/>
-                    </Column>
                     <Column
                         allowSorting={false}
                         allowReordering={false}
@@ -121,12 +77,12 @@ class AgentView extends FisPage {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit agent definition',
+                                hint: 'Edit user',
                                 icon: 'material-icons-outlined ic-edit md-18'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete agent',
+                                hint: 'Delete user',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>
@@ -137,15 +93,10 @@ class AgentView extends FisPage {
                     <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                 </DataGrid>
                 <UpdateTimer/>
-                {
-                    this.state.showDetails ?
-                        <AgentDetails currentAgent={this.state.currentAgent}
-                                      closePopup={this.toggleDetails.bind(this)}/> : null
-                }
             </React.Fragment>
         );
     }
 
 }
 
-export default AgentView;
+export default UserGroupView;

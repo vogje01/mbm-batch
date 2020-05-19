@@ -10,7 +10,6 @@ import {jobScheduleDataSource} from "./JobScheduleDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobScheduleDetails from "./JobScheduleDetails";
 import FisPage from "../../components/FisPage";
-import Form, {GroupItem, SimpleItem} from "devextreme-react";
 
 class JobSchedulerView extends FisPage {
 

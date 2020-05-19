@@ -338,4 +338,27 @@ public class ModelConverter {
     public AgentPerformanceDto convertAgentPerformanceToDto(AgentPerformance agentPerformance) {
         return modelMapper.map(agentPerformance, AgentPerformanceDto.class);
     }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // User
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public List<UserDto> convertUserToDto(List<User> userList) {
+        return userList.stream().map(this::convertUserToDto).collect(toList());
+    }
+
+    public UserDto convertUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    public List<UserDto> convertUserToDto(List<User> userList, long totalCount) {
+        return userList.stream().map(a -> convertUserToDto(a, totalCount)).collect(toList());
+    }
+
+    public UserDto convertUserToDto(User user, long totalCount) {
+        return convertUserToDto(user);
+    }
+
+    public User convertUserToEntity(UserDto userDto) {
+        return modelMapper.map(userDto, User.class);
+    }
 }
