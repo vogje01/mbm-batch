@@ -41,7 +41,8 @@ class UserGroupView extends FisPage {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
-                    rowAlternationEnabled={true}>
+                    rowAlternationEnabled={true}
+                    style={{padding: "5px 0px 0px 0px"}}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing

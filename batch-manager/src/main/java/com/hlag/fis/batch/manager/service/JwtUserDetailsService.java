@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.manager.service;
 
-import com.hlag.fis.batch.repository.JobScheduleRepository;
 import com.hlag.fis.batch.repository.UserRepository;
+import com.hlag.fis.batch.util.PasswordHash;
 import com.unboundid.ldap.sdk.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +12,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import static com.unboundid.ldap.sdk.Filter.*;
 import static java.text.MessageFormat.format;
@@ -96,9 +96,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	public UserDetails loadUserByUsername(String userId, String password) {
-		String encPassword = encryptPassword(password);
+		String encPassword = PasswordHash.encryptPassword(password);
 		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserIdAndPasswordAndActive(userId, encPassword);
-		if(userOptional.isPresent()) {
+		if (userOptional.isPresent()) {
 			return new User(userId, password, emptyList());
 		}
 		return null;
@@ -165,34 +165,5 @@ public class JwtUserDetailsService implements UserDetailsService {
 		}
 
 		return new User(userId, password, emptyList());
-	}
-
-	private static String encryptPassword(String password)
-	{
-		try
-		{
-			MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-			crypt.reset();
-			crypt.update(password.getBytes("UTF-8"));
-			return byteToHex(crypt.digest());
-		}
-		catch(NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		catch(UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	private static String byteToHex(final byte[] hash)
-	{
-		Formatter formatter = new Formatter();
-		for (byte b : hash) {
-			formatter.format("%02x", b);
-		}
-		String result = formatter.toString();
-		formatter.close();
-		return result;
 	}
 }

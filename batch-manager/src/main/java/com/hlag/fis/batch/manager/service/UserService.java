@@ -15,6 +15,10 @@ public interface UserService {
 
     Optional<User> findById(String id);
 
+    Optional<User> findByUserId(String userId);
+
+    User insertUser(User user);
+
     User updateUser(User user) throws ResourceNotFoundException;
 
     void deleteUser(String userId);

@@ -66,9 +66,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "User", key = "#id")
+    public Optional<User> findById(String id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
     @Cacheable(cacheNames = "User", key = "#userId")
-    public Optional<User> findById(String userId) {
-        return userRepository.findById(userId);
+    public Optional<User> findByUserId(String userId) {
+        return userRepository.findByUserId(userId);
+    }
+
+    @Override
+    public User insertUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override

@@ -20,14 +20,6 @@ class TopToolbar extends React.Component {
         };
         this.logout = this.logout.bind(this);
         this.toggleAbout = this.toggleAbout.bind(this);
-        this.aboutButtonOptions = {
-            icon: 'material-icons-outlined ic-info',
-            text: 'About', onClick: this.toggleAbout
-        };
-        this.logoutButtonOptions = {
-            icon: 'material-icons-outlined ic-exit',
-            text: 'Logout', onClick: this.logout
-        };
     }
 
     logout() {
@@ -42,14 +34,10 @@ class TopToolbar extends React.Component {
         });
     }
 
-    shouldComponentUpdate(nextProps, nextStatenext, nextContext) {
-        return true;
-    }
-
     render() {
         return (
             <React.Fragment>
-                <Toolbar style={{margin: '10px 0px 22px 0px', padding: '0px 0px 0px 5px'}}>
+                <Toolbar style={{margin: '10px 0px 22px 5px'}}>
                     <Item location="before" widget="dxIcon" render={renderIcon}/>
                     <Item location="center"
                           locateInMenu="never"
@@ -57,11 +45,11 @@ class TopToolbar extends React.Component {
                     <Item locateInMenu="always"
                           widget="dxButton"
                           visible={localStorage.getItem('authenticated') === 'true'}
-                          options={this.aboutButtonOptions}/>
+                          options={{icon: 'material-icons-outlined ic-info', text: 'About', onClick: this.toggleAbout}}/>
                     <Item locateInMenu="always"
                           widget="dxButton"
                           visible={localStorage.getItem('authenticated') === 'true'}
-                          options={this.logoutButtonOptions}/>
+                          options={{icon: 'material-icons-outlined ic-exit', text: 'Logout', onClick: this.logout}}/>
                 </Toolbar>
                 {
                     this.state.showAbout ? <About closePopup={this.toggleAbout.bind(this)}/> : null

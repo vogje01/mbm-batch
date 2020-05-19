@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 /**
  * Job execution REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jens.vogt@ext.hlag.com)
@@ -73,30 +73,28 @@ public class JobExecutionController {
         List<JobExecutionDto> jobExecutionDtoes = modelConverter.convertJobExecutionToDto(allJobExecutionInfos.toList(), totalCount);
 
         // Add links
-        jobExecutionDtoes.forEach(j -> {
-            addLinks(j, page, size, sortBy, sortDir);
-        });
+        jobExecutionDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
         Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
         logger.debug(format("Job list request finished - count: {0} {1}", jobExecutionDtoes.size(), t.elapsedStr()));
 
         return ResponseEntity.ok(new CollectionModel<>(jobExecutionDtoes, self));
     }
 
-    @GetMapping(value = "/{jobId}", produces = {"application/hal+json"})
-    public JobExecutionInfo findById(@PathVariable("jobId") String jobId) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobExecutionService.getJobExecutionById(jobId));
-        return jobExecutionService.getJobExecutionById(jobId);
+    @GetMapping(value = "/{id}", produces = {"application/hal+json"})
+    public JobExecutionInfo findById(@PathVariable String id) throws ResourceNotFoundException {
+        RestPreconditions.checkFound(jobExecutionService.getJobExecutionById(id));
+        return jobExecutionService.getJobExecutionById(id);
     }
 
-    @DeleteMapping(value = "/{jobId}/delete")
-    public ResponseEntity<Void> delete(@PathVariable("jobId") String jobId) {
-        jobExecutionService.deleteJobExecutionInfo(jobId);
+    @DeleteMapping(value = "/{id}/delete")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        jobExecutionService.deleteJobExecutionInfo(id);
         return null;
     }
 
-    @GetMapping(value = "/{jobId}/start")
-    public ResponseEntity<Void> start(@PathVariable("jobId") String jobId) {
-        jobExecutionService.startJobExecutionInfo(jobId);
+    @GetMapping(value = "/{id}/start")
+    public ResponseEntity<Void> start(@PathVariable String id) {
+        jobExecutionService.startJobExecutionInfo(id);
         return null;
     }
 

@@ -16,16 +16,7 @@ class AgentView extends FisPage {
             showDetails: false,
             selectedIndex: 0
         };
-        this.onTabsSelectionChanged = this.onTabsSelectionChanged.bind(this);
         this.toggleDetails = this.toggleDetails.bind(this);
-    }
-
-    onTabsSelectionChanged(args) {
-        if (args.name === 'selectedIndex') {
-            this.setState({
-                selectedIndex: args.value
-            });
-        }
     }
 
     toggleDetails(e) {
@@ -64,14 +55,14 @@ class AgentView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}/>
                     <Column
-                        caption={'Nodename'}
+                        caption={'Node name'}
                         dataField={'nodeName'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
                     <Column
-                        caption={'Hostname'}
+                        caption={'Host name'}
                         dataField={'hostName'}
                         allowEditing={true}
                         allowFiltering={true}
