@@ -363,4 +363,29 @@ public class ModelConverter {
     public User convertUserToEntity(UserDto userDto) {
         return modelMapper.map(userDto, User.class);
     }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // User group
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public List<UserGroupDto> convertUserGroupToDto(List<UserGroup> userGroupList) {
+        return userGroupList.stream().map(this::convertUserGroupToDto).collect(toList());
+    }
+
+    public UserGroupDto convertUserGroupToDto(UserGroup userGroup) {
+        return modelMapper.map(userGroup, UserGroupDto.class);
+    }
+
+    public List<UserGroupDto> convertUserGroupToDto(List<UserGroup> userGroupList, long totalCount) {
+        return userGroupList.stream().map(a -> convertUserGroupToDto(a, totalCount)).collect(toList());
+    }
+
+    public UserGroupDto convertUserGroupToDto(UserGroup userGroup, long totalCount) {
+        UserGroupDto userGroupDto = convertUserGroupToDto(userGroup);
+        userGroupDto.setTotalSize(totalCount);
+        return userGroupDto;
+    }
+
+    public UserGroup convertUserGroupToEntity(UserGroupDto userGroupDto) {
+        return modelMapper.map(userGroupDto, UserGroup.class);
+    }
 }
