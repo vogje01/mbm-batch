@@ -77,11 +77,11 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
     /**
      * User groups many to many relationship
      */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "BATCH_USER_GROUP_REL",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_group_id"))
+            name = "BATCH_USER_USER_GROUP",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
     private List<UserGroup> userGroups = new ArrayList<>();
 
     public User() {
@@ -166,7 +166,6 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
 
     public void addUserGroup(UserGroup userGroup) {
         if (!userGroups.contains(userGroup)) {
-            userGroup.setUser(this);
             userGroups.add(userGroup);
         }
     }
@@ -174,7 +173,6 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
     public void removeUserGroup(UserGroup userGroup) {
         if (userGroups.contains(userGroup)) {
             userGroups.remove(userGroup);
-            userGroup.setUser(null);
         }
     }
 

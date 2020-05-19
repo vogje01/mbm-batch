@@ -11,6 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Batch user group entity.
@@ -60,8 +62,8 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
     /**
      * Link to the corresponding user.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "userGroups")
+    private List<User> users = new ArrayList<>();
 
     public UserGroup() {
         // Default constructor
@@ -106,12 +108,24 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
         this.description = description;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public void addUser(User user) {
+        if (!users.contains(user)) {
+            users.add(user);
+        }
+    }
+
+    public void removeSchedule(User user) {
+        if (users.contains(user)) {
+            users.remove(user);
+        }
     }
 
     @Override
