@@ -1,6 +1,6 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {userGroupDataSource} from "./UserGroupDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
@@ -58,6 +58,16 @@ class UserGroupView extends FisPage {
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
+                    <Column
+                        dataField={'active'}
+                        caption={'Active'}
+                        dataType={'boolean'}
+                        allowEditing={true}
+                        allowSorting={true}
+                        allowReordering={true}
+                        width={80}>
+                        <FormItem editorType="dxCheckBox"/>
+                    </Column>
                     <Column
                         allowSorting={false}
                         allowReordering={false}
