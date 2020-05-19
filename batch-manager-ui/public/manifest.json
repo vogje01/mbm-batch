@@ -1,6 +1,6 @@
 {
-  "short_name": "Hapag-Lloyd Batch Management",
-  "name": "Hapag-Lloyd Batch Management Console",
+  "short_name": "Batch Management",
+  "name": "Batch Management Console",
   "icons": [
     {
       "src": "favicon.png",

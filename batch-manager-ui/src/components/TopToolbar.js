@@ -8,7 +8,7 @@ function renderLabel() {
 }
 
 function renderIcon() {
-    return <img src={process.env.REACT_APP_LOGO} alt={'HL logo'}/>;
+    return <img src={process.env.REACT_APP_LOGO} alt={'momentum logo'} height={'40px'}/>;
 }
 
 class TopToolbar extends React.Component {
@@ -49,7 +49,7 @@ class TopToolbar extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Toolbar style={{margin: '10px 30px 30px 0px', padding: '0px 40px 0px 20px'}}>
+                <Toolbar style={{margin: '10px 0px 22px 0px', padding: '0px 0px 0px 5px'}}>
                     <Item location="before" widget="dxIcon" render={renderIcon}/>
                     <Item location="center"
                           locateInMenu="never"

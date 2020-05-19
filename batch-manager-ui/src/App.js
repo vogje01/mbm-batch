@@ -16,6 +16,7 @@ function App() {
                 <Route exact path="/stepexecutions" component={MainComponent}/>
                 <Route exact path="/jobschedules" component={MainComponent}/>
                 <Route exact path="/settings" component={MainComponent}/>
+                <Route exact path="/users" component={MainComponent}/>
                 <Route exact path="/performance" component={MainComponent}/>
             </Router>
         </div>
