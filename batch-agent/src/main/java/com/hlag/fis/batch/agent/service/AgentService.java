@@ -4,6 +4,7 @@ import com.hlag.fis.batch.agent.AgentCommandProducer;
 import com.hlag.fis.batch.agent.scheduler.BatchSchedulerTask;
 import com.hlag.fis.batch.domain.dto.AgentCommandDto;
 import com.hlag.fis.batch.domain.dto.AgentCommandType;
+import com.hlag.fis.batch.util.NetworkUtils;
 import com.sun.management.OperatingSystemMXBean;
 import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public class AgentService {
         this.agentCommandProducer = agentCommandProducer;
         this.agentCommandDto = new AgentCommandDto();
         this.agentCommandDto.setNodeName(nodeName);
+        this.agentCommandDto.setHostName(NetworkUtils.getHostName());
         this.agentCommandDto.setPid(ProcessHandle.current().pid());
         this.osBean = System.getProperty("os.name").startsWith("Windows") ?
                 ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class) :
@@ -92,6 +94,7 @@ public class AgentService {
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
+        agentCommandDto.setPid(ProcessHandle.current().pid());
         agentCommandDto.setType(AgentCommandType.PING);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }

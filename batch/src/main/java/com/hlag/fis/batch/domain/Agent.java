@@ -51,6 +51,11 @@ public class Agent implements PrimaryKeyIdentifier<String>, Serializable {
 	@Column(name = "NODE_NAME")
 	private String nodeName;
     /**
+     * Host name
+     */
+    @Column(name = "HOST_NAME")
+    private String hostName;
+    /**
      * PID
      */
     @Column(name = "PID")
@@ -107,6 +112,14 @@ public class Agent implements PrimaryKeyIdentifier<String>, Serializable {
 
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     public Long getPid() {
@@ -166,33 +179,35 @@ public class Agent implements PrimaryKeyIdentifier<String>, Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Agent agent = (Agent) o;
-		return Objects.equal(id, agent.id) &&
-				Objects.equal(version, agent.version) &&
-				Objects.equal(nodeName, agent.nodeName) &&
-				Objects.equal(pid, agent.pid) &&
-				Objects.equal(lastStart, agent.lastStart) &&
-				Objects.equal(lastPing, agent.lastPing) &&
-				Objects.equal(active, agent.active) &&
-				Objects.equal(schedules, agent.schedules);
-	}
+        return Objects.equal(id, agent.id) &&
+                Objects.equal(version, agent.version) &&
+                Objects.equal(nodeName, agent.nodeName) &&
+                Objects.equal(hostName, agent.hostName) &&
+                Objects.equal(pid, agent.pid) &&
+                Objects.equal(lastStart, agent.lastStart) &&
+                Objects.equal(lastPing, agent.lastPing) &&
+                Objects.equal(active, agent.active) &&
+                Objects.equal(schedules, agent.schedules);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id, version, nodeName, pid, lastStart, lastPing, active, schedules);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id, version, nodeName, hostName, pid, lastStart, lastPing, active, schedules);
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("id", id)
-				.add("version", version)
-				.add("nodeName", nodeName)
-				.add("pid", pid)
-				.add("lastStart", lastStart)
-				.add("lastPing", lastPing)
-				.add("active", active)
-				.add("schedules", schedules)
-				.toString();
-	}
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("version", version)
+                .add("nodeName", nodeName)
+                .add("hostName", hostName)
+                .add("pid", pid)
+                .add("lastStart", lastStart)
+                .add("lastPing", lastPing)
+                .add("active", active)
+                .add("schedules", schedules)
+                .toString();
+    }
 
 }

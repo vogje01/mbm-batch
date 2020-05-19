@@ -34,6 +34,10 @@ public class AgentDto extends RepresentationModel<JobDefinition> {
      */
     private String nodeName;
     /**
+     * Host name
+     */
+    private String hostName;
+    /**
      * PID
      */
     private Long pid;
@@ -78,6 +82,14 @@ public class AgentDto extends RepresentationModel<JobDefinition> {
 
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     public Long getPid() {
@@ -136,28 +148,32 @@ public class AgentDto extends RepresentationModel<JobDefinition> {
         AgentDto agentDto = (AgentDto) o;
         return Objects.equal(id, agentDto.id) &&
                 Objects.equal(nodeName, agentDto.nodeName) &&
+                Objects.equal(hostName, agentDto.hostName) &&
                 Objects.equal(pid, agentDto.pid) &&
                 Objects.equal(lastStart, agentDto.lastStart) &&
                 Objects.equal(lastPing, agentDto.lastPing) &&
                 Objects.equal(active, agentDto.active) &&
-                Objects.equal(totalSize, agentDto.totalSize);
-	}
-
-	@Override
-	public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, pid, lastStart, lastPing, active, totalSize);
+                Objects.equal(totalSize, agentDto.totalSize) &&
+                Objects.equal(schedules, agentDto.schedules);
     }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, active, totalSize, schedules);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("nodeName", nodeName)
+                .add("hostName", hostName)
                 .add("pid", pid)
                 .add("lastStart", lastStart)
                 .add("lastPing", lastPing)
                 .add("active", active)
-                .add("totalCount", totalSize)
-				.toString();
-	}
+                .add("totalSize", totalSize)
+                .add("schedules", schedules)
+                .toString();
+    }
 }

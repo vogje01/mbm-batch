@@ -234,6 +234,7 @@ CREATE TABLE BATCH_AGENT_PERFORMANCE
     ID                   VARCHAR(36) NOT NULL PRIMARY KEY,
     VERSION              BIGINT      NOT NULL                                 DEFAULT 0,
     NODE_NAME            VARCHAR(36) NOT NULL,
+    HOST_NAME            VARCHAR(128) NOT NULL,
     TYPE                 ENUM ('ALL', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY') DEFAULT 'ALL',
     SYSTEM_LOAD          DOUBLE,
     TOTAL_REAL_MEMORY    BIGINT,

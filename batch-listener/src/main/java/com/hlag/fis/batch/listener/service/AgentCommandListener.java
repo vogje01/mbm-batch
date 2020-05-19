@@ -95,8 +95,10 @@ public class AgentCommandListener {
             agent = agentOptional.get();
         } else {
             agent = new Agent();
-            agent.setNodeName(agentCommandDto.getNodeName());
         }
+        agent.setPid(agentCommandDto.getPid());
+        agent.setHostName(agentCommandDto.getHostName());
+        agent.setNodeName(agentCommandDto.getNodeName());
         agent.setLastStart(new Date());
         agent.setLastPing(new Date());
         agent.setActive(true);

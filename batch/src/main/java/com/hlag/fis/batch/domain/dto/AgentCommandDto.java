@@ -16,6 +16,8 @@ public class AgentCommandDto {
 
     private String nodeName;
 
+    private String hostName;
+
     private long pid;
 
     private double systemLoad;
@@ -68,6 +70,14 @@ public class AgentCommandDto {
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     public long getPid() {
@@ -195,6 +205,7 @@ public class AgentCommandDto {
         return MoreObjects.toStringHelper(this)
                 .add("type", type)
                 .add("nodeName", nodeName)
+                .add("hostName", hostName)
                 .add("pid", pid)
                 .add("systemLoad", systemLoad)
                 .add("totalRealMemory", totalRealMemory)
@@ -231,6 +242,7 @@ public class AgentCommandDto {
                 usedSwap == that.usedSwap &&
                 type == that.type &&
                 Objects.equal(nodeName, that.nodeName) &&
+                Objects.equal(hostName, that.hostName) &&
                 Objects.equal(previousFireTime, that.previousFireTime) &&
                 Objects.equal(nextFireTime, that.nextFireTime) &&
                 Objects.equal(jobName, that.jobName) &&
@@ -239,6 +251,6 @@ public class AgentCommandDto {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
+        return Objects.hashCode(type, nodeName, hostName, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
     }
 }
