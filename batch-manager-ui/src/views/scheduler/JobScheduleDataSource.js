@@ -6,8 +6,6 @@ import {deleteItem, insertItem, listItems, updateItem} from "../../components/Se
 export const jobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
-            addUrl: '',
-            selfUrl: '',
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name');
                 return listItems('jobschedules' + params, 'jobScheduleDtoes');
@@ -16,7 +14,10 @@ export const jobScheduleDataSource = () => {
                 let url = process.env.REACT_APP_API_URL + 'jobschedules/insert';
                 return insertItem(url, JSON.stringify(jobSchedule))
             },
-            update: function (jobSchedule) {
+            update: function (jobSchedule, values) {
+                jobSchedule.schedule = values.schedule ? values.schedule  : jobSchedule.schedule;
+                jobSchedule.name = values.name ? values.name  : jobSchedule.name;
+                jobSchedule.active = values.active;
                 let url = jobSchedule._links.update.href;
                 return updateItem(url, jobSchedule);
             },

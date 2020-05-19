@@ -10,6 +10,7 @@ import {jobScheduleDataSource} from "./JobScheduleDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobScheduleDetails from "./JobScheduleDetails";
 import FisPage from "../../components/FisPage";
+import Form, {GroupItem, SimpleItem} from "devextreme-react";
 
 class JobSchedulerView extends FisPage {
 
@@ -47,8 +48,9 @@ class JobSchedulerView extends FisPage {
                 <DataGrid
                     id={'jobScheduleTable'}
                     dataSource={jobScheduleDataSource()}
+                    keyExpr="id"
                     hoverStateEnabled={true}
-                    onRowDblClick={this.toggleDetails}
+                    //onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -61,7 +63,8 @@ class JobSchedulerView extends FisPage {
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
-                        mode={'form'}
+                        mode="form"
+                        refreshMode={true}
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
@@ -70,6 +73,7 @@ class JobSchedulerView extends FisPage {
                         caption={'Job Name'}
                         dataField={'name'}
                         dataType={'string'}
+                        allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>

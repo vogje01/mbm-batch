@@ -1,15 +1,6 @@
 import React from 'react';
 import {DataGrid, Menu} from "devextreme-react";
-import {
-    Column,
-    Editing,
-    FilterRow,
-    Lookup,
-    Pager,
-    Paging,
-    RemoteOperations,
-    Selection
-} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, Lookup, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {filter} from "rxjs/operators";
 import {refreshSubject} from "../../components/MainComponent";
 import {errorMessage, infoMessage} from "../../util/MessageUtil";
@@ -112,9 +103,10 @@ class JobDefinitionView extends FisPage {
                       onItemClick={this.onMenuItemClick}/>
                 <DataGrid
                     id={'jobDefinitionTable'}
+                    keyExpr={'id'}
                     dataSource={jobDefinitionDataSource()}
                     hoverStateEnabled={true}
-                    onRowDblClick={this.toggleDetails}
+                    //onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -124,7 +116,7 @@ class JobDefinitionView extends FisPage {
                     showRowLines={true}
                     showBorders={true}
                     rowAlternationEnabled={true}
-                    onContextMenuPreparing={function (e) {
+                    /*onContextMenuPreparing={function (e) {
                         if (e.row.rowType === "data") {
                             e.items = [
                                 {
@@ -146,29 +138,33 @@ class JobDefinitionView extends FisPage {
                                 }
                             ]
                         }
-                    }}>
+                    }}*/>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
-                        mode={'form'}
+                        mode="form"
                         useIcons={true}
-                        allowDeleting={true}
-                        allowAdding={true}/>
+                        allowUpdating={true}
+                        allowAdding={true}
+                        allowDeleting={true}/>
                     <Column
                         caption={'Job Label'}
                         dataField={'label'}
+                        allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
                     <Column
                         caption={'Job Name'}
                         dataField={'name'}
+                        allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
                     <Column
                         caption={'Group Name'}
                         dataField={'groupName'}
+                        allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
@@ -176,6 +172,7 @@ class JobDefinitionView extends FisPage {
                         dataField={'jobVersion'}
                         caption={'Version'}
                         dataType={'string'}
+                        allowEditing={false}
                         allowSorting={true}
                         allowReordering={true}
                         width={50}/>
@@ -183,6 +180,7 @@ class JobDefinitionView extends FisPage {
                         dataField={'type'}
                         caption={'Type'}
                         dataType={'string'}
+                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={80}>
@@ -192,6 +190,7 @@ class JobDefinitionView extends FisPage {
                         dataField={'active'}
                         caption={'Active'}
                         dataType={'boolean'}
+                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={80}/>
@@ -199,6 +198,7 @@ class JobDefinitionView extends FisPage {
                         dataField={'fileName'}
                         caption={'File'}
                         dataType={'string'}
+                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={160}/>
@@ -210,12 +210,12 @@ class JobDefinitionView extends FisPage {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit job definition',
+                                hint: 'Edit agent definition',
                                 icon: 'material-icons-outlined ic-edit md-18'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete job definition entry',
+                                hint: 'Delete agent',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>

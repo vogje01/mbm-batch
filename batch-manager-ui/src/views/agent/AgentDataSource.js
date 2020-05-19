@@ -10,7 +10,9 @@ export const agentDataSource = () => {
                 let params = getParams(loadOptions);
                 return listItems('agents' + params, 'agentDtoes');
             },
-            update: function (agent) {
+            update: function (agent, values) {
+                agent.nodeName = values.nodeName ? values.nodeName : agent.nodeName;
+                agent.active = values.active;
                 let url = agent._links.update.href;
                 return updateItem(url, agent, 'agentDto');
             },

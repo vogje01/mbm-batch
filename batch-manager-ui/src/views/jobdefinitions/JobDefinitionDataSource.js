@@ -52,6 +52,16 @@ export const jobDefinitionDataSource = () => {
                 let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
                 return insertItem(url, JSON.stringify(jobDefinition));
             },
+            update: function (jobDefinition, values) {
+                jobDefinition.label = values.label ? values.label : jobDefinition.label;
+                jobDefinition.name = values.name ? values.name : jobDefinition.name;
+                jobDefinition.version = values.version ? values.version : jobDefinition.version;
+                jobDefinition.type = values.type ? values.type : jobDefinition.type;
+                jobDefinition.fileName = values.fileName ? values.fileName : jobDefinition.fileName;
+                jobDefinition.active = values.active;
+                let url = jobDefinition._links.update.href;
+                return updateItem(url, jobDefinition, 'jobDefinitionDto');
+            },
             remove: function (item) {
                 return deleteItem(item._links.delete.href, item, item.name);
             }

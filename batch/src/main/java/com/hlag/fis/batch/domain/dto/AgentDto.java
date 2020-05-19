@@ -59,7 +59,7 @@ public class AgentDto extends RepresentationModel<JobDefinition> {
     private List<JobScheduleDto> schedules = new ArrayList<>();
 
     /**
-     * Constrcutor
+     * Constructor
      */
     public AgentDto() {
     }

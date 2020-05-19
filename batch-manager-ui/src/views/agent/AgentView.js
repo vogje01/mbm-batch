@@ -43,9 +43,9 @@ class AgentView extends FisPage {
             <React.Fragment>
                 <DataGrid
                     id={'AgentTable'}
+                    keyExpr={'id'}
                     dataSource={agentDataSource()}
                     hoverStateEnabled={true}
-                    onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -54,24 +54,11 @@ class AgentView extends FisPage {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
-                    rowAlternationEnabled={true}
-                    onContextMenuPreparing={function (e) {
-                        if (e.row.rowType === "data") {
-                            e.items = [
-                                {
-                                    text: 'Edit agent',
-                                    onClick: function () {
-                                        e.component.selectRows([e.row.data]);
-                                    }
-                                }
-                            ]
-                        }
-                    }}>
+                    rowAlternationEnabled={true}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
-                        mode={'form'}
-                        startEditAction={ondblclick}
+                        mode="form"
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
@@ -79,6 +66,7 @@ class AgentView extends FisPage {
                     <Column
                         caption={'NodeName'}
                         dataField={'nodeName'}
+                        allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
@@ -126,12 +114,12 @@ class AgentView extends FisPage {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit parameter',
+                                hint: 'Edit agent definition',
                                 icon: 'material-icons-outlined ic-edit md-18'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete parameter',
+                                hint: 'Delete agent',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>
