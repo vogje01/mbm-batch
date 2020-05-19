@@ -7,6 +7,9 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Batch user entity.
  *
@@ -50,6 +53,10 @@ public class UserDto extends RepresentationModel<UserDto> {
      * Active
      */
     private Boolean active;
+    /**
+     * User groups
+     */
+    private List<UserGroupDto> userGroupDtoes = new ArrayList<>();
     /**
      * Total count
      */
@@ -121,6 +128,14 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<UserGroupDto> getUserGroupDtoes() {
+        return userGroupDtoes;
+    }
+
+    public void setUserGroupDtoes(List<UserGroupDto> userGroupDtoes) {
+        this.userGroupDtoes = userGroupDtoes;
     }
 
     public Long getTotalSize() {

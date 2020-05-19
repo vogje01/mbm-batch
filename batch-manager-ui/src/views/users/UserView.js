@@ -1,9 +1,16 @@
 import React from 'react';
-import {DataGrid} from "devextreme-react";
+import Lookup, {DataGrid, RequiredRule} from "devextreme-react";
 import {Column, Editing, FilterRow, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {userDataSource} from "./UserDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
+import {userGroupDataSource} from "./UserGroupDataSource";
+import UserGroupBoxComponent from "./UserGroupBoxComponent";
+
+const tabs = [
+    {id: 'Main', text: 'Main', icon: 'material-icons-outlined ic-people md-18'},
+    {id: 'Groups', text: 'Groups', icon: 'material-icons-outlined ic-group md-18'}
+];
 
 class UserView extends FisPage {
 
@@ -22,6 +29,24 @@ class UserView extends FisPage {
             showDetails: !this.state.showDetails,
             currentUser: e ? e.data : null
         });
+    }
+
+    cellTemplate(container, options) {
+        var noBreakSpace = '\u00A0',
+            text = (options.value || []).map(element => {
+                return options.column.lookup.calculateCellValue(element);
+            }).join(', ');
+        container.textContent = text || noBreakSpace;
+        container.title = text;
+    }
+
+    calculateFilterExpression(filterValue, selectedFilterOperation, target) {
+        if (target === 'search' && typeof (filterValue) === 'string') {
+            return [this.dataField, 'contains', filterValue];
+        }
+        return function (data) {
+            return (data.userGroups || []).indexOf(filterValue) !== -1;
+        };
     }
 
     render() {
@@ -86,6 +111,20 @@ class UserView extends FisPage {
                         allowSorting={true}
                         allowReordering={true}
                         width={80}/>
+                    <Column
+                        dataField={'userGroups'}
+                        caption={'User Groups'}
+                        width={200}
+                        allowSorting={false}
+                        editCellComponent={UserGroupBoxComponent}
+                        cellTemplate={this.cellTemplate}
+                        calculateFilterExpression={this.calculateFilterExpression}>
+                        <Lookup
+                            dataSource={userGroupDataSource()}
+                            valueExpr="id"
+                            displayExpr="name"/>
+                        <RequiredRule/>
+                    </Column>
                     <Column
                         dataField={'active'}
                         caption={'Active'}

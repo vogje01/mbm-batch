@@ -57,6 +57,11 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
      */
     @Column(name = "ACTIVE")
     private Boolean active;
+    /**
+     * Link to the corresponding user.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     public UserGroup() {
         // Default constructor
@@ -99,6 +104,14 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

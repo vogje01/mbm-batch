@@ -11,6 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Batch user entity.
@@ -72,6 +74,15 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
      */
     @Column(name = "ACTIVE")
     private Boolean active;
+    /**
+     * User groups many to many relationship
+     */
+    @ManyToMany
+    @JoinTable(
+            name = "BATCH_USER_GROUP_REL",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_group_id"))
+    private List<UserGroup> userGroups = new ArrayList<>();
 
     public User() {
         // Default constructor
@@ -140,6 +151,31 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<UserGroup> getUserGroups() {
+        return userGroups;
+    }
+
+    public void setUserGroups(List<UserGroup> userGroups) {
+        this.userGroups.clear();
+        if (userGroups != null) {
+            userGroups.forEach(this::addUserGroup);
+        }
+    }
+
+    public void addUserGroup(UserGroup userGroup) {
+        if (!userGroups.contains(userGroup)) {
+            userGroup.setUser(this);
+            userGroups.add(userGroup);
+        }
+    }
+
+    public void removeUserGroup(UserGroup userGroup) {
+        if (userGroups.contains(userGroup)) {
+            userGroups.remove(userGroup);
+            userGroup.setUser(null);
+        }
     }
 
     @Override
