@@ -11,20 +11,9 @@ class UserGroupView extends FisPage {
         super(props);
         this.state = {
             currentUserGroup: {},
-            currentUserGroups: [],
-            showDetails: false,
-            selectedIndex: 0
+            showDetails: false
         };
-        this.onTabsSelectionChanged = this.onTabsSelectionChanged.bind(this);
         this.toggleDetails = this.toggleDetails.bind(this);
-    }
-
-    onTabsSelectionChanged(args) {
-        if (args.name === 'selectedIndex') {
-            this.setState({
-                selectedIndex: args.value
-            });
-        }
     }
 
     toggleDetails(e) {
@@ -41,8 +30,7 @@ class UserGroupView extends FisPage {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'UserTable'}
-                    keyExpr={'id'}
+                    id={'UserGroupTable'}
                     dataSource={userGroupDataSource()}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -63,8 +51,8 @@ class UserGroupView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}/>
                     <Column
-                        caption={'UserID'}
-                        dataField={'userId'}
+                        caption={'Name'}
+                        dataField={'name'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
@@ -77,12 +65,12 @@ class UserGroupView extends FisPage {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit user',
+                                hint: 'Edit user group',
                                 icon: 'material-icons-outlined ic-edit md-18'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete user',
+                                hint: 'Delete user group',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>

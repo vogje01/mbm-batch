@@ -71,6 +71,10 @@
     content: 'people_outline';
 }
 
+.ic-group:before {
+    content: 'group';
+}
+
 .error:before {
     content: 'error';
 }

@@ -13,7 +13,6 @@ class UserView extends FisPage {
         super(props);
         this.state = {
             currentUser: {},
-            currentUsers: [],
             showDetails: false,
             selectedIndex: 0
         };

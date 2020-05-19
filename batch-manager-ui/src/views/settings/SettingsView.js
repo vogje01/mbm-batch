@@ -8,10 +8,10 @@ import Toolbar, {Item} from "devextreme-react/toolbar";
 import JobGroupView from "../jobgroup/JobGroupView";
 
 const tabs = [
-    {id: 'Jobs', text: 'Jobs', icon: 'material-icons-outlined ic-dashboard md-18', content: 'Main'},
-    {id: 'Schedule', text: 'Schedules', icon: 'material-icons-outlined ic-alarm md-18', content: 'Schedules'},
-    {id: 'Groups', text: 'Groups', icon: 'material-icons-outlined ic-device-hub md-18', content: 'Groups'},
-    {id: 'Agents', text: 'Agents', icon: 'material-icons-outlined ic-developer-board md-18', content: 'Agents'}
+    {id: 'Jobs', text: 'Job Definitions', icon: 'material-icons-outlined ic-dashboard md-18', content: 'Main'},
+    {id: 'Schedules', text: 'Job Schedules', icon: 'material-icons-outlined ic-alarm md-18', content: 'Schedules'},
+    {id: 'Groups', text: 'Job Groups', icon: 'material-icons-outlined ic-device-hub md-18', content: 'Groups'},
+    {id: 'Agents', text: 'Batch Agents', icon: 'material-icons-outlined ic-developer-board md-18', content: 'Agents'}
 ];
 
 class SettingsView extends React.Component {

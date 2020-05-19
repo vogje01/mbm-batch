@@ -1,16 +1,16 @@
 import React from 'react';
 import FisPage from "../../components/FisPage";
-import Toolbar, {Item} from "devextreme-react/toolbar";
 import Tabs from "devextreme-react/tabs";
 import UserView from "./UserView";
 import UserGroupView from "./UserGroupView";
 
 const tabs = [
-    {id: 'Users', text: 'Users', icon: 'material-icons-outlined ic-dashboard md-18', content: 'Users'},
-    {id: 'UserGroups', text: 'User Groups', icon: 'material-icons-outlined ic-alarm md-18', content: 'UserGroups'}
+    {id: 'Users', text: 'Users', icon: 'material-icons-outlined ic-people md-18'},
+    {id: 'UserGroups', text: 'User Groups', icon: 'material-icons-outlined ic-group md-18'}
 ];
 
 class UserManagementView extends FisPage {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -31,13 +31,8 @@ class UserManagementView extends FisPage {
     render() {
         return (
             <React.Fragment>
-                <Toolbar>
-                    <Item location="before"
-                          locateInMenu="never">
-                        <div className="toolbar-label"><b>Uer Management</b></div>
-                    </Item>
-                </Toolbar>
-                <Tabs dataSource={tabs} selectedIndex={this.state.selectedIndex}
+                <Tabs dataSource={tabs}
+                      selectedIndex={this.state.selectedIndex}
                       onOptionChanged={this.onTabsSelectionChanged}/>
                 <div>
                     <UserView hidden={this.state.selectedIndex !== 0}/>
