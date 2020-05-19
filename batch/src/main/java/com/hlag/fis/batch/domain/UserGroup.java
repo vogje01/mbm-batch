@@ -62,10 +62,10 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
         // Default constructor
     }
 
-    public void update(UserGroup user) {
-        this.name = user.name;
-        this.description = user.description;
-        this.active = user.active;
+    public void update(UserGroup userGroup) {
+        this.name = userGroup.name;
+        this.description = userGroup.description;
+        this.active = userGroup.active;
     }
 
     @Override

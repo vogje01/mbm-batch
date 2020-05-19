@@ -1,6 +1,5 @@
 package com.hlag.fis.batch.repository;
 
-import com.hlag.fis.batch.domain.Agent;
 import com.hlag.fis.batch.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
