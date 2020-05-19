@@ -22,7 +22,7 @@ agent:
 # deletionDays: Number of days after which the logs are deleted.
 # topic: Apache Kafka topic name.
 kafka:
-  bootstrapAddress: localhost:9092
+  bootstrapAddress: batchmanager:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1

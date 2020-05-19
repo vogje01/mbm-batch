@@ -3,7 +3,7 @@ spring:
     allow-bean-definition-overriding: true
     banner-mode: off
   datasource:
-    url: jdbc:mysql://localhost:3306/fisbatch
+    url: jdbc:mysql://batchmanager:3306/fisbatch
     username: root
     password: Dilbert_01
     driverClassName: com.mysql.cj.jdbc.Driver
