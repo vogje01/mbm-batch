@@ -34,7 +34,6 @@ class AgentView extends FisPage {
             <React.Fragment>
                 <DataGrid
                     id={'AgentTable'}
-                    keyExpr={'id'}
                     dataSource={agentDataSource()}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}

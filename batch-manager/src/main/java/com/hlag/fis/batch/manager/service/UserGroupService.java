@@ -11,7 +11,11 @@ public interface UserGroupService {
 
     Page<UserGroup> findAll(Pageable pageable);
 
+    Page<UserGroup> findByUser(String id, Pageable pageable);
+
     long countAll();
+
+    long countByUser(String id);
 
     Optional<UserGroup> findById(String id);
 

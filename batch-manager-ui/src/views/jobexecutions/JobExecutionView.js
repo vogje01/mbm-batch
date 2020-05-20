@@ -22,7 +22,6 @@ import UpdateTimer from "../../components/UpdateTimer";
 import JobExecutionDetails from "./JobExecutionDetails";
 import FisPage from "../../components/FisPage";
 import {jobExecutionDataSource} from "./JobExecutionDataSource";
-import Toolbar, {Item} from 'devextreme-react/toolbar';
 
 class JobExecutionView extends FisPage {
 
@@ -92,12 +91,7 @@ class JobExecutionView extends FisPage {
     render() {
         return (
             <React.Fragment>
-                <Toolbar>
-                    <Item location="before"
-                          locateInMenu="never">
-                        <div className="toolbar-label"><b>Job Execution List</b></div>
-                    </Item>
-                </Toolbar>
+                <div className="long-title"><h3>Job Execution List</h3></div>
                 <DataGrid
                     id={'jobTable'}
                     dataSource={jobExecutionDataSource()}

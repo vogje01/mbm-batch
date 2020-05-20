@@ -2,7 +2,6 @@ import React from 'react';
 
 import 'devextreme/data/odata/store';
 import DataGrid, {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
-import Toolbar, {Item} from "devextreme-react/toolbar";
 
 import {refreshSubject} from "../../components/MainComponent";
 import {filter} from "rxjs/operators";
@@ -38,12 +37,7 @@ class JobSchedulerView extends FisPage {
         }
         return (
             <React.Fragment>
-                <Toolbar>
-                    <Item location="before"
-                          locateInMenu="never">
-                        <div className="toolbar-label"><b>Job Schedule List</b></div>
-                    </Item>
-                </Toolbar>
+                <div className="long-title"><h3>Job Schedule List</h3></div>
                 <DataGrid
                     id={'jobScheduleTable'}
                     dataSource={jobScheduleDataSource()}

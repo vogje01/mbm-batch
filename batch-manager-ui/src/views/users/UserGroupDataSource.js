@@ -1,14 +1,18 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams} from "../../util/ParamUtil";
-import {deleteItem, insertItem, listItems, updateItem} from "../../components/ServerConnection";
+import {mergeParams} from "../../util/ParamUtil";
+import {deleteItem, getList, insertItem, updateItem} from "../../components/ServerConnection";
 
-export const userGroupDataSource = () => {
+export const userGroupDataSource = (user) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
-                return listItems('usergroups' + params, 'userGroupDtoes');
+                let url = process.env.REACT_APP_API_URL + 'usergroups';
+                if (user !== undefined) {
+                    url = user._links.userGroups.href;
+                }
+                url = mergeParams(loadOptions, url, 'name');
+                return getList(url, 'userGroupDtoes');
             },
             insert: function (userGroup) {
                 let url = process.env.REACT_APP_API_URL + 'usergroups/insert';

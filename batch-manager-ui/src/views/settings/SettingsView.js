@@ -1,6 +1,5 @@
 import React from 'react';
 import Tabs from 'devextreme-react/tabs';
-import Toolbar, {Item} from "devextreme-react/toolbar";
 
 import JobDefinitionView from "../jobdefinitions/JobDefinitionView";
 import JobSchedulerView from "../scheduler/JobSchedulerView";
@@ -35,12 +34,7 @@ class SettingsView extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Toolbar>
-                    <Item location="before"
-                          locateInMenu="never">
-                        <div className="toolbar-label"><b>Settings</b></div>
-                    </Item>
-                </Toolbar>
+                <div className="long-title"><h3>Settings</h3></div>
                 <Tabs dataSource={tabs} selectedIndex={this.state.selectedIndex}
                       onOptionChanged={this.onTabsSelectionChanged}/>
                 <div>

@@ -61,8 +61,18 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     @Override
+    public Page<UserGroup> findByUser(String id, Pageable pageable) {
+        return userGroupRepository.findByUser(id, pageable);
+    }
+
+    @Override
     public long countAll() {
         return userGroupRepository.count();
+    }
+
+    @Override
+    public long countByUser(String id) {
+        return userGroupRepository.countByUser(id);
     }
 
     @Override

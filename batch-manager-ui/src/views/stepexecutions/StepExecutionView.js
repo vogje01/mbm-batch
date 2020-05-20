@@ -9,7 +9,6 @@ import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
 import StepExecutionDetails from "./StepExecutionDetails";
 import {stepExecutionDataSource} from "./StepExecutionDataSource";
-import Toolbar, {Item} from "devextreme-react/toolbar";
 
 class StepExecutionView extends FisPage {
 
@@ -71,12 +70,7 @@ class StepExecutionView extends FisPage {
     render() {
         return (
             <React.Fragment>
-                <Toolbar>
-                    <Item location="before"
-                          locateInMenu="never">
-                        <div className="toolbar-label"><b>Step Execution List</b></div>
-                    </Item>
-                </Toolbar>
+                <div className="long-title"><h3>Step Execution List</h3></div>
                 <DataGrid
                     dataSource={stepExecutionDataSource(this.props.data !== undefined ? this.props.data.data : undefined)}
                     hoverStateEnabled={true}

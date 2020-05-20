@@ -92,6 +92,36 @@ public class UserGroupController {
      *
      * @return on page of job definitions.
      */
+    @GetMapping(value = "/{id}/byUser", produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<UserGroupDto>> findByUser(@PathVariable String id, @RequestParam(value = "page") int page,
+                                                                    @RequestParam("size") int size,
+                                                                    @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                                    @RequestParam(value = "sortDir", required = false) String sortDir) {
+
+        t.restart();
+
+        // Get paging parameters
+        long totalCount = userGroupService.countByUser(id);
+        Page<UserGroup> userUserGroups = userGroupService.findByUser(id, PagingUtil.getPageable(page, size, sortBy, sortDir));
+
+        // Convert to DTOs
+        List<UserGroupDto> userUserGroupDtoes = modelConverter.convertUserGroupToDto(userUserGroups.toList(), totalCount);
+
+        // Add links
+        userUserGroupDtoes.forEach(this::addLinks);
+
+        // Add self link
+        Link self = linkTo(methodOn(UserGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
+        logger.debug(format("Finished find by user request- count: {0} {1}", userUserGroups.getSize(), t.elapsedStr()));
+
+        return ResponseEntity.ok(new CollectionModel<>(userUserGroupDtoes, self));
+    }
+
+    /**
+     * Returns one page of job definitions.
+     *
+     * @return on page of job definitions.
+     */
     @GetMapping(value = "/{id}", produces = {"application/hal+json"})
     public ResponseEntity<UserGroupDto> findById(@PathVariable String id) throws ResourceNotFoundException {
 

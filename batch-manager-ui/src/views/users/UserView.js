@@ -1,16 +1,10 @@
 import React from 'react';
-import Lookup, {DataGrid, RequiredRule} from "devextreme-react";
-import {Column, Editing, FilterRow, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import DataGrid, {Column, Editing, FilterRow, Form, MasterDetail, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {userDataSource} from "./UserDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import {userGroupDataSource} from "./UserGroupDataSource";
-import UserGroupBoxComponent from "./UserGroupBoxComponent";
-
-const tabs = [
-    {id: 'Main', text: 'Main', icon: 'material-icons-outlined ic-people md-18'},
-    {id: 'Groups', text: 'Groups', icon: 'material-icons-outlined ic-group md-18'}
-];
+import {Item} from "devextreme-react/autocomplete";
+import UserGroupView from "./UserGroupView";
 
 class UserView extends FisPage {
 
@@ -21,32 +15,6 @@ class UserView extends FisPage {
             showDetails: false,
             refreshLists: {}
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
-    }
-
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentUser: e ? e.data : null
-        });
-    }
-
-    cellTemplate(container, options) {
-        var noBreakSpace = '\u00A0',
-            text = (options.value || []).map(element => {
-                return options.column.lookup.calculateCellValue(element);
-            }).join(', ');
-        container.textContent = text || noBreakSpace;
-        container.title = text;
-    }
-
-    calculateFilterExpression(filterValue, selectedFilterOperation, target) {
-        if (target === 'search' && typeof (filterValue) === 'string') {
-            return [this.dataField, 'contains', filterValue];
-        }
-        return function (data) {
-            return (data.userGroups || []).indexOf(filterValue) !== -1;
-        };
     }
 
     render() {
@@ -55,6 +23,7 @@ class UserView extends FisPage {
         }
         return (
             <React.Fragment>
+                <div className="long-title"><h3>User List</h3></div>
                 <DataGrid
                     id={'UserTable'}
                     dataSource={userDataSource()}
@@ -77,6 +46,20 @@ class UserView extends FisPage {
                         allowUpdating={true}
                         allowAdding={true}
                         allowDeleting={true}>
+                        <Form>
+                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Details"}>
+                                <Item dataField="userId"/>
+                                <Item dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}}/>
+                                <Item dataField="firstName"/>
+                                <Item dataField="lastName"/>
+                                <Item
+                                    dataField="description"
+                                    editorType="dxTextArea"
+                                    colSpan={2}
+                                    editorOptions={{height: 100}}/>
+                                <Item dataField="active" editorType={"dxCheckBox"}/>
+                            </Item>
+                        </Form>
                     </Editing>
                     <Column
                         caption={'UserID'}
@@ -89,63 +72,33 @@ class UserView extends FisPage {
                         dataField={'password'}
                         caption={'Password'}
                         visible={false}
-                        dataType={'string'}
-                        allowEditing={false}
                         allowSorting={true}
-                        allowReordering={true}>
-                        <FormItem editorType="dxTextBox" editorOptions={{mode: "password"}}/>
-                    </Column>
+                        allowReordering={true}/>
                     <Column
                         dataField={'firstName'}
                         caption={'First name'}
-                        dataType={'string'}
-                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={80}/>
                     <Column
                         dataField={'lastName'}
                         caption={'Last name'}
-                        dataType={'string'}
-                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={80}/>
                     <Column
-                        dataField={'userGroups'}
-                        caption={'User Groups'}
-                        width={200}
-                        allowSorting={false}
-                        editCellComponent={UserGroupBoxComponent}
-                        cellTemplate={this.cellTemplate}
-                        calculateFilterExpression={this.calculateFilterExpression}>
-                        <Lookup
-                            dataSource={userGroupDataSource()}
-                            valueExpr="id"
-                            displayExpr="name"/>
-                        <RequiredRule/>
-                    </Column>
-                    <Column
                         dataField={'active'}
                         caption={'Active'}
                         dataType={'boolean'}
-                        allowEditing={true}
-                        allowSorting={true}
                         allowReordering={true}
-                        width={80}>
-                        <FormItem editorType="dxCheckBox"/>
-                    </Column>
+                        width={80}/>
                     <Column
                         dataField={'version'}
                         caption={'Version'}
                         dataType={'string'}
                         visible={false}
-                        allowEditing={false}
                         allowSorting={true}
                         allowReordering={true}/>
-                    <Column dataField="description" visible={false}>
-                        <FormItem colSpan={2} editorType="dxTextArea" editorOptions={{height: 100}}/>
-                    </Column>
                     <Column
                         allowSorting={false}
                         allowReordering={false}
@@ -163,6 +116,7 @@ class UserView extends FisPage {
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>
+                    <MasterDetail enabled={true} component={UserGroupView}/>
                     <RemoteOperations
                         sorting={true}
                         paging={true}/>

@@ -29,9 +29,10 @@ class UserGroupView extends FisPage {
         }
         return (
             <React.Fragment>
+                <div className="long-title"><h3>User Group List</h3></div>
                 <DataGrid
                     id={'UserGroupTable'}
-                    dataSource={userGroupDataSource()}
+                    dataSource={userGroupDataSource(this.props.data !== undefined ? this.props.data.data : undefined)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
