@@ -35,8 +35,9 @@ const logout = () => {
 };
 
 const checkAuthentication = () => {
-    if (localStorage.getItem('authenticated') === undefined) {
-        logout();
+    if (localStorage.getItem('authenticated') === null) {
+        history.push('/');
+        return;
     }
     let webToken = localStorage.getItem('webToken');
     let decoded = jwt.decode(webToken);

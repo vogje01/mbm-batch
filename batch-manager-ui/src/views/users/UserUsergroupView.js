@@ -1,13 +1,11 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {userGroupDataSource} from "./UserGroupDataSource";
+import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import {Item} from "devextreme-react/autocomplete";
-import UsergroupUserView from "./UsergroupUserView";
+import {UserUsergroupDataSource} from "./UserUsergroupDataSource";
 
-class UserGroupView extends FisPage {
+class UserUsergroupView extends FisPage {
 
     constructor(props) {
         super(props);
@@ -15,11 +13,14 @@ class UserGroupView extends FisPage {
             currentUserGroup: {},
             showDetails: false
         };
-        this.selectionChanged = this.selectionChanged.bind(this);
+        this.toggleDetails = this.toggleDetails.bind(this);
     }
 
-    selectionChanged(e) {
-        this.setState({currentUserGroup: e.data});
+    toggleDetails(e) {
+        this.setState({
+            showDetails: !this.state.showDetails,
+            currentUser: e ? e.data : null
+        });
     }
 
     render() {
@@ -28,10 +29,9 @@ class UserGroupView extends FisPage {
         }
         return (
             <React.Fragment>
-                <div className="long-title"><h3>User Group List</h3></div>
                 <DataGrid
                     id={'UserGroupTable'}
-                    dataSource={userGroupDataSource()}
+                    dataSource={UserUsergroupDataSource(this.props.user)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -51,15 +51,6 @@ class UserGroupView extends FisPage {
                         allowUpdating={true}
                         allowAdding={true}
                         allowDeleting={true}>
-                        <Form>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Group Details"}>
-                                <Item dataField="name"/>
-                                <Item dataField="active" editorType={"dxCheckBox"}/>
-                            </Item>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"Users"}>
-                                <UsergroupUserView user={this.state.currentUserGroup}/>
-                            </Item>
-                        </Form>
                     </Editing>
                     <Column
                         caption={'Name'}
@@ -69,26 +60,11 @@ class UserGroupView extends FisPage {
                         allowSorting={true}
                         allowReordering={true}/>
                     <Column
-                        dataField={'active'}
-                        caption={'Active'}
-                        dataType={'boolean'}
-                        allowEditing={true}
-                        allowSorting={true}
-                        allowReordering={true}
-                        width={80}>
-                        <FormItem editorType="dxCheckBox"/>
-                    </Column>
-                    <Column
                         allowSorting={false}
                         allowReordering={false}
                         width={80}
                         type={'buttons'}
                         buttons={[
-                            {
-                                name: 'edit',
-                                hint: 'Edit user group',
-                                icon: 'material-icons-outlined ic-edit md-18'
-                            },
                             {
                                 name: 'delete',
                                 hint: 'Delete user group',
@@ -108,4 +84,4 @@ class UserGroupView extends FisPage {
 
 }
 
-export default UserGroupView;
+export default UserUsergroupView;

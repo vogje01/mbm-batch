@@ -22,4 +22,8 @@ public interface UserService {
     User updateUser(User user) throws ResourceNotFoundException;
 
     void deleteUser(String userId);
+
+    User addUserGroup(String id, String name);
+
+    User removeUserGroup(String id, String userGroupId);
 }

@@ -37,7 +37,7 @@ class TopToolbar extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <Toolbar style={{margin: '10px 0px 22px 5px'}}>
+                <Toolbar style={{margin: '10px 0px 22px 5px', padding: '0px 10px 0px 0px'}}>
                     <Item location="before" widget="dxIcon" render={renderIcon}/>
                     <Item location="center"
                           locateInMenu="never"

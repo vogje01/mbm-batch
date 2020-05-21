@@ -1,20 +1,25 @@
 import React from 'react';
-import DataGrid, {Column, Editing, FilterRow, Form, MasterDetail, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
+import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {userDataSource} from "./UserDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
-import UserGroupView from "./UserGroupView";
+import UserUsergroupView from "./UserUsergroupView";
 
 class UserView extends FisPage {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentUser: {},
             showDetails: false,
+            currentUser: {},
             refreshLists: {}
         };
+        this.selectionChanged = this.selectionChanged.bind(this);
+    }
+
+    selectionChanged(e) {
+        this.setState({currentUser: e.data});
     }
 
     render() {
@@ -37,6 +42,7 @@ class UserView extends FisPage {
                     showRowLines={true}
                     showBorders={true}
                     rowAlternationEnabled={true}
+                    onEditingStart={this.selectionChanged}
                     style={{padding: "5px 0px 0px 0px"}}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
@@ -58,6 +64,9 @@ class UserView extends FisPage {
                                     colSpan={2}
                                     editorOptions={{height: 100}}/>
                                 <Item dataField="active" editorType={"dxCheckBox"}/>
+                            </Item>
+                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Groups"}>
+                                <UserUsergroupView user={this.state.currentUser}/>
                             </Item>
                         </Form>
                     </Editing>
@@ -116,7 +125,6 @@ class UserView extends FisPage {
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>
-                    <MasterDetail enabled={true} component={UserGroupView}/>
                     <RemoteOperations
                         sorting={true}
                         paging={true}/>

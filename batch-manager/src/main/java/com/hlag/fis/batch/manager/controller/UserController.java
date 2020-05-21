@@ -159,7 +159,7 @@ public class UserController {
         user = userService.updateUser(user);
         userDto = modelConverter.convertUserToDto(user);
 
-        // Add self link
+        // Add link
         addLinks(userDto);
         logger.debug(format("Finished update user request - id: {0} {1}", id, t.elapsedStr()));
 
@@ -183,12 +183,58 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    /**
+     * Removes a user group from an user.
+     *
+     * @param id   ID of user.
+     * @param name user group name.
+     */
+    @PutMapping(value = "/{id}/addUserGroup", consumes = {"application/hal+json"})
+    public ResponseEntity<UserDto> addUserGroup(@PathVariable String id, @RequestParam(value = "name") String name) throws ResourceNotFoundException {
+
+        t.restart();
+        RestPreconditions.checkFound(userService.findById(id));
+
+        User user = userService.addUserGroup(id, name);
+        UserDto userDto = modelConverter.convertUserToDto(user);
+
+        // Add link
+        addLinks(userDto);
+        logger.debug(format("Finished add user group to user request - id: {0} userGroup: {1} {2}", id, name, t.elapsedStr()));
+
+        return ResponseEntity.ok(userDto);
+    }
+
+    /**
+     * Removes a user group from an user.
+     *
+     * @param id          ID of user.
+     * @param userGroupId user group ID.
+     */
+    @PutMapping(value = "/{id}/removeUserGroup/{userGroupId}", consumes = {"application/hal+json"})
+    public ResponseEntity<UserDto> removeUserGroup(@PathVariable String id, @PathVariable String userGroupId) throws ResourceNotFoundException {
+
+        t.restart();
+        RestPreconditions.checkFound(userService.findById(id));
+
+        User user = userService.removeUserGroup(id, userGroupId);
+        UserDto userDto = modelConverter.convertUserToDto(user);
+
+        // Add link
+        addLinks(userDto);
+
+        logger.debug(format("Finished remove user group from user request - id: {0} userGroupId: {1} {2}", id, userGroupId, t.elapsedStr()));
+        return ResponseEntity.ok(userDto);
+    }
+
     private void addLinks(UserDto userDto) {
         try {
             userDto.add(linkTo(methodOn(UserController.class).findById(userDto.getId())).withSelfRel());
             userDto.add(linkTo(methodOn(UserController.class).insertUser(userDto)).withRel("insert"));
             userDto.add(linkTo(methodOn(UserController.class).updateUser(userDto.getId(), userDto)).withRel("update"));
             userDto.add(linkTo(methodOn(UserController.class).deleteUser(userDto.getId())).withRel("delete"));
+            userDto.add(linkTo(methodOn(UserController.class).addUserGroup(userDto.getId(), null)).withRel("addUserGroup"));
+            userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(userDto.getId(), null)).withRel("removeUserGroup"));
             userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), 0, 100, "name", "ASC")).withRel("userGroups"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", userDto.getId()), e);
