@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(cacheNames = "User", key = "#userId")
+    @Cacheable(cacheNames = "User", key = "#id")
     public Page<User> findByUserGroup(String id, Pageable pageable) {
         return userRepository.findByUserGroup(id, pageable);
     }

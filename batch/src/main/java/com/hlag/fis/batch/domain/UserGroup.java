@@ -123,9 +123,7 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
     }
 
     public void removeUser(User user) {
-        if (users.contains(user)) {
-            users.remove(user);
-        }
+        users.remove(user);
     }
 
     @Override

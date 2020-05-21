@@ -42,6 +42,7 @@ class UserGroupView extends FisPage {
                     showRowLines={true}
                     showBorders={true}
                     rowAlternationEnabled={true}
+                    onEditingStart={this.selectionChanged}
                     style={{padding: "5px 0px 0px 0px"}}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
@@ -57,7 +58,7 @@ class UserGroupView extends FisPage {
                                 <Item dataField="active" editorType={"dxCheckBox"}/>
                             </Item>
                             <Item itemType="group" colCount={2} colSpan={2} caption={"Users"}>
-                                <UsergroupUserView user={this.state.currentUserGroup}/>
+                                <UsergroupUserView userGroup={this.state.currentUserGroup}/>
                             </Item>
                         </Form>
                     </Editing>

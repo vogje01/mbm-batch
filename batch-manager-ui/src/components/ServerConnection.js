@@ -134,7 +134,7 @@ const insertItem = (url, item) => {
                 logout();
             }
             if (response.ok) {
-                infoMessage('Item \'' + item.nodeName + '\' added');
+                infoMessage('Insert item successfull');
             }
         })
         .catch((error) => {
@@ -153,7 +153,7 @@ const updateItem = (url, item, attribute) => {
                 logout();
             }
             if (response.ok) {
-                infoMessage('Item \'' + item.id + '\' updated');
+                infoMessage('Update item updated successfull');
             }
             return response.json();
         })

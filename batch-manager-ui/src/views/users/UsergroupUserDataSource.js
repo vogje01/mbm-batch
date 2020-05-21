@@ -11,14 +11,14 @@ export const UsergroupUserDataSource = (userGroup) => {
                 url = mergeParams(loadOptions, url, 'userId');
                 return getList(url, 'userDtoes');
             },
-            insert: function (userGroup) {
-                let url = userGroup._links.addUser.href;
-                url = url.replace("{name}", userGroup.name)
+            insert: function (user) {
+                let url = userGroup._links.addGroup.href;
+                url = url.replace("{userId}", user.userId)
                 return insertItem(url)
             },
-            remove: function (userGroup) {
-                let url = userGroup._links.removeUser.href;
-                url = url.replace("{userGroupId}", userGroup.id)
+            remove: function (user) {
+                let url = userGroup._links.removeGroup.href;
+                url = url.replace("{userId}", user.userId)
                 return insertItem(url);
             }
         })

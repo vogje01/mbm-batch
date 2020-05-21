@@ -41,8 +41,8 @@ class UsergroupUserView extends FisPage {
                         allowDeleting={true}>
                     </Editing>
                     <Column
-                        caption={'Name'}
-                        dataField={'name'}
+                        caption={'UserId'}
+                        dataField={'userId'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}

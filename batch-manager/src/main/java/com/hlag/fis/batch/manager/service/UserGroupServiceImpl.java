@@ -130,8 +130,9 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
-            userGroup.addUser(user);
-            return userGroupRepository.save(userGroup);
+            user.addUserGroup(userGroup);
+            userRepository.save(user);
+            return userGroup;
         }
         return null;
     }
@@ -150,8 +151,9 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
-            userGroup.removeUser(user);
-            return userGroupRepository.save(userGroup);
+            user.removeUserGroup(userGroup);
+            userRepository.save(user);
+            return userGroup;
         }
         return null;
     }
