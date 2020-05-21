@@ -13,9 +13,13 @@ public interface UserService {
 
     long countAll();
 
+    long countByUserGroup(String id);
+
     Optional<User> findById(String id);
 
     Optional<User> findByUserId(String userId);
+
+    Page<User> findByUserGroup(String id, Pageable pageable);
 
     User insertUser(User user);
 

@@ -1,8 +1,10 @@
 package com.hlag.fis.batch.manager.service;
 
+import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.domain.UserGroup;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.repository.UserGroupRepository;
+import com.hlag.fis.batch.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,6 +31,8 @@ import java.util.Optional;
 @Service
 public class UserGroupServiceImpl implements UserGroupService {
 
+    private UserRepository userRepository;
+
     private UserGroupRepository userGroupRepository;
 
     private CacheManager cacheManager;
@@ -36,11 +40,13 @@ public class UserGroupServiceImpl implements UserGroupService {
     /**
      * Constructor
      *
-     * @param userGroupRepository user repository.
+     * @param userRepository      user repository.
+     * @param userGroupRepository user group repository.
      * @param cacheManager        cache manager.
      */
     @Autowired
-    public UserGroupServiceImpl(UserGroupRepository userGroupRepository, CacheManager cacheManager) {
+    public UserGroupServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, CacheManager cacheManager) {
+        this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.cacheManager = cacheManager;
     }
@@ -108,5 +114,45 @@ public class UserGroupServiceImpl implements UserGroupService {
     @CacheEvict(cacheNames = "User", key = "#id")
     public void deleteUserGroup(String id) {
         userGroupRepository.deleteById(id);
+    }
+
+    /**
+     * Adds a user to an user group.
+     *
+     * @param id     user group ID.
+     * @param userId user id to add.
+     */
+    @Override
+    @CachePut(cacheNames = "UserGroup", key = "#id")
+    public UserGroup addUser(String id, String userId) {
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(id);
+        if (userOptional.isPresent() && userGroupOptional.isPresent()) {
+            User user = userOptional.get();
+            UserGroup userGroup = userGroupOptional.get();
+            userGroup.addUser(user);
+            return userGroupRepository.save(userGroup);
+        }
+        return null;
+    }
+
+    /**
+     * Removes a user from an user group.
+     *
+     * @param id     user group ID.
+     * @param userId user ID to remove.
+     */
+    @Override
+    @CachePut(cacheNames = "UserGroup", key = "#id")
+    public UserGroup removeUser(String id, String userId) {
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(id);
+        if (userOptional.isPresent() && userGroupOptional.isPresent()) {
+            User user = userOptional.get();
+            UserGroup userGroup = userGroupOptional.get();
+            userGroup.removeUser(user);
+            return userGroupRepository.save(userGroup);
+        }
+        return null;
     }
 }

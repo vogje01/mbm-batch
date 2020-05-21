@@ -71,6 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public long countByUserGroup(String id) {
+        return userRepository.countByUserGroup(id);
+    }
+
+    @Override
     @Cacheable(cacheNames = "User", key = "#id")
     public Optional<User> findById(String id) {
         return userRepository.findById(id);
@@ -80,6 +85,12 @@ public class UserServiceImpl implements UserService {
     @Cacheable(cacheNames = "User", key = "#userId")
     public Optional<User> findByUserId(String userId) {
         return userRepository.findByUserId(userId);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "User", key = "#userId")
+    public Page<User> findByUserGroup(String id, Pageable pageable) {
+        return userRepository.findByUserGroup(id, pageable);
     }
 
     @Override

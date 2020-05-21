@@ -116,6 +116,36 @@ public class UserController {
     }
 
     /**
+     * Returns one page of users.
+     *
+     * @return on page of users.
+     */
+    @GetMapping(value = "/{id}/byUserGroup", produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<UserDto>> findByUserGroup(@PathVariable String id, @RequestParam(value = "page") int page,
+                                                                    @RequestParam("size") int size,
+                                                                    @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                                    @RequestParam(value = "sortDir", required = false) String sortDir) {
+
+        t.restart();
+
+        // Get paging parameters
+        long totalCount = userService.countByUserGroup(id);
+        Page<User> userGroupUsers = userService.findByUserGroup(id, PagingUtil.getPageable(page, size, sortBy, sortDir));
+
+        // Convert to DTOs
+        List<UserDto> userUserGroupDtoes = modelConverter.convertUserToDto(userGroupUsers.toList(), totalCount);
+
+        // Add links
+        userUserGroupDtoes.forEach(this::addLinks);
+
+        // Add self link
+        Link self = linkTo(methodOn(UserGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
+        logger.debug(format("Finished find by user request- count: {0} {1}", userGroupUsers.getSize(), t.elapsedStr()));
+
+        return ResponseEntity.ok(new CollectionModel<>(userUserGroupDtoes, self));
+    }
+
+    /**
      * Insert a new user.
      *
      * @param userDto user DTO to inserted.
