@@ -14,7 +14,7 @@ spring:
 # MySQL database
 mysql:
   datasource:
-    jdbc-url: jdbc:mysql://localhost:3306/fisbatch
+    jdbc-url: jdbc:mysql://batchmanager:3306/fisbatch
     username: root
     password: Dilbert_01
     driverClassName: com.mysql.cj.jdbc.Driver
@@ -23,7 +23,7 @@ mysql:
 # bootstrapAddress: Kafka server URL
 # maxRequestSize: Maximal request size (default: 4MB)
 kafka:
-  bootstrapAddress: localhost:9092
+  bootstrapAddress: batchmanager:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1

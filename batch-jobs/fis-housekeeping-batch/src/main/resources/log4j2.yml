@@ -12,7 +12,7 @@ Configuration:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
     File:
       name: File_Appender
-      fileName: ${log-path}/fis-housekeeping-batch.log
+      fileName: ${log-path}/housekeeping-batch.log
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
     Kafka:
@@ -24,7 +24,7 @@ Configuration:
         jsonAdapterClassName: org.apache.logging.log4j.core.layout.ExtendedJsonAdapter
       property:
         name: bootstrap.servers
-        value: localhost:9092
+        value: batchmanager:9092
   Loggers:
     Root:
       level: warn
