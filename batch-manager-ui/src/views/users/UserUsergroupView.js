@@ -1,9 +1,11 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import {UserUsergroupDataSource} from "./UserUsergroupDataSource";
+import {UserUsergroupDataSource} from "./UserDataSource";
+import {UserGroupDataSource} from "./UserGroupDataSource";
+import {SimpleItem} from "devextreme-react/form";
 
 class UserUsergroupView extends FisPage {
 
@@ -11,16 +13,7 @@ class UserUsergroupView extends FisPage {
         super(props);
         this.state = {
             currentUserGroup: {},
-            showDetails: false
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
-    }
-
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentUser: e ? e.data : null
-        });
     }
 
     render() {
@@ -51,6 +44,13 @@ class UserUsergroupView extends FisPage {
                         allowUpdating={true}
                         allowAdding={true}
                         allowDeleting={true}>
+                        <Form>
+                            <SimpleItem
+                                dataField={'name'}
+                                isRequired={true}
+                                editorType={'dxSelectBox'}
+                                editorOptions={{dataSource: UserGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}/>
+                        </Form>
                     </Editing>
                     <Column
                         caption={'Name'}

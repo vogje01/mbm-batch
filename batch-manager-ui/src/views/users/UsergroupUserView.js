@@ -1,9 +1,11 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import {UsergroupUserDataSource} from "./UsergroupUserDataSource";
+import {UsergroupUserDataSource} from "./UserGroupDataSource";
+import {UserDataSource} from "./UserDataSource";
+import {SimpleItem} from "devextreme-react/form";
 
 class UsergroupUserView extends FisPage {
 
@@ -39,6 +41,13 @@ class UsergroupUserView extends FisPage {
                         allowUpdating={true}
                         allowAdding={true}
                         allowDeleting={true}>
+                        <Form>
+                            <SimpleItem
+                                dataField={'userId'}
+                                isRequired={true}
+                                editorType={'dxSelectBox'}
+                                editorOptions={{dataSource: UserDataSource(), valueExpr: 'userId', displayExpr: 'userId'}}/>
+                        </Form>
                     </Editing>
                     <Column
                         caption={'UserId'}

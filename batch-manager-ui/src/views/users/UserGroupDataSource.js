@@ -1,9 +1,9 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams} from "../../util/ParamUtil";
-import {deleteItem, insertItem, listItems, updateItem} from "../../components/ServerConnection";
+import {getParams, mergeParams} from "../../util/ParamUtil";
+import {deleteItem, getList, insertItem, listItems, updateItem} from "../../components/ServerConnection";
 
-export const userGroupDataSource = () => {
+export const UserGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
@@ -23,6 +23,28 @@ export const userGroupDataSource = () => {
             remove: function (userGroup) {
                 let url = userGroup._links.delete.href;
                 return deleteItem(url, userGroup);
+            }
+        })
+    });
+};
+
+export const UsergroupUserDataSource = (userGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                let url = userGroup._links.users.href;
+                url = mergeParams(loadOptions, url, 'userId');
+                return getList(url, 'userDtoes');
+            },
+            insert: function (user) {
+                let url = userGroup._links.addGroup.href;
+                url = url.replace("{userId}", user.userId)
+                return insertItem(url)
+            },
+            remove: function (user) {
+                let url = userGroup._links.removeGroup.href;
+                url = url.replace("{userId}", user.userId)
+                return insertItem(url);
             }
         })
     });

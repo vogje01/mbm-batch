@@ -1,7 +1,7 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {userGroupDataSource} from "./UserGroupDataSource";
+import {UserGroupDataSource} from "./UserGroupDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
@@ -31,7 +31,7 @@ class UserGroupView extends FisPage {
                 <div className="long-title"><h3>User Group List</h3></div>
                 <DataGrid
                     id={'UserGroupTable'}
-                    dataSource={userGroupDataSource()}
+                    dataSource={UserGroupDataSource()}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -53,7 +53,7 @@ class UserGroupView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}>
                         <Form>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Group Details"}>
+                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Group Details: " + this.state.currentUserGroup.name}>
                                 <Item dataField="name"/>
                                 <Item dataField="active" editorType={"dxCheckBox"}/>
                             </Item>
