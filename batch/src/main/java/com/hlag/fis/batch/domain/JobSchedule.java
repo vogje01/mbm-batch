@@ -5,7 +5,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.db.mysql.model.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,21 +13,18 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_JOB_SCHEDULE")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobSchedule extends RepresentationModel<JobSchedule> implements PrimaryKeyIdentifier<String> {
+public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String> {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-
-    @Version
-    @Column(name = "VERSION")
-    private Long version;
 
     @Column(name = "SCHEDULE")
     private String schedule;
@@ -173,7 +170,6 @@ public class JobSchedule extends RepresentationModel<JobSchedule> implements Pri
         if (!super.equals(o)) return false;
         JobSchedule that = (JobSchedule) o;
         return Objects.equal(id, that.id) &&
-                Objects.equal(version, that.version) &&
                 Objects.equal(schedule, that.schedule) &&
                 Objects.equal(lastExecution, that.lastExecution) &&
                 Objects.equal(nextExecution, that.nextExecution) &&
@@ -186,14 +182,13 @@ public class JobSchedule extends RepresentationModel<JobSchedule> implements Pri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, schedule, lastExecution, nextExecution, name, groupName, active, jobDefinition, agents);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, groupName, active, jobDefinition, agents);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("schedule", schedule)
                 .add("lastExecution", lastExecution)
                 .add("nextExecution", nextExecution)

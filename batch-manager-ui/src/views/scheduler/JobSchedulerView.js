@@ -1,14 +1,14 @@
 import React from 'react';
 
 import 'devextreme/data/odata/store';
-import DataGrid, {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
-
-import {refreshSubject} from "../../components/MainComponent";
-import {filter} from "rxjs/operators";
+import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {jobScheduleDataSource} from "./JobScheduleDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobScheduleDetails from "./JobScheduleDetails";
 import FisPage from "../../components/FisPage";
+import {Item} from "devextreme-react/autocomplete";
+import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {RequiredRule} from "devextreme-react/validator";
 
 class JobSchedulerView extends FisPage {
 
@@ -18,17 +18,11 @@ class JobSchedulerView extends FisPage {
             currentJobSchedule: {},
             refreshLists: {}
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
-        this.unsub = refreshSubject
-            .pipe(filter(f => f.topic === 'Refresh'))
-            .subscribe(s => this.setState({refreshLists: {}}));
+        this.selectionChanged = this.selectionChanged.bind(this);
     }
 
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentJobSchedule: e ? e.data : null
-        });
+    selectionChanged(e) {
+        this.setState({currentJobSchedule: e.data});
     }
 
     render() {
@@ -43,7 +37,6 @@ class JobSchedulerView extends FisPage {
                     dataSource={jobScheduleDataSource()}
                     keyExpr="id"
                     hoverStateEnabled={true}
-                    //onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -52,7 +45,8 @@ class JobSchedulerView extends FisPage {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
-                    rowAlternationEnabled={true}>
+                    rowAlternationEnabled={true}
+                    onEditingStart={this.selectionChanged}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
@@ -61,7 +55,32 @@ class JobSchedulerView extends FisPage {
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
-                        allowDeleting={true}/>
+                        allowDeleting={true}>
+                        <Form>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"Schedule Details: " + this.state.currentJobSchedule.name}>
+                                <SimpleItem dataField="name" colSpan={2}>
+                                    <RequiredRule message="Job name required"/>
+                                    <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="groupName" colSpan={2}>
+                                    <RequiredRule message="Job group required"/>
+                                    <StringLengthRule min={2} message="Job group must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="lastExecution" editorOptions={{readOnly: true}} colSpan={2}/>
+                                <SimpleItem dataField="nextExecution" editorOptions={{readOnly: true}} colSpan={2}/>
+                                <SimpleItem dataField="schedule" colSpan={2}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                            </Item>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
+                            </Item>
+                        </Form>
+                    </Editing>
                     <Column
                         caption={'Job Name'}
                         dataField={'name'}
@@ -109,6 +128,31 @@ class JobSchedulerView extends FisPage {
                         allowSorting={true}
                         allowReordering={true}
                         width={80}/>
+                    <Column
+                        dataField={'version'}
+                        caption={'Version'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdBy'}
+                        caption={'Created By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdAt'}
+                        caption={'Created At'}
+                        dataType={'datetime'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedBy'}
+                        caption={'Modified By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedAt'}
+                        caption={'Modified At'}
+                        dataType={'datetime'}
+                        visible={false}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}

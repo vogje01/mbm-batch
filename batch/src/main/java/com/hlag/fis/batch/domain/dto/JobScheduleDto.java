@@ -30,7 +30,25 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
     private JobScheduleType mode;
 
     private Boolean active;
-
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
+    /**
+     * Total list size
+     */
     private Long totalSize;
 
     private List<AgentDto> agentDtoes = new ArrayList<>();
@@ -106,6 +124,38 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
         this.active = active;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public Long getTotalSize() {
         return totalSize;
     }
@@ -150,6 +200,10 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(groupName, that.groupName) &&
                 mode == that.mode &&
                 Objects.equal(active, that.active) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(totalSize, that.totalSize) &&
                 Objects.equal(agentDtoes, that.agentDtoes) &&
                 Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
@@ -157,7 +211,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, groupName, mode, active, totalSize, agentDtoes, jobDefinitionDto);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, groupName, mode, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtoes, jobDefinitionDto);
     }
 
     @Override
@@ -171,8 +225,13 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 .add("groupName", groupName)
                 .add("mode", mode)
                 .add("active", active)
-                .add("totalCount", totalSize)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .add("totalSize", totalSize)
                 .add("agentDtoes", agentDtoes)
+                .add("jobDefinitionDto", jobDefinitionDto)
                 .toString();
     }
 }
