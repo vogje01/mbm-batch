@@ -36,6 +36,8 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     private String workingDirectory;
 
+    private String jobGroupName;
+
     private Long totalSize;
 
     private JobGroupDto jobGroupDto;
@@ -132,6 +134,14 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     public void setWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
+    }
+
+    public String getJobGroupName() {
+        return jobGroupName;
+    }
+
+    public void setJobGroupName(String jobGroupName) {
+        this.jobGroupName = jobGroupName;
     }
 
     public Long getTotalSize() {

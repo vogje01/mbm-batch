@@ -1,19 +1,23 @@
 import React from 'react';
-import {DataGrid, Menu} from "devextreme-react";
-import {Column, Editing, FilterRow, Lookup, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {filter} from "rxjs/operators";
-import {refreshSubject} from "../../components/MainComponent";
+import {DataGrid, Menu, Template} from "devextreme-react";
+import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection, StringLengthRule} from "devextreme-react/data-grid";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobDefinitionDetails from "./JobDefinitionDetails";
 import JobDefinitionExport from "./JobDefinitionExport";
 import JobDefinitionImport from "./JobDefinitionImport";
 import FisPage from "../../components/FisPage";
 import {jobDefinitionDataSource} from "./JobDefinitionDataSource";
+import {SimpleItem} from "devextreme-react/form";
+import {JobGroupDataSource} from "../jobgroup/JobGroupDataSource";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
     {type: 'DOCKER', name: 'DOCKER'}
 ];
+
+const renderJobGroupSelectBoxItem = item => {
+    return <div>{item.name}</div>;
+}
 
 class JobDefinitionView extends FisPage {
 
@@ -22,17 +26,13 @@ class JobDefinitionView extends FisPage {
         this.state = {
             currentJobDefinition: {},
             currentJobDefinitions: [],
-            showDetails: false,
             showExport: false,
             showImport: false
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
+        this.customItemCreating = this.customItemCreating.bind(this);
         this.onMenuItemClick = this.onMenuItemClick.bind(this);
-        this.unsub = refreshSubject
-            .pipe(filter(f => f.topic === 'Refresh'))
-            .subscribe(() => this.setState({refreshLists: {}}));
         this.menus = [{
             id: '1',
             name: 'File',
@@ -46,22 +46,6 @@ class JobDefinitionView extends FisPage {
                 icon: 'material-icons-outlined ic-import-export md-18'
             }]
         }];
-    }
-
-    componentWillUnmount() {
-        this.unsub.unsubscribe()
-    }
-
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        jobDefinitionDataSource().reload();
-        return true;
-    }
-
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentJobDefinition: e ? e.data : null
-        });
     }
 
     toggleExport(e) {
@@ -84,6 +68,10 @@ class JobDefinitionView extends FisPage {
         }
     }
 
+    customItemCreating(e) {
+        console.log(e);
+    }
+
     render() {
         if (this.props.hidden) {
             return null;
@@ -104,7 +92,6 @@ class JobDefinitionView extends FisPage {
                     id={'jobDefinitionTable'}
                     dataSource={jobDefinitionDataSource()}
                     hoverStateEnabled={true}
-                    //onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -144,7 +131,31 @@ class JobDefinitionView extends FisPage {
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
-                        allowDeleting={true}/>
+                        allowDeleting={true}>
+                        <Form>
+                            <SimpleItem id={'label'} dataField="label">
+                                <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
+                            </SimpleItem>
+                            <SimpleItem id={'name'} dataField="name">
+                                <RequiredRule/>
+                                <StringLengthRule max={256} message="Name must be less than 256 characters."/>
+                            </SimpleItem>
+                            <SimpleItem
+                                dataField={'jobGroupName'}
+                                editorType={'dxSelectBox'}
+                                editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
+                            </SimpleItem>
+                            <SimpleItem id={'jobVersion'} dataField="jobVersion">
+                                <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
+                            </SimpleItem>
+                            <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}/>
+                            <SimpleItem dataField="fileName">
+                                <StringLengthRule max={256} message="File name must be less than 256 characters."/>
+                            </SimpleItem>
+                            <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                            <Template name="jobGroupSelectBoxItem" render={renderJobGroupSelectBoxItem}/>
+                        </Form>
+                    </Editing>
                     <Column
                         caption={'Job Label'}
                         dataField={'label'}
@@ -161,7 +172,7 @@ class JobDefinitionView extends FisPage {
                         allowReordering={true}/>
                     <Column
                         caption={'Group Name'}
-                        dataField={'groupName'}
+                        dataField={'jobGroupName'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}

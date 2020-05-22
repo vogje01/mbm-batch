@@ -14,6 +14,8 @@ public interface JobGroupService {
 
     JobGroup getJobGroup(final String id);
 
+    JobGroup getJobGroupByName(final String name);
+
     JobGroup insertJobGroup(JobGroup jobGroup);
 
     JobGroup updateJobGroup(final String jobGroupId,

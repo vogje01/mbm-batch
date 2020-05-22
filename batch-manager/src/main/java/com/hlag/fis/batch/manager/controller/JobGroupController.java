@@ -93,7 +93,7 @@ public class JobGroupController {
     }
 
     /**
-     * Returns a single job group.
+     * Returns a single job group by ID.
      *
      * @param jobGroupId job group UUID.
      * @return job group with given ID or error.
@@ -101,10 +101,42 @@ public class JobGroupController {
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(value = "/{jobGroupId}", produces = {"application/hal+json"})
-    public JobGroupDto findById(@PathVariable("jobGroupId") String jobGroupId) throws ResourceNotFoundException {
+    public ResponseEntity<JobGroupDto> findById(@PathVariable("jobGroupId") String jobGroupId) throws ResourceNotFoundException {
+        t.restart();
+
         RestPreconditions.checkFound(jobGroupService.getJobGroup(jobGroupId));
+
         JobGroup jobGroup = jobGroupService.getJobGroup(jobGroupId);
-        return modelConverter.convertJobGroupToDto(jobGroup);
+        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
+
+        // Add links
+        addLinks(jobGroupDto);
+        logger.debug(format("Job group by ID request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
+
+        return ResponseEntity.ok(jobGroupDto);
+    }
+
+    /**
+     * Returns a single job group by name.
+     *
+     * @param jobGroupName job group name.
+     * @return job group with given ID or error.
+     * @throws ResourceNotFoundException in case the job group is not existing.
+     */
+    @Cacheable(cacheNames = "JobGroup")
+    @GetMapping(value = "/byName", produces = {"application/hal+json"})
+    public ResponseEntity<JobGroupDto> findByName(@RequestParam("name") String jobGroupName) throws ResourceNotFoundException {
+        t.restart();
+        RestPreconditions.checkFound(jobGroupService.getJobGroupByName(jobGroupName));
+
+        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobGroupName);
+        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
+
+        // Add links
+        addLinks(jobGroupDto);
+        logger.debug(format("Job group by name request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
+
+        return ResponseEntity.ok(jobGroupDto);
     }
 
     /**

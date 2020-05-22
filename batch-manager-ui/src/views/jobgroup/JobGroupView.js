@@ -1,12 +1,10 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {filter} from "rxjs/operators";
-import {refreshSubject} from "../../components/MainComponent";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobGroupDetails from "./JobGroupDetails";
 import FisPage from "../../components/FisPage";
-import {jobGroupDataSource} from "./JobGroupDataSource";
+import {JobGroupDataSource} from "./JobGroupDataSource";
 
 class JobGroupView extends FisPage {
 
@@ -14,29 +12,8 @@ class JobGroupView extends FisPage {
         super(props);
         this.state = {
             currentJobGroup: {},
-            currentJobGroups: [],
-            showDetails: false
+            currentJobGroups: []
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
-        this.unsub = refreshSubject
-            .pipe(filter(f => f.topic === 'Refresh'))
-            .subscribe(() => this.setState({refreshLists: {}}));
-    }
-
-    componentWillUnmount() {
-        this.unsub.unsubscribe()
-    }
-
-    shouldComponentUpdate(nextProps, nextStatenext, nextContext) {
-        jobGroupDataSource().reload();
-        return true;
-    }
-
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentJobGroup: e ? e.data : null
-        });
     }
 
     render() {
@@ -47,9 +24,8 @@ class JobGroupView extends FisPage {
             <React.Fragment>
                 <DataGrid
                     id={'jobGroupTable'}
-                    dataSource={jobGroupDataSource()}
+                    dataSource={JobGroupDataSource()}
                     hoverStateEnabled={true}
-                    onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}

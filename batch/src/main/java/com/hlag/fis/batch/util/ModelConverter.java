@@ -218,6 +218,7 @@ public class ModelConverter {
         // Convert job definition
         JobDefinitionDto jobDefinitionDto = modelMapper.map(jobDefinition, JobDefinitionDto.class);
         jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
+        jobDefinitionDto.setJobGroupName(jobDefinition.getJobGroup().getName());
 
         // Add parameter
         if (!jobDefinitionDto.getJobDefinitionParamDtos().isEmpty()) {

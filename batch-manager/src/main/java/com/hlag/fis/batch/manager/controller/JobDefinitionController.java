@@ -1,9 +1,11 @@
 package com.hlag.fis.batch.manager.controller;
 
 import com.hlag.fis.batch.domain.JobDefinition;
+import com.hlag.fis.batch.domain.JobGroup;
 import com.hlag.fis.batch.domain.dto.JobDefinitionDto;
 import com.hlag.fis.batch.domain.dto.JobDefinitionParamDto;
 import com.hlag.fis.batch.manager.service.JobDefinitionService;
+import com.hlag.fis.batch.manager.service.JobGroupService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
 import com.hlag.fis.batch.manager.service.util.PagingUtil;
@@ -44,6 +46,8 @@ public class JobDefinitionController {
 
     private JobDefinitionService jobDefinitionService;
 
+    private JobGroupService jobGroupService;
+
     private ModelConverter modelConverter;
 
     /**
@@ -52,8 +56,9 @@ public class JobDefinitionController {
      * @param jobDefinitionService service implementation.
      */
     @Autowired
-    public JobDefinitionController(JobDefinitionService jobDefinitionService, ModelConverter modelConverter) {
+    public JobDefinitionController(JobDefinitionService jobDefinitionService, JobGroupService jobGroupService, ModelConverter modelConverter) {
         this.jobDefinitionService = jobDefinitionService;
+        this.jobGroupService = jobGroupService;
         this.modelConverter = modelConverter;
     }
 
@@ -144,6 +149,8 @@ public class JobDefinitionController {
 
         // Get job definition
         JobDefinition jobDefinition = modelConverter.convertJobDefinitionToEntity(jobDefinitionDto);
+        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
+        jobDefinition.setJobGroup(jobGroup);
         jobDefinition = jobDefinitionService.updateJobDefinition(jobDefinitionId, jobDefinition);
         jobDefinitionDto = modelConverter.convertJobDefinitionToDto(jobDefinition);
 

@@ -95,6 +95,23 @@ const getList = (url, attributes) => {
         });
 };
 
+const getItem = (url) => {
+    checkAuthentication();
+    StartTimer();
+    return fetch(url, initGet())
+        .then(response => {
+            if (response.status === 401) {
+                logout();
+            }
+            return response.json()
+        })
+        .catch((error) => {
+            errorMessage('Get item error: ' + error.message);
+        }).finally(() => {
+            EndTimer();
+        });
+};
+
 const listItems = (entity, attributes) => {
     checkAuthentication();
     StartTimer();
@@ -183,4 +200,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {loginRequest, logout, getList, deleteItem, insertItem, updateItem, listItems}
+export {loginRequest, logout, getList, deleteItem, insertItem, updateItem, listItems, getItem}
