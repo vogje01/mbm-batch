@@ -7,6 +7,7 @@ import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
+import AgentJobScheduleView from "./AgentJobScheduleView";
 
 class AgentView extends FisPage {
 
@@ -70,6 +71,9 @@ class AgentView extends FisPage {
                                 <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                            </Item>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"Schedules"}>
+                                <AgentJobScheduleView agent={this.state.currentAgent}/>
                             </Item>
                         </Form>
                     </Editing>

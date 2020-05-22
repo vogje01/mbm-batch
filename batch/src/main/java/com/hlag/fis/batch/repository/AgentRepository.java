@@ -22,4 +22,7 @@ public interface AgentRepository extends PagingAndSortingRepository<Agent, Strin
 
     @Query("select a.nodeName from Agent a")
     List<String> findAllAgentNames();
+
+    @Query("select count(j) from Agent a left join a.schedules j where a.id = :id")
+    Long countSchedules(@Param("id") String id);
 }

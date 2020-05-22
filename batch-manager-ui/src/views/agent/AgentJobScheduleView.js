@@ -1,24 +1,23 @@
 import React from 'react';
 import {Column, DataGrid, Editing, FilterRow, HeaderFilter, Lookup, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
-import UpdateTimer from "../../components/UpdateTimer";
-import {scheduleAgentDataSource} from "./JobScheduleDataSource";
 import {listItems} from "../../components/ServerConnection";
+import {AgentScheduleDataSource} from "./AgentDataSource";
 
-class JobScheduleAgents extends React.Component {
+class AgentJobScheduleView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentJobSchedule: this.props.data,
-            agents: [],
-            selectedAgent: {}
+            currentAgent: this.props.data,
+            schedules: [],
+            selectedSchedule: {}
         };
     }
 
     componentDidMount() {
-        listItems('agents', 'agentDtoes')
+        listItems('schedules', 'jobScheduleDtoes')
             .then((data) => {
-                this.setState({agents: data.data, selectedAgent: data.data[0]})
+                this.setState({schedules: data.data, selectedAgent: data.data[0]})
             })
     }
 
@@ -30,7 +29,7 @@ class JobScheduleAgents extends React.Component {
             <React.Fragment>
                 <DataGrid
                     id={'jobScheduleAgentTable'}
-                    dataSource={scheduleAgentDataSource(this.state.currentJobSchedule)}
+                    dataSource={AgentScheduleDataSource(this.props.agent)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -54,7 +53,7 @@ class JobScheduleAgents extends React.Component {
                         allowDeleting={true}
                         allowUpdating={true}/>
                     <Column
-                        dataField="nodeName">
+                        dataField="name">
                         <Lookup dataSource={this.state.agents}
                                 displayExpr={"nodeName"}/>
                     </Column>
@@ -89,10 +88,9 @@ class JobScheduleAgents extends React.Component {
                     <Paging defaultPageSize={5}/>
                     <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]}/>
                 </DataGrid>
-                <UpdateTimer/>
             </React.Fragment>
         );
     }
 }
 
-export default JobScheduleAgents;
+export default AgentJobScheduleView;

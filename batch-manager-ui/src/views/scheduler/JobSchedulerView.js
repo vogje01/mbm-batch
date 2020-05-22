@@ -4,11 +4,11 @@ import 'devextreme/data/odata/store';
 import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {jobScheduleDataSource} from "./JobScheduleDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
-import JobScheduleDetails from "./JobScheduleDetails";
 import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
+import JobScheduleAgentView from "./JobScheduleAgentView";
 
 class JobSchedulerView extends FisPage {
 
@@ -78,6 +78,7 @@ class JobSchedulerView extends FisPage {
                                 <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
                             </Item>
                             <Item itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
+                                <JobScheduleAgentView schedule={this.state.currentJobSchedule}/>
                             </Item>
                         </Form>
                     </Editing>
@@ -178,9 +179,6 @@ class JobSchedulerView extends FisPage {
                     <Paging defaultPageSize={5}/>
                 </DataGrid>
                 <UpdateTimer/>
-                {this.state.showDetails ? <JobScheduleDetails currentJobSchedule={this.state.currentJobSchedule}
-                                                              closePopup={this.toggleDetails.bind(this)}/> : null
-                }
             </React.Fragment>
         );
     }

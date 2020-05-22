@@ -33,7 +33,7 @@ export const scheduleAgentDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions);
+                let params = getParams(loadOptions, 'name');
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
             },
             remove: function (agent) {

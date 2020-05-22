@@ -1,10 +1,13 @@
 package com.hlag.fis.batch.manager.controller;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.domain.dto.AgentDto;
+import com.hlag.fis.batch.domain.dto.JobScheduleDto;
 import com.hlag.fis.batch.manager.service.AgentService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
+import com.hlag.fis.batch.manager.service.util.PagingUtil;
 import com.hlag.fis.batch.util.ModelConverter;
 import com.hlag.fis.util.MethodTimer;
 import org.slf4j.Logger;
@@ -166,6 +169,37 @@ public class AgentController {
 
         logger.debug(format("Finished delete agent request - id: {0} {1}", agentId, t.elapsedStr()));
         return ResponseEntity.ok(null);
+    }
+
+    /**
+     * Returns a page of schedules for a given agent.
+     *
+     * @param agentId agent ID.
+     * @return page of job schedule resources.
+     * @throws ResourceNotFoundException in case the job schedule is not existing.
+     */
+    @GetMapping(value = "/{agentId}/getSchedules", produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<JobScheduleDto>> getSchedules(@PathVariable("agentId") String agentId,
+                                                                        @RequestParam(value = "page", required = false) int page,
+                                                                        @RequestParam(value = "size", required = false) int size,
+                                                                        @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                                        @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+
+        t.restart();
+        RestPreconditions.checkFound(agentService.findById(agentId));
+
+        long totalCount = agentService.countSchedules(agentId);
+        Page<JobSchedule> schedules = agentService.getSchedules(agentId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+
+        List<JobScheduleDto> jobScheduleDtoes = modelConverter.convertJobScheduleToDto(schedules.toList(), totalCount);
+
+        // Add links
+        //jobScheduleDtoes.forEach(this::addAgentLinks);
+        logger.debug(format("Job schedule list request finished - count: {0} {1}", jobScheduleDtoes.size(), t.elapsedStr()));
+
+        // Add list link
+        Link self = linkTo(methodOn(AgentController.class).getSchedules(agentId, page, size, sortBy, sortDir)).withSelfRel();
+        return ResponseEntity.ok(new CollectionModel<>(jobScheduleDtoes, self));
     }
 
     private void addLinks(AgentDto agentDto) {

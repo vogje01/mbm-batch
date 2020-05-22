@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,10 @@ public interface AgentService {
     Page<Agent> findAll(Pageable pageable);
 
     long countAll();
+
+    long countSchedules(String agentId);
+
+    Page<JobSchedule> getSchedules(String agentId, Pageable pageable);
 
     List<String> findAllAgentNames();
 

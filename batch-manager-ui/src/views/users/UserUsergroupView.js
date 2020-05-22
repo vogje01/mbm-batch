@@ -1,7 +1,6 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
 import {UserUsergroupDataSource} from "./UserDataSource";
 import {UserGroupDataSource} from "./UserGroupDataSource";
@@ -77,7 +76,6 @@ class UserUsergroupView extends FisPage {
                     <Paging defaultPageSize={5}/>
                     <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                 </DataGrid>
-                <UpdateTimer/>
             </React.Fragment>
         );
     }

@@ -1,8 +1,10 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.repository.AgentRepository;
+import com.hlag.fis.batch.repository.JobScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,17 +34,20 @@ public class AgentServiceImpl implements AgentService {
 
     private AgentRepository agentRepository;
 
+    private JobScheduleRepository jobScheduleRepository;
+
     private CacheManager cacheManager;
 
     /**
      * Constructor
      *
      * @param agentRepository agent repository.
-     * @param cacheManager cache manager.
+     * @param cacheManager    cache manager.
      */
     @Autowired
-    public AgentServiceImpl(AgentRepository agentRepository, CacheManager cacheManager) {
+    public AgentServiceImpl(AgentRepository agentRepository, JobScheduleRepository jobScheduleRepository, CacheManager cacheManager) {
         this.agentRepository = agentRepository;
+        this.jobScheduleRepository = jobScheduleRepository;
         this.cacheManager = cacheManager;
     }
 
@@ -64,6 +69,16 @@ public class AgentServiceImpl implements AgentService {
     @Override
     public long countAll() {
         return agentRepository.count();
+    }
+
+    @Override
+    public long countSchedules(String agentId) {
+        return agentRepository.countSchedules(agentId);
+    }
+
+    @Override
+    public Page<JobSchedule> getSchedules(String agentId, Pageable pageable) {
+        return jobScheduleRepository.findByAgentId(agentId, pageable);
     }
 
     @Override
