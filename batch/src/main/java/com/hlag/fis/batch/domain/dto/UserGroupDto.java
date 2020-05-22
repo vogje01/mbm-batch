@@ -7,6 +7,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.Date;
+
 /**
  * Batch user group DTO.
  *
@@ -39,6 +41,22 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
      */
     private Boolean active;
     /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
+    /**
      * Total count
      */
     private Long totalSize;
@@ -51,6 +69,10 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         this.name = user.name;
         this.description = user.description;
         this.active = user.active;
+        this.createdAt = user.createdAt;
+        this.createdBy = user.createdBy;
+        this.modifiedAt = user.modifiedAt;
+        this.modifiedBy = user.modifiedBy;
     }
 
     public String getId() {
@@ -85,6 +107,38 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         this.description = description;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public Long getTotalSize() {
         return totalSize;
     }
@@ -98,18 +152,22 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        UserGroupDto userDto = (UserGroupDto) o;
-        return Objects.equal(id, userDto.id) &&
-                Objects.equal(version, userDto.version) &&
-                Objects.equal(name, userDto.name) &&
-                Objects.equal(description, userDto.description) &&
-                Objects.equal(active, userDto.active) &&
-                Objects.equal(totalSize, userDto.totalSize);
+        UserGroupDto that = (UserGroupDto) o;
+        return Objects.equal(id, that.id) &&
+                Objects.equal(version, that.version) &&
+                Objects.equal(name, that.name) &&
+                Objects.equal(description, that.description) &&
+                Objects.equal(active, that.active) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
+                Objects.equal(totalSize, that.totalSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, name, description, active, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
     }
 
     public Boolean getActive() {
@@ -125,9 +183,13 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("version", version)
-                .add("userId", name)
+                .add("name", name)
                 .add("description", description)
                 .add("active", active)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
                 .add("totalSize", totalSize)
                 .toString();
     }

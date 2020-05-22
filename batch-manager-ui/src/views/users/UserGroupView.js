@@ -55,16 +55,21 @@ class UserGroupView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}>
                         <Form>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Group Details: " + this.state.currentUserGroup.name}>
-                                <SimpleItem dataField="name">
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"User Group Details: " + this.state.currentUserGroup.name}>
+                                <SimpleItem dataField="name" colSpan={2}>
                                     <RequiredRule message="Name is required"/>
                                     <StringLengthRule min={2} message="Name must be at least 2 characters long."/>
                                 </SimpleItem>
-                                <EmptyItem/>
-                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
-                                <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
                             </Item>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"Users"}>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"Users"}>
                                 <UsergroupUserView userGroup={this.state.currentUserGroup}/>
                             </Item>
                         </Form>
@@ -90,6 +95,26 @@ class UserGroupView extends FisPage {
                         width={80}>
                         <FormItem editorType="dxCheckBox"/>
                     </Column>
+                    <Column
+                        dataField={'createdBy'}
+                        caption={'Created By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdAt'}
+                        caption={'Created At'}
+                        dataType={'datetime'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedBy'}
+                        caption={'Modified By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedAt'}
+                        caption={'Modified At'}
+                        dataType={'datetime'}
+                        visible={false}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}

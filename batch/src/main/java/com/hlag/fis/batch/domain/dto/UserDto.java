@@ -8,6 +8,7 @@ import com.google.common.base.Objects;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,6 +63,22 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private Boolean active;
     /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
+    /**
      * User groups
      */
     private List<UserGroupDto> userGroupDtoes = new ArrayList<>();
@@ -82,6 +99,10 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.phone = user.phone;
         this.description = user.description;
         this.active = user.active;
+        this.createdAt = user.createdAt;
+        this.createdBy = user.createdBy;
+        this.modifiedAt = user.modifiedAt;
+        this.modifiedBy = user.modifiedBy;
     }
 
     public String getId() {
@@ -156,6 +177,38 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.phone = phone;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public List<UserGroupDto> getUserGroupDtoes() {
         return userGroupDtoes;
     }
@@ -188,13 +241,17 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(phone, userDto.phone) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
+                Objects.equal(createdBy, userDto.createdBy) &&
+                Objects.equal(createdAt, userDto.createdAt) &&
+                Objects.equal(modifiedBy, userDto.modifiedBy) &&
+                Objects.equal(modifiedAt, userDto.modifiedAt) &&
                 Objects.equal(userGroupDtoes, userDto.userGroupDtoes) &&
                 Objects.equal(totalSize, userDto.totalSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, description, active, userGroupDtoes, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, description, active, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
     }
 
     public Boolean getActive() {
@@ -218,6 +275,10 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("phone", phone)
                 .add("description", description)
                 .add("active", active)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
                 .add("userGroupDtoes", userGroupDtoes)
                 .add("totalSize", totalSize)
                 .toString();

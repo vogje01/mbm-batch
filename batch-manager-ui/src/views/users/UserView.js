@@ -6,7 +6,7 @@ import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
 import UserUsergroupView from "./UserUsergroupView";
 import {RequiredRule} from "devextreme-react/validator";
-import {SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 
 class UserView extends FisPage {
 
@@ -56,30 +56,35 @@ class UserView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}>
                         <Form>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Details: " + this.state.currentUser.userId}>
-                                <SimpleItem id={'userId'} dataField="userId" isRequired={true}>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"User Details: " + this.state.currentUser.userId}>
+                                <SimpleItem id={'userId'} dataField="userId" colSpan={2}>
                                     <RequiredRule message="UserId is required"/>
                                     <StringLengthRule min={5} max={7} message="UserId must be exactly 7 characters long."/>
                                 </SimpleItem>
-                                <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}}>
+                                <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}} colSpan={2}>
                                     <RequiredRule message="Password is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="firstName">
+                                <SimpleItem dataField="firstName" colSpan={2}>
                                     <RequiredRule message="First name is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="lastName">
+                                <SimpleItem dataField="lastName" colSpan={2}>
                                     <RequiredRule message="Last name is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="email">
+                                <SimpleItem dataField="email" colSpan={2}>
                                     <EmailRule message="Email is invalid"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="phone">
+                                <SimpleItem dataField="phone" colSpan={2}>
                                     <PatternRule message="The phone must have a correct phone format" pattern={this.phonePattern}/>
                                 </SimpleItem>
-                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
-                                <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
                             </Item>
-                            <Item itemType="group" colCount={2} colSpan={2} caption={"User Groups"}>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"User Groups"}>
                                 <UserUsergroupView user={this.state.currentUser}/>
                             </Item>
                         </Form>
@@ -130,19 +135,37 @@ class UserView extends FisPage {
                         allowReordering={true}
                         width={80}/>
                     <Column
-                        dataField={'version'}
-                        caption={'Version'}
-                        dataType={'string'}
-                        visible={false}
-                        allowSorting={true}
-                        allowReordering={true}/>
-                    <Column
                         dataField={'description'}
                         caption={'Description'}
                         dataType={'string'}
                         visible={false}
                         allowSorting={true}
                         allowReordering={true}/>
+                    <Column
+                        dataField={'version'}
+                        caption={'Version'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdBy'}
+                        caption={'Created By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdAt'}
+                        caption={'Created At'}
+                        dataType={'datetime'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedBy'}
+                        caption={'Modified By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedAt'}
+                        caption={'Modified At'}
+                        dataType={'datetime'}
+                        visible={false}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}

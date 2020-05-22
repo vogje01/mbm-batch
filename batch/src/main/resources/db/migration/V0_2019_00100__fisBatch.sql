@@ -94,8 +94,11 @@ CREATE TABLE BATCH_JOB_EXECUTION
     DELETED                    BIT                    DEFAULT 0,
     JOB_VERSION                VARCHAR(32),
     JOB_CONFIGURATION_LOCATION VARCHAR(2500) NULL,
-    CREATED_BY                 VARCHAR(100),
-    STARTED_BY                 VARCHAR(100),
+    CREATED_BY                 VARCHAR(32)            DEFAULT 'admin',
+    CREATED_AT                 DATETIME               DEFAULT CURRENT_TIMESTAMP,
+    MODIFIED_BY                VARCHAR(32)            DEFAULT 'admin',
+    MODIFIED_AT                DATETIME               DEFAULT CURRENT_TIMESTAMP,
+    STARTED_BY                 VARCHAR(32),
     JOB_INSTANCE_ID            VARCHAR(36),
     JOB_DEFINITION_ID          VARCHAR(36),
     CONSTRAINT JOB_INST_EXEC_FK FOREIGN KEY (JOB_INSTANCE_ID)
@@ -231,9 +234,9 @@ CREATE TABLE BATCH_JOB_SCHEDULE
 --
 CREATE TABLE BATCH_AGENT_PERFORMANCE
 (
-    ID                   VARCHAR(36) NOT NULL PRIMARY KEY,
-    VERSION              BIGINT      NOT NULL                                 DEFAULT 0,
-    NODE_NAME            VARCHAR(36) NOT NULL,
+    ID                   VARCHAR(36)  NOT NULL PRIMARY KEY,
+    VERSION              BIGINT       NOT NULL                                DEFAULT 0,
+    NODE_NAME            VARCHAR(36)  NOT NULL,
     HOST_NAME            VARCHAR(128) NOT NULL,
     TYPE                 ENUM ('ALL', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY') DEFAULT 'ALL',
     SYSTEM_LOAD          DOUBLE,

@@ -42,12 +42,28 @@ public class AgentDto extends RepresentationModel<AgentDto> {
     private Long pid;
     /**
      * Last start time
-	 */
-	private Date lastStart;
-	/**
-	 * Last ping
+     */
+    private Date lastStart;
+    /**
+     * Last ping
      */
     private Date lastPing;
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
     /**
      * Active
      */
@@ -115,6 +131,38 @@ public class AgentDto extends RepresentationModel<AgentDto> {
         this.lastPing = lastPing;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -140,6 +188,25 @@ public class AgentDto extends RepresentationModel<AgentDto> {
     }
 
     @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("nodeName", nodeName)
+                .add("hostName", hostName)
+                .add("pid", pid)
+                .add("lastStart", lastStart)
+                .add("lastPing", lastPing)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .add("active", active)
+                .add("totalSize", totalSize)
+                .add("schedules", schedules)
+                .toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -151,6 +218,10 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 Objects.equal(pid, agentDto.pid) &&
                 Objects.equal(lastStart, agentDto.lastStart) &&
                 Objects.equal(lastPing, agentDto.lastPing) &&
+                Objects.equal(createdBy, agentDto.createdBy) &&
+                Objects.equal(createdAt, agentDto.createdAt) &&
+                Objects.equal(modifiedBy, agentDto.modifiedBy) &&
+                Objects.equal(modifiedAt, agentDto.modifiedAt) &&
                 Objects.equal(active, agentDto.active) &&
                 Objects.equal(totalSize, agentDto.totalSize) &&
                 Objects.equal(schedules, agentDto.schedules);
@@ -158,21 +229,6 @@ public class AgentDto extends RepresentationModel<AgentDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, active, totalSize, schedules);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("nodeName", nodeName)
-                .add("hostName", hostName)
-                .add("pid", pid)
-                .add("lastStart", lastStart)
-                .add("lastPing", lastPing)
-                .add("active", active)
-                .add("totalSize", totalSize)
-                .add("schedules", schedules)
-                .toString();
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, schedules);
     }
 }

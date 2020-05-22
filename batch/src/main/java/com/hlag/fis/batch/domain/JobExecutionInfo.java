@@ -12,7 +12,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,26 +22,21 @@ import java.util.List;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_JOB_EXECUTION")
 @JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobExecutionInfo extends RepresentationModel<JobExecutionInfo> implements PrimaryKeyIdentifier<String> {
+public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
-    /**
-     * Primary key
-     */
-    @Id
-    @Column(name = "ID")
-    @GeneratedValue(generator = "UseExistingIdGenerator")
-    @GenericGenerator(name = "UseExistingIdGenerator", strategy = "com.hlag.fis.batch.domain.UseExistingIdGenerator")
-    private String id;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Integer version = 0;
+	/**
+	 * Primary key
+	 */
+	@Id
+	@Column(name = "ID")
+	@GeneratedValue(generator = "UseExistingIdGenerator")
+	@GenericGenerator(name = "UseExistingIdGenerator", strategy = "com.hlag.fis.batch.domain.UseExistingIdGenerator")
+	private String id;
 	/**
 	 * Job execution ID from JSR-352
 	 */
@@ -368,7 +363,6 @@ public class JobExecutionInfo extends RepresentationModel<JobExecutionInfo> impl
 		JobExecutionInfo that = (JobExecutionInfo) o;
 		return deleted == that.deleted &&
 				Objects.equal(id, that.id) &&
-				Objects.equal(version, that.version) &&
 				Objects.equal(jobExecutionId, that.jobExecutionId) &&
 				Objects.equal(jobPid, that.jobPid) &&
 				Objects.equal(hostName, that.hostName) &&
@@ -391,14 +385,13 @@ public class JobExecutionInfo extends RepresentationModel<JobExecutionInfo> impl
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(super.hashCode(), id, version, jobExecutionId, jobPid, hostName, jobVersion, status, startTime, createTime, endTime, lastUpdated, runningTime, deleted, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
+		return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, jobVersion, status, startTime, createTime, endTime, lastUpdated, runningTime, deleted, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
-				.add("version", version)
 				.add("jobExecutionId", jobExecutionId)
 				.add("jobPid", jobPid)
 				.add("hostName", hostName)
