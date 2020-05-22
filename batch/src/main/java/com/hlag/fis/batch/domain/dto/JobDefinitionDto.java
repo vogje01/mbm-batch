@@ -38,7 +38,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     private Long totalSize;
 
-    private String jobGroup;
+    private JobGroupDto jobGroupDto;
 
     private List<JobDefinitionParamDto> jobDefinitionParamDtos = new ArrayList<>();
 
@@ -86,12 +86,12 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.jobVersion = jobVersion;
     }
 
-    public String getJobGroup() {
-        return jobGroup;
+    public JobGroupDto getJobGroupDto() {
+        return jobGroupDto;
     }
 
-    public void setJobGroup(String jobGroup) {
-        this.jobGroup = jobGroup;
+    public void setJobGroupDto(JobGroupDto jobGroupDto) {
+        this.jobGroupDto = jobGroupDto;
     }
 
     public String getDescription() {
@@ -159,13 +159,13 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
                 Objects.equal(totalSize, that.totalSize) &&
-                Objects.equal(jobGroup, that.jobGroup) &&
+                Objects.equal(jobGroupDto, that.jobGroupDto) &&
                 Objects.equal(jobDefinitionParamDtos, that.jobDefinitionParamDtos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, jobGroup, description, active, fileName, command, workingDirectory, totalSize, jobDefinitionParamDtos);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, jobGroupDto, description, active, fileName, command, workingDirectory, totalSize, jobDefinitionParamDtos);
     }
 
     public List<JobDefinitionParamDto> getJobDefinitionParamDtos() {
@@ -196,7 +196,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
                 .add("totalCount", totalSize)
-                .add("jobGroup", jobGroup)
+                .add("jobGroupDto", jobGroupDto)
                 .add("jobDefinitionParamDtos", jobDefinitionParamDtos)
                 .toString();
     }

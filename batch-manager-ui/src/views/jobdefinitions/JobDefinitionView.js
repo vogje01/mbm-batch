@@ -1,6 +1,6 @@
 import React from 'react';
 import {DataGrid, Menu} from "devextreme-react";
-import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, Lookup, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {filter} from "rxjs/operators";
 import {refreshSubject} from "../../components/MainComponent";
 import UpdateTimer from "../../components/UpdateTimer";
@@ -9,8 +9,6 @@ import JobDefinitionExport from "./JobDefinitionExport";
 import JobDefinitionImport from "./JobDefinitionImport";
 import FisPage from "../../components/FisPage";
 import {jobDefinitionDataSource} from "./JobDefinitionDataSource";
-import {SimpleItem, StringLengthRule} from "devextreme-react/form";
-import {JobGroupDataSource} from "../jobgroup/JobGroupDataSource";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -32,7 +30,6 @@ class JobDefinitionView extends FisPage {
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
         this.onMenuItemClick = this.onMenuItemClick.bind(this);
-
         this.unsub = refreshSubject
             .pipe(filter(f => f.topic === 'Refresh'))
             .subscribe(() => this.setState({refreshLists: {}}));
@@ -147,30 +144,7 @@ class JobDefinitionView extends FisPage {
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
-                        allowDeleting={true}>
-                        <Form>
-                            <SimpleItem id={'label'} dataField="label">
-                                <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem id={'name'} dataField="name">
-                                <RequiredRule/>
-                                <StringLengthRule max={256} message="Name must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem
-                                dataField={'jobGroup'}
-                                editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'jobGroup', displayExpr: 'name'}}>
-                            </SimpleItem>
-                            <SimpleItem id={'jobVersion'} dataField="jobVersion">
-                                <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
-                            </SimpleItem>
-                            <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}/>
-                            <SimpleItem dataField="fileName">
-                                <StringLengthRule max={256} message="File name must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                        </Form>
-                    </Editing>
+                        allowDeleting={true}/>
                     <Column
                         caption={'Job Label'}
                         dataField={'label'}
@@ -187,7 +161,7 @@ class JobDefinitionView extends FisPage {
                         allowReordering={true}/>
                     <Column
                         caption={'Group Name'}
-                        dataField={'jobGroup'}
+                        dataField={'groupName'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}

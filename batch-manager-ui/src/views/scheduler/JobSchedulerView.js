@@ -1,7 +1,7 @@
 import React from 'react';
 
 import 'devextreme/data/odata/store';
-import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
+import DataGrid, {Column, Editing, FilterRow, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 
 import {refreshSubject} from "../../components/MainComponent";
 import {filter} from "rxjs/operators";
@@ -9,9 +9,6 @@ import {jobScheduleDataSource} from "./JobScheduleDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobScheduleDetails from "./JobScheduleDetails";
 import FisPage from "../../components/FisPage";
-import {SimpleItem, StringLengthRule} from "devextreme-react/form";
-import {RequiredRule} from "devextreme-react/validator";
-import {JobGroupDataSource} from "../jobgroup/JobGroupDataSource";
 
 class JobSchedulerView extends FisPage {
 
@@ -44,7 +41,9 @@ class JobSchedulerView extends FisPage {
                 <DataGrid
                     id={'jobScheduleTable'}
                     dataSource={jobScheduleDataSource()}
+                    keyExpr="id"
                     hoverStateEnabled={true}
+                    //onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
                     columnResizingMode={'widget'}
@@ -62,25 +61,7 @@ class JobSchedulerView extends FisPage {
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
-                        allowDeleting={true}>
-                        <Form>
-                            <SimpleItem id={'jobName'} dataField="name">
-                                <RequiredRule message="Name is required"/>
-                                <StringLengthRule max={256} message="Name must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem
-                                dataField={'groupName'}
-                                editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
-                                <RequiredRule message="Group name is required"/>
-                            </SimpleItem>
-                            <SimpleItem id={'schedule'} dataField="schedule">
-                                <RequiredRule message="Schedule is required"/>
-                                <StringLengthRule max={256} message="Schedule must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                        </Form>
-                    </Editing>
+                        allowDeleting={true}/>
                     <Column
                         caption={'Job Name'}
                         dataField={'name'}
@@ -93,7 +74,6 @@ class JobSchedulerView extends FisPage {
                         dataField={'groupName'}
                         caption={'Group'}
                         dataType={'string'}
-                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={100}/>

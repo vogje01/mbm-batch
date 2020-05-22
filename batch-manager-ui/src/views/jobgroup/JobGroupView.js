@@ -6,7 +6,7 @@ import {refreshSubject} from "../../components/MainComponent";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobGroupDetails from "./JobGroupDetails";
 import FisPage from "../../components/FisPage";
-import {JobGroupDataSource} from "./JobGroupDataSource";
+import {jobGroupDataSource} from "./JobGroupDataSource";
 
 class JobGroupView extends FisPage {
 
@@ -28,7 +28,7 @@ class JobGroupView extends FisPage {
     }
 
     shouldComponentUpdate(nextProps, nextStatenext, nextContext) {
-        JobGroupDataSource().reload();
+        jobGroupDataSource().reload();
         return true;
     }
 
@@ -47,7 +47,7 @@ class JobGroupView extends FisPage {
             <React.Fragment>
                 <DataGrid
                     id={'jobGroupTable'}
-                    dataSource={JobGroupDataSource()}
+                    dataSource={jobGroupDataSource()}
                     hoverStateEnabled={true}
                     onRowDblClick={this.toggleDetails}
                     allowColumnReordering={true}

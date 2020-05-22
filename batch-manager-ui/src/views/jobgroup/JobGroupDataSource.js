@@ -3,12 +3,9 @@ import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../util/ParamUtil";
 import {deleteItem, insertItem, listItems, updateItem} from "../../components/ServerConnection";
 
-export const JobGroupDataSource = () => {
+export const jobGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
-            byKey: function () {
-                return null;
-            },
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name');
                 return listItems('jobgroups' + params, 'jobGroupDtoes');
@@ -16,8 +13,7 @@ export const JobGroupDataSource = () => {
             insert: function (jobGroup) {
                 let url = process.env.REACT_APP_API_URL + 'jobgroups/insert';
                 return insertItem(url, JSON.stringify(jobGroup));
-            },
-            update: function (jobGroup) {
+            }, update: function (jobGroup) {
                 let url = process.env.REACT_APP_API_URL + 'jobgroups/insert';
                 return updateItem(url, JSON.stringify(jobGroup));
             },
