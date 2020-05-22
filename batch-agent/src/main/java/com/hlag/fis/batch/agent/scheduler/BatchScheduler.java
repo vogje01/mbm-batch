@@ -249,7 +249,9 @@ public class BatchScheduler {
     private List<String> buildArguments(JobDefinition jobDefinition) {
         List<JobDefinitionParam> params = jobDefinition.getJobDefinitionParams();
         List<String> arguments = new ArrayList<>();
-        params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
+        if (!params.isEmpty()) {
+            params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
+        }
         logger.debug(format("Arguments build - size: {0}", arguments.size()));
         return arguments;
     }
