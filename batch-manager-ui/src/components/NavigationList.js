@@ -3,60 +3,64 @@ import List from "devextreme-react/list.js";
 import {Tooltip} from 'devextreme-react/tooltip';
 import history from "./History";
 
-const navigation = [
-    {
-        id: 1,
-        text: "Jobs",
-        icon: 'material-icons-outlined ic-dashboard',
-        filePath: "jobexecutions",
-        hint: "Shows the list of job executions"
-    },
-    {
-        id: 2,
-        text: "Steps",
-        icon: 'material-icons-outlined ic-bookmarks',
-        filePath: "stepexecutions",
-        hint: "Shows the list of step executions"
-    },
-    {
-        id: 3,
-        text: "Schedules",
-        icon: 'material-icons-outlined ic-alarm',
-        filePath: "jobschedules",
-        hint: "Shows the list of job schedules"
-    },
-    {
-        id: 4,
-        text: "Settings",
-        icon: 'material-icons-outlined ic-settings',
-        filePath: "settings",
-        hint: "General settings"
-    },
-    {
-        id: 5,
-        text: "Users",
-        icon: 'material-icons-outlined ic-people',
-        filePath: "users",
-        hint: "User administration"
-    },
-    {
-        id: 6,
-        text: "Performance",
-        icon: 'material-icons-outlined ic-performance',
-        filePath: "performance",
-        hint: "Performance data"
-    }
-];
-
 class NavigationList extends React.PureComponent {
 
     constructor(props) {
         super(props);
         this.state = {
-            defaultVisible: false
+            defaultVisible: false,
+            isAdmin: JSON.parse(localStorage.getItem('user')).userGroupDtoes.filter(e => e.name === 'admins').length > 0
         };
         this.toggleDefault = this.toggleDefault.bind(this);
         this.getMenuItem = this.getMenuItem.bind(this);
+        this.navigation = [
+            {
+                id: 1,
+                text: "Jobs",
+                icon: 'material-icons-outlined ic-dashboard',
+                filePath: "jobexecutions",
+                hint: "Shows the list of job executions"
+            },
+            {
+                id: 2,
+                text: "Steps",
+                icon: 'material-icons-outlined ic-bookmarks',
+                filePath: "stepexecutions",
+                hint: "Shows the list of step executions"
+            },
+            {
+                id: 3,
+                text: "Schedules",
+                icon: 'material-icons-outlined ic-alarm',
+                filePath: "jobschedules",
+                hint: "Shows the list of job schedules"
+            },
+            {
+                id: 4,
+                text: "Settings",
+                icon: 'material-icons-outlined ic-settings',
+                filePath: "settings",
+                hint: "General settings",
+                visible: this.state.isAdmin
+            },
+            {
+                id: 5,
+                text: "Users",
+                icon: 'material-icons-outlined ic-people',
+                filePath: "users",
+                hint: "User administration",
+                visible: this.state.isAdmin
+            },
+            {
+                id: 6,
+                text: "Performance",
+                icon: 'material-icons-outlined ic-performance',
+                filePath: "performance",
+                hint: "Performance data",
+                visible: this.state.isAdmin
+            }
+        ];
+
     }
 
     loadView(e) {
@@ -88,7 +92,7 @@ class NavigationList extends React.PureComponent {
         return (
             <React.Fragment>
                 <List
-                    items={navigation}
+                    items={this.navigation}
                     itemRender={this.getMenuItem}
                     selectionMode="single"
                     onSelectionChanged={this.loadView}/>

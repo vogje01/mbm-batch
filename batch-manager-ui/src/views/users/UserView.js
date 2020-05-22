@@ -1,5 +1,5 @@
 import React from 'react';
-import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
+import DataGrid, {Column, Editing, EmailRule, FilterRow, Form, Pager, Paging, PatternRule, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {UserDataSource} from "./UserDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
@@ -18,6 +18,7 @@ class UserView extends FisPage {
             refreshLists: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
     }
 
     selectionChanged(e) {
@@ -58,17 +59,22 @@ class UserView extends FisPage {
                             <Item itemType="group" colCount={2} colSpan={2} caption={"User Details: " + this.state.currentUser.userId}>
                                 <SimpleItem id={'userId'} dataField="userId" isRequired={true}>
                                     <RequiredRule message="UserId is required"/>
-                                    <StringLengthRule min={7} max={7} message="UserId must be exactly 7 characters long."/>
+                                    <StringLengthRule min={5} max={7} message="UserId must be exactly 7 characters long."/>
                                 </SimpleItem>
                                 <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}}>
                                     <RequiredRule message="Password is required"/>
-                                    <StringLengthRule message="Password must be less than 16 character."/>
                                 </SimpleItem>
-                                <SimpleItem dataField="firstName" isRequired={true}>
-                                    <RequiredRule message="Password is required"/>
+                                <SimpleItem dataField="firstName">
+                                    <RequiredRule message="First name is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="lastName" isRequired={true}>
-                                    <RequiredRule message="Password is required"/>
+                                <SimpleItem dataField="lastName">
+                                    <RequiredRule message="Last name is required"/>
+                                </SimpleItem>
+                                <SimpleItem dataField="email">
+                                    <EmailRule message="Email is invalid"/>
+                                </SimpleItem>
+                                <SimpleItem dataField="phone">
+                                    <PatternRule message="The phone must have a correct phone format" pattern={this.phonePattern}/>
                                 </SimpleItem>
                                 <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
                                 <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
@@ -104,6 +110,20 @@ class UserView extends FisPage {
                         allowReordering={true}
                         width={80}/>
                     <Column
+                        dataField={'email'}
+                        caption={'Email'}
+                        visible={false}
+                        allowSorting={true}
+                        allowReordering={true}
+                        width={80}/>
+                    <Column
+                        dataField={'phone'}
+                        caption={'Phone'}
+                        visible={false}
+                        allowSorting={true}
+                        allowReordering={true}
+                        width={80}/>
+                    <Column
                         dataField={'active'}
                         caption={'Active'}
                         dataType={'boolean'}
@@ -118,7 +138,7 @@ class UserView extends FisPage {
                         allowReordering={true}/>
                     <Column
                         dataField={'description'}
-                        caption={'Version'}
+                        caption={'Description'}
                         dataType={'string'}
                         visible={false}
                         allowSorting={true}

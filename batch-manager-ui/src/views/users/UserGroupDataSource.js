@@ -16,7 +16,7 @@ export const UserGroupDataSource = () => {
             },
             update: function (userGroup, values) {
                 userGroup.name = values.name ? values.name : userGroup.name;
-                userGroup.active = values.active;
+                userGroup.active = values.active ? values.active : userGroup.active;
                 let url = userGroup._links.update.href;
                 return updateItem(url, userGroup, 'userGroupDto');
             },

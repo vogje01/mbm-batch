@@ -46,6 +46,14 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private String firstName;
     /**
+     * Email
+     */
+    private String email;
+    /**
+     * Phone
+     */
+    private String phone;
+    /**
      * Description
      */
     private String description;
@@ -70,6 +78,8 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.userId = user.userId;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
+        this.email = user.email;
+        this.phone = user.phone;
         this.description = user.description;
         this.active = user.active;
     }
@@ -130,6 +140,22 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.description = description;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public List<UserGroupDto> getUserGroupDtoes() {
         return userGroupDtoes;
     }
@@ -158,14 +184,17 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(password, userDto.password) &&
                 Objects.equal(lastName, userDto.lastName) &&
                 Objects.equal(firstName, userDto.firstName) &&
+                Objects.equal(email, userDto.email) &&
+                Objects.equal(phone, userDto.phone) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
+                Objects.equal(userGroupDtoes, userDto.userGroupDtoes) &&
                 Objects.equal(totalSize, userDto.totalSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, description, active, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, description, active, userGroupDtoes, totalSize);
     }
 
     public Boolean getActive() {
@@ -185,8 +214,11 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("password", password)
                 .add("lastName", lastName)
                 .add("firstName", firstName)
+                .add("email", email)
+                .add("phone", phone)
                 .add("description", description)
                 .add("active", active)
+                .add("userGroupDtoes", userGroupDtoes)
                 .add("totalSize", totalSize)
                 .toString();
     }

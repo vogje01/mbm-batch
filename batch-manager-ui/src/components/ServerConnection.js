@@ -57,6 +57,7 @@ const loginRequest = (basicAuthentication, authRequest) => {
         .then((data) => {
             localStorage.setItem('authenticated', 'true');
             localStorage.setItem('webToken', data.token);
+            localStorage.setItem('user', JSON.stringify(data.userDto));
             history.push('/jobexecutions');
         })
         .catch((error) => {

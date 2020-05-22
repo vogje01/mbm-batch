@@ -355,6 +355,7 @@ public class ModelConverter {
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
         // Add user groups
+        user.getUserGroups().stream().forEach(g -> g.setUsers(null));
         userDto.setUserGroupDtoes(user.getUserGroups()
                 .stream()
                 .map(this::convertUserGroupToDto)

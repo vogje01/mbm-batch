@@ -65,6 +65,16 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
     @Column(name = "FIRST_NAME")
     private String firstName;
     /**
+     * Email
+     */
+    @Column(name = "EMAIL")
+    private String email;
+    /**
+     * Phone
+     */
+    @Column(name = "PHONE")
+    private String phone;
+    /**
      * Description
      */
     @Column(name = "DESCRIPTION")
@@ -92,6 +102,8 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
         this.userId = user.userId;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
+        this.email = user.email;
+        this.phone = user.phone;
         this.description = user.description;
         this.active = user.active;
     }
@@ -145,6 +157,22 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
         this.firstName = firstName;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -187,13 +215,16 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
                 Objects.equal(password, user.password) &&
                 Objects.equal(lastName, user.lastName) &&
                 Objects.equal(firstName, user.firstName) &&
+                Objects.equal(email, user.email) &&
+                Objects.equal(phone, user.phone) &&
                 Objects.equal(description, user.description) &&
-                Objects.equal(active, user.active);
+                Objects.equal(active, user.active) &&
+                Objects.equal(userGroups, user.userGroups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, userId, password, lastName, firstName, description, active);
+        return Objects.hashCode(id, version, userId, password, lastName, firstName, email, phone, description, active, userGroups);
     }
 
     public Boolean getActive() {
@@ -213,8 +244,11 @@ public class User implements PrimaryKeyIdentifier<String>, Serializable {
                 .add("password", password)
                 .add("lastName", lastName)
                 .add("firstName", firstName)
+                .add("email", email)
+                .add("phone", phone)
                 .add("description", description)
                 .add("active", active)
+                .add("userGroups", userGroups)
                 .toString();
     }
 }

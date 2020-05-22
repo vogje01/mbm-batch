@@ -16,7 +16,12 @@ export const UserDataSource = () => {
             },
             update: function (user, values) {
                 user.userId = values.userId ? values.userId : user.userId;
-                user.active = values.active;
+                user.firstName = values.firstName ? values.firstName : user.firstName;
+                user.lastName = values.lastName ? values.lastName : user.lastName;
+                user.email = values.email ? values.email : user.email;
+                user.phone = values.phone ? values.phone : user.phone;
+                user.description = values.description ? values.description : user.description;
+                user.active = values.active ? values.active : user.active;
                 let url = user._links.update.href;
                 return updateItem(url, user, 'userDto');
             },

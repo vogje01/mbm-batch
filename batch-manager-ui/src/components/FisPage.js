@@ -16,6 +16,11 @@ class FisPage extends React.Component {
         this.unsub.unsubscribe()
     }
 
+    static isAdmin() {
+        let user = localStorage.getItem('user');
+        return localStorage.getItem('user').userGroupDtoes.filter(e => e.name === 'admins').length > 0;
+    }
+
     render() {
         if (localStorage.getItem('webToken') === undefined) {
             return <Redirect to={'/'}/>;

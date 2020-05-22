@@ -1,5 +1,7 @@
 package com.hlag.fis.batch.manager.service.util;
 
+import com.hlag.fis.batch.domain.dto.UserDto;
+
 import java.io.Serializable;
 
 /**
@@ -15,11 +17,18 @@ public class JwtResponse implements Serializable {
 
     private final String jwtToken;
 
-    public JwtResponse(String jwtToken) {
+    private final UserDto userDto;
+
+    public JwtResponse(String jwtToken, UserDto userDto) {
         this.jwtToken = jwtToken;
+        this.userDto = userDto;
     }
 
     public String getToken() {
         return this.jwtToken;
+    }
+
+    public UserDto getUserDto() {
+        return this.userDto;
     }
 }
