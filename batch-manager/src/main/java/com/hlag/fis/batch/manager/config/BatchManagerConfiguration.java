@@ -3,6 +3,7 @@ package com.hlag.fis.batch.manager.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.hlag.fis.batch.manager.service.util.AuditorAwareImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -14,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -28,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 @EnableWebMvc
 @EnableCaching
 @EnableKafka
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"com.hlag.fis.batch.repository"})
 @EntityScan("com.hlag.fis.batch.domain")
@@ -67,5 +71,10 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    AuditorAware<String> auditorProvider() {
+        return new AuditorAwareImpl();
     }
 }

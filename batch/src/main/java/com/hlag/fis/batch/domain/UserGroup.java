@@ -8,6 +8,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.db.mysql.model.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,11 +23,12 @@ import java.util.List;
  * @since 0.0.3
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_USER_GROUP")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
+public class UserGroup extends Auditing implements PrimaryKeyIdentifier<String>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,12 +40,6 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Long version;
     /**
      * Name
      */
@@ -82,14 +78,6 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
     public String getName() {
@@ -132,7 +120,6 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         UserGroup user = (UserGroup) o;
         return Objects.equal(id, user.id) &&
-                Objects.equal(version, user.version) &&
                 Objects.equal(name, user.name) &&
                 Objects.equal(description, user.description) &&
                 Objects.equal(active, user.active);
@@ -140,7 +127,7 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, name, description, active);
+        return Objects.hashCode(id, name, description, active);
     }
 
     public Boolean getActive() {
@@ -155,7 +142,6 @@ public class UserGroup implements PrimaryKeyIdentifier<String>, Serializable {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("name", name)
                 .add("description", description)
                 .add("active", active)

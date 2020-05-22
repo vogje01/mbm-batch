@@ -32,6 +32,7 @@ export const UsergroupUserDataSource = (userGroup) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
+                if (!userGroup._links) return;
                 let url = userGroup._links.users.href;
                 url = mergeParams(loadOptions, url, 'userId');
                 return getList(url, 'userDtoes');

@@ -6,6 +6,8 @@ import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
 import {Item} from "devextreme-react/autocomplete";
 import UsergroupUserView from "./UsergroupUserView";
+import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {RequiredRule} from "devextreme-react/validator";
 
 class UserGroupView extends FisPage {
 
@@ -54,8 +56,13 @@ class UserGroupView extends FisPage {
                         allowDeleting={true}>
                         <Form>
                             <Item itemType="group" colCount={2} colSpan={2} caption={"User Group Details: " + this.state.currentUserGroup.name}>
-                                <Item dataField="name"/>
-                                <Item dataField="active" editorType={"dxCheckBox"}/>
+                                <SimpleItem dataField="name">
+                                    <RequiredRule message="Name is required"/>
+                                    <StringLengthRule min={2} message="Name must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <EmptyItem/>
+                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                             </Item>
                             <Item itemType="group" colCount={2} colSpan={2} caption={"Users"}>
                                 <UsergroupUserView userGroup={this.state.currentUserGroup}/>
@@ -69,6 +76,10 @@ class UserGroupView extends FisPage {
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
+                    <Column
+                        caption={'Description'}
+                        dataField={'description'}
+                        visible={false}/>
                     <Column
                         dataField={'active'}
                         caption={'Active'}
