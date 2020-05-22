@@ -17,7 +17,6 @@ class FisPage extends React.Component {
     }
 
     static isAdmin() {
-        let user = localStorage.getItem('user');
         return localStorage.getItem('user').userGroupDtoes.filter(e => e.name === 'admins').length > 0;
     }
 

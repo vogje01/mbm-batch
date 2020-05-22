@@ -8,10 +8,6 @@ import {SimpleItem} from "devextreme-react/form";
 
 class UsergroupUserView extends FisPage {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         if (this.props.hidden) {
             return null;
