@@ -9,7 +9,6 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class ModelConverter {
 
-    private SimpleDateFormat parameterDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public ModelConverter(ModelMapper modelMapper) {
@@ -217,7 +214,7 @@ public class ModelConverter {
 
         // Convert job definition
         JobDefinitionDto jobDefinitionDto = modelMapper.map(jobDefinition, JobDefinitionDto.class);
-        jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
+        jobDefinitionDto.setJobGroup(jobDefinition.getJobGroup().getName());
 
         // Add parameter
         jobDefinitionDto.setJobDefinitionParamDtos(jobDefinition.getJobDefinitionParams()
@@ -263,7 +260,7 @@ public class ModelConverter {
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
-        jobDefinition.setJobGroup(modelMapper.map(jobDefinitionDto.getJobGroupDto(), JobGroup.class));
+        //jobDefinition.setJobGroup(modelMapper.map(jobDefinitionDto.getJobGroupDto(), JobGroup.class));
 
         jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
                 .stream()
