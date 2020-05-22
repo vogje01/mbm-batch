@@ -40,9 +40,9 @@ public class ModelConverter {
     public JobExecutionDto convertJobExecutionToDto(JobExecutionInfo jobExecutionInfo) {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
-            .stream()
-            .map(this::convertJobExecutionParamToDto)
-            .collect(toList()));
+                .stream()
+                .map(this::convertJobExecutionParamToDto)
+                .collect(toList()));
         return jobExecutionDto;
     }
 
@@ -56,9 +56,9 @@ public class ModelConverter {
         jobExecutionDto.setTotalSize(totalCount);
         jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecutionInfo.getJobInstanceInfo()));
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
-            .stream()
-            .map(this::convertJobExecutionParamToDto)
-            .collect(toList()));
+                .stream()
+                .map(this::convertJobExecutionParamToDto)
+                .collect(toList()));
         return jobExecutionDto;
     }
 
@@ -113,10 +113,10 @@ public class ModelConverter {
         jobExecutionDto.setJobName(jobExecution.getJobInstance().getJobName());
         jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecution.getJobInstance()));
         List<JobExecutionParamDto> jobExecutionParamDtoes = jobExecution.getJobParameters()
-            .getParameters()
-            .entrySet()
-            .stream()
-            .map(this::convertJobParameterToDto).collect(toList());
+                .getParameters()
+                .entrySet()
+                .stream()
+                .map(this::convertJobParameterToDto).collect(toList());
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionParamDtoes);
         return jobExecutionDto;
     }
@@ -125,9 +125,9 @@ public class ModelConverter {
         JobExecutionInfo jobExecutionInfo = modelMapper.map(jobExecutionDto, JobExecutionInfo.class);
         jobExecutionInfo.setJobInstanceInfo(convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto()));
         List<JobExecutionParam> jobExecutionParams = jobExecutionDto.getJobExecutionParamDtoes()
-            .stream()
-            .map(this::convertJobExecutionParamToEntity)
-            .collect(toList());
+                .stream()
+                .map(this::convertJobExecutionParamToEntity)
+                .collect(toList());
         jobExecutionInfo.setJobExecutionParams(jobExecutionParams);
         return jobExecutionInfo;
     }
@@ -217,10 +217,12 @@ public class ModelConverter {
         jobDefinitionDto.setJobGroup(jobDefinition.getJobGroup().getName());
 
         // Add parameter
-        jobDefinitionDto.setJobDefinitionParamDtos(jobDefinition.getJobDefinitionParams()
-            .stream()
-            .map(this::convertJobDefinitionParamToDto)
-            .collect(toList()));
+        if (!jobDefinitionDto.getJobDefinitionParamDtos().isEmpty()) {
+            jobDefinitionDto.setJobDefinitionParamDtos(jobDefinition.getJobDefinitionParams()
+                    .stream()
+                    .map(this::convertJobDefinitionParamToDto)
+                    .collect(toList()));
+        }
         return jobDefinitionDto;
     }
 
@@ -262,10 +264,12 @@ public class ModelConverter {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
         //jobDefinition.setJobGroup(modelMapper.map(jobDefinitionDto.getJobGroupDto(), JobGroup.class));
 
-        jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
-                .stream()
-                .map(this::convertJobDefinitionParamToEntity)
-                .collect(toList()));
+        if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
+            jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
+                    .stream()
+                    .map(this::convertJobDefinitionParamToEntity)
+                    .collect(toList()));
+        }
         return jobDefinition;
     }
 
