@@ -21,6 +21,11 @@ public class JobDefinitionBuilder {
         return this;
     }
 
+    public JobDefinitionBuilder withJobGroup(JobGroup jobGroup) {
+        jobDefinition.setJobGroup(jobGroup);
+        return this;
+    }
+
     public JobDefinitionBuilder addParam(JobDefinitionParam param) {
         jobDefinition.addJobDefinitionParam(param);
         return this;

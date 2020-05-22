@@ -21,6 +21,11 @@ public class JobDefinitionDtoBuilder {
         return this;
     }
 
+    public JobDefinitionDtoBuilder withJobGroupDto(JobGroupDto jobGroupDto) {
+        jobDefinitionDto.setJobGroupDto(jobGroupDto);
+        return this;
+    }
+
     public JobDefinitionDtoBuilder addParam(JobDefinitionParamDto parameterDto) {
         jobDefinitionDto.addJobDefinitionParam(parameterDto);
         return this;

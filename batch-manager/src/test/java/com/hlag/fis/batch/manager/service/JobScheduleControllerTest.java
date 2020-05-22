@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
@@ -52,70 +53,85 @@ public class JobScheduleControllerTest {
     public void whenCalledWithValidParameters_thenReturnList() throws Exception {
 
         Agent agent = new AgentBuilder()
-            .withRandomId()
-            .withNodeName("Node1")
-            .build();
+                .withRandomId()
+                .withNodeName("Node1")
+                .build();
+
+        JobGroup jobGroup = new JobGroupBuilder()
+                .withJobGroup("Group1")
+                .withActive(true)
+                .withRandomId()
+                .build();
 
         JobDefinition jobDefinition1 = new JobDefinitionBuilder()
-            .withRandomId()
-            .withName("Job1")
-            .build();
+                .withRandomId()
+                .withName("Job1")
+                .withJobGroup(jobGroup)
+                .build();
 
         JobSchedule jobSchedule1 = new JobScheduleInfoBuilder()
-            .withRandomId()
-            .withName("Name1")
-            .addAgent(agent)
-            .withJobDefinition(jobDefinition1)
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Name1")
+                .addAgent(agent)
+                .withJobDefinition(jobDefinition1)
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
 
         JobDefinition jobDefinition2 = new JobDefinitionBuilder()
-            .withRandomId()
-            .withName("Job2")
-            .build();
+                .withRandomId()
+                .withName("Job2")
+                .withJobGroup(jobGroup)
+                .build();
 
         JobSchedule jobSchedule2 = new JobScheduleInfoBuilder()
-            .withRandomId()
-            .withName("Name2")
-            .addAgent(agent)
-            .withJobDefinition(jobDefinition2)
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Name2")
+                .addAgent(agent)
+                .withJobDefinition(jobDefinition2)
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
 
         List<JobSchedule> jobScheduleList = new ArrayList<>();
         jobScheduleList.add(jobSchedule1);
         jobScheduleList.add(jobSchedule2);
 
         AgentDto agentDto = new AgentDtoBuilder()
-            .withRandomId()
-            .withNodeName("Node1")
-            .build();
+                .withRandomId()
+                .withNodeName("Node1")
+                .build();
+
+        JobGroupDto jobGroupDto = new JobGroupDtoBuilder()
+                .withRandomId()
+                .withName("Group1")
+                .build();
 
         JobDefinitionDto jobDefinitionDto1 = new JobDefinitionDtoBuilder()
-            .withRandomId()
-            .withName("Job1")
-            .build();
+                .withRandomId()
+                .withName("Job1")
+                .withJobGroupDto(jobGroupDto)
+                .build();
 
         JobScheduleDto jobScheduleDto1 = new JobScheduleDtoBuilder()
-            .withRandomId()
-            .withName("Name1")
-            .addAgent(agentDto)
-            .withJobDefinition(jobDefinitionDto1)
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Name1")
+                .addAgent(agentDto)
+                .withJobDefinition(jobDefinitionDto1)
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
 
         JobDefinitionDto jobDefinitionDto2 = new JobDefinitionDtoBuilder()
-            .withRandomId()
-            .withName("Job2")
-            .build();
+                .withRandomId()
+                .withName("Job2")
+                .withJobGroupDto(jobGroupDto)
+                .build();
 
         JobScheduleDto jobScheduleDto2 = new JobScheduleDtoBuilder()
-            .withRandomId()
-            .withName("Name2")
-            .addAgent(agentDto)
-            .withJobDefinition(jobDefinitionDto2)
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Name2")
+                .addAgent(agentDto)
+                .withJobDefinition(jobDefinitionDto2)
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
 
         List<JobScheduleDto> jobScheduleDtoList = new ArrayList<>();
         jobScheduleDtoList.add(jobScheduleDto1);
@@ -125,15 +141,15 @@ public class JobScheduleControllerTest {
         when(modelConverter.convertJobScheduleToDto(anyList(), anyLong())).thenReturn(jobScheduleDtoList);
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
-            //.andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaTypes.HAL_JSON))
-            .andExpect(jsonPath("$.links[0].rel", is("self")))
-            .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobschedules?page=0&size=5{&sortBy,sortDir}")))
-            .andExpect(jsonPath("$.content[0].name", is("Name1")))
-            .andExpect(jsonPath("$.content[1].name", is("Name2")))
-            .andExpect(jsonPath("$.content[0].groupName", is("Group1")))
-            .andExpect(jsonPath("$.content[1].groupName", is("Group2")));
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.links[0].rel", is("self")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobschedules?page=0&size=5{&sortBy,sortDir}")))
+                .andExpect(jsonPath("$.content[0].name", is("Name1")))
+                .andExpect(jsonPath("$.content[1].name", is("Name2")))
+                .andExpect(jsonPath("$.content[0].jobDefinitionDto.name", is("Job1")))
+                .andExpect(jsonPath("$.content[1].jobDefinitionDto.name", is("Job2")));
     }
 
     @Test
@@ -142,34 +158,34 @@ public class JobScheduleControllerTest {
         when(jobScheduleService.allScheduledJobs(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
-            //.andDo(print())
-            .andExpect(status().isOk()) //
-            .andExpect(content().contentType(MediaTypes.HAL_JSON))
-            .andExpect(jsonPath("$.links[0].rel", is("self")))
-            .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobschedules?page=0&size=5{&sortBy,sortDir}")));
+                //.andDo(print())
+                .andExpect(status().isOk()) //
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.links[0].rel", is("self")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobschedules?page=0&size=5{&sortBy,sortDir}")));
     }
 
     @Test
     public void whenCalledWithValidId_thenReturnJobScheduleInfo() throws Exception {
 
         JobSchedule jobSchedule1 = new JobScheduleInfoBuilder()
-            .withRandomId()
-            .withName("Schedule1")
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Schedule1")
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
         JobScheduleDto jobScheduleDto1 = new JobScheduleDtoBuilder()
-            .withRandomId()
-            .withName("Schedule1")
-            .withSchedule("0 0 0/2 * * ?")
-            .build();
+                .withRandomId()
+                .withName("Schedule1")
+                .withSchedule("0 0 0/2 * * ?")
+                .build();
 
         when(jobScheduleService.findById(any())).thenReturn(ofNullable(jobSchedule1));
         when(modelConverter.convertJobScheduleToDto(any(JobSchedule.class))).thenReturn(jobScheduleDto1);
 
         this.mockMvc.perform(get("/api/jobschedules/" + jobSchedule1.getId())) //
-            //.andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaTypes.HAL_JSON))
-            .andExpect(jsonPath("$.name", is("Schedule1")));
+                //.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.name", is("Schedule1")));
     }
 }
