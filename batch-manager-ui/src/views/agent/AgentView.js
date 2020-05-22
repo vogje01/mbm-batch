@@ -1,10 +1,12 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
+import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {agentDataSource} from "./AgentDataSource";
 import UpdateTimer from "../../components/UpdateTimer";
 import FisPage from "../../components/FisPage";
-import AgentDetails from "./AgentDetails";
+import {Item} from "devextreme-react/autocomplete";
+import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {RequiredRule} from "devextreme-react/validator";
 
 class AgentView extends FisPage {
 
@@ -13,17 +15,12 @@ class AgentView extends FisPage {
         this.state = {
             currentAgent: {},
             currentAgents: [],
-            showDetails: false,
-            selectedIndex: 0
         };
-        this.toggleDetails = this.toggleDetails.bind(this);
+        this.selectionChanged = this.selectionChanged.bind(this);
     }
 
-    toggleDetails(e) {
-        this.setState({
-            showDetails: !this.state.showDetails,
-            currentAgent: e ? e.data : null
-        });
+    selectionChanged(e) {
+        this.setState({currentAgent: e.data});
     }
 
     render() {
@@ -44,6 +41,7 @@ class AgentView extends FisPage {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
+                    onEditingStart={this.selectionChanged}
                     rowAlternationEnabled={true}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
@@ -52,7 +50,29 @@ class AgentView extends FisPage {
                         useIcons={true}
                         allowUpdating={true}
                         allowAdding={true}
-                        allowDeleting={true}/>
+                        allowDeleting={true}>
+                        <Form>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"Agent Details: " + this.state.currentAgent.nodeName}>
+                                <SimpleItem dataField="nodeName" colSpan={2}>
+                                    <RequiredRule message="Node name is required"/>
+                                    <StringLengthRule min={2} message="Node name must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="hostName" colSpan={2}>
+                                    <RequiredRule message="Host name is required"/>
+                                    <StringLengthRule min={2} message="Host name must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="pid" colSpan={4} edtitorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="lastStart" edtitorOptions={{readOnly: true}} colSpan={2}/>
+                                <SimpleItem dataField="lastPing" edtitorOptions={{readOnly: true}} colSpan={2}/>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
+                                <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                            </Item>
+                        </Form>
+                    </Editing>
                     <Column
                         caption={'Node name'}
                         dataField={'nodeName'}
@@ -104,6 +124,31 @@ class AgentView extends FisPage {
                         <FormItem editorType="dxCheckBox"/>
                     </Column>
                     <Column
+                        dataField={'version'}
+                        caption={'Version'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdBy'}
+                        caption={'Created By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'createdAt'}
+                        caption={'Created At'}
+                        dataType={'datetime'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedBy'}
+                        caption={'Modified By'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'modifiedAt'}
+                        caption={'Modified At'}
+                        dataType={'datetime'}
+                        visible={false}/>
+                    <Column
                         allowSorting={false}
                         allowReordering={false}
                         width={80}
@@ -127,11 +172,6 @@ class AgentView extends FisPage {
                     <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                 </DataGrid>
                 <UpdateTimer/>
-                {
-                    this.state.showDetails ?
-                        <AgentDetails currentAgent={this.state.currentAgent}
-                                      closePopup={this.toggleDetails.bind(this)}/> : null
-                }
             </React.Fragment>
         );
     }
