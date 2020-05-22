@@ -38,9 +38,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "GROUP_NAME")
-    private String groupName;
-
     @Column(name = "ACTIVE")
     private Boolean active;
 
@@ -70,7 +67,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.lastExecution = origin.lastExecution;
         this.nextExecution = origin.nextExecution;
         this.name = origin.name;
-        this.groupName = origin.groupName;
         this.active = origin.active;
     }
 
@@ -123,14 +119,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.lastExecution = lastExecution;
     }
 
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
     public Boolean isActive() {
         return active;
     }
@@ -174,7 +162,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
                 Objects.equal(lastExecution, that.lastExecution) &&
                 Objects.equal(nextExecution, that.nextExecution) &&
                 Objects.equal(name, that.name) &&
-                Objects.equal(groupName, that.groupName) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(jobDefinition, that.jobDefinition) &&
                 Objects.equal(agents, that.agents);
@@ -182,7 +169,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, groupName, active, jobDefinition, agents);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, active, jobDefinition, agents);
     }
 
     @Override
@@ -193,7 +180,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
                 .add("lastExecution", lastExecution)
                 .add("nextExecution", nextExecution)
                 .add("name", name)
-                .add("groupName", groupName)
                 .add("active", active)
                 .toString();
     }

@@ -25,9 +25,9 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     private String name;
 
-    private String groupName;
-
     private JobScheduleType mode;
+
+    private String jobDefinitionName;
 
     private Boolean active;
     /**
@@ -100,20 +100,20 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
         this.lastExecution = lastExecution;
     }
 
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
     public JobScheduleType getMode() {
         return mode;
     }
 
     public void setMode(JobScheduleType mode) {
         this.mode = mode;
+    }
+
+    public String getJobDefinitionName() {
+        return jobDefinitionName;
+    }
+
+    public void setJobDefinitionName(String jobDefinitionName) {
+        this.jobDefinitionName = jobDefinitionName;
     }
 
     public Boolean getActive() {
@@ -197,8 +197,8 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(lastExecution, that.lastExecution) &&
                 Objects.equal(nextExecution, that.nextExecution) &&
                 Objects.equal(name, that.name) &&
-                Objects.equal(groupName, that.groupName) &&
                 mode == that.mode &&
+                Objects.equal(jobDefinitionName, that.jobDefinitionName) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
@@ -211,7 +211,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, groupName, mode, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtoes, jobDefinitionDto);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtoes, jobDefinitionDto);
     }
 
     @Override
@@ -222,8 +222,8 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 .add("lastExecution", lastExecution)
                 .add("nextExecution", nextExecution)
                 .add("name", name)
-                .add("groupName", groupName)
                 .add("mode", mode)
+                .add("jobDefinitionName", jobDefinitionName)
                 .add("active", active)
                 .add("createdBy", createdBy)
                 .add("createdAt", createdAt)

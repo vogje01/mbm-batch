@@ -1,5 +1,5 @@
 import React from 'react';
-import {DataGrid, Menu, Template} from "devextreme-react";
+import {DataGrid, Menu} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection, StringLengthRule} from "devextreme-react/data-grid";
 import UpdateTimer from "../../components/UpdateTimer";
 import JobDefinitionDetails from "./JobDefinitionDetails";
@@ -7,8 +7,9 @@ import JobDefinitionExport from "./JobDefinitionExport";
 import JobDefinitionImport from "./JobDefinitionImport";
 import FisPage from "../../components/FisPage";
 import {jobDefinitionDataSource} from "./JobDefinitionDataSource";
-import {SimpleItem} from "devextreme-react/form";
+import {PatternRule, SimpleItem} from "devextreme-react/form";
 import {JobGroupDataSource} from "../jobgroup/JobGroupDataSource";
+import {Item} from "devextreme-react/autocomplete";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -31,7 +32,7 @@ class JobDefinitionView extends FisPage {
         };
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
-        this.customItemCreating = this.customItemCreating.bind(this);
+        this.selectionChanged = this.selectionChanged.bind(this);
         this.onMenuItemClick = this.onMenuItemClick.bind(this);
         this.menus = [{
             id: '1',
@@ -46,6 +47,7 @@ class JobDefinitionView extends FisPage {
                 icon: 'material-icons-outlined ic-import-export md-18'
             }]
         }];
+        this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
     }
 
     toggleExport(e) {
@@ -68,8 +70,8 @@ class JobDefinitionView extends FisPage {
         }
     }
 
-    customItemCreating(e) {
-        console.log(e);
+    selectionChanged(e) {
+        this.setState({currentJobDefinition: e.data});
     }
 
     render() {
@@ -101,6 +103,7 @@ class JobDefinitionView extends FisPage {
                     showRowLines={true}
                     showBorders={true}
                     rowAlternationEnabled={true}
+                    onEditingStart={this.selectionChanged}
                     /*onContextMenuPreparing={function (e) {
                         if (e.row.rowType === "data") {
                             e.items = [
@@ -133,27 +136,45 @@ class JobDefinitionView extends FisPage {
                         allowAdding={true}
                         allowDeleting={true}>
                         <Form>
-                            <SimpleItem id={'label'} dataField="label">
-                                <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem id={'name'} dataField="name">
-                                <RequiredRule/>
-                                <StringLengthRule max={256} message="Name must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem
-                                dataField={'jobGroupName'}
-                                editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
-                            </SimpleItem>
-                            <SimpleItem id={'jobVersion'} dataField="jobVersion">
-                                <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
-                            </SimpleItem>
-                            <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}/>
-                            <SimpleItem dataField="fileName">
-                                <StringLengthRule max={256} message="File name must be less than 256 characters."/>
-                            </SimpleItem>
-                            <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                            <Template name="jobGroupSelectBoxItem" render={renderJobGroupSelectBoxItem}/>
+                            <Item itemType="group" colCount={4} colSpan={4} caption={"User Details: " + this.state.currentJobDefinition.label}>
+                                <SimpleItem dataField="label" colSpan={2}>
+                                    <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="name" colSpan={2}>
+                                    <RequiredRule/>
+                                    <StringLengthRule max={256} message="Name must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    colSpan={2}
+                                    dataField={'jobGroupName'}
+                                    editorType={'dxSelectBox'}
+                                    editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem dataField="jobVersion" colSpan={2}>
+                                    <RequiredRule/>
+                                    <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
+                                    <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}} colSpan={2}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem dataField="command" colSpan={2}>
+                                    <RequiredRule/>
+                                    <StringLengthRule max={256} message="Command must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="fileName" colSpan={2}>
+                                    <RequiredRule/>
+                                    <StringLengthRule max={256} message="File name must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="workingDirectory" colSpan={2}>
+                                    <RequiredRule/>
+                                    <StringLengthRule max={256} message="Command must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="active" editorType={"dxCheckBox"}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                            </Item>
                         </Form>
                     </Editing>
                     <Column
@@ -179,9 +200,9 @@ class JobDefinitionView extends FisPage {
                         allowReordering={true}/>
                     <Column
                         dataField={'jobVersion'}
-                        caption={'Version'}
+                        caption={'Job Version'}
                         dataType={'string'}
-                        allowEditing={false}
+                        allowEditing={true}
                         allowSorting={true}
                         allowReordering={true}
                         width={50}/>
@@ -211,6 +232,21 @@ class JobDefinitionView extends FisPage {
                         allowSorting={true}
                         allowReordering={true}
                         width={160}/>
+                    <Column
+                        dataField={'command'}
+                        caption={'Command'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'workingDirectory'}
+                        caption={'Working Dir.'}
+                        dataType={'string'}
+                        visible={false}/>
+                    <Column
+                        dataField={'description'}
+                        caption={'Description'}
+                        dataType={'string'}
+                        visible={false}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}

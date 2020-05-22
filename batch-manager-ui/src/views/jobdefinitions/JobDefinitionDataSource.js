@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../util/ParamUtil";
-import {deleteItem, getList, insertItem, listItems, updateItem} from "../../components/ServerConnection";
+import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../components/ServerConnection";
 
 const getAttributeValue = (attribute, value) => {
     if (value.keyName) {
@@ -44,6 +44,10 @@ const getAttributeValue = (attribute, value) => {
 export const jobDefinitionDataSource = () => {
     return new DataSource({
         store: new CustomStore({
+            byKey: function (key) {
+                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/byName?name=' + key;
+                return getItem(url);
+            },
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name');
                 return listItems('jobdefinitions' + params, 'jobDefinitionDtoes');

@@ -59,6 +59,14 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
         return jobDefinitionRepository.save(jobDefinition);
     }
 
+    /**
+     * Update an existing job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @param jobDefinition   job definition.
+     * @return updated job definition.
+     * @throws ResourceNotFoundException
+     */
     @Override
     @Transactional
     @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
@@ -106,6 +114,12 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     public JobDefinition getJobDefinition(final String jobDefinitionId) {
         Optional<JobDefinition> jobDefinition = jobDefinitionRepository.findById(jobDefinitionId);
         return jobDefinition.orElse(null);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "JobDefinition", key = "#jobDefinitionName")
+    public Optional<JobDefinition> findByName(final String jobDefinitionName) {
+        return jobDefinitionRepository.findByName(jobDefinitionName);
     }
 
     @Override

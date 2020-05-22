@@ -22,11 +22,6 @@ public class JobScheduleDtoBuilder {
         return this;
     }
 
-    public JobScheduleDtoBuilder withGroupName(String groupName) {
-        jobScheduleDto.setGroupName(groupName);
-        return this;
-    }
-
     public JobScheduleDtoBuilder withSchedule(String schedule) {
         jobScheduleDto.setSchedule(schedule);
         return this;

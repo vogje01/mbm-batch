@@ -1,10 +1,12 @@
 package com.hlag.fis.batch.manager.controller;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.JobDefinition;
 import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.domain.dto.AgentDto;
 import com.hlag.fis.batch.domain.dto.JobScheduleDto;
 import com.hlag.fis.batch.manager.service.AgentService;
+import com.hlag.fis.batch.manager.service.JobDefinitionService;
 import com.hlag.fis.batch.manager.service.JobScheduleService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
@@ -21,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -47,12 +50,15 @@ public class JobScheduleController {
 
     private AgentService agentService;
 
+    private JobDefinitionService jobDefinitionService;
+
     private ModelConverter modelConverter;
 
     @Autowired
-    public JobScheduleController(JobScheduleService jobScheduleService, AgentService agentService, ModelConverter modelConverter) {
+    public JobScheduleController(JobScheduleService jobScheduleService, AgentService agentService, JobDefinitionService jobDefinitionService, ModelConverter modelConverter) {
         this.jobScheduleService = jobScheduleService;
         this.agentService = agentService;
+        this.jobDefinitionService = jobDefinitionService;
         this.modelConverter = modelConverter;
     }
 
@@ -60,7 +66,7 @@ public class JobScheduleController {
     public ResponseEntity<CollectionModel<JobScheduleDto>> findAll(@RequestParam(value = "page") int page,
                                                                    @RequestParam(value = "size") int size,
                                                                    @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                   @RequestParam(value = "sortDir", required = false) String sortDir) {
+                                                                   @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
         t.restart();
 
         // Get paging parameters
@@ -110,19 +116,31 @@ public class JobScheduleController {
      * @return job schedule resource.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"})
-    public ResponseEntity<JobScheduleDto> insert(@RequestBody JobScheduleDto jobScheduleDto) {
+    public ResponseEntity<JobScheduleDto> insert(@RequestBody JobScheduleDto jobScheduleDto) throws ResourceNotFoundException {
         t.restart();
 
         // Get job schedule
         JobSchedule jobSchedule = modelConverter.convertJobScheduleToEntity(jobScheduleDto);
-        jobSchedule = jobScheduleService.insertJobSchedule(jobSchedule);
-        jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
 
-        // Add links
-        addLinks(jobScheduleDto, 0, 0, "", "");
-        logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
+        // Get job definition
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
+        if (jobDefinitionOptional.isPresent()) {
 
-        return ResponseEntity.ok(jobScheduleDto);
+            // Set job definition
+            JobDefinition jobDefinition = jobDefinitionOptional.get();
+            jobSchedule.setJobDefinition(jobDefinition);
+
+            // Insert into database
+            jobSchedule = jobScheduleService.insertJobSchedule(jobSchedule);
+            jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+
+            // Add links
+            addLinks(jobScheduleDto, 0, 0, "", "");
+            logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
+
+            return ResponseEntity.ok(jobScheduleDto);
+        }
+        throw new ResourceNotFoundException();
     }
 
     /**

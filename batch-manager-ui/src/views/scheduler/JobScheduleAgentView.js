@@ -1,7 +1,9 @@
 import React from 'react';
-import {Column, DataGrid, Editing, FilterRow, HeaderFilter, Lookup, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
 import {scheduleAgentDataSource} from "./JobScheduleDataSource";
 import {listItems} from "../../components/ServerConnection";
+import {SimpleItem} from "devextreme-react/form";
+import {agentDataSource} from "../agent/AgentDataSource";
 
 class JobScheduleAgentView extends React.Component {
 
@@ -47,23 +49,32 @@ class JobScheduleAgentView extends React.Component {
                     <Sorting mode={'multiple'}/>
                     <Editing
                         mode={'form'}
-                        startEditAction={ondblclick}
                         useIcons={true}
                         allowAdding={true}
                         allowDeleting={true}
-                        allowUpdating={true}/>
+                        allowUpdating={true}>
+                        <Form>
+                            <SimpleItem
+                                dataField={'nodeName'}
+                                isRequired={true}
+                                editorType={'dxSelectBox'}
+                                editorOptions={{dataSource: agentDataSource(), valueExpr: 'nodeName', displayExpr: 'nodeName'}}/>
+                        </Form>
+                    </Editing>
                     <Column
-                        dataField="nodeName">
-                        <Lookup dataSource={this.state.agents}
-                                displayExpr={"nodeName"}/>
-                    </Column>
+                        dataField={'nodeName'}
+                        caption={'Node Name'}
+                        dataType={'string'}
+                        allowSorting={true}
+                        allowReordering={true}
+                        allowEditing={true}/>
                     <Column
                         dataField={'active'}
                         caption={'Active'}
                         dataType={'boolean'}
                         allowSorting={true}
                         allowReordering={true}
-                        allowEditing={true}
+                        allowEditing={false}
                         width={80}/>
                     <Column
                         allowSorting={false}
@@ -85,8 +96,8 @@ class JobScheduleAgentView extends React.Component {
                     <RemoteOperations
                         sorting={true}
                         paging={true}/>
-                    <Paging defaultPageSize={5}/>
-                    <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]}/>
+                    <Paging defaultPageSize={10}/>
+                    <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50]}/>
                 </DataGrid>
             </React.Fragment>
         );

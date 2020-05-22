@@ -9,6 +9,7 @@ import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import JobScheduleAgentView from "./JobScheduleAgentView";
+import {jobDefinitionDataSource} from "../jobdefinitions/JobDefinitionDataSource";
 
 class JobSchedulerView extends FisPage {
 
@@ -59,12 +60,15 @@ class JobSchedulerView extends FisPage {
                         <Form>
                             <Item itemType="group" colCount={4} colSpan={4} caption={"Schedule Details: " + this.state.currentJobSchedule.name}>
                                 <SimpleItem dataField="name" colSpan={2}>
+                                    <RequiredRule message="Schedule name required"/>
+                                    <StringLengthRule min={2} message="Schedule name must be at least 2 characters long."/>
+                                </SimpleItem>
+                                <SimpleItem dataField="jobDefinitionName"
+                                            colSpan={2}
+                                            editorType={'dxSelectBox'}
+                                            editorOptions={{dataSource: jobDefinitionDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
                                     <RequiredRule message="Job name required"/>
                                     <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
-                                </SimpleItem>
-                                <SimpleItem dataField="groupName" colSpan={2}>
-                                    <RequiredRule message="Job group required"/>
-                                    <StringLengthRule min={2} message="Job group must be at least 2 characters long."/>
                                 </SimpleItem>
                                 <SimpleItem dataField="lastExecution" editorOptions={{readOnly: true}} colSpan={2}/>
                                 <SimpleItem dataField="nextExecution" editorOptions={{readOnly: true}} colSpan={2}/>
@@ -83,7 +87,7 @@ class JobSchedulerView extends FisPage {
                         </Form>
                     </Editing>
                     <Column
-                        caption={'Job Name'}
+                        caption={'Name'}
                         dataField={'name'}
                         dataType={'string'}
                         allowEditing={true}
@@ -91,12 +95,12 @@ class JobSchedulerView extends FisPage {
                         allowSorting={true}
                         allowReordering={true}/>
                     <Column
-                        dataField={'groupName'}
-                        caption={'Group'}
+                        dataField={'jobDefinitionName'}
+                        caption={'Job Definition'}
                         dataType={'string'}
                         allowSorting={true}
                         allowReordering={true}
-                        width={100}/>
+                        width={300}/>
                     <Column
                         caption={'Last Execution'}
                         dataType={'datetime'}
@@ -176,7 +180,7 @@ class JobSchedulerView extends FisPage {
                         paging={true}/>
                     <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                            showNavigationButtons={true} showInfo={true} visible={true}/>
-                    <Paging defaultPageSize={5}/>
+                    <Paging defaultPageSize={10}/>
                 </DataGrid>
                 <UpdateTimer/>
             </React.Fragment>

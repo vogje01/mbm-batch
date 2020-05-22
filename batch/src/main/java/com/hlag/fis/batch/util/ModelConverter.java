@@ -189,7 +189,10 @@ public class ModelConverter {
 
     public JobScheduleDto convertJobScheduleToDto(JobSchedule jobSchedule) {
         JobScheduleDto jobScheduleDto = modelMapper.map(jobSchedule, JobScheduleDto.class);
-        jobScheduleDto.setJobDefinitionDto(convertJobDefinitionToDto(jobSchedule.getJobDefinition()));
+        if (jobSchedule.getJobDefinition() != null) {
+            jobScheduleDto.setJobDefinitionDto(convertJobDefinitionToDto(jobSchedule.getJobDefinition()));
+            jobScheduleDto.setJobDefinitionName(jobSchedule.getJobDefinition().getName());
+        }
         return jobScheduleDto;
     }
 
@@ -199,14 +202,19 @@ public class ModelConverter {
 
     public JobScheduleDto convertJobScheduleToDto(JobSchedule jobSchedule, long totalCount) {
         JobScheduleDto jobScheduleDto = modelMapper.map(jobSchedule, JobScheduleDto.class);
-        jobScheduleDto.setJobDefinitionDto(convertJobDefinitionToDto(jobSchedule.getJobDefinition()));
+        if (jobSchedule.getJobDefinition() != null) {
+            jobScheduleDto.setJobDefinitionDto(convertJobDefinitionToDto(jobSchedule.getJobDefinition()));
+            jobScheduleDto.setJobDefinitionName(jobSchedule.getJobDefinition().getName());
+        }
         jobScheduleDto.setTotalSize(totalCount);
         return jobScheduleDto;
     }
 
     public JobSchedule convertJobScheduleToEntity(JobScheduleDto jobScheduleDto) {
         JobSchedule jobSchedule = modelMapper.map(jobScheduleDto, JobSchedule.class);
-        jobSchedule.setJobDefinition(convertJobDefinitionToEntity(jobScheduleDto.getJobDefinitionDto()));
+        if (jobScheduleDto.getJobDefinitionDto() != null) {
+            jobSchedule.setJobDefinition(convertJobDefinitionToEntity(jobScheduleDto.getJobDefinitionDto()));
+        }
         return jobSchedule;
     }
 
@@ -217,8 +225,10 @@ public class ModelConverter {
 
         // Convert job definition
         JobDefinitionDto jobDefinitionDto = modelMapper.map(jobDefinition, JobDefinitionDto.class);
-        jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
-        jobDefinitionDto.setJobGroupName(jobDefinition.getJobGroup().getName());
+        if (jobDefinition.getJobGroup() != null) {
+            jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
+            jobDefinitionDto.setJobGroupName(jobDefinition.getJobGroup().getName());
+        }
 
         // Add parameter
         if (!jobDefinitionDto.getJobDefinitionParamDtos().isEmpty()) {
@@ -266,7 +276,6 @@ public class ModelConverter {
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
-        jobDefinition.setJobGroup(modelMapper.map(jobDefinitionDto.getJobGroupDto(), JobGroup.class));
 
         if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
             jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()

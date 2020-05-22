@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -97,7 +99,7 @@ public class JobDefinitionController {
     }
 
     /**
-     * Returns a single job definition.
+     * Returns a single job definition by ID.
      *
      * @param jobDefinitionId job definition UUID.
      * @return job definition with given ID or error.
@@ -108,6 +110,24 @@ public class JobDefinitionController {
         RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
         JobDefinition jobDefinition = jobDefinitionService.getJobDefinition(jobDefinitionId);
         return modelConverter.convertJobDefinitionToDto(jobDefinition);
+    }
+
+    /**
+     * Returns a single job definition by name.
+     *
+     * @param name job definition name.
+     * @return job definition with given name or error.
+     * @throws ResourceNotFoundException in case the job definition is not existing.
+     */
+    @GetMapping(value = "/byName", produces = {"application/hal+json"})
+    public ResponseEntity<JobDefinitionDto> findByName(@RequestParam(value = "name") String name) throws ResourceNotFoundException {
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(name);
+        if (jobDefinitionOptional.isPresent()) {
+            JobDefinitionDto jobDefinitionDto = modelConverter.convertJobDefinitionToDto(jobDefinitionOptional.get());
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).findByName(name)).withSelfRel());
+            return ResponseEntity.ok(jobDefinitionDto);
+        }
+        throw new ResourceNotFoundException();
     }
 
     /**
@@ -123,10 +143,17 @@ public class JobDefinitionController {
 
         // Get job definition
         JobDefinition jobDefinition = modelConverter.convertJobDefinitionToEntity(jobDefinitionDto);
+        jobDefinition.setId(UUID.randomUUID().toString());
+
+        // Add job group
+        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
+        jobDefinition.setJobGroup(jobGroup);
+
+        // Insert into database
         jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);
-        jobDefinitionDto = modelConverter.convertJobDefinitionToDto(jobDefinition);
 
         // Add links
+        jobDefinitionDto = modelConverter.convertJobDefinitionToDto(jobDefinition);
         addLinks(jobDefinitionDto);
         logger.debug(format("Job definition update request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
 

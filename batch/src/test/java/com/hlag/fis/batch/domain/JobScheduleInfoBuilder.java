@@ -22,11 +22,6 @@ public class JobScheduleInfoBuilder {
         return this;
     }
 
-    public JobScheduleInfoBuilder withGroupName(String groupName) {
-        jobSchedule.setGroupName(groupName);
-        return this;
-    }
-
     public JobScheduleInfoBuilder withSchedule(String schedule) {
         jobSchedule.setSchedule(schedule);
         return this;

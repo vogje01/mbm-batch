@@ -63,7 +63,6 @@ public class JobScheduleControllerTest {
 
         JobSchedule jobSchedule1 = new JobScheduleInfoBuilder()
             .withRandomId()
-            .withGroupName("Group1")
             .withName("Name1")
             .addAgent(agent)
             .withJobDefinition(jobDefinition1)
@@ -77,7 +76,6 @@ public class JobScheduleControllerTest {
 
         JobSchedule jobSchedule2 = new JobScheduleInfoBuilder()
             .withRandomId()
-            .withGroupName("Group2")
             .withName("Name2")
             .addAgent(agent)
             .withJobDefinition(jobDefinition2)
@@ -100,7 +98,6 @@ public class JobScheduleControllerTest {
 
         JobScheduleDto jobScheduleDto1 = new JobScheduleDtoBuilder()
             .withRandomId()
-            .withGroupName("Group1")
             .withName("Name1")
             .addAgent(agentDto)
             .withJobDefinition(jobDefinitionDto1)
@@ -114,7 +111,6 @@ public class JobScheduleControllerTest {
 
         JobScheduleDto jobScheduleDto2 = new JobScheduleDtoBuilder()
             .withRandomId()
-            .withGroupName("Group2")
             .withName("Name2")
             .addAgent(agentDto)
             .withJobDefinition(jobDefinitionDto2)
@@ -159,13 +155,11 @@ public class JobScheduleControllerTest {
         JobSchedule jobSchedule1 = new JobScheduleInfoBuilder()
             .withRandomId()
             .withName("Schedule1")
-            .withGroupName("Group2")
             .withSchedule("0 0 0/2 * * ?")
             .build();
         JobScheduleDto jobScheduleDto1 = new JobScheduleDtoBuilder()
             .withRandomId()
             .withName("Schedule1")
-            .withGroupName("Group2")
             .withSchedule("0 0 0/2 * * ?")
             .build();
 
