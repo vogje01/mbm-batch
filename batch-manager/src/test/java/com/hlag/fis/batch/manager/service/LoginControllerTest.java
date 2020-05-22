@@ -1,9 +1,11 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.manager.controller.LoginController;
 import com.hlag.fis.batch.manager.service.util.JwtRequest;
 import com.hlag.fis.batch.manager.service.util.JwtTokenUtil;
+import com.hlag.fis.batch.util.ModelConverter;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +43,12 @@ public class LoginControllerTest {
     @Mock
     private UserDetails userDetails;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private ModelConverter modelConverter;
+
     @InjectMocks
     private LoginController loginController;
 
@@ -53,7 +61,10 @@ public class LoginControllerTest {
         ReflectionTestUtils.setField(jwtTokenUtil, "secret", "javainuse");
 
         // Mock user details
+        User user = new User();
+        user.setUserId("vogje01");
         when(userDetails.getUsername()).thenReturn("vogje01");
+        when(userService.findByUserId(any())).thenReturn(java.util.Optional.of(user));
         when(jwtUserDetailsService.loadUserByUsername(any(), any(), any())).thenReturn(userDetails);
     }
 
