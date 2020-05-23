@@ -58,8 +58,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	public UserDetails loadUserByUsername(String userId) {
+		logger.debug(format("Starting load user - userId: {0}", userId));
 		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserId(userId);
-		if(userOptional.isPresent()) {
+		if (userOptional.isPresent()) {
 			return new User(userId, "", emptyList());
 		}
 /*		try (LDAPConnection ldapConnection = new LDAPConnection(ldapServerHost, ldapServerPort)) {
@@ -76,9 +77,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	public UserDetails loadUserByUsername(String userId, String password, String userOrg) {
-
+		logger.debug(format("Starting load user - userId: {0}", userId));
 		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserId(userId);
-		if(userOptional.isPresent()) {
+		if (userOptional.isPresent()) {
 			return new User(userId, password, emptyList());
 		}
 		/*try (LDAPConnection ldapConnection = new LDAPConnection(ldapServerHost, ldapServerPort)) {

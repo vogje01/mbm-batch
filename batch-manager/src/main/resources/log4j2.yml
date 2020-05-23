@@ -32,7 +32,7 @@ Configutation:
         AppenderRef:
           - ref: Console_Appender
       - name: com.hlag.fis.batch
-        level: info
+        level: debug
         additivity: false
         AppenderRef:
           - ref: File_Appender

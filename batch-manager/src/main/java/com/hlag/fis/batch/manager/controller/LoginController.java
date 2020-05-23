@@ -54,8 +54,10 @@ public class LoginController {
 
     @PostMapping(value = "/api/authenticate", produces = {"application/hal+json"})
     public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UnauthorizedException {
+        logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
         Optional<User> userOptional = userService.findByUserId(authenticationRequest.getUserId());
         if (userOptional.isPresent()) {
+            logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
             UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserId(),
                     authenticationRequest.getPassword(),
                     authenticationRequest.getOrgUnit());
