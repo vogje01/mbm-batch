@@ -71,6 +71,16 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
     @Column(name = "PHONE")
     private String phone;
     /**
+     * Avatar
+     */
+    @Column(name = "AVATAR")
+    private String avatar;
+    /**
+     * Theme
+     */
+    @Column(name = "THEME")
+    private String theme;
+    /**
      * Description
      */
     @Column(name = "DESCRIPTION")
@@ -100,6 +110,8 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
         this.lastName = user.lastName;
         this.email = user.email;
         this.phone = user.phone;
+        this.theme = user.theme;
+        this.avatar = user.avatar;
         this.description = user.description;
         this.active = user.active;
     }
@@ -161,6 +173,22 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
         this.phone = phone;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -196,6 +224,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         User user = (User) o;
         return Objects.equal(id, user.id) &&
                 Objects.equal(userId, user.userId) &&
@@ -204,6 +233,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
                 Objects.equal(firstName, user.firstName) &&
                 Objects.equal(email, user.email) &&
                 Objects.equal(phone, user.phone) &&
+                Objects.equal(theme, user.theme) &&
                 Objects.equal(description, user.description) &&
                 Objects.equal(active, user.active) &&
                 Objects.equal(userGroups, user.userGroups);
@@ -211,7 +241,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, userId, password, lastName, firstName, email, phone, description, active, userGroups);
+        return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, theme, description, active, userGroups);
     }
 
     public Boolean getActive() {
@@ -232,6 +262,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String>, Seri
                 .add("firstName", firstName)
                 .add("email", email)
                 .add("phone", phone)
+                .add("theme", theme)
                 .add("description", description)
                 .add("active", active)
                 .add("userGroups", userGroups)

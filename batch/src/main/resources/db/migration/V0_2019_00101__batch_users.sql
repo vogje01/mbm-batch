@@ -11,6 +11,8 @@ CREATE TABLE BATCH_USER
     PASSWORD    VARCHAR(32),
     EMAIL       VARCHAR(64),
     PHONE       VARCHAR(64),
+    THEME       VARCHAR(64),
+    AVATAR      BLOB,
     DESCRIPTION TEXT,
     ACTIVE      BIT                  DEFAULT FALSE,
     CREATED_BY  VARCHAR(32)          DEFAULT 'admin',
