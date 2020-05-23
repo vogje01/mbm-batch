@@ -1,12 +1,16 @@
 import React from 'react';
 import './job-definition-list.scss'
-import {DataGrid, Menu} from "devextreme-react";
+import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection, StringLengthRule} from "devextreme-react/data-grid";
 import UpdateTimer from "../../utils/update-timer";
-import {jobDefinitionDataSource} from "./job-definition-data-source";
 import {PatternRule, SimpleItem} from "devextreme-react/form";
-import {JobGroupDataSource} from "../job-group/job-group-data-source";
 import {Item} from "devextreme-react/autocomplete";
+import {Toolbar} from "devextreme-react/toolbar";
+import {jobDefinitionDataSource} from "./job-definition-data-source";
+import {JobGroupDataSource} from "../job-group/job-group-data-source";
+import JobDefinitionExport from "./job-definition-export";
+import JobDefinitionImport from "./job-definition-import";
+import {insertItem} from "../../utils/server-connection";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -26,20 +30,7 @@ class JobDefinitionList extends React.Component {
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
-        this.onMenuItemClick = this.onMenuItemClick.bind(this);
-        this.menus = [{
-            id: '1',
-            name: 'File',
-            items: [{
-                id: '1_1',
-                name: 'Export Job Definitions',
-                icon: 'material-icons-outlined ic-import-export md-18'
-            }, {
-                id: '1_2',
-                name: 'Import Job Definitions',
-                icon: 'material-icons-outlined ic-import-export md-18'
-            }]
-        }];
+        this.cloneJobDefinition = this.cloneJobDefinition.bind(this);
         this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
     }
 
@@ -55,16 +46,18 @@ class JobDefinitionList extends React.Component {
         });
     }
 
-    onMenuItemClick(e) {
-        if (e.itemData.id === '1_1') {
-            this.setState({showExport: !this.state.showExport});
-        } else if (e.itemData.id === '1_2') {
-            this.setState({showImport: !this.state.showImport});
-        }
-    }
-
     selectionChanged(e) {
         this.setState({currentJobDefinition: e.data});
+    }
+
+    cloneJobDefinition(e) {
+        e.event.preventDefault();
+        let jobDefinition = e.row.data;
+        jobDefinition.id = null;
+        jobDefinition.name = jobDefinition.name + ' (copy)';
+        jobDefinition.label = jobDefinition.label + ' (copy)';
+        let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
+        this.setState({currentJobDefinition: insertItem(url, JSON.stringify(jobDefinition))});
     }
 
     render() {
@@ -76,16 +69,32 @@ class JobDefinitionList extends React.Component {
                 <h2 className={'content-block'}>Job Definitions</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
-                        <Menu dataSource={this.menus}
-                              displayExpr={'name'}
-                              showFirstSubmenuMode={{
-                                  name: 'onHover',
-                                  delay: {show: 0, hide: 500}
-                              }}
-                              orientation={'horizontal'}
-                              submenuDirection={'auto'}
-                              hideSubmenuOnMouseLeave={false}
-                              onItemClick={this.onMenuItemClick}/>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-import", onClick: () => {
+                                        this.toggleImport()
+                                    }
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-export", onClick: () => {
+                                        this.toggleExport()
+                                    }
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             id={'jobDefinitionTable'}
                             dataSource={jobDefinitionDataSource()}
@@ -230,13 +239,19 @@ class JobDefinitionList extends React.Component {
                                 buttons={[
                                     {
                                         name: 'edit',
-                                        hint: 'Edit agent definition',
-                                        icon: 'material-icons-outlined ic-edit md-18'
+                                        hint: 'Edit job definition',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'copy',
+                                        hint: 'Copy job definition',
+                                        icon: 'material-icons-outlined ic-copy',
+                                        onClick: this.cloneJobDefinition
                                     },
                                     {
                                         name: 'delete',
-                                        hint: 'Delete agent',
-                                        icon: 'material-icons-outlined ic-delete md-18'
+                                        hint: 'Delete job definition',
+                                        icon: 'material-icons-outlined ic-delete'
                                     }
                                 ]}/>
                             <RemoteOperations
@@ -246,6 +261,12 @@ class JobDefinitionList extends React.Component {
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                         </DataGrid>
                         <UpdateTimer/>
+                        {
+                            this.state.showExport ? <JobDefinitionExport closePopup={this.toggleExport.bind(this)}/> : null
+                        }
+                        {
+                            this.state.showExport ? <JobDefinitionImport closePopup={this.toggleImport.bind(this)}/> : null
+                        }
                     </div>
                 </div>
             </React.Fragment>

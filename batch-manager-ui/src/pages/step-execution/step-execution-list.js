@@ -229,7 +229,7 @@ class StepExecutionList extends React.Component {
                             <RemoteOperations
                                 sorting={true}
                                 paging={true}/>
-                            <Paging defaultPageSize={5}/>
+                            <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
                         </DataGrid>
