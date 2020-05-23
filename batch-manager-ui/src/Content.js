@@ -20,9 +20,7 @@ export default function () {
                 <Redirect to={'/home'}/>
             </Switch>
             <Footer>
-                Copyright © 2029-2019 Momentum Inc.
-                <br/>
-                All trademarks or registered trademarks are property of their respective owners.
+                Copyright © 2020 Momentum Inc. All trademarks or registered trademarks are property of their respective owners.
             </Footer>
         </SideNavBarLayout>
     );

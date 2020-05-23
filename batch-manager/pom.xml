@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
     <groupId>com.hlag.fis.batch</groupId>
-    <artifactId>fis-batch-manager</artifactId>
-    <name>fis-batch-manager</name>
+    <artifactId>batch-manager</artifactId>
+    <name>batch-manager</name>
     <version>0.0.3</version>
-    <description>HLAG FIS3 Batch-Scheduler</description>
+    <description>Momentum Batch Management management REST server</description>
 
     <properties>
         <java.version>12</java.version>

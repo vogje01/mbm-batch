@@ -40,7 +40,7 @@ function AuthProvider(props) {
   useEffect(() => {
     // Retrieve and save user data on initial load
 
-    setUser(defaultUser);
+    //setUser(defaultUser);
     setLoading(false);
   }, []);
 

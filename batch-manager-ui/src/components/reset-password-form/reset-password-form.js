@@ -1,6 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {Link, useHistory} from "react-router-dom";
-import Form, {ButtonItem, ButtonOptions, EmailRule, Item, Label, RequiredRule} from 'devextreme-react/form';
+import Form, {ButtonItem, ButtonOptions, Item, Label, RequiredRule} from 'devextreme-react/form';
 import LoadIndicator from 'devextreme-react/load-indicator';
 import notify from 'devextreme/ui/notify';
 import './reset-password-form.scss'
@@ -14,11 +14,11 @@ export default function (props) {
 
   const onSubmit = useCallback(async (e) => {
     e.preventDefault();
-    const {email} = formData.current;
+    const {userId} = formData.current;
     setLoading(true);
 
     // Send reset password request
-    console.log(email);
+    console.log(userId);
 
     history.push('/login');
     notify(notificationText, 'success', 2500);
@@ -30,10 +30,8 @@ export default function (props) {
           <Item
               dataField={'email'}
               editorType={'dxTextBox'}
-              editorOptions={emailEditorOptions}
-          >
-            <RequiredRule message="Email is required"/>
-            <EmailRule message="Email is invalid"/>
+              editorOptions={UserIdEditorOptions}>
+            <RequiredRule message="UserId is required"/>
             <Label visible={false}/>
           </Item>
           <ButtonItem>
@@ -41,13 +39,10 @@ export default function (props) {
                 elementAttr={submitButtonAttributes}
                 width={'100%'}
                 type={'default'}
-                useSubmitBehavior={true}
-            >
+                useSubmitBehavior={true}>
             <span className="dx-button-text">
               {
-                loading
-                    ? <LoadIndicator width={'24px'} height={'24px'} visible={true}/>
-                    : 'Reset my password'
+                loading ? <LoadIndicator width={'24px'} height={'24px'} visible={true}/> : 'Reset my password'
               }
             </span>
             </ButtonOptions>
@@ -62,5 +57,5 @@ export default function (props) {
   );
 }
 
-const emailEditorOptions = {stylingMode: 'filled', placeholder: 'Email', mode: 'email'};
+const UserIdEditorOptions = {stylingMode: 'filled', placeholder: 'UserId'};
 const submitButtonAttributes = {class: 'submit-button'};
