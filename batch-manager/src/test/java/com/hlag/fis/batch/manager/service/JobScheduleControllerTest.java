@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
@@ -141,7 +140,7 @@ public class JobScheduleControllerTest {
         when(modelConverter.convertJobScheduleToDto(anyList(), anyLong())).thenReturn(jobScheduleDtoList);
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
-                .andDo(print())
+                //.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$.links[0].rel", is("self")))

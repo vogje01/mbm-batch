@@ -1,0 +1,238 @@
+import React from "react";
+import {
+    Column,
+    DataGrid,
+    Editing,
+    FilterRow,
+    HeaderFilter,
+    MasterDetail,
+    Pager,
+    Paging,
+    RemoteOperations,
+    Selection,
+    Sorting
+} from "devextreme-react/data-grid";
+import {JobExecutionDataSource} from "./job-execution-data-source";
+import UpdateTimer from "../../utils/update-timer";
+import './job-execution-list.scss'
+import {getRunningTime} from "../../utils/date-time-util";
+import {StepExecutionListPage} from "../index";
+import {Item, Toolbar} from "devextreme-react/toolbar";
+
+class JobExecutionList extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentJobExecution: {}
+        };
+        this.selectionChanged = this.selectionChanged.bind(this);
+        this.intervals = [
+            {interval: 0, text: 'None'},
+            {interval: 30000, text: '30 sec'},
+            {interval: 60000, text: '1 min'},
+            {interval: 300000, text: '5 min'},
+            {interval: 600000, text: '10 min'},
+            {interval: 1800000, text: '30 min'},
+            {interval: 3600000, text: '1 hour'}];
+        this.intervalSelectOptions = {
+            width: 140,
+            items: this.intervals,
+            valueExpr: "interval",
+            displayExpr: "text",
+            placeholder: "Update interval",
+            value: this.intervals[0].id,
+            onValueChanged: (args) => {
+                clearTimeout(this.state.timer);
+                if (args.value > 0) {
+                    this.state.timer = setInterval(() => this.setState({}), args.value);
+                    this.render();
+                }
+            }
+        }
+    }
+
+    selectionChanged(e) {
+        this.setState({currentJobExecution: e.data});
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <h2 className={'content-block'}>Job Executions</h2>
+                <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }
+                                }}/>
+                            <Item
+                                location="after"
+                                widget="dxSelectBox"
+                                locateInMenu="auto"
+                                options={this.intervalSelectOptions}/>
+                        </Toolbar>
+                        <DataGrid
+                            id={'jobTable'}
+                            dataSource={JobExecutionDataSource()}
+                            hoverStateEnabled={true}
+                            //onRowDblClick={this.toggleDetails}
+                            allowColumnReordering={true}
+                            allowColumnResizing={true}
+                            columnResizingMode={'widget'}
+                            columnMinWidth={50}
+                            columnAutoWidth={true}
+                            showColumnLines={true}
+                            showRowLines={true}
+                            showBorders={true}
+                            rowAlternationEnabled={true}
+                            onEditingStart={this.selectionChanged}>
+                            <Selection mode={'single'}/>
+                            <FilterRow visible={true} applyFilter={'auto'}/>
+                            <HeaderFilter visible={true}/>
+                            <Sorting mode={'multiple'}/>
+                            <Editing
+                                mode={'form'}
+                                useIcons={true}
+                                allowDeleting={true}
+                                allowUpdating={true}/>
+                            <Column
+                                caption={'Job Name'}
+                                dataField={'jobName'}
+                                allowFiltering={true}
+                                allowSorting={true}
+                                allowReordering={true}>
+                                <HeaderFilter allowSearch={true}/>
+                            </Column>
+                            <Column
+                                caption={'Hostname'}
+                                dataField={'hostName'}
+                                allowFiltering={true}
+                                allowSorting={true}
+                                allowReordering={true}
+                                width={120}>
+                                <HeaderFilter allowSearch={true}/>
+                            </Column>
+                            <Column
+                                caption={'Nodename'}
+                                dataField={'nodeName'}
+                                allowFiltering={true}
+                                allowSorting={true}
+                                allowReordering={true}
+                                width={120}>
+                                <HeaderFilter allowSearch={true}/>
+                            </Column>
+                            <Column
+                                dataField={'status'}
+                                caption={'Status'}
+                                dataType={'string'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}
+                                width={120}/>
+                            <Column
+                                dataField={'jobExecutionId'}
+                                caption={'ID'}
+                                dataType={'number'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}
+                                width={50}
+                                visible={false}/>
+                            <Column
+                                dataField={'jobPid'}
+                                caption={'PID'}
+                                dataType={'number'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}
+                                width={50}
+                                visible={false}/>
+                            <Column
+                                dataField={'jobVersion'}
+                                caption={'Version'}
+                                dataType={'string'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={80}/>
+                            <Column
+                                dataField={'createTime'}
+                                caption={'Created'}
+                                dataType={'datetime'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={120}
+                                visible={false}/>
+                            <Column
+                                dataField={'startTime'}
+                                caption={'Started'}
+                                dataType={'datetime'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={160}/>
+                            <Column
+                                dataField={'endTime'}
+                                caption={'Ended'}
+                                dataType={'datetime'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={160}/>
+                            <Column
+                                dataField={'lastUpdated'}
+                                caption={'Last Update'}
+                                dataType={'datetime'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={120}
+                                visible={false}/>
+                            <Column
+                                calculateCellValue={getRunningTime}
+                                dataField={'runningTime'}
+                                caption={'Running Time'}
+                                dataType={'datetime'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={120}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job execution entry',
+                                        icon: 'material-icons-outlined ic-edit md-18',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job execution entry',
+                                        icon: 'material-icons-outlined ic-delete md-18'
+                                    }
+                                ]}/>
+                            <RemoteOperations sorting={true} paging={true}/>
+                            <Paging defaultPageSize={10}/>
+                            <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
+                                   showNavigationButtons={true} showInfo={true} visible={true}/>
+                            <MasterDetail enabled={true} component={StepExecutionListPage}/>
+                        </DataGrid>
+                        <UpdateTimer/>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+    }
+}
+
+export default JobExecutionList;

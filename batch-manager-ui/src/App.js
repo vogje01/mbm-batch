@@ -1,26 +1,42 @@
+import 'devextreme/dist/css/dx.common.css';
+import './themes/generated/theme.base.css';
+import './themes/generated/theme.additional.css';
 import React from 'react';
-
-import MainComponent from "./components/MainComponent.js";
-import LoginView from "./views/login/LoginView";
-import TopToolbar from "./components/TopToolbar";
-import {Route, Router} from "react-router-dom";
-import history from "./components/History";
+import {HashRouter as Router} from 'react-router-dom';
+import './dx-styles.scss';
+import LoadPanel from 'devextreme-react/load-panel';
+import {NavigationProvider} from './contexts/navigation';
+import {AuthProvider, useAuth} from './contexts/auth';
+import {useScreenSizeClass} from './utils/media-query';
+import Content from './Content';
+import NotAuthenticatedContent from './NotAuthenticatedContent';
 
 function App() {
-    return (
-        <div className="App">
-            <TopToolbar/>
-            <Router history={history}>
-                <Route exact path="/" component={LoginView}/>
-                <Route exact path="/jobexecutions" component={MainComponent}/>
-                <Route exact path="/stepexecutions" component={MainComponent}/>
-                <Route exact path="/jobschedules" component={MainComponent}/>
-                <Route exact path="/settings" component={MainComponent}/>
-                <Route exact path="/users" component={MainComponent}/>
-                <Route exact path="/performance" component={MainComponent}/>
-            </Router>
-        </div>
-  );
+  const {user, loading} = useAuth();
+
+  if (loading) {
+    return <LoadPanel visible={true}/>;
+  }
+
+  if (user) {
+    return <Content/>;
+  }
+
+  return <NotAuthenticatedContent/>;
 }
 
-export default App;
+export default function () {
+  const screenSizeClass = useScreenSizeClass();
+
+  return (
+      <Router>
+        <AuthProvider>
+          <NavigationProvider>
+            <div className={`app ${screenSizeClass}`}>
+              <App/>
+            </div>
+          </NavigationProvider>
+        </AuthProvider>
+      </Router>
+  );
+}
