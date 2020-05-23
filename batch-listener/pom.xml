@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
     <groupId>com.hlag.fis.batch</groupId>
-    <artifactId>fis-batch-listener</artifactId>
-    <name>fis-batch-listener</name>
+    <artifactId>batch-listener</artifactId>
+    <name>batch-listener</name>
     <version>0.0.3</version>
-    <description>HLAG FIS3 Batch-Listener</description>
+    <description>Momentum Batch Management listener</description>
 
     <properties>
         <java.version>12</java.version>
