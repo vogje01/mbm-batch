@@ -55,6 +55,14 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private String phone;
     /**
+     * Avatar
+     */
+    private String avatar;
+    /**
+     * Theme
+     */
+    private String theme;
+    /**
      * Description
      */
     private String description;
@@ -97,6 +105,8 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.lastName = user.lastName;
         this.email = user.email;
         this.phone = user.phone;
+        this.theme = user.theme;
+        this.avatar = user.avatar;
         this.description = user.description;
         this.active = user.active;
         this.createdAt = user.createdAt;
@@ -177,6 +187,22 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.phone = phone;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
     public String getCreatedBy() {
         return createdBy;
     }
@@ -239,6 +265,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(firstName, userDto.firstName) &&
                 Objects.equal(email, userDto.email) &&
                 Objects.equal(phone, userDto.phone) &&
+                Objects.equal(theme, userDto.theme) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
                 Objects.equal(createdBy, userDto.createdBy) &&
@@ -251,7 +278,7 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, description, active, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, description, active, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
     }
 
     public Boolean getActive() {
@@ -273,6 +300,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("firstName", firstName)
                 .add("email", email)
                 .add("phone", phone)
+                .add("theme", theme)
                 .add("description", description)
                 .add("active", active)
                 .add("createdBy", createdBy)
