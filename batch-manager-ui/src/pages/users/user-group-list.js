@@ -16,6 +16,7 @@ import {EmptyItem, SimpleItem} from "devextreme-react/form";
 import {UserGroupDataSource} from "./user-group-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
+import UsergroupUserView from "./usergroup-user-list";
 
 export default () => {
 
@@ -69,7 +70,7 @@ export default () => {
                                     <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
                                 </SimpleItem>
                                 <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Users"}>
-                                    {/*<UsergroupUserView userGroup={currentUserGroup}/>*/}
+                                    <UsergroupUserView userGroup={currentUserGroup}/>
                                 </SimpleItem>
                             </Form>
                         </Editing>
