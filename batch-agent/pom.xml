@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
     <groupId>com.hlag.fis.batch</groupId>
-    <artifactId>fis-batch-agent</artifactId>
-    <name>fis-batch-agent</name>
+    <artifactId>batch-agent</artifactId>
+    <name>batch-agent</name>
     <version>0.0.3</version>
-    <description>HLAG FIS3 Batch-agent</description>
+    <description>Momentum Batch Management agent</description>
 
     <properties>
         <java.version>12</java.version>
