@@ -16,7 +16,6 @@ import {
     Legend,
     Point,
     Series,
-    Size,
     Tick,
     TickInterval,
     Title,
@@ -293,7 +292,8 @@ class PerformanceChart extends React.Component {
                     </div>
                     <div className={'dx-card responsive-paddings'}>
                         <Chart id="chart" palette="Office"
-                               dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}>
+                               dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}
+                               margin={{margin: '0px 10px 0px 0px'}}>
                             <CommonSeriesSettings argumentField="lastUpdate" type={'line'}/>
                             {sources.map(this.getSource)}
                             <ArgumentAxis argumentType="datetime" visualRange={{startValue: this.state.limitStart, endValue: this.state.limitEnd}}
@@ -321,7 +321,6 @@ class PerformanceChart extends React.Component {
                                     </Label>
                                 </VerticalLine>
                             </Crosshair>
-                            <Size width={1880}/>
                         </Chart>
                         <UpdateTimer/>
                     </div>
