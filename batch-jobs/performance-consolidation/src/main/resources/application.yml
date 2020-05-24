@@ -3,6 +3,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
+    web-application-type: none
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect

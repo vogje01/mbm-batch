@@ -52,18 +52,6 @@ public class HouseKeepingBatchConfiguration {
         return configurer;
     }
 
-    /*@Bean
-    @Primary
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.registerModule(new Hibernate5Module());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        builder.configure(mapper);
-        builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return builder.build();
-    }*/
-
     @Bean(name = "mysqlDataSource")
     @ConfigurationProperties(prefix = "mysql.datasource")
     public DataSource dataSource() {
@@ -89,7 +77,7 @@ public class HouseKeepingBatchConfiguration {
         return hibernateProperties;
     }
 
-    @Bean(name = "mysqlSessionFactory")
+    //@Bean(name = "mysqlSessionFactory")
     public SessionFactory sessionFactory() {
         return Objects.requireNonNull(entityManagerFactoryBean().getObject()).unwrap(SessionFactory.class);
     }

@@ -316,7 +316,7 @@ public class BatchScheduler {
     }
 
     /**
-     * Find a job bane group name and name.
+     * Find a job by group name and name.
      */
     private boolean findJob(JobDefinition jobDefinition) throws SchedulerException {
         return scheduler.checkExists(new JobKey(jobDefinition.getName(), jobDefinition.getJobGroup().getName()));
