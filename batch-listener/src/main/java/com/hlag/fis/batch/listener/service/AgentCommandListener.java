@@ -211,7 +211,7 @@ public class AgentCommandListener {
         List<JobSchedule> jobSchedules = jobScheduleRepository.findActiveByAgent(agent.getId());
         logger.info(format("Got active jobs for agent - nodeName: {0} size: {1}", agent.getNodeName(), jobSchedules.size()));
 
-        if (jobSchedules.size() == 0) {
+        if (jobSchedules.isEmpty()) {
             logger.info(format("No active job schedules for agent - nodeName: {0}"));
         } else {
 

@@ -141,6 +141,7 @@ public class AgentController {
     public ResponseEntity<AgentDto> updateAgent(@RequestBody AgentDto agentDto) throws ResourceNotFoundException {
 
         t.restart();
+        logger.debug(format("Starting agent update request - id: {0}", agentDto.getId()));
         RestPreconditions.checkFound(agentService.findById(agentDto.getId()));
 
         Agent agent = modelConverter.convertAgentToEntity(agentDto);
@@ -149,7 +150,7 @@ public class AgentController {
 
         // Add self link
         addLinks(agentDto);
-        logger.debug(format("Finished update agent request - id: {0} {1}", agent.getId(), t.elapsedStr()));
+        logger.debug(format("Finished agent update request - id: {0} {1}", agent.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(agentDto);
     }

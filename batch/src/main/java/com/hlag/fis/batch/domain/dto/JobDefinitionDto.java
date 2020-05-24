@@ -11,9 +11,11 @@ import org.springframework.hateoas.RepresentationModel;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+@JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = JobDefinitionDto.class)
 public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     private String id;
@@ -152,6 +154,20 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.totalSize = totalSize;
     }
 
+    public List<JobDefinitionParamDto> getJobDefinitionParamDtos() {
+        return jobDefinitionParamDtos;
+    }
+
+    public void setJobDefinitionParamDtos(List<JobDefinitionParamDto> jobDefinitionParamDtos) {
+        this.jobDefinitionParamDtos = jobDefinitionParamDtos;
+    }
+
+    public void addJobDefinitionParam(JobDefinitionParamDto jobDefinitionParamDto) {
+        if (!jobDefinitionParamDtos.contains(jobDefinitionParamDto)) {
+            jobDefinitionParamDtos.add(jobDefinitionParamDto);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -176,20 +192,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
     @Override
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, jobGroupDto, description, active, fileName, command, workingDirectory, totalSize, jobDefinitionParamDtos);
-    }
-
-    public List<JobDefinitionParamDto> getJobDefinitionParamDtos() {
-        return jobDefinitionParamDtos;
-    }
-
-    public void setJobDefinitionParamDtos(List<JobDefinitionParamDto> jobDefinitionParamDtos) {
-        this.jobDefinitionParamDtos = jobDefinitionParamDtos;
-    }
-
-    public void addJobDefinitionParam(JobDefinitionParamDto jobDefinitionParamDto) {
-        if (!jobDefinitionParamDtos.contains(jobDefinitionParamDto)) {
-            jobDefinitionParamDtos.add(jobDefinitionParamDto);
-        }
     }
 
     @Override
