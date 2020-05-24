@@ -54,15 +54,10 @@
             <version>2.3.2</version>
         </dependency>
 
-        <!-- FIS4 -->
+        <!-- Batch -->
         <dependency>
             <groupId>com.hlag.fis</groupId>
-            <artifactId>common</artifactId>
-            <version>0.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hlag.fis</groupId>
-            <artifactId>batch</artifactId>
+            <artifactId>batch-common</artifactId>
             <version>0.0.3</version>
         </dependency>
     </dependencies>

@@ -6,7 +6,7 @@ import com.hlag.fis.batch.manager.service.JobExecutionParamService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
 import com.hlag.fis.batch.manager.service.util.PagingUtil;
-import com.hlag.fis.util.MethodTimer;
+import com.hlag.fis.batch.util.MethodTimer;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

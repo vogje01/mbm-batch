@@ -16,9 +16,9 @@
     <description>Momentum Batch Management management REST server</description>
 
     <properties>
-        <java.version>12</java.version>
-        <maven.compiler.source>12</maven.compiler.source>
-        <maven.compiler.target>12</maven.compiler.target>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -89,12 +89,7 @@
         <!-- FIS4 -->
         <dependency>
             <groupId>com.hlag.fis</groupId>
-            <artifactId>common</artifactId>
-            <version>0.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hlag.fis</groupId>
-            <artifactId>batch</artifactId>
+            <artifactId>batch-common</artifactId>
             <version>0.0.3</version>
         </dependency>
 
@@ -119,7 +114,7 @@
         </dependency>
         <dependency>
             <groupId>com.hlag.fis</groupId>
-            <artifactId>batch</artifactId>
+            <artifactId>batch-common</artifactId>
             <version>0.0.3</version>
             <type>test-jar</type>
             <scope>test</scope>
