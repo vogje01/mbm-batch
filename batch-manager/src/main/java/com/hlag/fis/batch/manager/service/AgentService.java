@@ -23,7 +23,13 @@ public interface AgentService {
 
     Optional<Agent> findById(String id);
 
+    Optional<Agent> findByNodeName(String nodeName);
+
     Agent updateAgent(Agent agent) throws ResourceNotFoundException;
 
     void deleteAgent(String agentId);
+
+    Agent addSchedule(String id, String name);
+
+    Agent removeSchedule(String id, String scheduleId);
 }

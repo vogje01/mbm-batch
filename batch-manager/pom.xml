@@ -86,7 +86,7 @@
             <version>2.10.1</version>
         </dependency>
 
-        <!-- FIS4 -->
+        <!-- Batch -->
         <dependency>
             <groupId>com.hlag.fis</groupId>
             <artifactId>batch-common</artifactId>

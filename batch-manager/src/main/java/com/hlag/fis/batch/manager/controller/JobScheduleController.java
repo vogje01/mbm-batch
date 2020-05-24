@@ -175,16 +175,16 @@ public class JobScheduleController {
      * @return job schedule resource.
      * @throws ResourceNotFoundException in case the job schedule is not existing.
      */
-    @PutMapping(value = "/{jobScheduleId}/addAgent")
+    @PutMapping(value = "/{jobScheduleId}/addAgent/")
     public ResponseEntity<Void> addAgent(@PathVariable("jobScheduleId") String jobScheduleId,
-                                         @RequestBody Agent agent) throws ResourceNotFoundException {
+                                         @RequestParam(value = "nodeName") String nodeName) throws ResourceNotFoundException {
 
         t.restart();
         RestPreconditions.checkFound(jobScheduleService.findById(jobScheduleId));
-        RestPreconditions.checkFound(agentService.findById(agent.getId()));
+        RestPreconditions.checkFound(agentService.findByNodeName(nodeName));
 
-        jobScheduleService.addAgent(jobScheduleId, agent.getId());
-        logger.debug(format("Agent added to schedule - scheduleId: {0} agentId: {1} {2}", jobScheduleId, agent.getId(), t.elapsedStr()));
+        jobScheduleService.addAgent(jobScheduleId, nodeName);
+        logger.debug(format("Agent added to schedule - scheduleId: {0} nodeName: {1} {2}", jobScheduleId, nodeName, t.elapsedStr()));
         return null;
     }
 
@@ -195,8 +195,8 @@ public class JobScheduleController {
      * @return job schedule resource.
      * @throws ResourceNotFoundException in case the job schedule is not existing.
      */
-    @DeleteMapping(value = "/{jobScheduleId}/removeAgent")
-    public ResponseEntity<Void> removeAgent(@PathVariable("jobScheduleId") String jobScheduleId, @RequestParam("agentId") String agentId) throws ResourceNotFoundException {
+    @PutMapping(value = "/{jobScheduleId}/removeAgent/{agentId}")
+    public ResponseEntity<Void> removeAgent(@PathVariable("jobScheduleId") String jobScheduleId, @PathVariable String agentId) throws ResourceNotFoundException {
 
         t.restart();
         RestPreconditions.checkFound(jobScheduleService.findById(jobScheduleId));
@@ -243,8 +243,8 @@ public class JobScheduleController {
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).findById(jobScheduleDto.getId())).withSelfRel());
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).update(jobScheduleDto.getId(), jobScheduleDto)).withRel("update"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgents(jobScheduleDto.getId(), page, size, sortBy, sortDir)).withRel("agents"));
-            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgent(jobScheduleDto.getId(), new Agent())).withRel("addAgent"));
-            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgent(jobScheduleDto.getId(), "")).withRel("removeAgent"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgent(jobScheduleDto.getId(), null)).withRel("addAgent"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgent(jobScheduleDto.getId(), null)).withRel("removeAgent"));
             jobScheduleDto.add(linkTo(methodOn(AgentController.class).updateAgent(new AgentDto())).withRel("updateAgent"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", jobScheduleDto.getId()), e);

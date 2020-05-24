@@ -29,7 +29,7 @@ public interface JobScheduleService {
 
     long countAgents(final String jobScheduleId);
 
-    JobSchedule addAgent(final String jobScheduleId, final String agentId) throws ResourceNotFoundException;
+    JobSchedule addAgent(final String jobScheduleId, final String nodeName) throws ResourceNotFoundException;
 
     JobSchedule removeAgent(final String jobScheduleId, final String agentId) throws ResourceNotFoundException;
 }

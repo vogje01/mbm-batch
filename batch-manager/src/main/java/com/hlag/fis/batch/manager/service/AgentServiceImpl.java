@@ -93,6 +93,12 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    @Cacheable(cacheNames = "Agent", key = "#nodeName")
+    public Optional<Agent> findByNodeName(String nodeName) {
+        return agentRepository.findByNodeName(nodeName);
+    }
+
+    @Override
     @CachePut(cacheNames = "Agent", key = "#agent.id")
     public Agent updateAgent(Agent agent) throws ResourceNotFoundException {
         Optional<Agent> agentOldOptional = agentRepository.findById(agent.getId());
@@ -108,5 +114,47 @@ public class AgentServiceImpl implements AgentService {
     @CacheEvict(cacheNames = "Agent", key = "#agent.id")
     public void deleteAgent(String agentId) {
         agentRepository.deleteById(agentId);
+    }
+
+    /**
+     * Adds a schedule to an agent.
+     *
+     * @param id   agent ID.
+     * @param name schedule name to add.
+     */
+    @Override
+    @CachePut(cacheNames = "Agent", key = "#id")
+    public Agent addSchedule(String id, String name) {
+        Optional<Agent> agentOptional = agentRepository.findById(id);
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByName(name);
+        if (agentOptional.isPresent() && jobScheduleOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            JobSchedule jobSchedule = jobScheduleOptional.get();
+            jobSchedule.addAgent(agent);
+            jobScheduleRepository.save(jobSchedule);
+            return agent;
+        }
+        return null;
+    }
+
+    /**
+     * Removes a job schedule from an agent.
+     *
+     * @param id            agent ID.
+     * @param jobScheduleId job schedule ID to remove.
+     */
+    @Override
+    @CachePut(cacheNames = "Agent", key = "#id")
+    public Agent removeSchedule(String id, String jobScheduleId) {
+        Optional<Agent> agentOptional = findById(id);
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
+        if (agentOptional.isPresent() && jobScheduleOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            JobSchedule jobSchedule = jobScheduleOptional.get();
+            jobSchedule.removeAgent(agent);
+            jobScheduleRepository.save(jobSchedule);
+            return agent;
+        }
+        return null;
     }
 }

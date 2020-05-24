@@ -3,7 +3,7 @@ import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../utils/param-util";
 import {deleteItem, insertItem, listItems, updateItem} from "../../utils/server-connection";
 
-export const jobScheduleDataSource = () => {
+export const JobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
@@ -29,24 +29,22 @@ export const jobScheduleDataSource = () => {
     });
 };
 
-export const scheduleAgentDataSource = (jobSchedule) => {
+export const JobScheduleAgentDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name');
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
             },
-            remove: function (agent) {
-                let url = jobSchedule._links.removeAgent.href + agent.id;
-                return deleteItem(url, agent.id);
-            },
             insert: function (agent) {
                 let url = jobSchedule._links.addAgent.href;
-                return insertItem(url, JSON.stringify(agent.nodeName))
+                url = url.replace("{nodeName}", agent.nodeName)
+                return insertItem(url)
             },
-            update: function (agent) {
-                let url = jobSchedule._links.updateAgent.href;
-                return updateItem(url, agent);
+            remove: function (agent) {
+                let url = jobSchedule._links.removeAgent.href;
+                url = url.replace("{agentId}", agent.id)
+                return insertItem(url)
             }
         })
     });

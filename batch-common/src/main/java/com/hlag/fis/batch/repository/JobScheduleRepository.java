@@ -34,4 +34,7 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
 
     @Query("select j from JobSchedule j left join j.agents a where a.id = :agentId")
     Page<JobSchedule> findByAgentId(@Param("agentId") String agentId, Pageable pageable);
+
+    @Query("select j from JobSchedule j where j.name = :name")
+    Optional<JobSchedule> findByName(@Param("name") String name);
 }

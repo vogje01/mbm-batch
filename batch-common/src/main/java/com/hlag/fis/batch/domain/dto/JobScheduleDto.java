@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.domain.dto;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobScheduleType;
@@ -10,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = JobScheduleDto.class)
 public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     private String id;
@@ -51,9 +52,9 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
      */
     private Long totalSize;
 
-    private List<AgentDto> agentDtoes = new ArrayList<>();
-
     private JobDefinitionDto jobDefinitionDto;
+
+    private List<AgentDto> agentDtos = new ArrayList<>();
 
     @JsonCreator
     public JobScheduleDto() {
@@ -172,17 +173,17 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
         this.jobDefinitionDto = jobDefinitionDto;
     }
 
-    public List<AgentDto> getAgentDtoes() {
-        return agentDtoes;
+    public List<AgentDto> getAgentDtos() {
+        return agentDtos;
     }
 
-    public void setAgentDtoes(List<AgentDto> agentDtoes) {
-        this.agentDtoes = agentDtoes;
+    public void setAgentDtos(List<AgentDto> agentDtos) {
+        this.agentDtos = agentDtos;
     }
 
     public void addAgentDto(AgentDto agentDto) {
-        if (agentDtoes.contains(agentDto)) {
-            agentDtoes.add(agentDto);
+        if (agentDtos.contains(agentDto)) {
+            agentDtos.add(agentDto);
         }
     }
 
@@ -205,13 +206,13 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(modifiedBy, that.modifiedBy) &&
                 Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(totalSize, that.totalSize) &&
-                Objects.equal(agentDtoes, that.agentDtoes) &&
+                Objects.equal(agentDtos, that.agentDtos) &&
                 Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtoes, jobDefinitionDto);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtos, jobDefinitionDto);
     }
 
     @Override
@@ -230,7 +231,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
                 .add("totalSize", totalSize)
-                .add("agentDtoes", agentDtoes)
+                .add("agentDtos", agentDtos)
                 .add("jobDefinitionDto", jobDefinitionDto)
                 .toString();
     }

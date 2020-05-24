@@ -2,13 +2,14 @@ import React from 'react';
 
 import 'devextreme/data/odata/store';
 import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
-import {jobScheduleDataSource} from "./job-schedule-data-source";
+import {JobScheduleDataSource} from "./job-schedule-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import {jobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import JobScheduleAgentList from "./job-schedule-agent-list";
+import {Toolbar} from "devextreme-react/toolbar";
 
 class JobSchedulerList extends React.Component {
 
@@ -34,9 +35,19 @@ class JobSchedulerList extends React.Component {
                 <h2 className={'content-block'}>Job Schedules</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             id={'jobScheduleTable'}
-                            dataSource={jobScheduleDataSource()}
+                            dataSource={JobScheduleDataSource()}
                             keyExpr="id"
                             hoverStateEnabled={true}
                             allowColumnReordering={true}

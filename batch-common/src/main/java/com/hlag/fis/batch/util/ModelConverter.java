@@ -324,7 +324,7 @@ public class ModelConverter {
 
     public AgentDto convertAgentToDto(Agent agent) {
         AgentDto agentDto = modelMapper.map(agent, AgentDto.class);
-        agentDto.setSchedules(agent.getSchedules().stream().map(this::convertJobScheduleToDto).collect(toList()));
+        agentDto.setScheduleDtos(agent.getSchedules().stream().map(this::convertJobScheduleToDto).collect(toList()));
         return agentDto;
     }
 

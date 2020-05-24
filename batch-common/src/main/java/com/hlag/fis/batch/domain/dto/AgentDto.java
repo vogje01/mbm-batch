@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 /**
  * Class description.
  *
@@ -19,9 +21,9 @@ import java.util.List;
  * @version 0.0.2
  * @since 0.0.1
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AgentDto.class)
 public class AgentDto extends RepresentationModel<AgentDto> {
 
     /**
@@ -75,12 +77,13 @@ public class AgentDto extends RepresentationModel<AgentDto> {
     /**
      * Schedule list
      */
-    private List<JobScheduleDto> schedules = new ArrayList<>();
+    private List<JobScheduleDto> scheduleDtos = new ArrayList<>();
 
     /**
      * Constructor
      */
     public AgentDto() {
+        // JPA constructor
     }
 
     public String getId() {
@@ -179,12 +182,12 @@ public class AgentDto extends RepresentationModel<AgentDto> {
         this.totalSize = totalSize;
     }
 
-    public List<JobScheduleDto> getSchedules() {
-        return schedules;
+    public List<JobScheduleDto> getScheduleDtos() {
+        return scheduleDtos;
     }
 
-    public void setSchedules(List<JobScheduleDto> schedules) {
-        this.schedules = schedules;
+    public void setScheduleDtos(List<JobScheduleDto> scheduleDtos) {
+        this.scheduleDtos = scheduleDtos;
     }
 
     @Override
@@ -202,7 +205,7 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 .add("modifiedAt", modifiedAt)
                 .add("active", active)
                 .add("totalSize", totalSize)
-                .add("schedules", schedules)
+                .add("schedules", scheduleDtos)
                 .toString();
     }
 
@@ -224,11 +227,11 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 Objects.equal(modifiedAt, agentDto.modifiedAt) &&
                 Objects.equal(active, agentDto.active) &&
                 Objects.equal(totalSize, agentDto.totalSize) &&
-                Objects.equal(schedules, agentDto.schedules);
+                Objects.equal(scheduleDtos, agentDto.scheduleDtos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, schedules);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
     }
 }

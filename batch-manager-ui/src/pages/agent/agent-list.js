@@ -1,20 +1,20 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {agentDataSource} from "./agent-data-source";
+import {AgentDataSource} from "./agent-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import AgentJobScheduleView from "./agent-job-schedule-list";
+import {Toolbar} from "devextreme-react/toolbar";
 
 class AgentView extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentAgent: {},
-            currentAgents: [],
+            currentAgent: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
     }
@@ -32,9 +32,19 @@ class AgentView extends React.Component {
                 <h2 className={'content-block'}>Agents</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             id={'AgentTable'}
-                            dataSource={agentDataSource()}
+                            dataSource={AgentDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

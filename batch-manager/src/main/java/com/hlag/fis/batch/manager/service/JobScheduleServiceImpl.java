@@ -143,9 +143,9 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobSchedule addAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
+    public JobSchedule addAgent(String jobScheduleId, String nodeName) throws ResourceNotFoundException {
 
-        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        Optional<Agent> agentOptional = agentRepository.findByNodeName(nodeName);
         if (agentOptional.isPresent()) {
 
             // Get hte agent

@@ -1,9 +1,8 @@
 import React from 'react';
 import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
-import {scheduleAgentDataSource} from "./job-schedule-data-source";
-import {listItems} from "../../utils/server-connection";
+import {JobScheduleAgentDataSource} from "./job-schedule-data-source";
 import {SimpleItem} from "devextreme-react/form";
-import {agentDataSource} from "../agent/agent-data-source";
+import {AgentDataSource} from "../agent/agent-data-source";
 
 class JobScheduleAgentList extends React.Component {
 
@@ -11,16 +10,7 @@ class JobScheduleAgentList extends React.Component {
         super(props);
         this.state = {
             currentJobSchedule: this.props.data,
-            agents: [],
-            selectedAgent: {}
         };
-    }
-
-    componentDidMount() {
-        listItems('agents', 'agentDtoes')
-            .then((data) => {
-                this.setState({agents: data.data, selectedAgent: data.data[0]})
-            })
     }
 
     render() {
@@ -31,7 +21,7 @@ class JobScheduleAgentList extends React.Component {
             <React.Fragment>
                 <DataGrid
                     id={'jobScheduleAgentTable'}
-                    dataSource={scheduleAgentDataSource(this.props.schedule)}
+                    dataSource={JobScheduleAgentDataSource(this.props.schedule)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -58,7 +48,7 @@ class JobScheduleAgentList extends React.Component {
                                 dataField={'nodeName'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: agentDataSource(), valueExpr: 'nodeName', displayExpr: 'nodeName'}}/>
+                                editorOptions={{dataSource: AgentDataSource(), valueExpr: 'nodeName', displayExpr: 'nodeName'}}/>
                         </Form>
                     </Editing>
                     <Column
@@ -84,18 +74,16 @@ class JobScheduleAgentList extends React.Component {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit parameter',
-                                icon: 'material-icons-outlined ic-edit md-18'
+                                hint: 'Edit agent',
+                                icon: 'material-icons-outlined ic-edit'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete parameter',
-                                icon: 'material-icons-outlined ic-delete md-18'
+                                hint: 'Delete agent',
+                                icon: 'material-icons-outlined ic-delete'
                             }
                         ]}/>
-                    <RemoteOperations
-                        sorting={true}
-                        paging={true}/>
+                    <RemoteOperations sorting={true} paging={true}/>
                     <Paging defaultPageSize={10}/>
                     <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50]}/>
                 </DataGrid>

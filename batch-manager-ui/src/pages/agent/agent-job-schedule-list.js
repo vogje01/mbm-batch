@@ -1,7 +1,8 @@
 import React from 'react';
-import {Column, DataGrid, Editing, FilterRow, HeaderFilter, Lookup, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
-import {listItems} from "../../utils/server-connection";
+import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
 import {AgentScheduleDataSource} from "./agent-data-source";
+import {JobScheduleDataSource} from "../job-schedule/job-schedule-data-source";
+import {SimpleItem} from "devextreme-react/form";
 
 class AgentJobScheduleView extends React.Component {
 
@@ -12,13 +13,6 @@ class AgentJobScheduleView extends React.Component {
             schedules: [],
             selectedSchedule: {}
         };
-    }
-
-    componentDidMount() {
-        listItems('schedules', 'jobScheduleDtoes')
-            .then((data) => {
-                this.setState({schedules: data.data, selectedAgent: data.data[0]})
-            })
     }
 
     render() {
@@ -47,23 +41,31 @@ class AgentJobScheduleView extends React.Component {
                     <Sorting mode={'multiple'}/>
                     <Editing
                         mode={'form'}
-                        startEditAction={ondblclick}
                         useIcons={true}
                         allowAdding={true}
                         allowDeleting={true}
-                        allowUpdating={true}/>
+                        allowUpdating={true}>
+                        <Form>
+                            <SimpleItem
+                                dataField={'name'}
+                                isRequired={true}
+                                editorType={'dxSelectBox'}
+                                editorOptions={{dataSource: JobScheduleDataSource(), valueExpr: 'name', displayExpr: 'name'}}/>
+                        </Form>
+                    </Editing>
                     <Column
-                        dataField="name">
-                        <Lookup dataSource={this.state.agents}
-                                displayExpr={"nodeName"}/>
-                    </Column>
+                        dataField="name"
+                        caption={'Name'}
+                        allowSorting={true}
+                        allowReordering={true}
+                        allowEditing={true}/>
                     <Column
                         dataField={'active'}
                         caption={'Active'}
                         dataType={'boolean'}
                         allowSorting={true}
                         allowReordering={true}
-                        allowEditing={true}
+                        allowEditing={false}
                         width={80}/>
                     <Column
                         allowSorting={false}
@@ -73,13 +75,13 @@ class AgentJobScheduleView extends React.Component {
                         buttons={[
                             {
                                 name: 'edit',
-                                hint: 'Edit parameter',
-                                icon: 'material-icons-outlined ic-edit md-18'
+                                hint: 'Edit job schedule',
+                                icon: 'material-icons-outlined ic-edit'
                             },
                             {
                                 name: 'delete',
-                                hint: 'Delete parameter',
-                                icon: 'material-icons-outlined ic-delete md-18'
+                                hint: 'Delete job schedule',
+                                icon: 'material-icons-outlined ic-delete'
                             }
                         ]}/>
                     <RemoteOperations
