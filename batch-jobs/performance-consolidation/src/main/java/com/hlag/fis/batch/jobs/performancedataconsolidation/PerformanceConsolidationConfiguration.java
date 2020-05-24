@@ -77,7 +77,7 @@ public class PerformanceConsolidationConfiguration {
         return hibernateProperties;
     }
 
-    @Bean(name = "mysqlSessionFactory")
+    //@Bean(name = "mysqlSessionFactory")
     public SessionFactory sessionFactory() {
         return Objects.requireNonNull(entityManagerFactoryBean().getObject()).unwrap(SessionFactory.class);
     }
