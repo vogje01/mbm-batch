@@ -3,7 +3,6 @@ package com.hlag.fis.batch.domain.dto;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobExecutionThrown;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
 import java.util.Date;
@@ -13,7 +12,7 @@ import java.util.Date;
  * @version 0.0.1
  * @since 0.0.1
  */
-public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> {
+public class JobExecutionLogDto {
 
     private String id;
 

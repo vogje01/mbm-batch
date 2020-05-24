@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +23,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = AgentDto.class)
-public class AgentDto extends RepresentationModel<AgentDto> {
+public class AgentDto {
 
     /**
      * Primary key

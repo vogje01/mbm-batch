@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.sql.Timestamp;
 
@@ -18,7 +17,7 @@ import java.sql.Timestamp;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class AgentPerformanceDto extends RepresentationModel<JobExecutionDto> {
+public class AgentPerformanceDto {
 
     /**
      * Primary key
