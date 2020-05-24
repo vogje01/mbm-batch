@@ -41,7 +41,7 @@ const getAttributeValue = (attribute, value) => {
     return attribute;
 };
 
-export const jobDefinitionDataSource = () => {
+export const JobDefinitionDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             byKey: function (key) {
@@ -76,7 +76,7 @@ export const jobDefinitionDataSource = () => {
     });
 };
 
-export const jobDefinitionParamDataSource = (jobDefinition) => {
+export const JobDefinitionParamDataSource = (jobDefinition) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {

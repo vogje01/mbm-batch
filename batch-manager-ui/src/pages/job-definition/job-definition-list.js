@@ -6,7 +6,7 @@ import UpdateTimer from "../../utils/update-timer";
 import {PatternRule, SimpleItem} from "devextreme-react/form";
 import {Item} from "devextreme-react/autocomplete";
 import {Toolbar} from "devextreme-react/toolbar";
-import {jobDefinitionDataSource} from "./job-definition-data-source";
+import {JobDefinitionDataSource} from "./job-definition-data-source";
 import {JobGroupDataSource} from "../job-group/job-group-data-source";
 import JobDefinitionExport from "./job-definition-export";
 import JobDefinitionImport from "./job-definition-import";
@@ -97,7 +97,7 @@ class JobDefinitionList extends React.Component {
                         </Toolbar>
                         <DataGrid
                             id={'jobDefinitionTable'}
-                            dataSource={jobDefinitionDataSource()}
+                            dataSource={JobDefinitionDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

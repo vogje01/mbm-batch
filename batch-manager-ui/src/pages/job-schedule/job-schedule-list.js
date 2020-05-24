@@ -7,7 +7,7 @@ import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
 import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
-import {jobDefinitionDataSource} from "../job-definition/job-definition-data-source";
+import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
@@ -88,7 +88,7 @@ class JobSchedulerList extends React.Component {
                                         <SimpleItem dataField="jobDefinitionName"
                                                     colSpan={2}
                                                     editorType={'dxSelectBox'}
-                                                    editorOptions={{dataSource: jobDefinitionDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
+                                                    editorOptions={{dataSource: JobDefinitionDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
                                             <RequiredRule message="Job name required"/>
                                             <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
                                         </SimpleItem>
