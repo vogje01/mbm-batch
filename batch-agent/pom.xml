@@ -9,7 +9,7 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>com.hlag.fis.batch</groupId>
+    <groupId>com.hlag.fis</groupId>
     <artifactId>batch-agent</artifactId>
     <name>batch-agent</name>
     <version>0.0.3</version>

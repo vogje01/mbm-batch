@@ -8,7 +8,6 @@
 		<artifactId>batch</artifactId>
 		<version>0.0.3</version>
 	</parent>
-	<groupId>com.hlag.fis</groupId>
 	<artifactId>batch-common</artifactId>
 	<name>batch-common</name>
 	<version>0.0.3</version>

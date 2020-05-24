@@ -31,7 +31,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.1
  */
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost", "http://batchmanager:8080", "http://localhost:8080"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost", "http://batchmanager"}, allowCredentials = "true")
 public class LoginController {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
