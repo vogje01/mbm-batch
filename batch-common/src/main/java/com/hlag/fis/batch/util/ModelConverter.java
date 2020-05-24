@@ -276,6 +276,7 @@ public class ModelConverter {
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
+        jobDefinition.setJobGroup(convertJobGroupToEntity(jobDefinitionDto.getJobGroupDto()));
 
         if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
             jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()

@@ -55,14 +55,13 @@ public class BatchScheduler {
         this.nodeName = nodeName;
     }
 
-
     @PreDestroy
     public void shutdown() {
         logger.info("Stopping batch scheduler");
         try {
             scheduler.shutdown();
         } catch(SchedulerException ex) {
-            logger.error("Could not stop scheduler - error: {0}", ex.getMessage());
+            logger.error(format("Could not stop scheduler - error: {0}", ex.getMessage()));
         }
         logger.info("Batch scheduler stopped");
     }
