@@ -17,7 +17,6 @@ import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.Map;
-import java.util.UUID;
 
 @EnableKafka
 @Configuration
@@ -42,6 +41,12 @@ public class BatchAgentKafkaConfiguration extends AbstractKafkaConfiguration {
 
 	@Value(value = "${kafka.serverCommand.replicas}")
 	private short serverCommandReplicas;
+
+	@Value(value = "${kafka.serverCommand.group}")
+	private String serverCommandGroup;
+
+	@Value(value = "${kafka.serverCommand.offsetReset}")
+	private String serverCommandoffsetReset;
 
 	@Bean
 	public NewTopic agentCommandTopic() {
@@ -74,8 +79,8 @@ public class BatchAgentKafkaConfiguration extends AbstractKafkaConfiguration {
 		deserializer.addTrustedPackages("*");
 		deserializer.setUseTypeMapperForKey(true);
 		Map<String, Object> properties = defaultConsumerConfiguration();
-		properties.put(ConsumerConfig.GROUP_ID_CONFIG, UUID.randomUUID().toString());
-		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
+		properties.put(ConsumerConfig.GROUP_ID_CONFIG, serverCommandGroup);
+		properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, serverCommandoffsetReset);
 		return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer);
 	}
 

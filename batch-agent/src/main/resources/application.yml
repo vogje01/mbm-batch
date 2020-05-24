@@ -35,5 +35,6 @@ kafka:
   serverCommand:
     offsetReset: latest
     topic: batchServerCommand
+    group: batchmanager
     partitions: 1
     replicas: 1
