@@ -2,6 +2,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
+    web-application-type: none
   datasource:
     url: jdbc:mysql://batchmanager:3306/fisbatch
     username: root

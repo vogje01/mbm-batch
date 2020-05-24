@@ -62,8 +62,10 @@ export const jobDefinitionDataSource = () => {
                 jobDefinition.version = values.version ? values.version : jobDefinition.version;
                 jobDefinition.type = values.type ? values.type : jobDefinition.type;
                 jobDefinition.fileName = values.fileName ? values.fileName : jobDefinition.fileName;
+                jobDefinition.command = values.command ? values.command : jobDefinition.command;
                 jobDefinition.active = values.active ? values.active : jobDefinition.active;
                 jobDefinition.jobGroupName = values.jobGroupName ? values.jobGroupName : jobDefinition.jobGroupName;
+                jobDefinition.workingDirectory = values.workingDirectory ? values.workingDirectory : jobDefinition.workingDirectory;
                 let url = jobDefinition._links.update.href;
                 return updateItem(url, jobDefinition, 'jobDefinitionDto');
             },
