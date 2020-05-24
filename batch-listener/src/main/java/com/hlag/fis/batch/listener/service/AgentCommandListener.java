@@ -89,13 +89,10 @@ public class AgentCommandListener {
      * @param agentCommandDto agent command info.
      */
     private void registerAgent(AgentCommandDto agentCommandDto) {
+        logger.info(format("Register agent - nodeName: {0}", agentCommandDto.getNodeName()));
         Agent agent;
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        if (agentOptional.isPresent()) {
-            agent = agentOptional.get();
-        } else {
-            agent = new Agent();
-        }
+        agent = agentOptional.orElseGet(Agent::new);
         agent.setPid(agentCommandDto.getPid());
         agent.setHostName(agentCommandDto.getHostName());
         agent.setNodeName(agentCommandDto.getNodeName());
@@ -182,11 +179,13 @@ public class AgentCommandListener {
      * @param agentCommandDto agent command info.
      */
     private void receivedShutdown(AgentCommandDto agentCommandDto) {
+        logger.info(format("Agent shutdown received - nodeName: {0}", agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
             agent.setLastPing(new Date());
             agent.setActive(false);
             agentRepository.save(agent);
+            logger.info(format("Agent shutdown processed - nodeName: {0}", agentCommandDto.getNodeName()));
         });
     }
 
@@ -219,6 +218,8 @@ public class AgentCommandListener {
             // Send start commands to agent
             jobSchedules.forEach(s -> {
 
+                logger.info(format("Job schedule start send - nodeName: {0} schedule: {1}", agent.getNodeName(), s.getName()));
+
                 // Send command to scheduler
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(s);
 
@@ -228,7 +229,7 @@ public class AgentCommandListener {
 
                 // Send command
                 serverCommandProducer.sendTopic(serverCommandDto);
-                logger.info(format("Job start command send to agent - agent: {0} job: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
+                logger.info(format("Job start command send to agent - nodeName: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
             });
         }
     }

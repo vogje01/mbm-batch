@@ -120,7 +120,7 @@ public class BatchScheduler {
      * @param jobSchedule job definition.
      */
     public void rescheduleJob(JobSchedule jobSchedule) {
-        logger.info(format("Processing job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
+        logger.info(format("Processing job schedule - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinition jobDefinition = jobSchedule.getJobDefinition();
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
             if (job.getGroup().equals(jobDefinition.getJobGroup().getName()) && job.getName().equals(jobDefinition.getName())) {

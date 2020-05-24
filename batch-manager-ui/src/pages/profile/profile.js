@@ -25,12 +25,7 @@ export default () => {
 
         <div className={'content-block dx-card responsive-paddings'}>
           <div className={'form-avatar'}>
-            <img
-                alt={''}
-                src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/${
-                    employee.Picture
-                }`}
-            />
+            <img alt={''} src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/${employee.Picture}`}/>
           </div>
           <span>{notes}</span>
         </div>
@@ -41,8 +36,7 @@ export default () => {
               defaultFormData={employee}
               onFieldDataChanged={e => e.dataField === 'Notes' && setNotes(e.value)}
               labelLocation={'top'}
-              colCountByScreen={colCountByScreen}
-          />
+              colCountByScreen={colCountByScreen}/>
         </div>
       </React.Fragment>
   );
