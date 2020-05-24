@@ -10,6 +10,7 @@ import {RequiredRule} from "devextreme-react/validator";
 import {jobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
+import {insertItem} from "../../utils/server-connection";
 
 class JobSchedulerList extends React.Component {
 
@@ -17,13 +18,22 @@ class JobSchedulerList extends React.Component {
         super(props);
         this.state = {
             currentJobSchedule: {},
-            refreshLists: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.cloneJobSchedule = this.cloneJobSchedule.bind(this);
     }
 
     selectionChanged(e) {
         this.setState({currentJobSchedule: e.data});
+    }
+
+    cloneJobSchedule(e) {
+        e.event.preventDefault();
+        let jobSchedule = e.row.data;
+        jobSchedule.id = null;
+        jobSchedule.name = jobSchedule.name + ' (copy)';
+        let url = process.env.REACT_APP_API_URL + 'jobschedules/insert';
+        this.setState({currentJobSchedule: insertItem(url, JSON.stringify(jobSchedule))});
     }
 
     render() {
@@ -178,13 +188,19 @@ class JobSchedulerList extends React.Component {
                                 buttons={[
                                     {
                                         name: 'edit',
-                                        hint: 'Edit parameter',
-                                        icon: 'material-icons-outlined ic-edit md-18'
+                                        hint: 'Edit job schedule',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'copy',
+                                        hint: 'Copy job schedule',
+                                        icon: 'material-icons-outlined ic-copy',
+                                        onClick: this.cloneJobSchedule
                                     },
                                     {
                                         name: 'delete',
-                                        hint: 'Delete parameter',
-                                        icon: 'material-icons-outlined ic-delete md-18'
+                                        hint: 'Delete job schedule',
+                                        icon: 'material-icons-outlined ic-delete'
                                     }
                                 ]}/>
                             <RemoteOperations
