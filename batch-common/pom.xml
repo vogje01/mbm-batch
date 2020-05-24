@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.hlag</groupId>
-		<artifactId>fis</artifactId>
+		<groupId>com.hlag.fis</groupId>
+		<artifactId>batch</artifactId>
 		<version>0.0.3</version>
 	</parent>
 	<groupId>com.hlag.fis</groupId>
