@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ import java.util.Date;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class UserGroupDto {
+public class UserGroupDto extends RepresentationModel<UserGroupDto> {
 
     /**
      * Primary key

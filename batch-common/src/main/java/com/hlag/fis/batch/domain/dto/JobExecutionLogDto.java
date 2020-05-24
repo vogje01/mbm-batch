@@ -1,8 +1,13 @@
 package com.hlag.fis.batch.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobExecutionThrown;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.Instant;
 import java.util.Date;
@@ -12,7 +17,10 @@ import java.util.Date;
  * @version 0.0.1
  * @since 0.0.1
  */
-public class JobExecutionLogDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> {
 
     private String id;
 

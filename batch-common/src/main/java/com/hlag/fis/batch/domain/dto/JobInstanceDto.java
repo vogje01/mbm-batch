@@ -7,11 +7,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
+import org.springframework.hateoas.RepresentationModel;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobInstanceDto {
+public class JobInstanceDto extends RepresentationModel<JobInstanceDto> {
 
     private String id;
 

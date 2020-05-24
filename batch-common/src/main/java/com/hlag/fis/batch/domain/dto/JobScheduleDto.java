@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobScheduleType;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.List;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = JobScheduleDto.class)
-public class JobScheduleDto {
+public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     private String id;
 

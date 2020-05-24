@@ -6,6 +6,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobStatusType;
 import com.hlag.fis.batch.util.NetworkUtils;
+import org.springframework.hateoas.RepresentationModel;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -14,7 +15,7 @@ import com.hlag.fis.batch.util.NetworkUtils;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class JobStatusDto {
+public class JobStatusDto extends RepresentationModel<JobStatusDto> {
 
     private JobStatusType type;
 
