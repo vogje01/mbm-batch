@@ -69,7 +69,7 @@ class JobExecutionList extends React.Component {
                                 options={{
                                     icon: "material-icons-outlined ic-refresh", onClick: () => {
                                         this.setState({})
-                                    }
+                                    }, hint: 'Refresh job execution list.'
                                 }}/>
                             <Item
                                 location="after"

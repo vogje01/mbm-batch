@@ -40,6 +40,7 @@ public class ServerCommandListener {
         this.batchSchedulerTask = batchSchedulerTask;
         this.modelConverter = modelConverter;
         this.nodeName = nodeName;
+        logger.info(format("Server command listener initialized - nodeName: {0}", nodeName));
     }
 
     /**

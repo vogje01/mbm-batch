@@ -42,7 +42,7 @@ class JobSchedulerList extends React.Component {
                                 options={{
                                     icon: "material-icons-outlined ic-refresh", onClick: () => {
                                         this.setState({})
-                                    }
+                                    }, hint: 'Refresh job schedule list.'
                                 }}/>
                         </Toolbar>
                         <DataGrid

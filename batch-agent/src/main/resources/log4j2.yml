@@ -22,7 +22,7 @@ Configutation:
         - ref: Console_Appender
     Logger:
       - name: com.hlag.fis.batch
-        level: info
+        level: debug
         additivity: false
         AppenderRef:
           - ref: File_Appender

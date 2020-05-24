@@ -13,6 +13,29 @@ class StepExecutionList extends React.Component {
         this.state = {
             currentStepExecution: {}
         }
+        this.intervals = [
+            {interval: 0, text: 'None'},
+            {interval: 30000, text: '30 sec'},
+            {interval: 60000, text: '1 min'},
+            {interval: 300000, text: '5 min'},
+            {interval: 600000, text: '10 min'},
+            {interval: 1800000, text: '30 min'},
+            {interval: 3600000, text: '1 hour'}];
+        this.intervalSelectOptions = {
+            width: 140,
+            items: this.intervals,
+            valueExpr: "interval",
+            displayExpr: "text",
+            placeholder: "Update interval",
+            value: this.intervals[0].id,
+            onValueChanged: (args) => {
+                clearTimeout(this.state.timer);
+                if (args.value > 0) {
+                    this.state.timer = setInterval(() => this.setState({}), args.value);
+                    this.render();
+                }
+            }
+        }
     }
 
     selectionChanged(e) {
@@ -52,7 +75,7 @@ class StepExecutionList extends React.Component {
                                 options={{
                                     icon: "material-icons-outlined ic-refresh", onClick: () => {
                                         this.setState({})
-                                    }
+                                    }, hint: 'Refresh step execution list.'
                                 }}/>
                             <Item
                                 location="after"

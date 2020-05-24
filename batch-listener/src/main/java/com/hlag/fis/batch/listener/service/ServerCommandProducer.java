@@ -29,7 +29,7 @@ public class ServerCommandProducer {
     @Value(value = "${kafka.serverCommand.topic}")
     private String topicName;
 
-    private KafkaTemplate<String, ServerCommandDto> template;
+    private final KafkaTemplate<String, ServerCommandDto> template;
 
     @Autowired
     public ServerCommandProducer(KafkaTemplate<String, ServerCommandDto> template) {
