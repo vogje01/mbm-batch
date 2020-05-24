@@ -72,15 +72,10 @@
             <version>2.2.2.RELEASE</version>
         </dependency>
 
-        <!-- FIS4 -->
+        <!-- Batch -->
         <dependency>
             <groupId>com.hlag.fis</groupId>
-            <artifactId>common</artifactId>
-            <version>0.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hlag.fis</groupId>
-            <artifactId>batch</artifactId>
+            <artifactId>batch-common</artifactId>
             <version>0.0.3</version>
         </dependency>
 
@@ -88,7 +83,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.1</version>
+            <version>2.10.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>

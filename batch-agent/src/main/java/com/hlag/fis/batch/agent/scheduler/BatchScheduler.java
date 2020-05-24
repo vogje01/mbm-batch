@@ -170,7 +170,7 @@ public class BatchScheduler {
         // Get the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         if (trigger != null) {
-            logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroup(), jobDefinition.getName()));
+            logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroup().getName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(jobDefinition);
@@ -178,7 +178,7 @@ public class BatchScheduler {
                 sendJobStart(jobDefinition, trigger);
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
-                        jobDefinition.getJobGroup(), jobDefinition.getName(), trigger.getNextFireTime()));
+                        jobDefinition.getJobGroup().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
             } catch (SchedulerException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                         jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
