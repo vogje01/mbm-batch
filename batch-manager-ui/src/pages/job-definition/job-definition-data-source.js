@@ -57,15 +57,15 @@ export const JobDefinitionDataSource = () => {
                 return insertItem(url, JSON.stringify(jobDefinition));
             },
             update: function (jobDefinition, values) {
-                jobDefinition.label = values.label ? values.label : jobDefinition.label;
-                jobDefinition.name = values.name ? values.name : jobDefinition.name;
-                jobDefinition.version = values.version ? values.version : jobDefinition.version;
-                jobDefinition.type = values.type ? values.type : jobDefinition.type;
-                jobDefinition.fileName = values.fileName ? values.fileName : jobDefinition.fileName;
-                jobDefinition.command = values.command ? values.command : jobDefinition.command;
-                jobDefinition.active = values.active ? values.active : jobDefinition.active;
-                jobDefinition.jobGroupName = values.jobGroupName ? values.jobGroupName : jobDefinition.jobGroupName;
-                jobDefinition.workingDirectory = values.workingDirectory ? values.workingDirectory : jobDefinition.workingDirectory;
+                jobDefinition.label = values.label !== undefined ? values.label : jobDefinition.label;
+                jobDefinition.name = values.name !== undefined ? values.name : jobDefinition.name;
+                jobDefinition.version = values.version !== undefined ? values.version : jobDefinition.version;
+                jobDefinition.type = values.type !== undefined ? values.type : jobDefinition.type;
+                jobDefinition.fileName = values.fileName !== undefined ? values.fileName : jobDefinition.fileName;
+                jobDefinition.command = values.command !== undefined ? values.command : jobDefinition.command;
+                jobDefinition.active = values.active !== undefined ? values.active : jobDefinition.active;
+                jobDefinition.jobGroupName = values.jobGroupName !== undefined ? values.jobGroupName : jobDefinition.jobGroupName;
+                jobDefinition.workingDirectory = values.workingDirectory !== undefined ? values.workingDirectory : jobDefinition.workingDirectory;
                 let url = jobDefinition._links.update.href;
                 return updateItem(url, jobDefinition, 'jobDefinitionDto');
             },
