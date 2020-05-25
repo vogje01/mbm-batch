@@ -11,8 +11,8 @@ export const AgentDataSource = () => {
                 return listItems('agents' + params, 'agentDtoes');
             },
             update: function (agent, values) {
-                agent.nodeName = values.nodeName ? values.nodeName : agent.nodeName;
-                agent.active = values.active ? values.active : agent.active;
+                agent.nodeName = values.nodeName !== undefined ? values.nodeName : agent.nodeName;
+                agent.active = values.active !== undefined ? values.active : agent.active;
                 let url = agent._links.update.href;
                 return updateItem(url, agent, 'agentDto');
             },
