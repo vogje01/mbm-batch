@@ -154,9 +154,7 @@ class JobDefinitionList extends React.Component {
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Command must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}>
-                                            <RequiredRule/>
-                                        </SimpleItem>
+                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                     </Item>
                                 </Form>
                             </Editing>

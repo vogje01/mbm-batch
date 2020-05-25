@@ -16,6 +16,7 @@ export const JobScheduleDataSource = () => {
             },
             update: function (jobSchedule, values) {
                 jobSchedule.schedule = values.schedule ? values.schedule : jobSchedule.schedule;
+                jobSchedule.jobDefinitionName = values.jobDefinitionName ? values.jobDefinitionName : jobSchedule.jobDefinitionName;
                 jobSchedule.name = values.name ? values.name : jobSchedule.name;
                 jobSchedule.active = values.active ? values.active : jobSchedule.active;
                 let url = jobSchedule._links.update.href;

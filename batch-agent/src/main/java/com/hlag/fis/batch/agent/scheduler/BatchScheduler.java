@@ -125,9 +125,9 @@ public class BatchScheduler {
             if (job.getGroup().equals(jobDefinition.getJobGroup().getName()) && job.getName().equals(jobDefinition.getName())) {
                 try {
                     if (scheduler.checkExists(job)) {
+                        Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(job.getName(), job.getGroup()));
                         scheduler.deleteJob(job);
                         if (jobDefinition.isActive()) {
-                            Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(job.getName(), job.getGroup()));
                             jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                             jobSchedule.setNextExecution(trigger.getNextFireTime());
                             addJob(jobSchedule, jobDefinition);
