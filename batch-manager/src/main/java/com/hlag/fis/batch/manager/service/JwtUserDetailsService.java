@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -58,6 +59,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		this.userRepository = userRepository;
 	}
 
+	@Cacheable(cacheNames = "UserDetails", key = "#userId")
 	public UserDetails loadUserByUsername(String userId) {
 		logger.debug(format("Starting load user - userId: {0}", userId));
 		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserId(userId);

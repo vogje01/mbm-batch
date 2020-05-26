@@ -65,19 +65,24 @@ public class JobExecutionController {
                                                                     @RequestParam(value = "sortBy", required = false) String sortBy,
                                                                     @RequestParam(value = "sortDir", required = false) String sortDir) {
         t.restart();
+        try {
 
-        // Get paging parameters
-        long totalCount = jobExecutionService.countAll();
-        Page<JobExecutionInfo> allJobExecutionInfos = jobExecutionService.allJobExecutions(PagingUtil.getPageable(page, size, sortBy, sortDir));
+            // Get total count
+            long totalCount = jobExecutionService.countAll();
 
-        List<JobExecutionDto> jobExecutionDtoes = modelConverter.convertJobExecutionToDto(allJobExecutionInfos.toList(), totalCount);
+            // Get and convert job execution infos
+            Page<JobExecutionInfo> allJobExecutionInfos = jobExecutionService.allJobExecutions(PagingUtil.getPageable(page, size, sortBy, sortDir));
+            List<JobExecutionDto> jobExecutionDtoes = modelConverter.convertJobExecutionToDto(allJobExecutionInfos.toList(), totalCount);
 
-        // Add links
-        jobExecutionDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
-        Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job list request finished - count: {0} {1}", jobExecutionDtoes.size(), t.elapsedStr()));
+            // Add links
+            jobExecutionDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
+            Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
 
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionDtoes, self));
+            return ResponseEntity.ok(new CollectionModel<>(jobExecutionDtoes, self));
+
+        } finally {
+            logger.debug(format("Job execution list request finished - count: {0} {1}", size, t.elapsedStr()));
+        }
     }
 
     @GetMapping(value = "/{id}", produces = {"application/hal+json"})

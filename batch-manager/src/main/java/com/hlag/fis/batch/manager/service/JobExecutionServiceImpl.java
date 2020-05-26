@@ -64,7 +64,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     }
 
     @Override
-    @Cacheable(cacheNames = "JobExecution", key = "#a0")
+    @Cacheable(cacheNames = "JobExecution", key = "#jobExecutionId")
     public JobExecutionInfo getJobExecutionById(String jobExecutionId) {
         Optional<JobExecutionInfo> jobExecution = jobExecutionRepository.findById(jobExecutionId);
         return jobExecution.orElse(null);
@@ -86,13 +86,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     }
 
     @Override
-    @CachePut(cacheNames = "JobDefinition", key = "#jobExecutionId")
-    public void startJobExecutionInfo(final String jobDefinitionId) {
-        Optional<JobDefinition> jobDefinition = jobDefinitionRepository.findById(jobDefinitionId);
+    @CachePut(cacheNames = "JobExecution", key = "#jobExecutionId")
+    public void startJobExecutionInfo(final String jobExecutionId) {
+        Optional<JobDefinition> jobDefinition = jobDefinitionRepository.findById(jobExecutionId);
         if (jobDefinition.isPresent()) {
             ServerCommandDto serverCommandDto = new ServerCommandDto();
             serverCommandDto.setType(ServerCommandType.START_JOB);
-            //serverCommandDto.setJobScheduleDto(jobDefinition.get());
             sendTopic("batchCommand", serverCommandDto);
         }
     }

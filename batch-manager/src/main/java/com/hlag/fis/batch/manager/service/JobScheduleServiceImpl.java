@@ -122,6 +122,8 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     }
 
     @Override
+    @Transactional
+    @CachePut(cacheNames = "JobDefinition", key = "#jobSchedule.id")
     public JobSchedule insertJobSchedule(JobSchedule jobSchedule) {
         return jobScheduleRepository.save(jobSchedule);
     }
