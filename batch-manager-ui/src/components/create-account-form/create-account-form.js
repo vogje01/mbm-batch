@@ -31,8 +31,7 @@ export default function (props) {
           <Item
               dataField={'email'}
               editorType={'dxTextBox'}
-              editorOptions={emailEditorOptions}
-          >
+              editorOptions={emailEditorOptions}>
             <RequiredRule message="Email is required"/>
             <EmailRule message="Email is invalid"/>
             <Label visible={false}/>
@@ -40,21 +39,18 @@ export default function (props) {
           <Item
               dataField={'password'}
               editorType={'dxTextBox'}
-              editorOptions={passwordEditorOptions}
-          >
+              editorOptions={passwordEditorOptions}>
             <RequiredRule message="Password is required"/>
             <Label visible={false}/>
           </Item>
           <Item
               dataField={'confirmedPassword'}
               editorType={'dxTextBox'}
-              editorOptions={confirmedPasswordEditorOptions}
-          >
+              editorOptions={confirmedPasswordEditorOptions}>
             <RequiredRule message="Password is required"/>
             <CustomRule
                 message={'Passwords do not match'}
-                validationCallback={confirmPassword}
-            />
+                validationCallback={confirmPassword}/>
             <Label visible={false}/>
           </Item>
           <Item>
@@ -66,13 +62,10 @@ export default function (props) {
             <ButtonOptions
                 width={'100%'}
                 type={'default'}
-                useSubmitBehavior={true}
-            >
+                useSubmitBehavior={true}>
             <span className="dx-button-text">
               {
-                loading
-                    ? <LoadIndicator width={'24px'} height={'24px'} visible={true}/>
-                    : 'Create a new account'
+                loading ? <LoadIndicator width={'24px'} height={'24px'} visible={true}/> : 'Create a new account'
               }
             </span>
             </ButtonOptions>
