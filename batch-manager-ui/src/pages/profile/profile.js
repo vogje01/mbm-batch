@@ -5,12 +5,12 @@ import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
 
 const themesList = [
-    {name: 'material.blue.dark.compact'},
-    {name: 'material.blue.light.compact'},
-    {name: 'material.orange.dark.compact'},
-    {name: 'material.orange.light.compact'},
-    {name: 'material.lime.dark.compact'},
-    {name: 'material.lime.light.compact'}
+    'material.blue.dark.compact',
+    'material.blue.light.compact',
+    'material.orange.dark.compact',
+    'material.orange.light.compact',
+    'material.lime.dark.compact',
+    'material.lime.light.compact'
 ];
 
 class Profile extends React.Component {
@@ -26,13 +26,19 @@ class Profile extends React.Component {
     }
 
     themeSelectionChanged(e) {
-        themes.current(e.data);
+        themes.current(e.selectedItem);
     }
 
     handleSubmit(e) {
         e.event.preventDefault();
-        updateItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id + '/update', this.state.user, 'userDto');
-        this.setState({});
+        updateItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id + '/update', this.state.user, 'userDto')
+            .then((data) => {
+                this.setState({
+                    user: data
+                });
+                localStorage.setItem('user', JSON.stringify(data));
+                themes.current(data.theme);
+            })
     }
 
     render() {
@@ -43,13 +49,12 @@ class Profile extends React.Component {
 
                 <div className={'content-block dx-card responsive-paddings'}>
                     <div className={'form-avatar'}>
-                        <img alt={''} src={this.state.user.links[0].href}/>
+                        <img alt={''} src={this.state.user._links.avatar.href}/>
                     </div>
                     <span>{this.state.user.description}</span>
                 </div>
 
                 <div className={'content-block dx-card responsive-paddings'}>
-                    {process.env.REACT_APP_API_URL}
                     <form key={'user'}>
                         <Form
                             readOnly={false}
@@ -80,8 +85,6 @@ class Profile extends React.Component {
                                             editorType={"dxSelectBox"}
                                             editorOptions={{
                                                 dataSource: themesList,
-                                                displayExpr: 'name',
-                                                valueExpr: 'name',
                                                 onSelectionChanged: this.themeSelectionChanged
                                             }}/>
                                 <EmptyItem colSpan={2}/>
@@ -94,7 +97,7 @@ class Profile extends React.Component {
                             <SimpleItem editorType={'dxButton'} editorOptions={{
                                 horizontalAlignment: 'left',
                                 text: 'Save',
-                                type: 'success',
+                                type: 'text',
                                 useSubmitBehavior: false,
                                 onClick: this.handleSubmit
                             }}/>

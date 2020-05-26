@@ -28,11 +28,10 @@ function AuthProvider(props) {
             })
             .then((data) => {
                 if (data !== undefined) {
-                    localStorage.setItem('authenticated', 'true');
                     localStorage.setItem('webToken', data.token);
                     localStorage.setItem('user', JSON.stringify(data.userDto));
+                    setUser({user: userId, avatarUrl: data.userDto._links.avatar.href});
                     themes.current(data.userDto.theme);
-                    setUser({userId, avatarUrl: data.userDto.links[0].href});
                 }
                 setLoading(false);
             })

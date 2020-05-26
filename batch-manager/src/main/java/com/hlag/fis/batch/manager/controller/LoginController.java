@@ -2,7 +2,6 @@ package com.hlag.fis.batch.manager.controller;
 
 import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.domain.dto.UserDto;
-import com.hlag.fis.batch.manager.service.JwtUserDetailsService;
 import com.hlag.fis.batch.manager.service.UserService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.UnauthorizedException;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,15 +39,12 @@ public class LoginController {
 
     private JwtTokenUtil jwtTokenUtil;
 
-    private JwtUserDetailsService userDetailsService;
-
     private UserService userService;
 
     private ModelConverter modelConverter;
 
     @Autowired
-    public LoginController(JwtUserDetailsService userDetailsService, UserService userService, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
-        this.userDetailsService = userDetailsService;
+    public LoginController(UserService userService, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.modelConverter = modelConverter;
@@ -60,14 +55,10 @@ public class LoginController {
         logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
         Optional<User> userOptional = userService.findByUserId(authenticationRequest.getUserId());
         if (userOptional.isPresent()) {
-            logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserId(),
-                    authenticationRequest.getPassword(),
-                    authenticationRequest.getOrgUnit());
-            final String token = jwtTokenUtil.generateToken(userDetails);
-            logger.info(format("Token generated - token: {0}", token));
-            UserDto userDto = modelConverter.convertUserToDto(userOptional.get());
-            userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
+            User user = userOptional.get();
+            final String token = jwtTokenUtil.generateToken(user);
+            UserDto userDto = modelConverter.convertUserToDto(user);
+            userDto.add(linkTo(methodOn(UserController.class).avatar(user.getId())).withRel("avatar"));
             return ResponseEntity.ok(new JwtResponse(token, userDto));
         }
         throw new UnauthorizedException();

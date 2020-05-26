@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -54,18 +53,15 @@ public class UserController {
 
     private ModelConverter modelConverter;
 
-    private ServletContext servletContext;
-
     /**
      * Constructor.
      *
      * @param userService service implementation.
      */
     @Autowired
-    public UserController(UserService userService, ModelConverter modelConverter, ServletContext servletContext) {
+    public UserController(UserService userService, ModelConverter modelConverter) {
         this.userService = userService;
         this.modelConverter = modelConverter;
-        this.servletContext = servletContext;
     }
 
     /**

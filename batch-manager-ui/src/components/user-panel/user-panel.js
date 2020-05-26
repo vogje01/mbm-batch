@@ -9,7 +9,7 @@ export default function ({menuMode}) {
   const menuItems = useMemo(() => ([
     {
       text: 'Profile',
-      icon: 'user'
+      icon: 'user',
     },
     {
       text: 'Logout',

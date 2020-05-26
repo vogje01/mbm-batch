@@ -58,7 +58,6 @@ class JobSchedulerList extends React.Component {
                         <DataGrid
                             id={'jobScheduleTable'}
                             dataSource={JobScheduleDataSource()}
-                            keyExpr="id"
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

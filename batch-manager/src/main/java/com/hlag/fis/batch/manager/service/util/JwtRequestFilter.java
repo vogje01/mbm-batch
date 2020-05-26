@@ -79,7 +79,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 jwtToken = requestTokenHeader.substring(7);
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-                    logger.debug(format("JWT authentication - userName: {0} token: {1}", username, jwtToken));
                 } catch (MalformedJwtException e) {
                     logger.warn(format("Malformed JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken));
                 } catch (IllegalArgumentException e) {
@@ -101,7 +100,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
                     // Spring Security Configurations successfully.
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    logger.debug(format("User authenticated - userName: {0}", username));
                 } else {
                     logger.error(format("Token could not be validated - userName: {0} token: {1}", username, jwtToken));
                 }

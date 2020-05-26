@@ -267,7 +267,8 @@ class PerformanceChart extends React.Component {
                             <div className="option" style={{float: 'left', marginRight: '20px'}}>
                                 <span>Agent:</span>
                                 <SelectBox items={this.state.agents} displayExpr='nodeName' valueExpr='nodeName'
-                                           value={this.state.selectedAgent}
+                                           value={this.state.agents[0]}
+                                           selectedItem={this.state.selectedAgent}
                                            onValueChanged={this.handleNodeName}/>
                             </div>
                             <div className="option" style={{float: 'left', marginRight: '20px'}}>

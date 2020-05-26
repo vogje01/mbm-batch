@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.manager.service.util;
 
 import com.hlag.fis.batch.domain.dto.UserDto;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
  * @version 0.0.2
  * @since 0.0.1
  */
-public class JwtResponse implements Serializable {
+public class JwtResponse extends RepresentationModel<JwtResponse> implements Serializable {
 
     private static final long serialVersionUID = -8091879091924046844L;
 
