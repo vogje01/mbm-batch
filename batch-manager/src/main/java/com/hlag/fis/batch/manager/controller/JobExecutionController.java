@@ -36,7 +36,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  */
 @RestController
 @RequestMapping("/api/jobexecutions")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost"})
 public class JobExecutionController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionController.class);

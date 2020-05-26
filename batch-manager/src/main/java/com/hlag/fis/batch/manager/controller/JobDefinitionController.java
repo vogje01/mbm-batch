@@ -36,6 +36,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * </p>
  *
  * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @version 0.0.4
  * @since 0.0.3
  */
 @RestController
@@ -88,7 +89,7 @@ public class JobDefinitionController {
         List<JobDefinitionDto> jobDefinitionDtoes = modelConverter.convertJobDefinitionToDto(allJobDefinitions.toList(), totalCount);
 
         // Add links
-        jobDefinitionDtoes.forEach(this::addLinks);
+        jobDefinitionDtoes.forEach(d -> addLinks(d, page, size, sortBy, sortDir));
 
         // Add self link
         Link self = linkTo(methodOn(JobDefinitionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
@@ -268,6 +269,11 @@ public class JobDefinitionController {
         logger.debug(format("Job definitions imported - count: {0} {1}", jobDefinitions.size(), t.elapsedStr()));
     }
 
+    /**
+     * Add HATOAS links.
+     *
+     * @param jobDefinitionDto job definition data transfer object.
+     */
     private void addLinks(JobDefinitionDto jobDefinitionDto) {
         try {
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).findById(jobDefinitionDto.getId())).withSelfRel());
@@ -275,7 +281,24 @@ public class JobDefinitionController {
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).delete(jobDefinitionDto.getId())).withRel("delete"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).start(jobDefinitionDto.getId())).withRel("start"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).addJobDefinitionParam(jobDefinitionDto.getId(), new JobDefinitionParamDto())).withRel("addParam"));
-            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).findByJobDefinitionId(jobDefinitionDto.getId(), 0, 5, "name", "desc")).withRel("params"));
+        } catch (ResourceNotFoundException e) {
+            logger.error(format("Could not add links to DTO - id: {0}", jobDefinitionDto.getId()), e);
+        }
+    }
+
+    /**
+     * Add HATOAS links.
+     *
+     * @param jobDefinitionDto job definition data transfer object.
+     * @param page             page number.
+     * @param size             page size.
+     * @param sortBy           sort attribute.
+     * @param sortDir          sort direction.
+     */
+    private void addLinks(JobDefinitionDto jobDefinitionDto, int page, int size, String sortBy, String sortDir) {
+        try {
+            addLinks(jobDefinitionDto);
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).findByJobDefinitionId(jobDefinitionDto.getId(), page, size, sortBy, sortDir)).withRel("params"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", jobDefinitionDto.getId()), e);
         }

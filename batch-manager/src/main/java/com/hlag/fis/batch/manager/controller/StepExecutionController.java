@@ -55,9 +55,7 @@ public class StepExecutionController {
      * @param stepService step execution service implementation.
      */
     @Autowired
-    StepExecutionController(@Qualifier("production") JobExecutionService jobService,
-                            StepExecutionService stepService,
-                            ModelConverter modelConverter) {
+    StepExecutionController(@Qualifier("production") JobExecutionService jobService, StepExecutionService stepService, ModelConverter modelConverter) {
         this.jobService = jobService;
         this.stepService = stepService;
         this.modelConverter = modelConverter;
@@ -78,17 +76,24 @@ public class StepExecutionController {
                                                                      @RequestParam(value = "sortBy", required = false) String sortBy,
                                                                      @RequestParam(value = "sortDir", required = false) String sortDir) {
         t.restart();
+        try {
 
-        // Get paging parameters
-        long totalCount = stepService.countAll();
-        Page<StepExecutionInfo> allStepExecutionInfos = stepService.allStepExecutions(PagingUtil.getPageable(page, size, sortBy, sortDir));
+            // Get total count
+            long totalCount = stepService.countAll();
 
-        List<StepExecutionDto> stepExecutionDtoes = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
+            // Get and convert step exeution infos
+            Page<StepExecutionInfo> allStepExecutionInfos = stepService.allStepExecutions(PagingUtil.getPageable(page, size, sortBy, sortDir));
+            List<StepExecutionDto> stepExecutionDtoes = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
 
-        stepExecutionDtoes.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
-        Link self = linkTo(methodOn(StepExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
+            // Add links
+            stepExecutionDtoes.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
+            Link self = linkTo(methodOn(StepExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
 
-        return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtoes, self));
+            return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtoes, self));
+
+        } finally {
+            logger.debug(format("Step execution list request finished - count: {0} {1}", size, t.elapsedStr()));
+        }
     }
 
     /**
@@ -123,23 +128,33 @@ public class StepExecutionController {
                                                                          @RequestParam(value = "sortBy", required = false) String sortBy,
                                                                          @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
         t.restart();
+        try {
+            RestPreconditions.checkFound(jobService.getJobExecutionById(jobId));
 
-        RestPreconditions.checkFound(jobService.getJobExecutionById(jobId));
+            // Get total count
+            long totalCount = stepService.countByJobId(jobId);
 
-        // Get paging parameters
-        long totalCount = stepService.countByJobId(jobId);
-        Page<StepExecutionInfo> allStepExecutionInfos = stepService.allStepExecutionsByJob(jobId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+            // Get and convert step execution infos
+            Page<StepExecutionInfo> allStepExecutionInfos = stepService.allStepExecutionsByJob(jobId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+            List<StepExecutionDto> stepExecutionDtoes = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
 
-        List<StepExecutionDto> stepExecutionDtoes = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
+            // Add links
+            stepExecutionDtoes.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
+            Link self = linkTo(methodOn(StepExecutionController.class).findByJobId(jobId, page, size, sortBy, sortDir)).withSelfRel();
 
-        stepExecutionDtoes.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
+            return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtoes, self));
 
-        Link self = linkTo(methodOn(StepExecutionController.class).findByJobId(jobId, page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Finished list by job id request - count: {0} {1}", allStepExecutionInfos.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtoes, self));
+        } finally {
+            logger.debug(format("Finished step execution list list by job request - count: {0} {1}", size, t.elapsedStr()));
+        }
     }
 
+    /**
+     * Delete a step execution info be step ID.
+     *
+     * @param stepId step ID to delete.
+     * @return void
+     */
     @DeleteMapping(value = "/{stepId}/delete")
     public ResponseEntity<Void> delete(@PathVariable("stepId") String stepId) {
         t.restart();
@@ -148,6 +163,15 @@ public class StepExecutionController {
         return null;
     }
 
+    /**
+     * Add HATOAS links.
+     *
+     * @param stepExecutionDto step execution info data transfer object.
+     * @param page             page number.
+     * @param size             page size.
+     * @param sortBy           sort attribute.
+     * @param sortDir          sort direction.
+     */
     private void addLinks(StepExecutionDto stepExecutionDto, int page, int size, String sortBy, String sortDir) {
         try {
             stepExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findById(stepExecutionDto.getId())).withSelfRel());
