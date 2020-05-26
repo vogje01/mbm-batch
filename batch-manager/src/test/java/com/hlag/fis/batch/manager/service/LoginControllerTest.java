@@ -2,6 +2,7 @@ package com.hlag.fis.batch.manager.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hlag.fis.batch.domain.User;
+import com.hlag.fis.batch.domain.dto.UserDto;
 import com.hlag.fis.batch.manager.controller.LoginController;
 import com.hlag.fis.batch.manager.service.util.JwtRequest;
 import com.hlag.fis.batch.manager.service.util.JwtTokenUtil;
@@ -63,8 +64,11 @@ public class LoginControllerTest {
         // Mock user details
         User user = new User();
         user.setUserId("vogje01");
+        UserDto userDto = new UserDto();
+        userDto.setUserId("vogje01");
         when(userDetails.getUsername()).thenReturn("vogje01");
         when(userService.findByUserId(any())).thenReturn(java.util.Optional.of(user));
+        when(modelConverter.convertUserToDto(any(User.class))).thenReturn(userDto);
         when(jwtUserDetailsService.loadUserByUsername(any(), any(), any())).thenReturn(userDetails);
     }
 
