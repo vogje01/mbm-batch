@@ -1,6 +1,5 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
-import * as jwt from "jsonwebtoken";
 
 const initGet = () => {
     return {
@@ -27,35 +26,7 @@ const logout = () => {
     localStorage.clear();
 };
 
-const checkAuthentication = () => {
-    if (localStorage.getItem('authenticated') === null) {
-        return;
-    }
-    let webToken = localStorage.getItem('webToken');
-    let decoded = jwt.decode(webToken);
-    decoded.exp = Math.floor(Date.now() / 1000) + 300;
-    localStorage.setItem('webToken', jwt.sign(decoded, 'javainuse', {algorithm: 'HS512'}));
-};
-
-const loginRequest = (basicAuthentication, authRequest) => {
-    StartTimer();
-    let subject = 'Basic ' + basicAuthentication;
-//    let tokenBody = {sub: subject, exp: Math.floor(Date.now() / 1000) + 300, iat: Math.floor(Date.now() / 1000)};
-//    let token = 'Bearer ' + jwt.sign(tokenBody, process.env.REACT_APP_WEBTOKEN_SECRET, {algorithm: 'HS512'});
-
-    return fetch(process.env.REACT_APP_API_URL + 'authenticate', {headers: {'Content-Type': 'application/hal+json', 'Authorization': subject}, method: 'POST'})
-        .then((response) => {
-            return response.json();
-        })
-        .catch((error) => {
-            errorMessage('Login error: ' + error.message);
-        }).finally(() => {
-            EndTimer();
-        });
-};
-
 const getList = (url, attributes) => {
-    checkAuthentication();
     StartTimer();
     return fetch(url, initGet())
         .then(response => {
@@ -84,7 +55,6 @@ const getList = (url, attributes) => {
 };
 
 const getItem = (url) => {
-    checkAuthentication();
     StartTimer();
     return fetch(url, initGet())
         .then(response => {
@@ -101,7 +71,6 @@ const getItem = (url) => {
 };
 
 const listItems = (entity, attributes) => {
-    checkAuthentication();
     StartTimer();
     return fetch(process.env.REACT_APP_API_URL + entity, initGet())
         .then(response => {
@@ -131,7 +100,6 @@ const listItems = (entity, attributes) => {
 };
 
 const insertItem = (url, item) => {
-    checkAuthentication();
     StartTimer();
     return fetch(url, initInsert(item))
         .then(response => {
@@ -150,7 +118,6 @@ const insertItem = (url, item) => {
 };
 
 const updateItem = (url, item, attribute) => {
-    checkAuthentication();
     StartTimer();
     return fetch(url, initUpdate(JSON.stringify(item)))
         .then(response => {
@@ -170,7 +137,6 @@ const updateItem = (url, item, attribute) => {
 };
 
 const deleteItem = (url, key, label) => {
-    checkAuthentication();
     StartTimer();
     return fetch(url, initDelete())
         .then(response => {
@@ -188,4 +154,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {loginRequest, logout, getList, deleteItem, insertItem, updateItem, listItems, getItem}
+export {logout, getList, deleteItem, insertItem, updateItem, listItems, getItem}

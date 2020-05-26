@@ -4,7 +4,7 @@ import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperati
 import {AgentDataSource} from "./agent-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
-import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import AgentJobScheduleView from "./agent-job-schedule-list";
 import {Toolbar} from "devextreme-react/toolbar";
@@ -65,28 +65,29 @@ class AgentView extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <Item itemType="group" colCount={4} colSpan={4} caption={"Agent Details: " + this.state.currentAgent.nodeName}>
-                                        <SimpleItem dataField="nodeName" colSpan={2}>
+                                    <GroupItem colCount={2} caption={"Agent Details: " + this.state.currentAgent.nodeName}>
+                                        <SimpleItem dataField="nodeName">
                                             <RequiredRule message="Node name is required"/>
                                             <StringLengthRule min={2} message="Node name must be at least 2 characters long."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="hostName" colSpan={2}>
+                                        <SimpleItem dataField="hostName">
                                             <RequiredRule message="Host name is required"/>
                                             <StringLengthRule min={2} message="Host name must be at least 2 characters long."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="pid" colSpan={4} edtitorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="lastStart" edtitorOptions={{readOnly: true}} colSpan={2}/>
-                                        <SimpleItem dataField="lastPing" edtitorOptions={{readOnly: true}} colSpan={2}/>
-                                        <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
-                                        <EmptyItem colSpan={2}/>
+                                        <SimpleItem dataField="pid" edtitorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                        <SimpleItem dataField="lastStart" edtitorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="lastPing" edtitorOptions={{readOnly: true}}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Schedules"}>
+                                        <AgentJobScheduleView agent={this.state.currentAgent}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Auditing"} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
-                                    </Item>
-                                    <Item itemType="group" colCount={4} colSpan={4} caption={"Schedules"}>
-                                        <AgentJobScheduleView agent={this.state.currentAgent}/>
-                                    </Item>
+                                    </GroupItem>
                                 </Form>
                             </Editing>
                             <Column

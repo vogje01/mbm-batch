@@ -95,21 +95,6 @@ public class UserDto extends RepresentationModel<UserDto> {
         // Default constructor
     }
 
-    public void update(UserDto user) {
-        this.userId = user.userId;
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
-        this.email = user.email;
-        this.phone = user.phone;
-        this.theme = user.theme;
-        this.description = user.description;
-        this.active = user.active;
-        this.createdAt = user.createdAt;
-        this.createdBy = user.createdBy;
-        this.modifiedAt = user.modifiedAt;
-        this.modifiedBy = user.modifiedBy;
-    }
-
     public String getId() {
         return id;
     }

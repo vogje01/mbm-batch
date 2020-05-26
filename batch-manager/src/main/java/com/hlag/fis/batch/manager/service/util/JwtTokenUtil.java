@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,12 +87,7 @@ public class JwtTokenUtil implements Serializable {
 
     // For retrieving any information from token we will need the secret key
     private Claims getAllClaimsFromToken(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secret.getBytes("UTF-8")).parseClaimsJws(token).getBody();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 
     // Check if the token has expired

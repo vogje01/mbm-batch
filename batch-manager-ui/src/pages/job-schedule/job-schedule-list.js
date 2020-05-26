@@ -5,7 +5,7 @@ import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperati
 import {JobScheduleDataSource} from "./job-schedule-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
-import {EmptyItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {EmptyItem, GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import JobScheduleAgentList from "./job-schedule-agent-list";
@@ -79,32 +79,32 @@ class JobSchedulerList extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <Item itemType="group" colCount={4} colSpan={4} caption={"Schedule Details: " + this.state.currentJobSchedule.name}>
-                                        <SimpleItem dataField="name" colSpan={2}>
+                                    <GroupItem caption={"Schedule Details: " + this.state.currentJobSchedule.name} colCount={2}>
+                                        <SimpleItem dataField="name">
                                             <RequiredRule message="Schedule name required"/>
                                             <StringLengthRule min={2} message="Schedule name must be at least 2 characters long."/>
                                         </SimpleItem>
                                         <SimpleItem dataField="jobDefinitionName"
-                                                    colSpan={2}
                                                     editorType={'dxSelectBox'}
                                                     editorOptions={{dataSource: JobDefinitionDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
                                             <RequiredRule message="Job name required"/>
                                             <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="lastExecution" editorOptions={{readOnly: true}} colSpan={2}/>
-                                        <SimpleItem dataField="nextExecution" editorOptions={{readOnly: true}} colSpan={2}/>
-                                        <SimpleItem dataField="schedule" colSpan={2}/>
+                                        <SimpleItem dataField="lastExecution" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="nextExecution" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="schedule"/>
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
-                                        <EmptyItem colSpan={2}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Agents"}>
+                                        <JobScheduleAgentList schedule={this.state.currentJobSchedule}/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
-                                    </Item>
-                                    <Item itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
-                                        <JobScheduleAgentList schedule={this.state.currentJobSchedule}/>
-                                    </Item>
+                                    </GroupItem>
                                 </Form>
                             </Editing>
                             <Column

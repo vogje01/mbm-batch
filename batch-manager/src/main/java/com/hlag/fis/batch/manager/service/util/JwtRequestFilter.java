@@ -79,29 +79,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 jwtToken = requestTokenHeader.substring(7);
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                    // Once we get the token validate it.
+                    if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        //String password = jwtTokenUtil.getPasswordFromToken(jwtToken);
+                        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+                        // If token is valid configure Spring Security to manually set authentication
+                        if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
+                            // Spring Security Configurations successfully.
+                            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                        } else {
+                            logger.error(format("Token could not be validated - userName: {0} token: {1}", username, jwtToken));
+                        }
+                    }
                 } catch (MalformedJwtException e) {
                     logger.warn(format("Malformed JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken));
                 } catch (IllegalArgumentException e) {
                     logger.error(format("Unable to get JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken), e);
                 } catch (ExpiredJwtException e) {
                     logger.info(format("JWT Token has expired - message: {0} token: {1}", e.getMessage(), jwtToken), e);
-                }
-            }
-            // Once we get the token validate it.
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                //String password = jwtTokenUtil.getPasswordFromToken(jwtToken);
-                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-                // If token is valid configure Spring Security to manually set authentication
-                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,
-                            null,
-                            userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
-                    // Spring Security Configurations successfully.
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                } else {
-                    logger.error(format("Token could not be validated - userName: {0} token: {1}", username, jwtToken));
                 }
             }
         }

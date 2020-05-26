@@ -19,7 +19,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobDefinition implements PrimaryKeyIdentifier<String> {
+public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<String> {
 
     @Id
     @Column(name = "ID")
@@ -35,10 +35,6 @@ public class JobDefinition implements PrimaryKeyIdentifier<String> {
 
     @Column(name = "TYPE")
     private String type;
-
-    @Version
-    @Column(name = "VERSION")
-    private Integer version = 0;
 
     @Column(name = "JOB_VERSION")
     private String jobVersion;

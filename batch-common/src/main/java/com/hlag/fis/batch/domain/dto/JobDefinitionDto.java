@@ -9,6 +9,7 @@ import com.google.common.base.Objects;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -39,6 +40,22 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
     private String workingDirectory;
 
     private String jobGroupName;
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
 
     private Long totalSize;
 
@@ -146,6 +163,38 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.jobGroupName = jobGroupName;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public Long getTotalSize() {
         return totalSize;
     }
@@ -184,6 +233,11 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(fileName, that.fileName) &&
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
+                Objects.equal(jobGroupName, that.jobGroupName) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(totalSize, that.totalSize) &&
                 Objects.equal(jobGroupDto, that.jobGroupDto) &&
                 Objects.equal(jobDefinitionParamDtos, that.jobDefinitionParamDtos);
@@ -191,7 +245,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, jobGroupDto, description, active, fileName, command, workingDirectory, totalSize, jobDefinitionParamDtos);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, jobGroupName, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, jobGroupDto, jobDefinitionParamDtos);
     }
 
     @Override
@@ -207,7 +261,12 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("fileName", fileName)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
-                .add("totalCount", totalSize)
+                .add("jobGroupName", jobGroupName)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .add("totalSize", totalSize)
                 .add("jobGroupDto", jobGroupDto)
                 .add("jobDefinitionParamDtos", jobDefinitionParamDtos)
                 .toString();

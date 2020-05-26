@@ -3,7 +3,7 @@ import './job-definition-list.scss'
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection, StringLengthRule} from "devextreme-react/data-grid";
 import UpdateTimer from "../../utils/update-timer";
-import {PatternRule, SimpleItem} from "devextreme-react/form";
+import {GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import {Item} from "devextreme-react/autocomplete";
 import {Toolbar} from "devextreme-react/toolbar";
 import {JobDefinitionDataSource} from "./job-definition-data-source";
@@ -16,6 +16,15 @@ const types = [
     {type: 'JAR', name: 'JAR'},
     {type: 'DOCKER', name: 'DOCKER'}
 ];
+
+function screenByWidth(width) {
+    return width < 720 ? 'sm' : 'md';
+}
+
+const colCountByScreen = {
+    sm: 2,
+    md: 4
+};
 
 class JobDefinitionList extends React.Component {
 
@@ -117,45 +126,51 @@ class JobDefinitionList extends React.Component {
                                 allowUpdating={true}
                                 allowAdding={true}
                                 allowDeleting={true}>
-                                <Form>
-                                    <Item itemType="group" colCount={4} colSpan={4}
-                                          caption={"Job Definition Details: " + this.state.currentJobDefinition.label}>
-                                        <SimpleItem dataField="label" colSpan={2}>
+                                <Form colCount={2}>
+                                    <GroupItem caption={"Job Definition Details: " + this.state.currentJobDefinition.label}>
+                                        <SimpleItem dataField="label">
                                             <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="name" colSpan={2}>
+                                        <SimpleItem dataField="name">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Name must be less than 256 characters."/>
                                         </SimpleItem>
                                         <SimpleItem
-                                            colSpan={2}
                                             dataField={'jobGroupName'}
                                             editorType={'dxSelectBox'}
                                             editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
                                             <RequiredRule/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="jobVersion" colSpan={2}>
+                                        <SimpleItem dataField="jobVersion">
                                             <RequiredRule/>
                                             <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}} colSpan={2}>
+                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Command"}>
+                                        <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
                                             <RequiredRule/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="command" colSpan={2}>
+                                        <SimpleItem dataField="command">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Command must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="fileName" colSpan={2}>
+                                        <SimpleItem dataField="fileName">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="File name must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="workingDirectory" colSpan={2}>
+                                        <SimpleItem dataField="workingDirectory">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Command must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                                    </Item>
+                                    </GroupItem>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
+                                        <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                    </GroupItem>
                                 </Form>
                             </Editing>
                             <Column
@@ -228,6 +243,26 @@ class JobDefinitionList extends React.Component {
                                 dataField={'description'}
                                 caption={'Description'}
                                 dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'createdBy'}
+                                caption={'Created By'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'createdAt'}
+                                caption={'Created At'}
+                                dataType={'datetime'}
+                                visible={false}/>
+                            <Column
+                                dataField={'modifiedBy'}
+                                caption={'Modified By'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'modifiedAt'}
+                                caption={'Modified At'}
+                                dataType={'datetime'}
                                 visible={false}/>
                             <Column
                                 allowSorting={false}
