@@ -14,11 +14,21 @@ import {
     Selection,
     StringLengthRule
 } from "devextreme-react/data-grid";
-import {EmptyItem, SimpleItem} from "devextreme-react/form";
+import {SimpleItem} from "devextreme-react/form";
 import {UserDataSource} from "./user-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
 import UserUsergroupView from "./user-usergroup-list";
+import themes from "devextreme/ui/themes";
+
+const themesList = [
+    'material.blue.dark.compact',
+    'material.blue.light.compact',
+    'material.orange.dark.compact',
+    'material.orange.light.compact',
+    'material.lime.dark.compact',
+    'material.lime.light.compact'
+];
 
 class UserList extends React.Component {
 
@@ -30,11 +40,16 @@ class UserList extends React.Component {
             refreshLists: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
     }
 
     selectionChanged(e) {
         this.setState({currentUser: e.data});
+    }
+
+    themeSelectionChanged(e) {
+        themes.current(e.value);
     }
 
     render() {
@@ -92,7 +107,13 @@ class UserList extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
-                                        <EmptyItem colSpan={2}/>
+                                        <SimpleItem
+                                            colSpan={2}
+                                            dataField={'theme'}
+                                            editorType={'dxSelectBox'}
+                                            editorOptions={{dataSource: themesList, onSelectionChanged: this.themeSelectionChanged}}>
+                                            <RequiredRule/>
+                                        </SimpleItem>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
@@ -140,8 +161,13 @@ class UserList extends React.Component {
                                 caption={'Phone'}
                                 visible={false}
                                 allowSorting={true}
-                                allowReordering={true}
-                                width={80}/>
+                                allowReordering={true}/>
+                            <Column
+                                dataField={'theme'}
+                                caption={'Theme'}
+                                visible={false}
+                                allowSorting={true}
+                                allowReordering={true}/>
                             <Column
                                 dataField={'active'}
                                 caption={'Active'}

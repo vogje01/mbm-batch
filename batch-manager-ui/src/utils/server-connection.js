@@ -1,6 +1,5 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
-//import history from "./History";
 import * as jwt from "jsonwebtoken";
 
 const initGet = () => {
@@ -23,20 +22,13 @@ const initUpdate = (body) => {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'PUT', body: body
     }
 };
-const initPost = (token, body) => {
-    return {
-        headers: {'Content-Type': 'application/hal+json', 'Authorization': token}, method: 'POST', body: body
-    }
-};
 
 const logout = () => {
     localStorage.clear();
-    //history.push('/');
 };
 
 const checkAuthentication = () => {
     if (localStorage.getItem('authenticated') === null) {
-        //history.push('/');
         return;
     }
     let webToken = localStorage.getItem('webToken');
@@ -47,10 +39,11 @@ const checkAuthentication = () => {
 
 const loginRequest = (basicAuthentication, authRequest) => {
     StartTimer();
-    let subject = authRequest.userId + ":" + authRequest.password + ":" + authRequest.orgUnit;
-    let tokenBody = {sub: subject, exp: Math.floor(Date.now() / 1000) + 300, iat: Math.floor(Date.now() / 1000)};
-    let token = 'Bearer ' + jwt.sign(tokenBody, process.env.REACT_APP_WEBTOKEN_SECRET, {algorithm: 'HS512'});
-    return fetch(process.env.REACT_APP_API_URL + 'authenticate', initPost(token, JSON.stringify(authRequest)))
+    let subject = 'Basic ' + basicAuthentication;
+//    let tokenBody = {sub: subject, exp: Math.floor(Date.now() / 1000) + 300, iat: Math.floor(Date.now() / 1000)};
+//    let token = 'Bearer ' + jwt.sign(tokenBody, process.env.REACT_APP_WEBTOKEN_SECRET, {algorithm: 'HS512'});
+
+    return fetch(process.env.REACT_APP_API_URL + 'authenticate', {headers: {'Content-Type': 'application/hal+json', 'Authorization': subject}, method: 'POST'})
         .then((response) => {
             return response.json();
         })

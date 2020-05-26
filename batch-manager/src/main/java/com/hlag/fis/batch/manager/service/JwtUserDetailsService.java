@@ -1,5 +1,6 @@
 package com.hlag.fis.batch.manager.service;
 
+import com.hlag.fis.batch.manager.service.common.UnauthorizedException;
 import com.hlag.fis.batch.repository.UserRepository;
 import com.hlag.fis.batch.util.PasswordHash;
 import com.unboundid.ldap.sdk.*;
@@ -96,13 +97,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return null;
 	}
 
-	public UserDetails loadUserByUsername(String userId, String password) {
+	public UserDetails loadUserByUsername(String userId, String password) throws UnauthorizedException {
 		String encPassword = PasswordHash.encryptPassword(password);
 		Optional<com.hlag.fis.batch.domain.User> userOptional = userRepository.findByUserIdAndPasswordAndActive(userId, encPassword);
 		if (userOptional.isPresent()) {
 			return new User(userId, password, emptyList());
 		}
-		return null;
+		throw new UnauthorizedException();
 	}
 
 	public SearchResultEntry findUserEntry(String userUniqueName, String userOrgUnit, LDAPConnection ldapConnection) {

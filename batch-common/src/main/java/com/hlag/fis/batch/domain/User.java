@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +70,9 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
     /**
      * Avatar
      */
+    @Lob
     @Column(name = "AVATAR")
-    private String avatar;
+    private Blob avatar;
     /**
      * Theme
      */
@@ -107,7 +109,6 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
         this.email = user.email;
         this.phone = user.phone;
         this.theme = user.theme;
-        this.avatar = user.avatar;
         this.description = user.description;
         this.active = user.active;
     }
@@ -168,11 +169,11 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
         this.phone = phone;
     }
 
-    public String getAvatar() {
+    public Blob getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(Blob avatar) {
         this.avatar = avatar;
     }
 

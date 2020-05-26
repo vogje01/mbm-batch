@@ -10,6 +10,10 @@ import {AuthProvider, useAuth} from './contexts/auth';
 import {useScreenSizeClass} from './utils/media-query';
 import Content from './Content';
 import NotAuthenticatedContent from './NotAuthenticatedContent';
+import 'devextreme/dist/css/dx.material.blue.dark.compact.css';
+import 'devextreme/dist/css/dx.material.blue.light.compact.css';
+import 'devextreme/dist/css/dx.material.orange.dark.compact.css';
+import 'devextreme/dist/css/dx.material.orange.light.compact.css';
 
 function App() {
   const {user, loading} = useAuth();

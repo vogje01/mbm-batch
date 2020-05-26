@@ -7,9 +7,7 @@ import com.hlag.fis.batch.manager.service.util.AuditorAwareImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -49,12 +47,12 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
         return configurer;
     }
 
-    @Bean
+    /*@Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(cacheNames);
         cacheManager.setCaffeine(caffeineCacheBuilder());
         return cacheManager;
-    }
+    }*/
 
     private Caffeine<Object, Object> caffeineCacheBuilder() {
         return Caffeine.newBuilder().initialCapacity(100).maximumSize(1000).expireAfterAccess(5, TimeUnit.MINUTES).weakKeys().recordStats();

@@ -55,10 +55,6 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private String phone;
     /**
-     * Avatar
-     */
-    private String avatar;
-    /**
      * Theme
      */
     private String theme;
@@ -106,7 +102,6 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.email = user.email;
         this.phone = user.phone;
         this.theme = user.theme;
-        this.avatar = user.avatar;
         this.description = user.description;
         this.active = user.active;
         this.createdAt = user.createdAt;
@@ -185,14 +180,6 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getTheme() {

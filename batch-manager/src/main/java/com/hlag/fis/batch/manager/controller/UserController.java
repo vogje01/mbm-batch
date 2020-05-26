@@ -9,16 +9,22 @@ import com.hlag.fis.batch.manager.service.util.PagingUtil;
 import com.hlag.fis.batch.util.MethodTimer;
 import com.hlag.fis.batch.util.ModelConverter;
 import com.hlag.fis.batch.util.PasswordHash;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,15 +54,18 @@ public class UserController {
 
     private ModelConverter modelConverter;
 
+    private ServletContext servletContext;
+
     /**
      * Constructor.
      *
      * @param userService service implementation.
      */
     @Autowired
-    public UserController(UserService userService, ModelConverter modelConverter) {
+    public UserController(UserService userService, ModelConverter modelConverter, ServletContext servletContext) {
         this.userService = userService;
         this.modelConverter = modelConverter;
+        this.servletContext = servletContext;
     }
 
     /**
@@ -257,6 +266,33 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
+    /**
+     * Return the avatar PNG file.
+     *
+     * @param id ID of user.
+     */
+    @GetMapping(value = "/avatar/{id}", produces = {"image/png"})
+    public ResponseEntity<byte[]> avatar(@PathVariable String id) throws ResourceNotFoundException {
+
+        t.restart();
+        RestPreconditions.checkFound(userService.findById(id));
+
+        Optional<User> userOptional = userService.findById(id);
+        if (userOptional.isPresent()) {
+            HttpHeaders headers = new HttpHeaders();
+            byte[] media = new byte[0];
+            try {
+                media = IOUtils.toByteArray(userOptional.get().getAvatar().getBinaryStream());
+            } catch (IOException | SQLException ex) {
+                logger.error(format("Could not read avatar - error: {0}", ex.getMessage()));
+            }
+            headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+
+            return new ResponseEntity<>(media, headers, HttpStatus.OK);
+        }
+        throw new ResourceNotFoundException();
+    }
+
     private void addLinks(UserDto userDto) {
         try {
             userDto.add(linkTo(methodOn(UserController.class).findById(userDto.getId())).withSelfRel());
@@ -265,6 +301,7 @@ public class UserController {
             userDto.add(linkTo(methodOn(UserController.class).deleteUser(userDto.getId())).withRel("delete"));
             userDto.add(linkTo(methodOn(UserController.class).addUserGroup(userDto.getId(), null)).withRel("addUserGroup"));
             userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(userDto.getId(), null)).withRel("removeUserGroup"));
+            userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
             userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), 0, 100, "name", "ASC")).withRel("userGroups"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", userDto.getId()), e);

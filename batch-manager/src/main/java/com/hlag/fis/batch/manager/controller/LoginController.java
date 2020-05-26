@@ -4,6 +4,7 @@ import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.domain.dto.UserDto;
 import com.hlag.fis.batch.manager.service.JwtUserDetailsService;
 import com.hlag.fis.batch.manager.service.UserService;
+import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.UnauthorizedException;
 import com.hlag.fis.batch.manager.service.util.JwtRequest;
 import com.hlag.fis.batch.manager.service.util.JwtResponse;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Login controller for the batch manager UI.
@@ -53,7 +56,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/api/authenticate", produces = {"application/hal+json"})
-    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UnauthorizedException {
+    public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UnauthorizedException, ResourceNotFoundException {
         logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
         Optional<User> userOptional = userService.findByUserId(authenticationRequest.getUserId());
         if (userOptional.isPresent()) {
@@ -64,6 +67,7 @@ public class LoginController {
             final String token = jwtTokenUtil.generateToken(userDetails);
             logger.info(format("Token generated - token: {0}", token));
             UserDto userDto = modelConverter.convertUserToDto(userOptional.get());
+            userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
             return ResponseEntity.ok(new JwtResponse(token, userDto));
         }
         throw new UnauthorizedException();

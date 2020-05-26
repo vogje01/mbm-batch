@@ -20,6 +20,7 @@ export const UserDataSource = () => {
                 user.lastName = values.lastName ? values.lastName : user.lastName;
                 user.email = values.email ? values.email : user.email;
                 user.phone = values.phone ? values.phone : user.phone;
+                user.theme = values.theme ? values.theme : user.theme;
                 user.description = values.description ? values.description : user.description;
                 user.active = values.active ? values.active : user.active;
                 let url = user._links.update.href;

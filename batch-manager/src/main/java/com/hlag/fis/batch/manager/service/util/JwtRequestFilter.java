@@ -1,13 +1,16 @@
 package com.hlag.fis.batch.manager.service.util;
 
 import com.hlag.fis.batch.manager.service.JwtUserDetailsService;
+import com.hlag.fis.batch.manager.service.common.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -47,7 +50,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, AuthenticationException {
         final String requestTokenHeader = request.getHeader("Authorization");
         String jwtToken = null;
         String username = null;
@@ -58,13 +61,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String password = userFields[1];
             String orgUnit = userFields[2];
             logger.debug(format("Basic authentication - userName: {0} orgUnit: {1}", username, orgUnit));
-            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
-            // Spring Security Configurations successfully.
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            logger.debug(format("User authenticated - userName: {0}", username));
+            try {
+                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
+                // Spring Security Configurations successfully.
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                logger.debug(format("User authenticated - userName: {0}", username));
+            } catch (UnauthorizedException ex) {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                return;
+            }
         } else {
             // JWT Token is in the form "Bearer token". Remove Bearer word and get only the token
             if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
@@ -79,8 +87,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 } catch (ExpiredJwtException e) {
                     logger.info(format("JWT Token has expired - message: {0} token: {1}", e.getMessage(), jwtToken), e);
                 }
-            } else {
-                logger.warn(format("JWT Token does not begin with Bearer String - token:{0}", jwtToken));
             }
             // Once we get the token validate it.
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
