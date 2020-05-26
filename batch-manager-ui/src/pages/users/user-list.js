@@ -49,6 +49,11 @@ class UserList extends React.Component {
     }
 
     themeSelectionChanged(e) {
+        themes.ready(() => {
+            this.dataGrid.instance.repaint();
+            this.button.instance.repaint();
+        });
+        themes.current('mytheme-light');
         themes.current(e.value);
     }
 

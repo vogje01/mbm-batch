@@ -1,12 +1,16 @@
 import React from 'react';
 import './profile.scss';
-import Form, {ButtonItem, EmailRule, EmptyItem, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
+import Form, {EmailRule, EmptyItem, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
 import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
 
 const themesList = [
-    {name: 'material-blue-dark-compact'},
-    {name: 'material-blue-light-compact'}
+    {name: 'material.blue.dark.compact'},
+    {name: 'material.blue.light.compact'},
+    {name: 'material.orange.dark.compact'},
+    {name: 'material.orange.light.compact'},
+    {name: 'material.lime.dark.compact'},
+    {name: 'material.lime.light.compact'}
 ];
 
 class Profile extends React.Component {
@@ -27,7 +31,7 @@ class Profile extends React.Component {
 
     handleSubmit(e) {
         e.event.preventDefault();
-        updateItem(process.env.REACT_APP_API_URL + 'users/update', this.state.user, 'userDto');
+        updateItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id + '/update', this.state.user, 'userDto');
         this.setState({});
     }
 
@@ -45,9 +49,9 @@ class Profile extends React.Component {
                 </div>
 
                 <div className={'content-block dx-card responsive-paddings'}>
-                    <form action="your-action" onSubmit={this.handleSubmit}>
+                    {process.env.REACT_APP_API_URL}
+                    <form key={'user'}>
                         <Form
-                            id={'form'}
                             readOnly={false}
                             formData={this.state.user}
                             validationGroup="customerData">
@@ -78,20 +82,22 @@ class Profile extends React.Component {
                                                 dataSource: themesList,
                                                 displayExpr: 'name',
                                                 valueExpr: 'name',
-                                                onSelectionChanges: this.themeSelectionChanged
+                                                onSelectionChanged: this.themeSelectionChanged
                                             }}/>
-                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                                 <EmptyItem colSpan={2}/>
+                                <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                                 <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
                             </SimpleItem>
-                            <ButtonItem width={120}
-                                        horizontalAlignment={'left'}
-                                        text={'Register'}
-                                        type={'success'}
-                                        useSubmitBehavior={true}/>
+                            <SimpleItem editorType={'dxButton'} editorOptions={{
+                                horizontalAlignment: 'left',
+                                text: 'Save',
+                                type: 'success',
+                                useSubmitBehavior: false,
+                                onClick: this.handleSubmit
+                            }}/>
                         </Form>
                     </form>
                 </div>

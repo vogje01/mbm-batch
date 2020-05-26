@@ -16,7 +16,8 @@
     "react-app-polyfill": "^1.0.0",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "env-cmd": "^10.1.0"
   },
   "scripts": {
     "start:development": "env-cmd -f .env.development react-scripts start",
