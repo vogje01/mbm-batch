@@ -1,17 +1,18 @@
 import {withNavigationWatcher} from './contexts/navigation';
 import {
-  AgentListPage,
-  DisplayDataPage,
-  HomePage,
-  JobDefinitionListPage,
-  JobExecutionListPage,
-  JobScheduleListPage,
-  PerformancePage,
-  ProfilePage,
-  StepExecutionListPage,
-  UserGroupListPage,
-  UserListPage
+    AgentListPage,
+    DisplayDataPage,
+    HomePage,
+    JobDefinitionListPage,
+    JobExecutionListPage,
+    JobScheduleListPage,
+    PerformancePage,
+    ProfilePage,
+    StepExecutionListPage,
+    UserGroupListPage,
+    UserListPage
 } from './pages';
+import {AuthProvider} from "./contexts/auth";
 
 const routes = [
   {
@@ -47,17 +48,21 @@ const routes = [
     component: ProfilePage
   },
   {
-    path: '/users',
-    component: UserListPage
+      path: '/users',
+      component: UserListPage
   },
-  {
-    path: '/usergroups',
-    component: UserGroupListPage
-  },
-  {
-    path: '/home',
-    component: HomePage
-  }
+    {
+        path: '/usergroups',
+        component: UserGroupListPage
+    },
+    {
+        path: '/home',
+        component: HomePage
+    },
+    {
+        path: '/login',
+        component: AuthProvider
+    }
 ];
 
 export default routes.map(route => {

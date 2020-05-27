@@ -39,7 +39,7 @@ class StepExecutionList extends React.Component {
     }
 
     selectionChanged(e) {
-        this.state.setState({currentStepExecution: e.data});
+        this.setState({currentStepExecution: e.data});
     }
 
     getReadCount(rowData) {

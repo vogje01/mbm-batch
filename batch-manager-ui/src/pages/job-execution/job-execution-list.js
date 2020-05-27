@@ -4,6 +4,7 @@ import {
     DataGrid,
     Editing,
     FilterRow,
+    Form,
     HeaderFilter,
     MasterDetail,
     Pager,
@@ -18,13 +19,14 @@ import './job-execution-list.scss'
 import {getRunningTime} from "../../utils/date-time-util";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
+import {GroupItem, SimpleItem} from "devextreme-react/form";
 
 class JobExecutionList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            currentJobExecution: {}
+            currentJobExecution: {},
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.intervals = [
@@ -79,7 +81,7 @@ class JobExecutionList extends React.Component {
                         </Toolbar>
                         <DataGrid
                             id={'jobTable'}
-                            dataSource={JobExecutionDataSource()}
+                            dataSource={JobExecutionDataSource(this)}
                             hoverStateEnabled={true}
                             //onRowDblClick={this.toggleDetails}
                             allowColumnReordering={true}
@@ -100,27 +102,43 @@ class JobExecutionList extends React.Component {
                                 mode={'form'}
                                 useIcons={true}
                                 allowDeleting={true}
-                                allowUpdating={true}/>
+                                allowUpdating={true}>
+                                <Form>
+                                    <GroupItem colCount={2} caption={"Job Execution Details: " + this.state.currentJobExecution.jobName}>
+                                        <SimpleItem dataField="jobName" readOnly={true}/>
+                                        <SimpleItem dataField="hostName" readOnly={true}/>
+                                        <SimpleItem dataField="status" readOnly={true}/>
+                                        <SimpleItem dataField="jobPid" readOnly={true}/>
+                                        <SimpleItem dataField="id" readOnly={true}/>
+                                        <SimpleItem dataField="jobVersion" readOnly={true}/>
+                                    </GroupItem>
+                                    <GroupItem colCount={2} caption={"Timing"}>
+                                        <SimpleItem dataField="startTime" readOnly={true}/>
+                                        <SimpleItem dataField="endTime" readOnly={true}/>
+                                        <SimpleItem dataField="createTime" readOnly={true}/>
+                                        <SimpleItem dataField="lastUpdated" readOnly={true}/>
+                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox" editorOptions={{value: getRunningTime}}/>
+                                    </GroupItem>
+                                    <GroupItem colSpan={2} caption={"Logs"}>
+                                    </GroupItem>
+                                </Form>
+                            </Editing>
+                            <Column
+                                caption={'ID'}
+                                dataField={'id'}
+                                visible={false}/>
                             <Column
                                 caption={'Job Name'}
                                 dataField={'jobName'}
                                 allowFiltering={true}
                                 allowSorting={true}
-                                allowReordering={true}>
+                                allowReordering={true}
+                                allowEditing={true}>
                                 <HeaderFilter allowSearch={true}/>
                             </Column>
                             <Column
                                 caption={'Hostname'}
                                 dataField={'hostName'}
-                                allowFiltering={true}
-                                allowSorting={true}
-                                allowReordering={true}
-                                width={120}>
-                                <HeaderFilter allowSearch={true}/>
-                            </Column>
-                            <Column
-                                caption={'Nodename'}
-                                dataField={'nodeName'}
                                 allowFiltering={true}
                                 allowSorting={true}
                                 allowReordering={true}

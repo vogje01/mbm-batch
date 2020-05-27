@@ -21,9 +21,9 @@ class MethodTimer extends Component {
             .pipe(filter(f => f.topic === this.state.topic))
             .subscribe(s => {
                 if (s.data.startTimer !== undefined) {
-                    this.setState({startTimer: s.data.startTimer})
+                    this.state.startTimer = s.data.startTimer;
                 } else if (s.data.endTimer !== undefined) {
-                    this.setState({endTimer: s.data.endTimer})
+                    this.state.endTimer = s.data.endTimer;
                 }
             });
     }

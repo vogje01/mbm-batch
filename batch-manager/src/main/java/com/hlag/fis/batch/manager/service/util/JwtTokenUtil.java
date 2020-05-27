@@ -4,8 +4,6 @@ import com.hlag.fis.batch.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -26,12 +24,10 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
-
     /**
-     * Token expiration time in seconds
+     * Token expiration time in seconds (8h)
      */
-    public static final long JWT_TOKEN_VALIDITY = 300;
+    public static final long JWT_TOKEN_VALIDITY = 8 * 60 * 60;
     private static final long serialVersionUID = -2550185165626007488L;
 
     @Value("${jwt.secret}")
@@ -46,28 +42,6 @@ public class JwtTokenUtil implements Serializable {
     public String getUsernameFromToken(String token) {
         String[] subjects = getClaimFromToken(token, Claims::getSubject).split(":");
         return subjects[0];
-    }
-
-    /**
-     * Retrieve password from jwt token
-     *
-     * @param token JWT token.
-     * @return user password.
-     */
-    public String getPasswordFromToken(String token) {
-        String[] subjects = getClaimFromToken(token, Claims::getSubject).split(":");
-        return subjects[1];
-    }
-
-    /**
-     * Retrieve organizational unit from jwt token
-     *
-     * @param token JWT token.
-     * @return organizational unit.
-     */
-    public String getOrgUnit(String token) {
-        String[] subjects = getClaimFromToken(token, Claims::getSubject).split(":");
-        return subjects[2];
     }
 
     /**
@@ -108,25 +82,28 @@ public class JwtTokenUtil implements Serializable {
         return doGenerateToken(claims, user.getUserId());
     }
 
-    //while creating the token -
-    //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-    //2. Sign the JWT using the HS512 algorithm and secret key.
-    //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-    //   compaction of the JWT to a URL-safe string
+    /**
+     * While creating the token
+     * <ul>
+     * <li>Define  claims of the token, like Issuer, Expiration, Subject, and the ID.</li>
+     * <li>Sign the JWT using the HS512 algorithm and secret key.</li>
+     * <li>According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1) compaction of the JWT to a URL-safe string.</li>
+     * </ul>
+     */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         long now = System.currentTimeMillis();
-		return Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + JWT_TOKEN_VALIDITY * 1000))
-		  .signWith(SignatureAlgorithm.HS512, secret)
-		  .compact();
-	}
+                .signWith(SignatureAlgorithm.HS512, secret)
+                .compact();
+    }
 
-	//validate token
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		final String username = getUsernameFromToken(token);
-		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-	}
+    //validate token
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
 }

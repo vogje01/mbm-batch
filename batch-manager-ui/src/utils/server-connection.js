@@ -1,5 +1,6 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
+import * as React from "react";
 
 const initGet = () => {
     return {
@@ -22,16 +23,12 @@ const initUpdate = (body) => {
     }
 };
 
-const logout = () => {
-    localStorage.clear();
-};
-
 const getList = (url, attributes) => {
     StartTimer();
     return fetch(url, initGet())
         .then(response => {
-            if (response.status === 401) {
-                logout();
+            if (response.status !== 200) {
+                throw new Error(response.statusText)
             }
             return response.json()
         })
@@ -46,9 +43,6 @@ const getList = (url, attributes) => {
                 data: data._embedded ? data._embedded[attributes] : [],
                 totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0
             };
-        })
-        .catch((error) => {
-            errorMessage('Get list error: ' + error.message);
         }).finally(() => {
             EndTimer();
         });
@@ -59,12 +53,9 @@ const getItem = (url) => {
     return fetch(url, initGet())
         .then(response => {
             if (response.status === 401) {
-                logout();
+                throw new Error(response.statusText)
             }
             return response.json()
-        })
-        .catch((error) => {
-            errorMessage('Get item error: ' + error.message);
         }).finally(() => {
             EndTimer();
         });
@@ -74,8 +65,8 @@ const listItems = (entity, attributes) => {
     StartTimer();
     return fetch(process.env.REACT_APP_API_URL + entity, initGet())
         .then(response => {
-            if (response.status === 401) {
-                logout();
+            if (response.status !== 200) {
+                throw new Error(response.statusText)
             }
             return response.json()
         })
@@ -91,9 +82,6 @@ const listItems = (entity, attributes) => {
                 totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0,
                 links: data._links ? data._links : []
             };
-        })
-        .catch((error) => {
-            errorMessage('Get list error: ' + error.message);
         }).finally(() => {
             EndTimer();
         });
@@ -103,11 +91,8 @@ const insertItem = (url, item) => {
     StartTimer();
     return fetch(url, initInsert(item))
         .then(response => {
-            if (response.status === 401) {
-                logout();
-            }
             if (response.ok) {
-                infoMessage('Insert item successfull');
+                infoMessage('Insert item successful');
             }
         })
         .catch((error) => {
@@ -121,9 +106,6 @@ const updateItem = (url, item, attribute) => {
     StartTimer();
     return fetch(url, initUpdate(JSON.stringify(item)))
         .then(response => {
-            if (response.status === 401) {
-                logout();
-            }
             if (response.ok) {
                 infoMessage('Update item updated successfull');
             }
@@ -140,9 +122,6 @@ const deleteItem = (url, key, label) => {
     StartTimer();
     return fetch(url, initDelete())
         .then(response => {
-            if (response.status === 401) {
-                logout();
-            }
             if (response.ok) {
                 infoMessage('Item \'' + label + '\' deleted');
             }
@@ -154,4 +133,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {logout, getList, deleteItem, insertItem, updateItem, listItems, getItem}
+export {getList, deleteItem, insertItem, updateItem, listItems, getItem}

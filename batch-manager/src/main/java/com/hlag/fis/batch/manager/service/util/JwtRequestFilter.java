@@ -97,9 +97,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 } catch (MalformedJwtException e) {
                     logger.warn(format("Malformed JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken));
                 } catch (IllegalArgumentException e) {
-                    logger.error(format("Unable to get JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken), e);
+                    logger.error(format("Unable to get JWT Token - error: {0} token: {1}", e.getMessage(), jwtToken));
                 } catch (ExpiredJwtException e) {
-                    logger.info(format("JWT Token has expired - message: {0} token: {1}", e.getMessage(), jwtToken), e);
+                    logger.warn(format("JWT Token has expired - message: {0} token: {1}", e.getMessage(), jwtToken));
                 }
             }
         }

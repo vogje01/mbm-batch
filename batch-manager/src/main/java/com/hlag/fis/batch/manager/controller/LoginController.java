@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -48,6 +45,11 @@ public class LoginController {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.modelConverter = modelConverter;
+    }
+
+    @GetMapping(value = "/api/ping")
+    public ResponseEntity<Void> ping() {
+        return null;
     }
 
     @PostMapping(value = "/api/authenticate", produces = {"application/hal+json"})

@@ -8,7 +8,8 @@ const useAuth = () => useContext(AuthContext);
 function AuthProvider(props) {
     const [user, setUser] = useState();
     const [loading, setLoading] = useState(true);
-    const [setError] = useState(false);
+    const [timer, setTimer] = useState(0);
+    const [error, setError] = useState(false);
 
     const logIn = useCallback(async (userId, password) => {
         // Send login request
@@ -37,14 +38,25 @@ function AuthProvider(props) {
                         avatarUrl: data.userDto._links.avatar.href
                     });
                     themes.current(data.userDto.theme);
+                    setTimer(setInterval(ping, 300000));
                 }
                 setLoading(false);
             })
             .catch(() => {
                 errorMessage('Login error: userId ' + userId + ' not authorized');
-                setLoading(false);
+                throw new Error("Login error: userId ' + userId + ' not authorized")
             });
-    }, [setError]);
+    }, []);
+
+    const ping = useCallback(() => {
+        fetch(process.env.REACT_APP_API_URL + 'ping', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}})
+            .then((response) => {
+                if (response.status !== 200) {
+                    clearInterval(timer);
+                    logOut();
+                }
+            })
+    }, []);
 
     const logOut = useCallback(() => {
         // Clear user data

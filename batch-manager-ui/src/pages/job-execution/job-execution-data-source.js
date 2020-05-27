@@ -1,11 +1,15 @@
+import React from 'react';
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
 import {deleteItem, getList, listItems} from "../../utils/server-connection";
 
-export const JobExecutionDataSource = () => {
+export function JobExecutionDataSource(parent) {
     return new DataSource({
         store: new CustomStore({
+            errorHandler: function () {
+                parent.props.user = undefined;
+            },
             load: function (loadOptions) {
                 let params = getParams(loadOptions);
                 return listItems('jobexecutions' + params, 'jobExecutionDtoes');
@@ -16,7 +20,7 @@ export const JobExecutionDataSource = () => {
             }
         })
     });
-};
+}
 
 export const JobExecutionLogDataSource = (jobExecutionInfo) => {
     return new DataSource({
