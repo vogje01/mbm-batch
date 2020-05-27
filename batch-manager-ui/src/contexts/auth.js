@@ -7,11 +7,10 @@ const useAuth = () => useContext(AuthContext);
 
 function AuthProvider(props) {
     const [user, setUser] = useState();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [timer, setTimer] = useState(0);
-    const [error, setError] = useState(false);
 
-    const logIn = useCallback(async (userId, password) => {
+    const logIn = useCallback((userId, password) => {
         // Send login request
         let authRequest = {userId: userId, password: password, orgUnit: 'EXT'}
         let basicAuthentication = 'Basic ' + new Buffer(userId + ':' + password + ':EXT').toString('base64');
@@ -23,9 +22,7 @@ function AuthProvider(props) {
                 if (response.status === 200) {
                     return response.json();
                 }
-                errorMessage('Login error: userId ' + userId + ' not authorized');
-                setError(true);
-                setLoading(false);
+                return undefined;
             })
             .then((data) => {
                 if (data !== undefined) {
@@ -39,12 +36,9 @@ function AuthProvider(props) {
                     });
                     themes.current(data.userDto.theme);
                     setTimer(setInterval(ping, 300000));
+                } else {
+                    errorMessage('Login error: userId ' + userId + ' not authorized');
                 }
-                setLoading(false);
-            })
-            .catch(() => {
-                errorMessage('Login error: userId ' + userId + ' not authorized');
-                throw new Error("Login error: userId ' + userId + ' not authorized")
             });
     }, []);
 
@@ -60,7 +54,7 @@ function AuthProvider(props) {
 
     const logOut = useCallback(() => {
         // Clear user data
-        setUser();
+        setUser(null);
     }, []);
 
     useEffect(() => {

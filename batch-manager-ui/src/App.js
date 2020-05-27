@@ -16,14 +16,14 @@ import 'devextreme/dist/css/dx.material.orange.dark.compact.css';
 import 'devextreme/dist/css/dx.material.orange.light.compact.css';
 
 function App() {
-  const {user, loading, setUser} = useAuth();
+  const {user, loading} = useAuth();
 
   if (loading) {
     return <LoadPanel visible={true}/>;
   }
 
   if (user) {
-    return <Content setUser={setUser}/>;
+    return <Content/>;
   }
 
   return <NotAuthenticatedContent/>;

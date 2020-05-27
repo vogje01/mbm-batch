@@ -6,7 +6,6 @@ import {useAuth} from '../../contexts/auth';
 import './login-form.scss';
 
 export default function (props) {
-    //const history = useHistory();
     const {logIn} = useAuth();
     const [loading, setLoading] = useState(false);
     const formData = useRef({});
@@ -15,8 +14,8 @@ export default function (props) {
         e.preventDefault();
         const {userId, password} = formData.current;
         setLoading(true);
-
         await logIn(userId, password);
+        setLoading(false);
     }, [logIn]);
 
     /*const onCreateAccountClick = useCallback(() => {
