@@ -11,20 +11,12 @@ import {JobGroupDataSource} from "../job-group/job-group-data-source";
 import JobDefinitionExport from "./job-definition-export";
 import JobDefinitionImport from "./job-definition-import";
 import {insertItem} from "../../utils/server-connection";
+import JobDefinitionParamList from "./job-definition-param-list";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
     {type: 'DOCKER', name: 'DOCKER'}
 ];
-
-function screenByWidth(width) {
-    return width < 720 ? 'sm' : 'md';
-}
-
-const colCountByScreen = {
-    sm: 2,
-    md: 4
-};
 
 class JobDefinitionList extends React.Component {
 
@@ -127,7 +119,7 @@ class JobDefinitionList extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form colCount={2}>
-                                    <GroupItem caption={"Job Definition Details: " + this.state.currentJobDefinition.label}>
+                                    <GroupItem colCount={2} caption={"Job Definition Details: " + this.state.currentJobDefinition.label}>
                                         <SimpleItem dataField="label">
                                             <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
                                         </SimpleItem>
@@ -148,7 +140,7 @@ class JobDefinitionList extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                     </GroupItem>
-                                    <GroupItem caption={"Command"}>
+                                    <GroupItem colCount={2} caption={"Command"}>
                                         <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
                                             <RequiredRule/>
                                         </SimpleItem>
@@ -162,7 +154,7 @@ class JobDefinitionList extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="workingDirectory">
                                             <RequiredRule/>
-                                            <StringLengthRule max={256} message="Command must be less than 256 characters."/>
+                                            <StringLengthRule max={256} message="Working directory must be less than 256 characters."/>
                                         </SimpleItem>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
@@ -170,6 +162,9 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
+                                        <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>

@@ -1,4 +1,3 @@
-import React from 'react';
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";

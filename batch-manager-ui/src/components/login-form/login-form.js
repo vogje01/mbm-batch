@@ -8,7 +8,7 @@ import './login-form.scss';
 export default function (props) {
     const {logIn} = useAuth();
     const [loading, setLoading] = useState(false);
-    const formData = useRef({});
+    const formData = useRef({userId: 'vogje01', password: 'Dilbert_01'});
 
     const onSubmit = useCallback(async (e) => {
         e.preventDefault();
@@ -30,7 +30,6 @@ export default function (props) {
                     editorType={'dxTextBox'}
                     editorOptions={userIdEditorOptions}>
                     <RequiredRule message="UserId is required"/>
-                    {/*<EmailRule message="UserId is invalid"/>*/}
                     <Label visible={false}/>
                 </Item>
                 <Item

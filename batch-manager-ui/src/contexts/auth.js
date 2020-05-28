@@ -10,6 +10,21 @@ function AuthProvider(props) {
     const [loading, setLoading] = useState(false);
     const [timer, setTimer] = useState(0);
 
+    const logOut = useCallback(() => {
+        // Clear user data
+        setUser(null);
+    }, []);
+
+    const ping = useCallback(() => {
+        fetch(process.env.REACT_APP_API_URL + 'ping', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}})
+            .then((response) => {
+                if (response.status !== 200) {
+                    clearInterval(timer);
+                    logOut();
+                }
+            })
+    }, [logOut, timer]);
+
     const logIn = useCallback((userId, password) => {
         // Send login request
         let authRequest = {userId: userId, password: password, orgUnit: 'EXT'}
@@ -40,22 +55,7 @@ function AuthProvider(props) {
                     errorMessage('Login error: userId ' + userId + ' not authorized');
                 }
             });
-    }, []);
-
-    const ping = useCallback(() => {
-        fetch(process.env.REACT_APP_API_URL + 'ping', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}})
-            .then((response) => {
-                if (response.status !== 200) {
-                    clearInterval(timer);
-                    logOut();
-                }
-            })
-    }, []);
-
-    const logOut = useCallback(() => {
-        // Clear user data
-        setUser(null);
-    }, []);
+    }, [ping]);
 
     useEffect(() => {
         setLoading(false);

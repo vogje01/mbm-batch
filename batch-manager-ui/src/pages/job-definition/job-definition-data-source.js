@@ -3,42 +3,15 @@ import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
 import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
 
-const getAttributeValue = (attribute, value) => {
-    if (value.keyName) {
-        attribute.keyName = value.keyName;
-    }
-    if (value.type) {
-        attribute.type = value.type;
-    }
-    if (value.value) {
-        attribute.stringValue = null;
-        attribute.longValue = null;
-        attribute.doubleValue = null;
-        attribute.booleanValue = null;
-        attribute.dateValue = null;
-        attribute.value = null;
-        switch (attribute.type) {
-            case 'STRING':
-                attribute.stringValue = '' + value.value;
-                attribute.value = '' + value.value;
-                break;
-            case 'LONG':
-                attribute.longValue = value.value;
-                attribute.value = '' + value.value;
-                break;
-            case 'DOUBLE':
-                attribute.doubleValue = value.value;
-                attribute.value = '' + value.value;
-                break;
-            case 'BOOLEAN':
-                attribute.booleanValue = value.value;
-                attribute.value = '' + value.value;
-                break;
-            default:
-                break;
-        }
-    }
-    return attribute;
+const getAttributeValue = (jobDefinitionParam, values) => {
+    jobDefinitionParam.keyName = values.keyName !== undefined ? values.keyName : jobDefinitionParam.keyName;
+    jobDefinitionParam.type = values.type !== undefined ? values.type : jobDefinitionParam.type;
+    jobDefinitionParam.longValue = values.longValue !== undefined ? values.longValue : jobDefinitionParam.longValue;
+    jobDefinitionParam.stringValue = values.stringValue !== undefined ? values.stringValue : jobDefinitionParam.stringValue;
+    jobDefinitionParam.booleanValue = values.booleanValue !== undefined ? values.booleanValue : jobDefinitionParam.booleanValue;
+    jobDefinitionParam.doubleValue = values.doubleValue !== undefined ? values.doubleValue : jobDefinitionParam.doubleValue;
+    jobDefinitionParam.dateValue = values.dateValue !== undefined ? values.dateValue : jobDefinitionParam.dateValue;
+    return jobDefinitionParam;
 };
 
 export const JobDefinitionDataSource = () => {
@@ -87,13 +60,12 @@ export const JobDefinitionParamDataSource = (jobDefinition) => {
                 return getList(url, 'jobDefinitionParamDtoes');
             },
             insert: function (values) {
-                let param = getAttributeValue({}, values);
-                let url = jobDefinition._links.addParam.href;
-                return insertItem(url, JSON.stringify(param));
+                let jobDefinitionParam = getAttributeValue(values, values);
+                return insertItem(jobDefinition._links.addParam.href, JSON.stringify(jobDefinitionParam));
             },
-            update: function (key, values) {
-                let param = getAttributeValue(key, values);
-                return updateItem(key._links.update.href, JSON.stringify(param))
+            update: function (jobDefinitionParam, values) {
+                jobDefinitionParam = getAttributeValue(jobDefinitionParam, values);
+                return updateItem(jobDefinitionParam._links.update.href, jobDefinitionParam)
             },
             remove: function (item) {
                 let url = item._links.delete.href;

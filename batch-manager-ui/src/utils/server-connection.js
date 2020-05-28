@@ -1,6 +1,5 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
-import * as React from "react";
 
 const initGet = () => {
     return {
