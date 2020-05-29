@@ -1,9 +1,8 @@
 import React from 'react';
 import {CheckBox} from "devextreme-react";
-import DataGrid, {Column, Editing, FilterRow, Pager, Paging, Selection} from 'devextreme-react/data-grid';
-import {errorMessage, infoMessage} from "../../utils/message-util";
+import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RequiredRule, Selection, StringLengthRule} from 'devextreme-react/data-grid';
 import {JobDefinitionParamDataSource} from "./job-definition-data-source";
-import JobDefinitionParamForm from "./job-definition-param-form";
+import {GroupItem, SimpleItem} from "devextreme-react/form";
 
 /**
  * @return {null}
@@ -53,15 +52,10 @@ class JobDefinitionParamList extends React.Component {
         this.state = {
             currentJobDefinition: props.data,
             currentJobDefinitionParam: {},
-            currentJobDefinitionParamType: 'STRING'
+            typeEditable: false
         };
         this.selectionChanged = this.selectionChanged.bind(this);
-        this.getType = this.getType.bind(this);
-        this.getOptions = this.getOptions.bind(this);
-        this.getValue = this.getValue.bind(this);
-        this.getValueField = this.getValueField.bind(this);
-        this.onRowRemoving = this.onRowRemoving.bind(this);
-        this.onTypeChanged = this.onTypeChanged.bind(this);
+        this.onRowInserted = this.onRowInserted.bind(this);
         this.paramTypes = [
             {label: 'String', type: 'STRING'},
             {label: 'Long', type: 'LONG'},
@@ -71,122 +65,13 @@ class JobDefinitionParamList extends React.Component {
         ];
     }
 
-    getValue() {
-        switch (this.state.currentJobDefinitionParam.type) {
-            case 'STRING':
-                return this.state.currentJobDefinitionParam.stringValue;
-            case 'LONG':
-                return this.state.currentJobDefinitionParam.longValue;
-            case 'DATE':
-                return this.state.currentJobDefinitionParam.dateValue;
-            case 'DOUBLE':
-                return this.state.currentJobDefinitionParam.doubleValue;
-            case 'BOOLEAN':
-                return this.state.currentJobDefinitionParam.booleanValue;
-            default:
-                return '';
-        }
-    }
 
-    getValueField() {
-        switch (this.state.currentJobDefinitionParam.type) {
-            case 'STRING':
-                return 'stringValue';
-            case 'LONG':
-                return 'longValue';
-            case 'DATE':
-                return 'dateValue';
-            case 'DOUBLE':
-                return 'doubleValue';
-            case 'BOOLEAN':
-                return 'booleanValue';
-            default:
-                return '';
-        }
-    }
-
-    getType() {
-        console.log(this.state.currentJobDefinitionParam.type);
-        switch (this.state.currentJobDefinitionParam.type) {
-            case 'STRING':
-                return 'dxTextBox';
-            case 'LONG':
-                return 'dxTextBox';
-            case 'DATE':
-                return 'dxDateBox';
-            case 'DOUBLE':
-                return 'dxTextBox';
-            case 'BOOLEAN':
-                return 'dxCheckBox';
-            default:
-                return '';
-        }
-    }
-
-    getOptions() {
-        switch (this.state.currentJobDefinitionParam.type) {
-            case 'STRING':
-                return {value: this.state.currentJobDefinitionParam.stringValue};
-            case 'LONG':
-                return {value: this.state.currentJobDefinitionParam.longValue};
-            case 'DATE':
-                return {value: this.state.currentJobDefinitionParam.dateValue};
-            case 'DOUBLE':
-                return {value: this.state.currentJobDefinitionParam.doubleValue};
-            case 'BOOLEAN':
-                return {value: this.state.currentJobDefinitionParam.booleanValue};
-            default:
-                return '';
-        }
-    }
-
-    setValue(param, value) {
-        if (param === undefined) {
-            return null;
-        }
-        switch (param.type) {
-            case 'STRING':
-                param.stringValue = value;
-                break;
-            case 'LONG':
-                param.longValue = value;
-                break;
-            case 'DATE':
-                param.dateValue = value;
-                break;
-            case 'DOUBLE':
-                param.doubleValue = value;
-                break;
-            case 'BOOLEAN':
-                param.booleanValue = value;
-                break;
-            default:
-                return '';
-        }
-    }
-
-    onRowRemoving(data) {
-        const jobDefinitionParam = data.row.data;
-        if (jobDefinitionParam._links) {
-            fetch(jobDefinitionParam._links.delete.href)
-                .then(response => {
-                    if (response.status === 200) {
-                        infoMessage("Job definition parameter '" + jobDefinitionParam.keyName + "' deleted");
-                    }
-                })
-                .catch((error) => {
-                    errorMessage('Could not delete job definition parameter: ' + error.message);
-                });
-        }
-        this.setState({currentJobDefinitionParam: {}});
+    onRowInserted(e) {
+        this.setState({currentJobDefinitionParam: {type: 'LONG'}, typeEditable: true});
     }
 
     selectionChanged(e) {
         this.setState({currentJobDefinitionParam: e.data});
-    }
-
-    onTypeChanged(e) {
-        this.setState({currentJobDefinitionParamType: e.data});
     }
 
     render() {
@@ -205,6 +90,7 @@ class JobDefinitionParamList extends React.Component {
                     showRowLines={true}
                     showBorders={true}
                     rowAlternationEnabled={true}
+                    onInitNewRow={this.onRowInserted}
                     onEditingStart={this.selectionChanged}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
@@ -214,7 +100,50 @@ class JobDefinitionParamList extends React.Component {
                         allowUpdating={true}
                         allowAdding={true}
                         allowDeleting={true}>
-                        <JobDefinitionParamForm jobDefinitionParam={this.state.currentJobDefinitionParam}/>
+                        <Form>
+                            <GroupItem colCount={3} caption={"Job Definition Parameter Details: " + this.state.currentJobDefinitionParam.keyName}>
+                                <SimpleItem dataField="keyName">
+                                    <RequiredRule/>
+                                    <StringLengthRule max={256} message="Name must be less than 256 characters."/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'type'}
+                                    editorType={'dxSelectBox'}
+                                    editorOptions={{dataSource: this.paramTypes, valueExpr: 'type', displayExpr: 'label'}}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'longValue'}
+                                    editorType={'dxTextBox'}
+                                    visible={this.state.currentJobDefinitionParam.type === 'LONG'}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'booleanValue'}
+                                    editorType={'dxCheckBox'}
+                                    visible={this.state.currentJobDefinitionParam.type === 'BOOLEAN'}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'stringValue'}
+                                    editorType={'dxTextBox'}
+                                    visible={this.state.currentJobDefinitionParam.type === 'STRING'}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'doubleValue'}
+                                    editorType={'dxTextBox'}
+                                    visible={this.state.currentJobDefinitionParam.type === 'DOUBLE'}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'dateValue'}
+                                    editorType={'dxDateBox'}
+                                    visible={this.state.currentJobDefinitionParam.type === 'DATE'}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                            </GroupItem>
+                        </Form>
                     </Editing>
                     <Column
                         caption={'Name'}
@@ -226,7 +155,7 @@ class JobDefinitionParamList extends React.Component {
                     <Column
                         caption={'Type'}
                         dataField={'type'}
-                        allowEditing={true}
+                        allowEditing={this.state.typeEditable}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}>
@@ -240,6 +169,26 @@ class JobDefinitionParamList extends React.Component {
                         allowReordering={true}
                         cellRender={JobDefinitionParamValueRender}
                         editCellComponent={JobDefinitionParamValueTemplate}/>
+                    <Column
+                        caption={'Value'}
+                        dataField={'longValue'}
+                        visible={false}/>
+                    <Column
+                        caption={'Value'}
+                        dataField={'stringValue'}
+                        visible={false}/>
+                    <Column
+                        caption={'Value'}
+                        dataField={'dateValue'}
+                        visible={false}/>
+                    <Column
+                        caption={'Value'}
+                        dataField={'doubleValue'}
+                        visible={false}/>
+                    <Column
+                        caption={'Value'}
+                        dataField={'booleanValue'}
+                        visible={false}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}
