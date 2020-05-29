@@ -1,5 +1,6 @@
 package com.hlag.fis.batch.manager.controller;
 
+import com.hlag.fis.batch.domain.PasswordResetToken;
 import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.domain.dto.UserDto;
 import com.hlag.fis.batch.manager.service.UserService;
@@ -8,6 +9,7 @@ import com.hlag.fis.batch.manager.service.common.UnauthorizedException;
 import com.hlag.fis.batch.manager.service.util.JwtRequest;
 import com.hlag.fis.batch.manager.service.util.JwtResponse;
 import com.hlag.fis.batch.manager.service.util.JwtTokenUtil;
+import com.hlag.fis.batch.repository.PasswordResetTokenRepository;
 import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +40,14 @@ public class LoginController {
 
     private UserService userService;
 
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
     private ModelConverter modelConverter;
 
     @Autowired
-    public LoginController(UserService userService, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
+    public LoginController(UserService userService, PasswordResetTokenRepository passwordResetTokenRepository, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
         this.userService = userService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.modelConverter = modelConverter;
     }
@@ -64,5 +69,30 @@ public class LoginController {
             return ResponseEntity.ok(new JwtResponse(token, userDto));
         }
         throw new UnauthorizedException();
+    }
+
+    @GetMapping(value = "/api/resetPassword/{userId}")
+    public ResponseEntity<Void> resetPassword(@PathVariable String userId) throws ResourceNotFoundException {
+        logger.debug(format("Starting reset password request- userId: {0}", userId));
+        Optional<User> userOptional = userService.findByUserId(userId);
+        if (userOptional.isPresent()) {
+            userService.resetPassword(userOptional.get());
+            return null;
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @GetMapping(value = "/api/changePassword/{password}/{token}")
+    public ResponseEntity<Void> changePassword(@PathVariable String password, @PathVariable String token) throws UnauthorizedException, ResourceNotFoundException {
+        logger.debug(format("Starting change password request- password: {0} token: {1}", password, token));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        if (passwordResetToken == null) {
+            throw new ResourceNotFoundException();
+        }
+        if (passwordResetToken.isExpired()) {
+            throw new UnauthorizedException();
+        }
+        userService.changePassword(passwordResetToken.getUser(), password);
+        return null;
     }
 }

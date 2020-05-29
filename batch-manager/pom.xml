@@ -93,11 +93,21 @@
             <version>0.0.3</version>
         </dependency>
 
-        <!-- IO -->
+        <!-- Apache commons -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.8</version>
         </dependency>
 
         <!-- Test -->
@@ -118,13 +128,6 @@
             <artifactId>annotations</artifactId>
             <version>16.0.3</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.hlag.fis</groupId>
-            <artifactId>batch-common</artifactId>
-            <version>0.0.3</version>
-            <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

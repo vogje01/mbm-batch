@@ -17,18 +17,21 @@ export default function (props) {
     const {userId} = formData.current;
     setLoading(true);
 
-    // Send reset password request
-    console.log(userId);
+    fetch(process.env.REACT_APP_API_URL + 'resetPassword/' + userId)
+        .then((response) => {
+          if (response.status === 200) {
+            history.push('/login');
+            notify(notificationText, 'success', 2500);
+          }
+        });
 
-    history.push('/login');
-    notify(notificationText, 'success', 2500);
   }, [history]);
 
   return (
       <form className={'reset-password-form'} onSubmit={onSubmit}>
         <Form formData={formData.current} disabled={loading}>
           <Item
-              dataField={'email'}
+              dataField={'userId'}
               editorType={'dxTextBox'}
               editorOptions={UserIdEditorOptions}>
             <RequiredRule message="UserId is required"/>

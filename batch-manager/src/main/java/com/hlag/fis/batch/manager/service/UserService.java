@@ -19,6 +19,8 @@ public interface UserService {
 
     Optional<User> findByUserId(String userId);
 
+    Optional<User> findByEmail(String email);
+
     Page<User> findByUserGroup(String id, Pageable pageable);
 
     User insertUser(User user);
@@ -30,4 +32,8 @@ public interface UserService {
     User addUserGroup(String id, String name);
 
     User removeUserGroup(String id, String userGroupId);
+
+    void resetPassword(User user) throws ResourceNotFoundException;
+
+    void changePassword(User user, String password);
 }

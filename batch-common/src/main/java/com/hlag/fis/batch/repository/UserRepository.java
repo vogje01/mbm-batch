@@ -20,6 +20,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, String>
     @Query("select u from User u where u.userId = :userId and u.active = true")
     Optional<User> findByUserId(@Param("userId") String userId);
 
+    @Query("select u from User u where u.email = :email and u.active = true")
+    Optional<User> findByEmail(@Param("email") String email);
+
     @Query("select u from User u left join u.userGroups ug where ug.id = :id and u.active = true")
     Page<User> findByUserGroup(@Param("id") String id, Pageable pageable);
 

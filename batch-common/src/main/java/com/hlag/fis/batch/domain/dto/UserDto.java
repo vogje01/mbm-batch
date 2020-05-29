@@ -67,6 +67,10 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private Boolean active;
     /**
+     * Password changed
+     */
+    private Boolean passwordChanged = false;
+    /**
      * Created by
      */
     private String createdBy;
@@ -175,6 +179,14 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.theme = theme;
     }
 
+    public Boolean getPasswordChanged() {
+        return passwordChanged;
+    }
+
+    public void setPasswordChanged(Boolean passwordChanged) {
+        this.passwordChanged = passwordChanged;
+    }
+
     public String getCreatedBy() {
         return createdBy;
     }
@@ -240,6 +252,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(theme, userDto.theme) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
+                Objects.equal(passwordChanged, userDto.passwordChanged) &&
                 Objects.equal(createdBy, userDto.createdBy) &&
                 Objects.equal(createdAt, userDto.createdAt) &&
                 Objects.equal(modifiedBy, userDto.modifiedBy) &&
@@ -250,7 +263,7 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, description, active, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, description, active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
     }
 
     public Boolean getActive() {
@@ -275,6 +288,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("theme", theme)
                 .add("description", description)
                 .add("active", active)
+                .add("passwordChanged", passwordChanged)
                 .add("createdBy", createdBy)
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)

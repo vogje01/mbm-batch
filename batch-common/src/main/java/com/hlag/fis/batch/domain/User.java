@@ -104,6 +104,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
 
     public void update(User user) {
         this.userId = user.userId;
+        this.password = user.password;
         this.firstName = user.firstName;
         this.lastName = user.lastName;
         this.email = user.email;

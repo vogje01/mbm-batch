@@ -37,24 +37,28 @@ import java.util.Collections;
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Autowired
     private UserDetailsService jwtUserDetailsService;
 
-    @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
-	/**
-	 * Configure AuthenticationManager so that it knows from where to load user for matching credentials. Use BCryptPasswordEncoder.
-	 *
-	 * @param auth authentication manager builder.
-	 * @throws Exception in case of an error.
-	 */
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+    @Autowired
+    public WebSecurityConfiguration(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtUserDetailsService = jwtUserDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
+
+    /**
+     * Configure AuthenticationManager so that it knows from where to load user for matching credentials. Use BCryptPasswordEncoder.
+     *
+     * @param auth authentication manager builder.
+     * @throws Exception in case of an error.
+     */
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	@Bean
@@ -71,9 +75,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// dont authenticate this particular request
-				.authorizeRequests().antMatchers("/api/authenticate", "/api/users/avatar/*").permitAll()
+        httpSecurity.csrf().disable()
+                // dont authenticate this particular request
+                .authorizeRequests().antMatchers("/api/authenticate", "/api/users/avatar/**", "/api/resetPassword/**", "/api/changePassword/**").permitAll()
 		  // all other requests need to be authenticated
 		  .anyRequest().authenticated().and()
 		  // make sure we use stateless session; session won't be used to

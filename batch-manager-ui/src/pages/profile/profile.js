@@ -1,6 +1,6 @@
 import React from 'react';
 import './profile.scss';
-import Form, {EmailRule, EmptyItem, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
+import Form, {EmailRule, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
 import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
 
@@ -18,10 +18,12 @@ class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            passwordChanged: false,
             user: JSON.parse(localStorage.getItem('user'))
         };
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.passwordChanged = this.passwordChanged.bind(this);
         this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
     }
 
@@ -29,8 +31,13 @@ class Profile extends React.Component {
         themes.current(e.selectedItem);
     }
 
+    passwordChanged(e) {
+        this.setState({passwordChanged: true});
+    }
+
     handleSubmit(e) {
         e.event.preventDefault();
+        this.state.user.passwordChanged = this.state.passwordChanged;
         updateItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id + '/update', this.state.user, 'userDto')
             .then((data) => {
                 this.setState({
@@ -43,7 +50,6 @@ class Profile extends React.Component {
 
     render() {
         return (
-
             <React.Fragment>
                 <h2 className={'content-block'}>Profile</h2>
 
@@ -60,47 +66,48 @@ class Profile extends React.Component {
                             readOnly={false}
                             formData={this.state.user}
                             validationGroup="customerData">
-                            <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"User Details: " + this.state.user.userId}>
+                            <SimpleItem itemType="group" colCount={4} caption={"User Details: " + this.state.user.userId}>
                                 <SimpleItem id={'userId'} dataField="userId" colSpan={2}>
                                     <RequiredRule message="UserId is required"/>
                                     <StringLengthRule min={5} max={7} message="UserId must be exactly 7 characters long."/>
                                 </SimpleItem>
-                                <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}} colSpan={2}>
+                                <SimpleItem dataField="password" editorType={"dxTextBox"}
+                                            editorOptions={{mode: "password", onValueChanged: this.passwordChanged}}>
                                     <RequiredRule message="Password is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="firstName" colSpan={2}>
+                                <SimpleItem dataField="firstName">
                                     <RequiredRule message="First name is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="lastName" colSpan={2}>
+                                <SimpleItem dataField="lastName">
                                     <RequiredRule message="Last name is required"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="email" colSpan={2}>
+                                <SimpleItem dataField="email">
                                     <EmailRule message="Email is invalid"/>
                                 </SimpleItem>
-                                <SimpleItem dataField="phone" colSpan={2}>
+                                <SimpleItem dataField="phone">
                                     <PatternRule message="The phone must have a correct phone format" pattern={this.phonePattern}/>
                                 </SimpleItem>
                                 <SimpleItem dataField="theme"
-                                            colSpan={2}
                                             editorType={"dxSelectBox"}
                                             editorOptions={{
                                                 dataSource: themesList,
                                                 onSelectionChanged: this.themeSelectionChanged
                                             }}/>
-                                <EmptyItem colSpan={2}/>
                                 <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
+                            </SimpleItem>
+                            <SimpleItem itemType="group" colCount={4} caption={"Auditing"}>
                                 <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem editorType={'dxButton'} colSpan={1} editorOptions={{
+                                    horizontalAlignment: 'left',
+                                    text: 'Save',
+                                    type: 'success',
+                                    useSubmitBehavior: false,
+                                    onClick: this.handleSubmit
+                                }}/>
                             </SimpleItem>
-                            <SimpleItem editorType={'dxButton'} editorOptions={{
-                                horizontalAlignment: 'left',
-                                text: 'Save',
-                                type: 'text',
-                                useSubmitBehavior: false,
-                                onClick: this.handleSubmit
-                            }}/>
                         </Form>
                     </form>
                 </div>

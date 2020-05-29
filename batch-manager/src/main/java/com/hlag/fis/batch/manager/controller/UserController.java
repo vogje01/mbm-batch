@@ -191,6 +191,9 @@ public class UserController {
         RestPreconditions.checkFound(userService.findById(id));
 
         User user = modelConverter.convertUserToEntity(userDto);
+        if (userDto.getPasswordChanged()) {
+            user.setPassword(PasswordHash.encryptPassword(userDto.getPassword()));
+        }
         user = userService.updateUser(user);
         userDto = modelConverter.convertUserToDto(user);
 

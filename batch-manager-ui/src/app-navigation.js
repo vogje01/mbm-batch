@@ -72,10 +72,5 @@ export const navigation = [
                 icon: 'material-icons-outlined ic-profile'
             }
         ]
-    },
-    {
-        text: 'Logout',
-        icon: 'user',
-        path: '/login'
     }
 ];
