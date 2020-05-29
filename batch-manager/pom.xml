@@ -129,6 +129,13 @@
             <version>16.0.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.hlag.fis</groupId>
+            <artifactId>batch-common</artifactId>
+            <version>0.0.3</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
