@@ -18,10 +18,6 @@ export default function (props) {
         setLoading(false);
     }, [logIn]);
 
-    /*const onCreateAccountClick = useCallback(() => {
-        history.push('/create-account');
-    }, [history]);*/
-
     return (
         <form className={'login-form'} onSubmit={onSubmit}>
             <Form formData={formData.current} disabled={loading}>
@@ -62,13 +58,6 @@ export default function (props) {
                         <Link to={'/reset-password'}>Forgot password?</Link>
                     </div>
                 </Item>
-                {/*<ButtonItem>
-                    <ButtonOptions
-                        text={'Create an account'}
-                        width={'100%'}
-                        onClick={onCreateAccountClick}
-                    />
-                </ButtonItem>*/}
             </Form>
         </form>
     );

@@ -104,7 +104,7 @@ class JobDefinitionParamList extends React.Component {
                             <GroupItem colCount={3} caption={"Job Definition Parameter Details: " + this.state.currentJobDefinitionParam.keyName}>
                                 <SimpleItem dataField="keyName">
                                     <RequiredRule/>
-                                    <StringLengthRule max={256} message="Name must be less than 256 characters."/>
+                                    <StringLengthRule min={1} max={256} message="Name must be less than 256 characters."/>
                                 </SimpleItem>
                                 <SimpleItem
                                     dataField={'type'}
