@@ -40,6 +40,8 @@ public class BatchScheduler {
 
     private String nodeName;
 
+    private String hostName;
+
     /**
      * Constructor.
      * <p>
@@ -49,9 +51,10 @@ public class BatchScheduler {
      * @param scheduler quartz scheduler.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String nodeName) {
+    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String hostName, String nodeName) {
         this.scheduler = scheduler;
         this.agentCommandProducer = agentCommandProducer;
+        this.hostName = hostName;
         this.nodeName = nodeName;
     }
 
@@ -98,7 +101,7 @@ public class BatchScheduler {
         logger.info(format("Stopping job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinition jobDefinition = jobSchedule.getJobDefinition();
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
-            if (job.getGroup().equals(jobDefinition.getJobGroup()) && job.getName().equals(jobDefinition.getName())) {
+            if (job.getGroup().equals(jobDefinition.getJobGroup().getName()) && job.getName().equals(jobDefinition.getName())) {
                 try {
                     scheduler.deleteJob(job);
                     logger.info(format("Job removed from scheduler - groupName: {0} jobName: {1}", jobDefinition.getJobGroup(), jobDefinition.getName()));
@@ -248,6 +251,8 @@ public class BatchScheduler {
     private List<String> buildArguments(JobDefinition jobDefinition) {
         List<JobDefinitionParam> params = jobDefinition.getJobDefinitionParams();
         List<String> arguments = new ArrayList<>();
+        arguments.add("-Dagent.hostName=" + hostName);
+        arguments.add("-Dagent.nodeName=" + nodeName);
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }

@@ -52,6 +52,11 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     @Column(name = "HOST_NAME")
     private String hostName;
     /**
+     * Node name
+     */
+    @Column(name = "NODE_NAME")
+    private String nodeName;
+    /**
      * Job version
      */
     @Column(name = "JOB_VERSION")
@@ -147,6 +152,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.jobExecutionId = jobExecutionDto.getJobExecutionId();
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();
+        this.nodeName = jobExecutionDto.getNodeName();
         this.createTime = jobExecutionDto.getCreateTime();
         this.startTime = jobExecutionDto.getStartTime();
         this.lastUpdated = jobExecutionDto.getLastUpdated();
@@ -197,6 +203,14 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public String getJobVersion() {
@@ -364,6 +378,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 Objects.equal(jobExecutionId, that.jobExecutionId) &&
                 Objects.equal(jobPid, that.jobPid) &&
                 Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(status, that.status) &&
                 Objects.equal(startTime, that.startTime) &&
@@ -383,7 +398,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, jobVersion, status, startTime, createTime, endTime, lastUpdated, runningTime, deleted, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
+        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startTime, createTime, endTime, lastUpdated, runningTime, deleted, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
     }
 
     @Override
@@ -393,6 +408,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 .add("jobExecutionId", jobExecutionId)
                 .add("jobPid", jobPid)
                 .add("hostName", hostName)
+                .add("nodeName", nodeName)
                 .add("jobVersion", jobVersion)
                 .add("status", status)
                 .add("startTime", startTime)

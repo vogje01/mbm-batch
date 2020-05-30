@@ -35,6 +35,8 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     private String hostName;
 
+    private String nodeName;
+
     private String status;
 
     private Date createTime;
@@ -107,6 +109,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public String getStatus() {
@@ -213,6 +223,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(jobPid, that.jobPid) &&
                 Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(status, that.status) &&
                 Objects.equal(createTime, that.createTime) &&
                 Objects.equal(startTime, that.startTime) &&
@@ -221,12 +232,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 Objects.equal(runningTime, that.runningTime) &&
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
-                Objects.equal(totalSize, that.totalSize);
+                Objects.equal(totalSize, that.totalSize) &&
+                Objects.equal(jobInstanceDto, that.jobInstanceDto) &&
+                Objects.equal(jobExecutionParamDtoes, that.jobExecutionParamDtoes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, nodeName, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, jobInstanceDto, jobExecutionParamDtoes);
     }
 
     @Override
@@ -238,6 +251,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 .add("jobVersion", jobVersion)
                 .add("jobPid", jobPid)
                 .add("hostName", hostName)
+                .add("nodeName", nodeName)
                 .add("status", status)
                 .add("createTime", createTime)
                 .add("startTime", startTime)
@@ -246,7 +260,9 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 .add("runningTime", runningTime)
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
-                .add("totalCount", totalSize)
+                .add("totalSize", totalSize)
+                .add("jobInstanceDto", jobInstanceDto)
+                .add("jobExecutionParamDtoes", jobExecutionParamDtoes)
                 .toString();
     }
 }

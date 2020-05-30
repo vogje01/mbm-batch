@@ -6,7 +6,6 @@ import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import com.hlag.fis.batch.util.ModelConverter;
-import com.hlag.fis.batch.util.NetworkUtils;
 import org.slf4j.Logger;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -73,7 +72,8 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
         jobExecutionDto.setJobVersion(getJobVersion(jobExecution));
         jobExecutionDto.setJobExecutionId(jobExecution.getId());
-        jobExecutionDto.setHostName(NetworkUtils.getHostName());
+        jobExecutionDto.setHostName(getHostName(jobExecution));
+        jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setRunningTime((new Date().getTime() - jobExecution.getStartTime().getTime()));
     }
 }

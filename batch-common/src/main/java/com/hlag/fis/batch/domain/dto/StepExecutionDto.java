@@ -33,6 +33,10 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     private Long stepExecutionId;
 
+    private String hostName;
+
+    private String nodeName;
+
     private String status;
 
     private Long totalCount;
@@ -120,6 +124,22 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     public void setStepExecutionId(Long stepExecutionId) {
         this.stepExecutionId = stepExecutionId;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public String getStatus() {
@@ -280,6 +300,8 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 .add("jobExecutionId", jobExecutionId)
                 .add("stepName", stepName)
                 .add("stepExecutionId", stepExecutionId)
+                .add("hostName", hostName)
+                .add("nodeName", nodeName)
                 .add("status", status)
                 .add("totalCount", totalCount)
                 .add("readCount", readCount)
@@ -313,6 +335,8 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 Objects.equal(jobExecutionId, that.jobExecutionId) &&
                 Objects.equal(stepName, that.stepName) &&
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
+                Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(status, that.status) &&
                 Objects.equal(totalCount, that.totalCount) &&
                 Objects.equal(readCount, that.readCount) &&
@@ -335,6 +359,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, jobExecutionDto);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, jobExecutionDto);
     }
 }

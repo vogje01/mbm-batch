@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.JobStatusType;
-import com.hlag.fis.batch.util.NetworkUtils;
 import org.springframework.hateoas.RepresentationModel;
 
 /**
@@ -18,8 +17,6 @@ import org.springframework.hateoas.RepresentationModel;
 public class JobStatusDto extends RepresentationModel<JobStatusDto> {
 
     private JobStatusType type;
-
-    private String nodeName = NetworkUtils.getHostName();
 
     private JobExecutionDto jobExecutionDto;
 
@@ -51,14 +48,6 @@ public class JobStatusDto extends RepresentationModel<JobStatusDto> {
         this.type = type;
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
-    }
-
     public JobExecutionDto getJobExecutionDto() {
         return jobExecutionDto;
     }
@@ -79,7 +68,6 @@ public class JobStatusDto extends RepresentationModel<JobStatusDto> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("type", type)
-                .add("nodeName", nodeName)
                 .add("jobExecutionDto", jobExecutionDto)
                 .add("stepExecutionDto", stepExecutionDto)
                 .toString();
@@ -89,15 +77,15 @@ public class JobStatusDto extends RepresentationModel<JobStatusDto> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         JobStatusDto that = (JobStatusDto) o;
         return type == that.type &&
-                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(jobExecutionDto, that.jobExecutionDto) &&
                 Objects.equal(stepExecutionDto, that.stepExecutionDto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, jobExecutionDto, stepExecutionDto);
+        return Objects.hashCode(super.hashCode(), type, jobExecutionDto, stepExecutionDto);
     }
 }

@@ -33,6 +33,18 @@ public class ExecutionParameter {
 
     public static final String TOTAL_COUNT_NAME = "totalCount";
 
+    public static final String HOST_NAME = "agent.hostName";
+
+    public static final String NODE_NAME = "agent.nodeName";
+
+    public static String getHostName(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(HOST_NAME);
+    }
+
+    public static String getNodeName(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(NODE_NAME);
+    }
+
     public static String getJobId(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_UUID_NAME);
     }
@@ -75,6 +87,14 @@ public class ExecutionParameter {
 
     public static long getStepExecutionTotalCount(StepExecution stepExecution) {
         return (Long) stepExecution.getExecutionContext().get(TOTAL_COUNT_NAME);
+    }
+
+    public static String getHostName(StepExecution stepExecution) {
+        return stepExecution.getJobExecution().getJobParameters().getString(HOST_NAME);
+    }
+
+    public static String getNodeName(StepExecution stepExecution) {
+        return stepExecution.getJobExecution().getJobParameters().getString(NODE_NAME);
     }
 
     public static String getJobName(ChunkContext chunkContext) {
