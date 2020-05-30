@@ -32,7 +32,7 @@ Configuration:
         - ref: Console_Appender
     Logger:
       - name: com.hlag.fis.batch
-        level: info
+        level: debug
         AppenderRef:
           - ref: File_Appender
           - ref: Kafka_Appender
