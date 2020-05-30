@@ -58,6 +58,10 @@ public class WeeklyProcessor implements ItemProcessor<Object[], AgentPerformance
         agentPerformance.setFreeSwapPct((Double) tuple[16]);
         agentPerformance.setUsedSwapPct((Double) tuple[17]);
 
+        // Job step count
+        agentPerformance.setJobCount(round((Double) tuple[18]));
+        agentPerformance.setStepCount(round((Double) tuple[19]));
+
         return agentPerformance;
     }
 }

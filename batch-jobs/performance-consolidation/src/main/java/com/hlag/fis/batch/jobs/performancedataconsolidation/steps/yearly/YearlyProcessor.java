@@ -60,6 +60,11 @@ public class YearlyProcessor implements ItemProcessor<Object[], AgentPerformance
         agentPerformance.setUsedSwap(round((Double) tuple[15]));
         agentPerformance.setFreeSwapPct((Double) tuple[16]);
         agentPerformance.setUsedSwapPct((Double) tuple[17]);
+
+        // Job step count
+        agentPerformance.setJobCount(round((Double) tuple[18]));
+        agentPerformance.setStepCount(round((Double) tuple[19]));
+
         return agentPerformance;
     }
 }

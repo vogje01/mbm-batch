@@ -42,7 +42,9 @@ public class YearlyReader {
                 "avg(a.freeSwap), " +
                 "avg(a.usedSwap), " +
                 "avg(a.freeSwapPct), " +
-                "avg(a.usedSwapPct) " +
+                "avg(a.usedSwapPct), " +
+                "avg(a.jobCount), " +
+                "avg(a.stepCount) " +
                 "from AgentPerformance a " +
                 "where type = 'WEEKLY' " +
                 "group by a.nodeName, from_unixtime(floor((unix_timestamp(a.lastUpdate) / :interval)) * :interval) " +

@@ -87,6 +87,7 @@ CREATE TABLE BATCH_JOB_EXECUTION
     VERSION                    BIGINT        NOT NULL DEFAULT 0,
     PID                        BIGINT,
     HOST_NAME                  VARCHAR(256),
+    NODE_NAME                  VARCHAR(256),
     CREATE_TIME                DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     START_TIME                 DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     END_TIME                   DATETIME               DEFAULT NULL,
@@ -140,6 +141,8 @@ CREATE TABLE BATCH_STEP_EXECUTION
     STEP_NAME          VARCHAR(100) NOT NULL,
     STEP_EXECUTION_ID  BIGINT       NOT NULL,
     JOB_EXECUTION_ID   VARCHAR(36)  NOT NULL,
+    HOST_NAME          VARCHAR(256),
+    NODE_NAME          VARCHAR(256),
     START_TIME         DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     END_TIME           DATETIME,
     RUNNING_TIME       BIGINT,
@@ -259,8 +262,8 @@ CREATE TABLE BATCH_AGENT_PERFORMANCE
     USED_VIRT_MEMORY_PCT DOUBLE,
     FREE_SWAP_PCT        DOUBLE,
     USED_SWAP_PCT        DOUBLE,
-    JOB_COUNT            BIGINT,
-    STEP_COUNT           BIGINT,
+    JOB_COUNT            BIGINT                                               DEFAULT 0,
+    STEP_COUNT           BIGINT                                               DEFAULT 0,
     LAST_UPDATE          DATETIME
 ) ENGINE = InnoDB;
 

@@ -42,7 +42,9 @@ public class WeeklyReader {
                 "avg(a.freeSwap), " +
                 "avg(a.usedSwap), " +
                 "avg(a.freeSwapPct), " +
-                "avg(a.usedSwapPct) " +
+                "avg(a.usedSwapPct), " +
+                "avg(a.jobCount), " +
+                "avg(a.stepCount) " +
                 "from AgentPerformance a " +
                 "where type = 'DAILY' " +
                 "group by a.nodeName, from_unixtime(floor((unix_timestamp(a.lastUpdate) / :interval)) * :interval) " +
