@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class MonthlyReader {
 
-    @Value("${consolidation.batch.jobExecutionInfo.chunkSize}")
+    @Value("${consolidation.batch.monthly.chunkSize}")
     private int chunkSize;
 
     private EntityManagerFactory mysqlEmf;

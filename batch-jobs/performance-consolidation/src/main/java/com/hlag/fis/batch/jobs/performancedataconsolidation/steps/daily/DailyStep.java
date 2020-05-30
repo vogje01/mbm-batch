@@ -21,7 +21,7 @@ public class DailyStep {
 
     private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, DailyStep.class);
 
-    @Value("${consolidation.batch.jobExecutionInfo.chunkSize}")
+    @Value("${consolidation.batch.daily.chunkSize}")
     private int chunkSize;
 
     private AgentPerformanceRepository agentPerformanceRepository;

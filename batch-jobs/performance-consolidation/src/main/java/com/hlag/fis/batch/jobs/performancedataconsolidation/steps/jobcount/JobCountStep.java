@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.yearly;
+package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.jobcount;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
@@ -15,50 +15,50 @@ import static java.text.MessageFormat.format;
 
 
 @Component
-public class YearlyStep {
+public class JobCountStep {
 
-    private static final String STEP_NAME = "Yearly Consolidation";
+    private static final String STEP_NAME = "Job count";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, YearlyStep.class);
+    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, JobCountStep.class);
 
-    @Value("${consolidation.batch.yearly.chunkSize}")
+    @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
 
     private AgentPerformanceRepository agentPerformanceRepository;
 
-    private YearlyReader yearlyReader;
+    private JobCountReader jobCountReader;
 
-    private YearlyProcessor yearlyProcessor;
+    private JobCountProcessor jobCountProcessor;
 
-    private YearlyWriter yearlyWriter;
+    private JobCountWriter jobCountWriter;
 
     private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
-    public YearlyStep(
+    public JobCountStep(
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
             AgentPerformanceRepository agentPerformanceRepository,
-            YearlyReader yearlyReader,
-            YearlyProcessor yearlyProcessor,
-            YearlyWriter yearlyWriter) {
+            JobCountReader jobCountReader,
+            JobCountProcessor jobCountProcessor,
+            JobCountWriter jobCountWriter) {
         this.stepBuilder = stepBuilder;
         this.agentPerformanceRepository = agentPerformanceRepository;
-        this.yearlyReader = yearlyReader;
-        this.yearlyProcessor = yearlyProcessor;
-        this.yearlyWriter = yearlyWriter;
+        this.jobCountReader = jobCountReader;
+        this.jobCountProcessor = jobCountProcessor;
+        this.jobCountWriter = jobCountWriter;
         logger.debug(format("Step initialized - name: {0}", STEP_NAME));
     }
 
     @SuppressWarnings("unchecked")
-    public Step yearlyConsolidation() {
-        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.WEEKLY);
+    public Step jobCountProcessing() {
+        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.DAILY);
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)
                 .chunkSize(chunkSize)
-                .reader(yearlyReader.getReader())
-                .processor(yearlyProcessor)
-                .writer(yearlyWriter.getWriter())
+                .reader(jobCountReader.getReader())
+                .processor(jobCountProcessor)
+                .writer(jobCountWriter.getWriter())
                 .total(totalCount)
                 .build();
     }

@@ -21,7 +21,7 @@ public class WeeklyStep {
 
     private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, WeeklyStep.class);
 
-    @Value("${consolidation.batch.jobExecutionInfo.chunkSize}")
+    @Value("${consolidation.batch.weekly.chunkSize}")
     private int chunkSize;
 
     private AgentPerformanceRepository agentPerformanceRepository;

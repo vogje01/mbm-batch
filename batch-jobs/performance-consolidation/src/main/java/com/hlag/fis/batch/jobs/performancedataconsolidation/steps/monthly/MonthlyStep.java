@@ -21,7 +21,7 @@ public class MonthlyStep {
 
     private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, MonthlyStep.class);
 
-    @Value("${consolidation.batch.jobExecutionInfo.chunkSize}")
+    @Value("${consolidation.batch.monthly.chunkSize}")
     private int chunkSize;
 
     private AgentPerformanceRepository agentPerformanceRepository;

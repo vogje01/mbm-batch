@@ -128,6 +128,16 @@ public class AgentPerformance implements PrimaryKeyIdentifier<String> {
     @Column(name = "USED_SWAP_PCT")
     private Double usedSwapPct;
     /**
+     * Job count
+     */
+    @Column(name = "JOB_COUNT")
+    private Long jobCount;
+    /**
+     * Step count
+     */
+    @Column(name = "STEP_COUNT")
+    private Long stepCount;
+    /**
      * Last performance
      */
     @Column(name = "LAST_UPDATE")
@@ -297,6 +307,22 @@ public class AgentPerformance implements PrimaryKeyIdentifier<String> {
         this.usedSwapPct = usedSwapPct;
     }
 
+    public Long getJobCount() {
+        return jobCount;
+    }
+
+    public void setJobCount(Long jobCount) {
+        this.jobCount = jobCount;
+    }
+
+    public Long getStepCount() {
+        return stepCount;
+    }
+
+    public void setStepCount(Long stepCount) {
+        this.stepCount = stepCount;
+    }
+
     public Timestamp getLastUpdate() {
         return lastUpdate;
     }
@@ -330,12 +356,14 @@ public class AgentPerformance implements PrimaryKeyIdentifier<String> {
                 Objects.equal(usedSwap, that.usedSwap) &&
                 Objects.equal(freeSwapPct, that.freeSwapPct) &&
                 Objects.equal(usedSwapPct, that.usedSwapPct) &&
+                Objects.equal(jobCount, that.jobCount) &&
+                Objects.equal(stepCount, that.stepCount) &&
                 Objects.equal(lastUpdate, that.lastUpdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, nodeName, type, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, freeRealMemoryPct, usedRealMemoryPct, totalVirtMemory, freeVirtMemory, usedVirtMemory, freeVirtMemoryPct, usedVirtMemoryPct, totalSwap, freeSwap, usedSwap, freeSwapPct, usedSwapPct, lastUpdate);
+        return Objects.hashCode(id, version, nodeName, type, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, freeRealMemoryPct, usedRealMemoryPct, totalVirtMemory, freeVirtMemory, usedVirtMemory, freeVirtMemoryPct, usedVirtMemoryPct, totalSwap, freeSwap, usedSwap, freeSwapPct, usedSwapPct, jobCount, stepCount, lastUpdate);
     }
 
     @Override
@@ -361,6 +389,8 @@ public class AgentPerformance implements PrimaryKeyIdentifier<String> {
                 .add("usedSwap", usedSwap)
                 .add("freeSwapPct", freeSwapPct)
                 .add("usedSwapPct", usedSwapPct)
+                .add("jobCount", jobCount)
+                .add("stepCount", stepCount)
                 .add("lastUpdate", lastUpdate)
                 .toString();
     }

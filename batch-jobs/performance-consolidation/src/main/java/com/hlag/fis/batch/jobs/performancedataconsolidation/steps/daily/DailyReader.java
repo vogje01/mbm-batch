@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class DailyReader {
 
-    @Value("${consolidation.batch.jobExecutionInfo.chunkSize}")
+    @Value("${consolidation.batch.daily.chunkSize}")
     private int chunkSize;
 
     private EntityManagerFactory mysqlEmf;

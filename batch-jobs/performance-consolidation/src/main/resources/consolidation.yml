@@ -1,18 +1,21 @@
 # Housekeeping for the batch tables
 consolidation:
   batch:
-    # Job execution infos
-    jobExecutionInfo:
-      entityActive: true
-      houseKeepingDays: 20
+    # Job count
+    jobCount:
       chunkSize: 1000
-    # Job execution log
-    jobExecutionLog:
-      entityActive: true
-      houseKeepingDays: 20
+    # Step count
+    stepCount:
       chunkSize: 1000
-    # Step execution log
-    stepExecutionInfo:
-      entityActive: true
-      houseKeepingDays: 20
+    # Daily consolidation
+    daily:
+      chunkSize: 1000
+    # Weekly consolidation
+    weekly:
+      chunkSize: 1000
+    # Monthly consolidation
+    monthly:
+      chunkSize: 1000
+    # Yearly consolidation
+    yearly:
       chunkSize: 1000
