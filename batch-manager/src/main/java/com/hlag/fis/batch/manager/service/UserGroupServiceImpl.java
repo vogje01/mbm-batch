@@ -110,10 +110,20 @@ public class UserGroupServiceImpl implements UserGroupService {
         throw new ResourceNotFoundException();
     }
 
+    /**
+     * Deletes a user group by ID.
+     * <p>
+     * The user groups 'admins' and 'users' cannot be deleted.
+     *
+     * @param id user group ID.
+     */
     @Override
-    @CacheEvict(cacheNames = "User", key = "#id")
+    @CacheEvict(cacheNames = "UserGroup", key = "#id")
     public void deleteUserGroup(String id) {
-        userGroupRepository.deleteById(id);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(id);
+        if (userGroupOptional.isPresent() && !userGroupOptional.get().getName().equals("admins") && !userGroupOptional.get().getName().equals("users")) {
+            userGroupRepository.deleteById(id);
+        }
     }
 
     /**

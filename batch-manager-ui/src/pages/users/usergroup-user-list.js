@@ -58,7 +58,7 @@ class UsergroupUserView extends React.Component {
                         buttons={[
                             {
                                 name: 'delete',
-                                hint: 'Delete user group',
+                                hint: 'Remove user from user group.',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>

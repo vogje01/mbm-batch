@@ -35,17 +35,20 @@ class UserList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showDetails: false,
-            currentUser: {},
-            refreshLists: {}
+            currentUser: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
+        this.isDeleteVisible = this.isDeleteVisible.bind(this);
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
     }
 
     selectionChanged(e) {
         this.setState({currentUser: e.data});
+    }
+
+    isDeleteVisible(e) {
+        return e.row.data.userId !== 'admin';
     }
 
     themeSelectionChanged(e) {
@@ -74,8 +77,7 @@ class UserList extends React.Component {
                             showRowLines={true}
                             showBorders={true}
                             rowAlternationEnabled={true}
-                            onEditingStart={this.selectionChanged}
-                            style={{padding: "5px 0px 0px 0px"}}>
+                            onEditingStart={this.selectionChanged}>
                             <FilterRow visible={true}/>
                             <Selection mode={'single'}/>
                             <Editing
@@ -173,6 +175,7 @@ class UserList extends React.Component {
                                 caption={'Active'}
                                 dataType={'boolean'}
                                 allowReordering={true}
+                                hint={'User is active.'}
                                 width={80}/>
                             <Column
                                 dataField={'description'}
@@ -215,14 +218,14 @@ class UserList extends React.Component {
                                     {
                                         name: 'edit',
                                         hint: 'Edit user',
-                                        icon: 'material-icons-outlined ic-edit md-18'
+                                        icon: 'material-icons-outlined ic-edit',
                                     },
                                     {
                                         name: 'delete',
                                         hint: 'Delete user',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
+                                        icon: 'material-icons-outlined ic-delete',
+                                        visible: this.isDeleteVisible
+                                    }]}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>

@@ -126,10 +126,20 @@ public class UserServiceImpl implements UserService {
         throw new ResourceNotFoundException();
     }
 
+    /**
+     * Deletes a user by ID.
+     * <p>
+     * The user 'admin' cannot be deleted.
+     *
+     * @param id user ID.
+     */
     @Override
-    @CacheEvict(cacheNames = "User", key = "#user.id")
-    public void deleteUser(String userId) {
-        userRepository.deleteById(userId);
+    @CacheEvict(cacheNames = "User", key = "#id")
+    public void deleteUser(String id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent() && !userOptional.get().getUserId().equals("admin")) {
+            userRepository.deleteById(id);
+        }
     }
 
     /**

@@ -38,9 +38,11 @@ export const UserUsergroupDataSource = (user) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = user._links.userGroups.href;
-                url = mergeParams(loadOptions, url, 'name');
-                return getList(url, 'userGroupDtoes');
+                if (user._links !== undefined) {
+                    let url = user._links.userGroups.href;
+                    url = mergeParams(loadOptions, url, 'name');
+                    return getList(url, 'userGroupDtoes');
+                }
             },
             insert: function (userGroup) {
                 let url = user._links.addUserGroup.href;
