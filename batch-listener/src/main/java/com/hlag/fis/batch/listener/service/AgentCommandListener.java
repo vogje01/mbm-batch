@@ -166,8 +166,12 @@ public class AgentCommandListener {
         logger.debug(format("Job schedule update received - name: {0} group: {1}", agentCommandDto.getJobName(), agentCommandDto.getGroupName()));
         Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByGroupAndName(agentCommandDto.getGroupName(), agentCommandDto.getJobName());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            jobSchedule.setNextExecution(agentCommandDto.getNextFireTime());
-            jobSchedule.setLastExecution(agentCommandDto.getPreviousFireTime());
+            if (agentCommandDto.getNextFireTime() != null) {
+                jobSchedule.setNextExecution(agentCommandDto.getNextFireTime());
+            }
+            if (agentCommandDto.getPreviousFireTime() != null) {
+                jobSchedule.setLastExecution(agentCommandDto.getPreviousFireTime());
+            }
             jobSchedule = jobScheduleRepository.save(jobSchedule);
             logger.debug(format("Job schedule updated - id: {0}", jobSchedule));
         }, () -> logger.error(format("Job schedule not found")));

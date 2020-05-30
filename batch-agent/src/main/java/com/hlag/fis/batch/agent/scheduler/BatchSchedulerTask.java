@@ -65,6 +65,10 @@ public class BatchSchedulerTask extends QuartzJobBean {
      */
     private Random rand = new Random(System.currentTimeMillis());
     /**
+     * Host name
+     */
+    private String hostName;
+    /**
      * Node name
      */
     private String nodeName;
@@ -75,8 +79,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param nodeName node name.
      */
     @Autowired
-    public BatchSchedulerTask(AgentCommandProducer agentCommandProducer, String nodeName) {
+    public BatchSchedulerTask(AgentCommandProducer agentCommandProducer, String hostName, String nodeName) {
         this.agentCommandProducer = agentCommandProducer;
+        this.hostName = hostName;
         this.nodeName = nodeName;
     }
 
@@ -231,8 +236,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
 
     private void sendJobStart(JobExecutionContext jobExecutionContext) {
         Trigger trigger = jobExecutionContext.getTrigger();
-
+        logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), trigger.getPreviousFireTime(), trigger.getNextFireTime()));
         AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
+        agentCommandDto.setHostName(hostName);
         agentCommandDto.setNodeName(nodeName);
         agentCommandDto.setJobName(jobExecutionContext.getJobDetail().getKey().getName());
         agentCommandDto.setGroupName(jobExecutionContext.getJobDetail().getKey().getGroup());

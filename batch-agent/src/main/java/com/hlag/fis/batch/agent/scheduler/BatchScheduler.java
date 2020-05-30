@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.text.MessageFormat.format;
 
@@ -64,7 +62,7 @@ public class BatchScheduler {
         logger.info("Stopping batch scheduler");
         try {
             scheduler.shutdown();
-        } catch(SchedulerException ex) {
+        } catch (SchedulerException ex) {
             logger.error(format("Could not stop scheduler - error: {0}", ex.getMessage()));
         }
         logger.info("Batch scheduler stopped");
@@ -179,11 +177,12 @@ public class BatchScheduler {
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(jobDefinition);
             try {
-                sendJobStart(jobDefinition, trigger);
+                CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
+                sendJobStart(jobDefinition, cronExpression.getNextValidTimeAfter(new Date()));
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
                         jobDefinition.getJobGroup().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
-            } catch (SchedulerException e) {
+            } catch (SchedulerException | ParseException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                         jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
             }
@@ -343,16 +342,16 @@ public class BatchScheduler {
      * Sends a job start command to the server.
      *
      * @param jobDefinition job definition.
-     * @param trigger       trigger to use for the scheduler.
+     * @param next          next trigger time.
      */
-    private void sendJobStart(JobDefinition jobDefinition, Trigger trigger) {
+    private void sendJobStart(JobDefinition jobDefinition, Date next) {
+        logger.info(format("Sending job status - name: {0} next: {1}", jobDefinition.getName(), next));
         AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
         agentCommandDto.setNodeName(nodeName);
         agentCommandDto.setHostName(hostName);
         agentCommandDto.setJobName(jobDefinition.getName());
         agentCommandDto.setGroupName(jobDefinition.getJobGroup().getName());
-        agentCommandDto.setNextFireTime(trigger.getNextFireTime());
-        agentCommandDto.setPreviousFireTime(trigger.getPreviousFireTime());
+        agentCommandDto.setNextFireTime(next);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }
