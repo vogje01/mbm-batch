@@ -11,6 +11,7 @@ import {JobDefinitionDataSource} from "../job-definition/job-definition-data-sou
 import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
+import {getLastExecutionTime, getNextExecutionTime} from "../../utils/date-time-util";
 
 class JobSchedulerList extends React.Component {
 
@@ -120,24 +121,25 @@ class JobSchedulerList extends React.Component {
                                 caption={'Job Definition'}
                                 dataType={'string'}
                                 allowSorting={true}
-                                allowReordering={true}
-                                width={300}/>
+                                allowReordering={true}/>
                             <Column
+                                calculateCellValue={getLastExecutionTime}
                                 caption={'Last Execution'}
                                 dataType={'datetime'}
                                 dataField={'lastExecution'}
                                 allowEditing={false}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={160}/>
+                                width={140}/>
                             <Column
+                                calculateCellValue={getNextExecutionTime}
                                 caption={'Next Execution'}
                                 dataType={'datetime'}
                                 dataField={'nextExecution'}
                                 allowEditing={false}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={160}/>
+                                width={140}/>
                             <Column
                                 dataField={'schedule'}
                                 caption={'Schedule'}
@@ -145,7 +147,7 @@ class JobSchedulerList extends React.Component {
                                 allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={160}/>
+                                width={120}/>
                             <Column
                                 dataField={'active'}
                                 caption={'Active'}

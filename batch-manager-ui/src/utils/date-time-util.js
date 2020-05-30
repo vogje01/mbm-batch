@@ -45,14 +45,6 @@ export const getRunningTime = (rowData) => {
     return rowData && rowData.runningTime ? calculateRunningTimeFromUnixTime(rowData.runningTime) : null;
 };
 
-export const getPrevFireDateTime = (rowData) => {
-    return rowData && rowData.lastExecution ? convertUTCToLocalDateTime(rowData.lastExecution) : null;
-};
-
-export const getNextFireDateTime = (rowData) => {
-    return rowData && rowData.nextExecution ? convertUTCToLocalDateTime(rowData.nextExecution) : null;
-};
-
 export const getNextExecutionTime = (jobSchedule) => {
     return jobSchedule && jobSchedule.nextExecution ? convertUTCToLocalDateTime(jobSchedule.nextExecution) : null;
 };

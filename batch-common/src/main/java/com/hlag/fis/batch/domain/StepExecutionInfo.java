@@ -22,7 +22,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
+public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key
@@ -42,12 +42,6 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
      */
     @Column(name = "STEP_EXECUTION_ID")
     private Long stepExecutionId;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Integer version;
     /**
      * Status of the step.
      */
@@ -214,14 +208,6 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
 
     public void setStepExecutionId(Long stepId) {
         this.stepExecutionId = stepId;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
     }
 
     public String getStepName() {
@@ -435,7 +421,6 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
                 Objects.equal(id, that.id) &&
                 Objects.equal(stepName, that.stepName) &&
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
-                Objects.equal(version, that.version) &&
                 Objects.equal(status, that.status) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(nodeName, that.nodeName) &&
@@ -452,7 +437,7 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, stepName, stepExecutionId, version, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, deleted, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
+        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, deleted, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
     }
 
     @Override
@@ -461,7 +446,6 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
                 .add("id", id)
                 .add("stepName", stepName)
                 .add("stepExecutionId", stepExecutionId)
-                .add("version", version)
                 .add("status", status)
                 .add("hostName", hostName)
                 .add("nodeName", nodeName)

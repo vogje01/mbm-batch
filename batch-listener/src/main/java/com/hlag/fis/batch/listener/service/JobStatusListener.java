@@ -18,6 +18,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -92,6 +93,8 @@ public class JobStatusListener {
             jobExecutionInfo = jobExecutionInfoOptional.get();
             if (!jobExecutionInfo.isDeleted()) {
                 jobExecutionInfo.update(jobExecutionDto);
+                jobExecutionInfo.setModifiedAt(new Date());
+                jobExecutionInfo.setModifiedBy("admin");
                 jobExecutionInfoRepository.save(jobExecutionInfo);
                 logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
             }
@@ -104,6 +107,8 @@ public class JobStatusListener {
             // Save job execution
             jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobInstanceInfo(jobInstanceInfo);
+            jobExecutionInfo.setCreatedAt(new Date());
+            jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
             logger.debug(format("Job execution info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobExecutionInfo.getId()));
 
@@ -135,6 +140,8 @@ public class JobStatusListener {
             stepExecutionInfo = stepExecutionInfoOptional.get();
             if (!stepExecutionInfo.isDeleted()) {
                 stepExecutionInfo.update(stepExecutionDto);
+                stepExecutionInfo.setModifiedAt(new Date());
+                stepExecutionInfo.setModifiedBy("admin");
                 stepExecutionInfoRepository.save(stepExecutionInfo);
                 logger.debug(format("Step info updated - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
             }
@@ -146,6 +153,8 @@ public class JobStatusListener {
                 logger.debug(format("Job found - jobName: {0} jobUuid: {1}", jobName, stepUuid));
                 stepExecutionInfo.update(stepExecutionDto);
                 stepExecutionInfo.setJobExecutionInfo(jobExecutionInfoOptional.get());
+                stepExecutionInfo.setCreatedAt(new Date());
+                stepExecutionInfo.setCreatedBy("admin");
                 stepExecutionInfoRepository.save(stepExecutionInfo);
             } else {
                 logger.error(format("Job not found - jobName: {0} jobUuid: {1}", jobName, stepUuid));
