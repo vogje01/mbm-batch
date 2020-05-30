@@ -67,6 +67,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.nextExecution = origin.nextExecution;
         this.name = origin.name;
         this.active = origin.active;
+        this.jobDefinition = origin.jobDefinition;
     }
 
     public String getId() {

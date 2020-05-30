@@ -158,6 +158,16 @@ public class JobScheduleController {
 
         // Get job schedule
         JobSchedule jobSchedule = modelConverter.convertJobScheduleToEntity(jobScheduleDto);
+
+        // Get job definition
+        if (!jobScheduleDto.getJobDefinitionName().isEmpty()) {
+            Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
+            if (jobDefinitionOptional.isPresent()) {
+                jobSchedule.setJobDefinition(jobDefinitionOptional.get());
+            }
+        }
+
+        // Update job schedule
         jobSchedule = jobScheduleService.updateJobSchedule(jobScheduleId, jobSchedule);
         jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
 
