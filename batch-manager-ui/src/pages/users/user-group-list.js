@@ -141,9 +141,9 @@ class UserGroupList extends React.Component {
                                         icon: 'material-icons-outlined ic-delete',
                                         visible: this.isDeleteVisible
                                     }]}/>
-                            <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
+                            <RemoteOperations sorting={true} paging={true}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>
