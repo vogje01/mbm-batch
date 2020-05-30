@@ -179,6 +179,23 @@ public class JobScheduleController {
     }
 
     /**
+     * Deletes a job schedule.
+     *
+     * @param jobScheduleId job schedule UUID.
+     * @throws ResourceNotFoundException in case the job schedule is not existing.
+     */
+    @DeleteMapping(value = "/{jobScheduleId}/delete")
+    public ResponseEntity<Void> delete(@PathVariable("jobScheduleId") String jobScheduleId) throws ResourceNotFoundException {
+        t.restart();
+        RestPreconditions.checkFound(jobScheduleService.findById(jobScheduleId));
+
+        jobScheduleService.deleteJobSchedule(jobScheduleId);
+        logger.debug(format("Job schedule delete request finished - id: {0} {1}", jobScheduleId, t.elapsedStr()));
+
+        return null;
+    }
+
+    /**
      * Add an agent to a job schedule.
      *
      * @param jobScheduleId job schedule UUID.
@@ -252,6 +269,7 @@ public class JobScheduleController {
         try {
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).findById(jobScheduleDto.getId())).withSelfRel());
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).update(jobScheduleDto.getId(), jobScheduleDto)).withRel("update"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).delete(jobScheduleDto.getId())).withRel("delete"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgents(jobScheduleDto.getId(), page, size, sortBy, sortDir)).withRel("agents"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgent(jobScheduleDto.getId(), null)).withRel("addAgent"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgent(jobScheduleDto.getId(), null)).withRel("removeAgent"));

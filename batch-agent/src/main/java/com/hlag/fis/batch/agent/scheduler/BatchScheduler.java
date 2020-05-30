@@ -32,13 +32,13 @@ public class BatchScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
-    private AgentCommandProducer agentCommandProducer;
+    private final AgentCommandProducer agentCommandProducer;
 
-    private String nodeName;
+    private final String nodeName;
 
-    private String hostName;
+    private final String hostName;
 
     /**
      * Constructor.
@@ -177,12 +177,11 @@ public class BatchScheduler {
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(jobDefinition);
             try {
-                CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
-                sendJobStart(jobDefinition, cronExpression.getNextValidTimeAfter(new Date()));
+                sendJobStart(jobSchedule);
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
                         jobDefinition.getJobGroup().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
-            } catch (SchedulerException | ParseException e) {
+            } catch (SchedulerException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                         jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
             }
@@ -341,17 +340,26 @@ public class BatchScheduler {
     /**
      * Sends a job start command to the server.
      *
-     * @param jobDefinition job definition.
-     * @param next          next trigger time.
+     * @param jobSchedule job schedule.
      */
-    private void sendJobStart(JobDefinition jobDefinition, Date next) {
-        logger.info(format("Sending job status - name: {0} next: {1}", jobDefinition.getName(), next));
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
-        agentCommandDto.setNodeName(nodeName);
-        agentCommandDto.setHostName(hostName);
-        agentCommandDto.setJobName(jobDefinition.getName());
-        agentCommandDto.setGroupName(jobDefinition.getJobGroup().getName());
-        agentCommandDto.setNextFireTime(next);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+    private void sendJobStart(JobSchedule jobSchedule) {
+        logger.info(format("Sending job status - name: {0}", jobSchedule.getJobDefinition().getName()));
+        try {
+            CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
+            Date next = cronExpression.getNextValidTimeAfter(new Date());
+
+            logger.info(format("Next execution - next: {0}", next));
+
+            JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+            AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
+            agentCommandDto.setNodeName(nodeName);
+            agentCommandDto.setHostName(hostName);
+            agentCommandDto.setJobName(jobDefinition.getName());
+            agentCommandDto.setGroupName(jobDefinition.getJobGroup().getName());
+            agentCommandDto.setNextFireTime(next);
+            agentCommandProducer.sendAgentCommand(agentCommandDto);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

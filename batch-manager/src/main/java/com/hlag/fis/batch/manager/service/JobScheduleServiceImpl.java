@@ -14,6 +14,7 @@ import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -99,6 +100,14 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             logger.error(format("Job schedule not found - id: {0}", jobScheduleId));
             throw new ResourceNotFoundException();
         }
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(cacheNames = "JobSchedule", key = "#jobScheduleId")
+    public void deleteJobSchedule(final String jobScheduleId) {
+        jobScheduleRepository.deleteById(jobScheduleId);
+        logger.debug(format("Job schedule deleted - id: {0}", jobScheduleId));
     }
 
     @Override

@@ -22,9 +22,9 @@ export const JobScheduleDataSource = () => {
                 let url = jobSchedule._links.update.href;
                 return updateItem(url, jobSchedule);
             },
-            remove: function (key) {
-                let url = key._links.delete.href;
-                return deleteItem(url, key);
+            remove: function (jobSchedule) {
+                let url = jobSchedule._links.delete.href;
+                return deleteItem(url, jobSchedule);
             }
         })
     });

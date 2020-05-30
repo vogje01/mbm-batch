@@ -21,6 +21,8 @@ public interface JobScheduleService {
 
     JobSchedule updateJobSchedule(final String jobScheduleId, JobSchedule jobSchedule) throws ResourceNotFoundException;
 
+    void deleteJobSchedule(final String jobScheduleId);
+
     void updateJobDefinition(JobDefinition jobDefinition) throws ResourceNotFoundException;
 
     JobSchedule insertJobSchedule(JobSchedule jobSchedule);
