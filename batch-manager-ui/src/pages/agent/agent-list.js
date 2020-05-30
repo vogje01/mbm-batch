@@ -91,6 +91,23 @@ class AgentView extends React.Component {
                                 </Form>
                             </Editing>
                             <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit agent.',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete agent.',
+                                        icon: 'material-icons-outlined ic-delete'
+                                    }
+                                ]}/>
+                            <Column
                                 caption={'Node name'}
                                 dataField={'nodeName'}
                                 allowEditing={true}
@@ -165,28 +182,9 @@ class AgentView extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit agent definition',
-                                        icon: 'material-icons-outlined ic-edit md-18'
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete agent',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
-                            <RemoteOperations
-                                sorting={true}
-                                paging={true}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
+                            <RemoteOperations sorting={true} paging={true}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

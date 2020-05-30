@@ -52,7 +52,7 @@ const getItem = (url) => {
     return fetch(url, initGet())
         .then(response => {
             if (response.status === 401) {
-                throw new Error(response.statusText)
+                errorMessage("Could not get list of items.")
             }
             return response.json()
         }).finally(() => {
@@ -65,7 +65,7 @@ const listItems = (entity, attributes) => {
     return fetch(process.env.REACT_APP_API_URL + entity, initGet())
         .then(response => {
             if (response.status !== 200) {
-                throw new Error(response.statusText)
+                errorMessage("Could not get list of items.")
             }
             return response.json()
         })

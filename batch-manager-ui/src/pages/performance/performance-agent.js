@@ -2,14 +2,13 @@ import React from "react";
 import UpdateTimer from "../../utils/update-timer";
 import './performance.scss'
 import moment from "moment";
-import {listItems} from "../../utils/server-connection";
+import {getItem} from "../../utils/server-connection";
 import {
     ArgumentAxis,
     Chart,
     CommonSeriesSettings,
     Crosshair,
     Export,
-    Font,
     Grid,
     HorizontalLine,
     Label,
@@ -19,7 +18,6 @@ import {
     Tick,
     TickInterval,
     Title,
-    Tooltip,
     ValueAxis,
     VerticalLine
 } from "devextreme-react/chart";
@@ -88,9 +86,9 @@ class PerformanceChart extends React.Component {
     }
 
     componentDidMount() {
-        listItems('agents', 'agentDtoes')
+        getItem(process.env.REACT_APP_API_URL + 'agents?page=0&size=-1')
             .then((data) => {
-                this.setState({agents: data, selectedAgent: data[0]})
+                this.setState({agents: data._embedded.agentDtoes, selectedAgent: data._embedded.agentDtoes[0], nodeName: data._embedded.agentDtoes[0].nodeName})
             });
     }
 
@@ -267,7 +265,6 @@ class PerformanceChart extends React.Component {
                             <div className="option" style={{float: 'left', marginRight: '20px'}}>
                                 <span>Agent:</span>
                                 <SelectBox items={this.state.agents} displayExpr='nodeName' valueExpr='nodeName'
-                                           value={this.state.agents[0]}
                                            selectedItem={this.state.selectedAgent}
                                            onValueChanged={this.handleNodeName}/>
                             </div>
@@ -291,10 +288,11 @@ class PerformanceChart extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className={'dx-card responsive-paddings'}>
-                        <Chart id="chart" palette="Office"
-                               dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}
-                               margin={{margin: '0px 10px 0px 0px'}}>
+                    <div className={'dx-card responsive-paddings'} style={{background: '#282828'}}>
+                        <Chart
+                            id="chart"
+                            palette="Office"
+                            dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}>
                             <CommonSeriesSettings argumentField="lastUpdate" type={'line'}/>
                             {sources.map(this.getSource)}
                             <ArgumentAxis argumentType="datetime" visualRange={{startValue: this.state.limitStart, endValue: this.state.limitEnd}}
@@ -307,19 +305,14 @@ class PerformanceChart extends React.Component {
                             <ValueAxis title={this.state.yAxisTitle}/>
                             <Legend verticalAlignment="bottom" horizontalAlignment="center" itemTextPosition="bottom"/>
                             <Export enabled={true}/>
-                            <Title text={this.state.yAxisTitle}><Font color={'#fff'} size={12} weight={'bold'}/></Title>
-                            <Tooltip enabled={true} zIndex={10000}/>
+                            <Title text={this.state.yAxisTitle} horizontalAlignment={'center'}/>
                             <Point hoverMode={'allArgumentPoints'}/>
                             <Crosshair enabled={true} width={2}>
                                 <HorizontalLine dashStyle={'dot'} visible={true} width={2}>
-                                    <Label visible={true} backgroundColor={'#949494'}>
-                                        <Font color={'#fff'} size={12} family={'Segoe UI'} opacity={1} weight={400}/>
-                                    </Label>
+                                    <Label visible={true} backgroundColor={'#949494'}/>
                                 </HorizontalLine>
                                 <VerticalLine dashStyle={'dot'} visible={true} width={2}>
-                                    <Label visible={true} backgroundColor={'#949494'}>
-                                        <Font color={'#fff'} size={12} family={'Segoe UI'} opacity={1} weight={400}/>
-                                    </Label>
+                                    <Label visible={true} backgroundColor={'#949494'}/>
                                 </VerticalLine>
                             </Crosshair>
                         </Chart>

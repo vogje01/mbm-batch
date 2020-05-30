@@ -109,6 +109,29 @@ class JobSchedulerList extends React.Component {
                                 </Form>
                             </Editing>
                             <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job schedule.',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'copy',
+                                        hint: 'Copy job schedule.',
+                                        icon: 'material-icons-outlined ic-copy',
+                                        onClick: this.cloneJobSchedule
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job schedule.',
+                                        icon: 'material-icons-outlined ic-delete'
+                                    }
+                                ]}/>
+                            <Column
                                 caption={'Name'}
                                 dataField={'name'}
                                 dataType={'string'}
@@ -181,35 +204,10 @@ class JobSchedulerList extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job schedule',
-                                        icon: 'material-icons-outlined ic-edit'
-                                    },
-                                    {
-                                        name: 'copy',
-                                        hint: 'Copy job schedule',
-                                        icon: 'material-icons-outlined ic-copy',
-                                        onClick: this.cloneJobSchedule
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job schedule',
-                                        icon: 'material-icons-outlined ic-delete'
-                                    }
-                                ]}/>
-                            <RemoteOperations
-                                sorting={true}
-                                paging={true}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
                             <Paging defaultPageSize={10}/>
+                            <RemoteOperations sorting={true} paging={true}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

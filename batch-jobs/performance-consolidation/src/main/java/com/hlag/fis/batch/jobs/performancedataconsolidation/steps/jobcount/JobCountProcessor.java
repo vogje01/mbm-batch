@@ -28,12 +28,13 @@ public class JobCountProcessor implements ItemProcessor<Object[], AgentPerforman
 
     @Override
     public AgentPerformance process(Object[] tuple) {
-        logger.debug(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
+        logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
         // Check old record
         Optional<AgentPerformance> agentPerformanceOptional = agentPerformanceRepository.findByTimestamp((String) tuple[0], AgentPerformanceType.DAILY, (Timestamp) tuple[2]);
         if (agentPerformanceOptional.isPresent()) {
             AgentPerformance agentPerformance = agentPerformanceOptional.get();
             agentPerformance.setJobCount((Long) tuple[1]);
+            logger.debug(format("Job agent performance updated - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
             return agentPerformance;
         }
         return null;

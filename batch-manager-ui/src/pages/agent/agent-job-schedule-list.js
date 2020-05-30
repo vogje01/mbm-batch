@@ -84,11 +84,9 @@ class AgentJobScheduleView extends React.Component {
                                 icon: 'material-icons-outlined ic-delete'
                             }
                         ]}/>
-                    <RemoteOperations
-                        sorting={true}
-                        paging={true}/>
                     <Paging defaultPageSize={5}/>
                     <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20]}/>
+                    <RemoteOperations sorting={true} paging={true}/>
                 </DataGrid>
             </React.Fragment>
         );

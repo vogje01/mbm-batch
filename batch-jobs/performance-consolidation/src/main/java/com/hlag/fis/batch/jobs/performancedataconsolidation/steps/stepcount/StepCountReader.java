@@ -25,9 +25,9 @@ public class StepCountReader {
     }
 
     ItemStreamReader getReader() {
-        String queryString = "select s.hostName, count(s.hostName), from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) as lastUpdate "
+        String queryString = "select s.nodeName, count(s.nodeName), from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) as lastUpdate "
                 + "from StepExecutionInfo s "
-                + "group by s.hostName, from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) "
+                + "group by s.nodeName, from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) "
                 + "order by lastUpdate";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);

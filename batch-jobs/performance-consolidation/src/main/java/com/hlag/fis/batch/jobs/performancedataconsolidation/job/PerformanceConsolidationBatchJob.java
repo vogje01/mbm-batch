@@ -5,6 +5,7 @@ import com.hlag.fis.batch.builder.BatchJobRunner;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.daily.DailyStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.jobcount.JobCountStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.monthly.MonthlyStep;
+import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.stepcount.StepCountStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.weekly.WeeklyStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.yearly.YearlyStep;
 import com.hlag.fis.batch.logging.BatchLogger;
@@ -30,6 +31,8 @@ public class PerformanceConsolidationBatchJob {
 
     private JobCountStep jobCountStep;
 
+    private StepCountStep stepCountStep;
+
     private DailyStep dailyStep;
 
     private WeeklyStep weeklyStep;
@@ -42,6 +45,7 @@ public class PerformanceConsolidationBatchJob {
     public PerformanceConsolidationBatchJob(BatchJobBuilder batchJobBuilder,
                                             BatchJobRunner batchJobRunner,
                                             JobCountStep jobCountStep,
+                                            StepCountStep stepCountStep,
                                             DailyStep dailyStep,
                                             WeeklyStep weeklyStep,
                                             MonthlyStep monthlyStep,
@@ -49,6 +53,7 @@ public class PerformanceConsolidationBatchJob {
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
         this.jobCountStep = jobCountStep;
+        this.stepCountStep = stepCountStep;
         this.dailyStep = dailyStep;
         this.weeklyStep = weeklyStep;
         this.monthlyStep = monthlyStep;
@@ -74,6 +79,7 @@ public class PerformanceConsolidationBatchJob {
         return batchJobBuilder
                 .name(JOB_NAME)
                 .startStep(jobCountStep.jobCountProcessing())
+                .nextStep(stepCountStep.stepCountProcessing())
                 .nextStep(dailyStep.dailyConsolidation())
                 .nextStep(weeklyStep.weeklyConsolidation())
                 .nextStep(monthlyStep.monthlyConsolidation())
