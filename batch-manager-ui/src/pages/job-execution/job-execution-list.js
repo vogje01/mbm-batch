@@ -83,7 +83,6 @@ class JobExecutionList extends React.Component {
                             id={'jobTable'}
                             dataSource={JobExecutionDataSource(this)}
                             hoverStateEnabled={true}
-                            //onRowDblClick={this.toggleDetails}
                             allowColumnReordering={true}
                             allowColumnResizing={true}
                             columnResizingMode={'widget'}
@@ -107,6 +106,7 @@ class JobExecutionList extends React.Component {
                                     <GroupItem colCount={2} caption={"Job Execution Details: " + this.state.currentJobExecution.jobName}>
                                         <SimpleItem dataField="jobName" readOnly={true}/>
                                         <SimpleItem dataField="hostName" readOnly={true}/>
+                                        <SimpleItem dataField="nodeName" readOnly={true}/>
                                         <SimpleItem dataField="status" readOnly={true}/>
                                         <SimpleItem dataField="jobPid" readOnly={true}/>
                                         <SimpleItem dataField="id" readOnly={true}/>
@@ -137,8 +137,17 @@ class JobExecutionList extends React.Component {
                                 <HeaderFilter allowSearch={true}/>
                             </Column>
                             <Column
-                                caption={'Hostname'}
+                                caption={'Host name'}
                                 dataField={'hostName'}
+                                allowFiltering={true}
+                                allowSorting={true}
+                                allowReordering={true}
+                                width={120}>
+                                <HeaderFilter allowSearch={true}/>
+                            </Column>
+                            <Column
+                                caption={'Node name'}
+                                dataField={'nodeName'}
                                 allowFiltering={true}
                                 allowSorting={true}
                                 allowReordering={true}

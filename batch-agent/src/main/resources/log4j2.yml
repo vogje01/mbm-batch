@@ -3,7 +3,7 @@ Configutation:
   Properties:
     Property:
       name: log-path
-      value: "/opt/batch/log"
+      value: "./log"
   Appenders:
     Console:
       name: Console_Appender
@@ -12,7 +12,7 @@ Configutation:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
     File:
       name: File_Appender
-      fileName: ${log-path}/batch-agent.log
+      fileName: ${log-path}/${agent.nodeName}.log
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
   Loggers:
