@@ -96,6 +96,14 @@ public class AgentPerformanceDto {
      */
     private Double freeSwapPct;
     /**
+     * Job count
+     */
+    private Long jobCount;
+    /**
+     * Step count
+     */
+    private Long stepCount;
+    /**
      * Last performance
      */
     private Timestamp lastUpdate;
@@ -255,6 +263,22 @@ public class AgentPerformanceDto {
         this.freeSwapPct = freeSwapPct;
     }
 
+    public Long getJobCount() {
+        return jobCount;
+    }
+
+    public void setJobCount(Long jobCount) {
+        this.jobCount = jobCount;
+    }
+
+    public Long getStepCount() {
+        return stepCount;
+    }
+
+    public void setStepCount(Long stepCount) {
+        this.stepCount = stepCount;
+    }
+
     public Timestamp getLastUpdate() {
         return lastUpdate;
     }
@@ -297,6 +321,8 @@ public class AgentPerformanceDto {
                 .add("usedSwap", usedSwap)
                 .add("usedSwapPct", usedSwapPct)
                 .add("freeSwapPct", freeSwapPct)
+                .add("jobCount", jobCount)
+                .add("stepCount", stepCount)
                 .add("lastUpdate", lastUpdate)
                 .toString();
     }
@@ -305,7 +331,6 @@ public class AgentPerformanceDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
         AgentPerformanceDto that = (AgentPerformanceDto) o;
         return Objects.equal(id, that.id) &&
                 Objects.equal(nodeName, that.nodeName) &&
@@ -326,11 +351,13 @@ public class AgentPerformanceDto {
                 Objects.equal(usedSwap, that.usedSwap) &&
                 Objects.equal(usedSwapPct, that.usedSwapPct) &&
                 Objects.equal(freeSwapPct, that.freeSwapPct) &&
+                Objects.equal(jobCount, that.jobCount) &&
+                Objects.equal(stepCount, that.stepCount) &&
                 Objects.equal(lastUpdate, that.lastUpdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, type, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, usedRealMemoryPct, freeRealMemoryPct, totalVirtMemory, freeVirtMemory, usedVirtMemory, usedVirtMemoryPct, freeVirtMemoryPct, totalSwap, freeSwap, usedSwap, usedSwapPct, freeSwapPct, lastUpdate);
+        return Objects.hashCode(id, nodeName, type, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, usedRealMemoryPct, freeRealMemoryPct, totalVirtMemory, freeVirtMemory, usedVirtMemory, usedVirtMemoryPct, freeVirtMemoryPct, totalSwap, freeSwap, usedSwap, usedSwapPct, freeSwapPct, jobCount, stepCount, lastUpdate);
     }
 }

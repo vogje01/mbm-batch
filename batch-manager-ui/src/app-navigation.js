@@ -46,8 +46,13 @@ export const navigation = [
         icon: 'material-icons-outlined ic-performance',
         items: [
             {
+                text: 'Agents',
+                path: '/performanceagent',
+                icon: 'material-icons-outlined ic-performance'
+            },
+            {
                 text: 'Jobs',
-                path: '/performance',
+                path: '/performancejob',
                 icon: 'material-icons-outlined ic-performance'
             }
         ]

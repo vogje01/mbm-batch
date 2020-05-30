@@ -7,7 +7,8 @@ import {
     JobDefinitionListPage,
     JobExecutionListPage,
     JobScheduleListPage,
-    PerformancePage,
+    PerformanceAgentPage,
+    PerformanceJobPage,
     ProfilePage,
     StepExecutionListPage,
     UserGroupListPage,
@@ -46,8 +47,12 @@ const routes = [
         component: AgentListPage
     },
     {
-        path: '/performance',
-        component: PerformancePage
+        path: '/performanceagent',
+        component: PerformanceAgentPage
+    },
+    {
+        path: '/performancejob',
+        component: PerformanceJobPage
     },
     {
         path: '/profile',

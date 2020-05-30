@@ -11,7 +11,8 @@ export {default as JobDefinitionImport} from './job-definition/job-definition-im
 export {default as JobScheduleListPage} from './job-schedule/job-schedule-list';
 export {default as AgentListPage} from './agent/agent-list';
 // Performance
-export {default as PerformancePage} from './performance/performance';
+export {default as PerformanceAgentPage} from './performance/performance-agent';
+export {default as PerformanceJobPage} from './performance/performance-job';
 // Settings
 export {default as UserListPage} from './users/user-list';
 export {default as UserGroupListPage} from './users/user-group-list';
