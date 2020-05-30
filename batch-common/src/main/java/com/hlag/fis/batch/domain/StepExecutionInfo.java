@@ -54,6 +54,16 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
     @Column(name = "STATUS")
     private String status;
     /**
+     * Host name.
+     */
+    @Column(name = "HOST_NAME")
+    private String hostName;
+    /**
+     * Node name.
+     */
+    @Column(name = "NODE_NAME")
+    private String nodeName;
+    /**
      * Total number of records to be processed.
      */
     @Column(name = "TOTAL_COUNT")
@@ -171,6 +181,8 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
         this.stepName = stepExecutionDto.getStepName();
         this.stepExecutionId = stepExecutionDto.getStepExecutionId();
         this.status = stepExecutionDto.getStatus();
+        this.hostName = stepExecutionDto.getHostName();
+        this.nodeName = stepExecutionDto.getNodeName();
         this.totalCount = stepExecutionDto.getTotalCount();
         this.readCount = stepExecutionDto.getReadCount();
         this.writeCount = stepExecutionDto.getWriteCount();
@@ -226,6 +238,22 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public long getReadCount() {
@@ -409,6 +437,8 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
                 Objects.equal(version, that.version) &&
                 Objects.equal(status, that.status) &&
+                Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(startTime, that.startTime) &&
                 Objects.equal(endTime, that.endTime) &&
                 Objects.equal(lastUpdated, that.lastUpdated) &&
@@ -422,7 +452,7 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, stepName, stepExecutionId, version, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, deleted, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
+        return Objects.hashCode(id, stepName, stepExecutionId, version, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, deleted, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
     }
 
     @Override
@@ -433,6 +463,8 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
                 .add("stepExecutionId", stepExecutionId)
                 .add("version", version)
                 .add("status", status)
+                .add("hostName", hostName)
+                .add("nodeName", nodeName)
                 .add("totalCount", totalCount)
                 .add("readCount", readCount)
                 .add("writeCount", writeCount)
@@ -452,6 +484,7 @@ public class StepExecutionInfo implements PrimaryKeyIdentifier<String> {
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("failureExceptions", failureExceptions)
+                .add("jobExecutionInfo", jobExecutionInfo)
                 .toString();
     }
 }

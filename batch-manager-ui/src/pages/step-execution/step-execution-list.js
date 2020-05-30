@@ -140,6 +140,22 @@ class StepExecutionList extends React.Component {
                                 allowFiltering={true}
                                 width={90}/>
                             <Column
+                                dataField={'hostName'}
+                                caption={'Host name'}
+                                dataType={'string'}
+                                visible={false}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}/>
+                            <Column
+                                dataField={'nodeName'}
+                                caption={'Node name'}
+                                dataType={'string'}
+                                visible={false}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}/>
+                            <Column
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
