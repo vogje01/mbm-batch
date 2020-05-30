@@ -7,7 +7,7 @@ export const AgentDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'nodeName');
                 return listItems('agents' + params, 'agentDtoes');
             },
             update: function (agent, values) {
@@ -18,6 +18,7 @@ export const AgentDataSource = () => {
             },
             remove: function (agent) {
                 let url = agent._links.delete.href;
+                url = url.replace("{agentId}", agent.id)
                 return deleteItem(url, agent);
             }
         })

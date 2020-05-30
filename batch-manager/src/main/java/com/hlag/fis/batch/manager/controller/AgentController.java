@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
@@ -67,22 +66,23 @@ public class AgentController {
      * @return on page of job definitions.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<AgentDto>> findAll() {
+    public ResponseEntity<CollectionModel<AgentDto>> findAll(@RequestParam(value = "page") int page, @RequestParam("size") int size,
+                                                             @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                             @RequestParam(value = "sortDir", required = false) String sortDir) {
 
         t.restart();
 
         // Get paging parameters
         long totalCount = agentService.countAll();
-        Page<Agent> allAgents = agentService.findAll(Pageable.unpaged());
+        Page<Agent> allAgents = agentService.findAll(PagingUtil.getPageable(page, size, sortBy, sortDir));
 
         // Convert to DTOs
         List<AgentDto> agentDtoes = modelConverter.convertAgentToDto(allAgents.toList(), totalCount);
 
         // Add links
-        agentDtoes.forEach(this::addLinks);
+        agentDtoes.forEach(a -> addLinks(a, page, size, sortBy, sortDir));
+        Link self = linkTo(methodOn(AgentController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
 
-        // Add self link
-        Link self = linkTo(methodOn(AgentController.class).findAll()).withSelfRel();
         logger.debug(format("Finished find all agent request- count: {0} {1}", allAgents.getSize(), t.elapsedStr()));
 
         return ResponseEntity.ok(new CollectionModel<>(agentDtoes, self));
@@ -160,8 +160,8 @@ public class AgentController {
      *
      * @param agentId agent DTO to delete.
      */
-    @PutMapping(value = "/{agentId}/delete", consumes = {"application/hal+json"})
-    public ResponseEntity<Void> deleteAgent(@PathParam("agentId") String agentId) throws ResourceNotFoundException {
+    @DeleteMapping(value = "/{agentId}/delete", consumes = {"application/hal+json"})
+    public ResponseEntity<Void> deleteAgent(@PathVariable("agentId") String agentId) throws ResourceNotFoundException {
 
         t.restart();
         RestPreconditions.checkFound(agentService.findById(agentId));
@@ -247,6 +247,11 @@ public class AgentController {
         return ResponseEntity.ok(agentDto);
     }
 
+    /**
+     * Add HATOAS links.
+     *
+     * @param agentDto agent data transfer object.
+     */
     private void addLinks(AgentDto agentDto) {
         try {
             agentDto.add(linkTo(methodOn(AgentController.class).findById(agentDto.getId())).withSelfRel());
@@ -257,5 +262,18 @@ public class AgentController {
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", agentDto.getId()), e);
         }
+    }
+
+    /**
+     * Add HATOAS links.
+     *
+     * @param agentDto job definition data transfer object.
+     * @param page     page number.
+     * @param size     page size.
+     * @param sortBy   sort attribute.
+     * @param sortDir  sort direction.
+     */
+    private void addLinks(AgentDto agentDto, int page, int size, String sortBy, String sortDir) {
+        addLinks(agentDto);
     }
 }

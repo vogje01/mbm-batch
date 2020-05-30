@@ -8,7 +8,7 @@ const initGet = () => {
 };
 const initDelete = () => {
     return {
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}, method: 'DELETE'
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'DELETE'
     }
 };
 const initInsert = (body) => {
@@ -126,7 +126,7 @@ const deleteItem = (url, key, label) => {
             }
         })
         .catch((error) => {
-            errorMessage('Get list error: ' + error.message);
+            errorMessage('Delete error: ' + error.message);
         }).finally(() => {
             EndTimer();
         });
