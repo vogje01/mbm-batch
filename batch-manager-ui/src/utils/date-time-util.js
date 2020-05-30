@@ -20,18 +20,6 @@ export const zeroPad = (num, places) => {
     return Array(+(zero > 0 && zero)).join("0") + num;
 };
 
-export const calculateRunningTime = (start, end) => {
-    if (start) {
-        const startMoment = moment(start);
-        const endMoment = end ? moment(end) : moment();
-        const hours = endMoment.diff(startMoment, 'hours');
-        const minutes = endMoment.diff(startMoment, 'minutes') - hours * 60;
-        const seconds = endMoment.diff(startMoment, 'seconds') - minutes * 60 - hours * 3600;
-        return zeroPad(hours, 2) + ":" + zeroPad(minutes, 2) + ":" + zeroPad(seconds, 2);
-    }
-    return null;
-};
-
 export const calculateRunningTimeFromUnixTime = (unixTime) => {
     const runningTime = moment(unixTime);
     return zeroPad(runningTime.hours() - 1, 2) + ":" + zeroPad(runningTime.minutes(), 2) + ":" + zeroPad(runningTime.seconds(), 2) + "." + zeroPad(runningTime.milliseconds(), 3);

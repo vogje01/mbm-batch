@@ -16,7 +16,7 @@ import {
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './job-execution-list.scss'
-import {getRunningTime} from "../../utils/date-time-util";
+import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
@@ -113,16 +113,44 @@ class JobExecutionList extends React.Component {
                                         <SimpleItem dataField="jobVersion" readOnly={true}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Timing"}>
-                                        <SimpleItem dataField="startTime" readOnly={true}/>
-                                        <SimpleItem dataField="endTime" readOnly={true}/>
-                                        <SimpleItem dataField="createTime" readOnly={true}/>
-                                        <SimpleItem dataField="lastUpdated" readOnly={true}/>
-                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox" editorOptions={{value: getRunningTime}}/>
+                                        <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getStartTime(this.state.currentJobExecution), readOnly: true}}/>
+                                        <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getEndTime(this.state.currentJobExecution), readOnly: true}}/>
+                                        <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getCreateTime(this.state.currentJobExecution), readOnly: true}}/>
+                                        <SimpleItem dataField="lastUpdated" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getLastUpdatedTime(this.state.currentJobExecution), readOnly: true}}/>
+                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
                                     </GroupItem>
                                     <GroupItem colSpan={2} caption={"Logs"}>
                                     </GroupItem>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
+                                        <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                    </GroupItem>
                                 </Form>
                             </Editing>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job execution entry',
+                                        icon: 'material-icons-outlined ic-edit md-18',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job execution entry',
+                                        icon: 'material-icons-outlined ic-delete md-18'
+                                    }
+                                ]}/>
                             <Column
                                 caption={'ID'}
                                 dataField={'id'}
@@ -161,7 +189,7 @@ class JobExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={true}
-                                width={120}/>
+                                width={100}/>
                             <Column
                                 dataField={'jobExecutionId'}
                                 caption={'ID'}
@@ -187,8 +215,9 @@ class JobExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={80}/>
+                                width={60}/>
                             <Column
+                                calculateCellValue={getCreateTime}
                                 dataField={'createTime'}
                                 caption={'Created'}
                                 dataType={'datetime'}
@@ -198,30 +227,32 @@ class JobExecutionList extends React.Component {
                                 width={120}
                                 visible={false}/>
                             <Column
+                                calculateCellValue={getStartTime}
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={160}/>
+                                width={140}/>
                             <Column
+                                calculateCellValue={getEndTime}
                                 dataField={'endTime'}
                                 caption={'Ended'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={160}/>
+                                width={140}/>
                             <Column
+                                calculateCellValue={getLastUpdatedTime}
                                 dataField={'lastUpdated'}
                                 caption={'Last Update'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={120}
-                                visible={false}/>
+                                width={140}/>
                             <Column
                                 calculateCellValue={getRunningTime}
                                 dataField={'runningTime'}
@@ -230,24 +261,7 @@ class JobExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={120}/>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry',
-                                        icon: 'material-icons-outlined ic-edit md-18',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job execution entry',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
+                                width={100}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}

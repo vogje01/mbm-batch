@@ -1,11 +1,12 @@
 import React from "react";
-import {Column, DataGrid, Editing, FilterRow, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
-import {getRunningTime} from "../../utils/date-time-util";
+import {getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
+import {GroupItem, SimpleItem} from "devextreme-react/form";
 
 class StepExecutionList extends React.Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class StepExecutionList extends React.Component {
         this.state = {
             currentStepExecution: {}
         }
+        this.selectionChanged = this.selectionChanged.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -94,7 +96,8 @@ class StepExecutionList extends React.Component {
                             showColumnLines={true}
                             showRowLines={true}
                             showBorders={true}
-                            rowAlternationEnabled={true}>
+                            rowAlternationEnabled={true}
+                            onEditingStart={this.selectionChanged}>
                             <FilterRow visible={true}/>
                             <Selection mode={'single'}/>
                             <FilterRow visible={true} applyFilter={'auto'}/>
@@ -102,10 +105,67 @@ class StepExecutionList extends React.Component {
                             <Sorting mode={'multiple'}/>
                             <Editing
                                 mode={'form'}
-                                startEditAction={ondblclick}
                                 useIcons={true}
                                 allowUpdating={true}
-                                allowDeleting={true}/>
+                                allowDeleting={true}>
+                                <Form>
+                                    <GroupItem colCount={4} caption={"Step Execution Details: " + this.state.currentStepExecution.stepName}>
+                                        <SimpleItem dataField="jobName" readOnly={true}/>
+                                        <SimpleItem dataField="stepName" readOnly={true}/>
+                                        <SimpleItem dataField="hostName" readOnly={true}/>
+                                        <SimpleItem dataField="nodeName" readOnly={true}/>
+                                        <SimpleItem dataField="status" readOnly={true}/>
+                                        <SimpleItem dataField="stepExecutionId" readOnly={true}/>
+                                    </GroupItem>
+                                    <GroupItem colCount={4} caption={"Timing"}>
+                                        <SimpleItem dataField="startTime" readOnly={true}/>
+                                        <SimpleItem dataField="endTime" readOnly={true}/>
+                                        <SimpleItem dataField="createTime" readOnly={true}/>
+                                        <SimpleItem dataField="lastUpdated" readOnly={true}/>
+                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox" editorOptions={{value: getRunningTime}}/>
+                                    </GroupItem>
+                                    <GroupItem colCount={4} caption={"Counter"}>
+                                        <SimpleItem dataField="totalCount" readOnly={true}/>
+                                        <SimpleItem dataField="readCount" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.getReadCount(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="readSkipCount" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.getReadSkipCount(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="writeCount" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.getWriteCount(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="writeSkipCount" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.getWriteSkipCount(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="filtered" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.getFilterCount(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="commitCount" readOnly={true}/>
+                                        <SimpleItem dataField="rollbackCount" readOnly={true}/>
+                                    </GroupItem>
+                                    <GroupItem colSpan={4} caption={"Logs"}>
+                                    </GroupItem>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
+                                        <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                    </GroupItem>
+                                </Form>
+                            </Editing>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job execution entry',
+                                        icon: 'material-icons-outlined ic-edit md-18',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job execution entry',
+                                        icon: 'material-icons-outlined ic-delete md-18'
+                                    }
+                                ]}/>
                             <Column
                                 caption={'Job Name'}
                                 dataField={'jobName'}
@@ -138,7 +198,7 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={true}
-                                width={90}/>
+                                width={100}/>
                             <Column
                                 dataField={'hostName'}
                                 caption={'Host name'}
@@ -156,45 +216,49 @@ class StepExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={true}/>
                             <Column
+                                calculateCellValue={getStartTime}
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={120}/>
+                                width={140}/>
                             <Column
+                                calculateCellValue={getEndTime}
                                 dataField={'endTime'}
                                 caption={'Ended'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={120}/>
+                                width={140}/>
                             <Column
+                                calculateCellValue={getLastUpdatedTime}
                                 dataField={'lastUpdated'}
                                 caption={'Last Update'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={120}/>
+                                width={140}/>
                             <Column
                                 calculateCellValue={getRunningTime}
                                 dataField={'runningTime'}
-                                caption={'Running Time'}
+                                caption={'Running'}
                                 dataType={'datetime'}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={110}/>
+                                width={100}/>
                             <Column
                                 dataField={'totalCount'}
-                                caption={'Total Count'}
+                                caption={'Total'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                width={80}/>
                             <Column
                                 calculateCellValue={this.getReadCount}
-                                caption={'Read Count'}
+                                dataField={'readCount'}
+                                caption={'Read'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -202,7 +266,8 @@ class StepExecutionList extends React.Component {
                                 width={110}/>
                             <Column
                                 calculateCellValue={this.getReadSkipCount}
-                                caption={'Read Skip Count'}
+                                dataField={'readSkipCount'}
+                                caption={'Read Skip'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -210,7 +275,7 @@ class StepExecutionList extends React.Component {
                                 width={110}/>
                             <Column
                                 calculateCellValue={this.getWriteCount}
-                                caption={'Write Count'}
+                                caption={'Write'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -218,7 +283,7 @@ class StepExecutionList extends React.Component {
                                 width={110}/>
                             <Column
                                 calculateCellValue={this.getWriteSkipCount}
-                                caption={'Write Skip Count'}
+                                caption={'Write Skip'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -226,7 +291,7 @@ class StepExecutionList extends React.Component {
                                 width={110}/>
                             <Column
                                 calculateCellValue={this.getFilterCount}
-                                caption={'Filter Count'}
+                                caption={'Filtered'}
                                 dataType={'number'}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -248,23 +313,6 @@ class StepExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={80}/>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry',
-                                        icon: 'material-icons-outlined ic-edit md-18',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job execution entry',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
                             <RemoteOperations
                                 sorting={true}
                                 paging={true}/>
