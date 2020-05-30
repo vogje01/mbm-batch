@@ -122,9 +122,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
         List<String> arguments = (List<String>) jobDataMap.get("arguments");
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
+        commandList.addAll(arguments);
         commandList.add("-jar");
         commandList.add(jarFile);
-        commandList.addAll(arguments);
         logger.info(format("Starting job - name: {0} workingDirectory: {1} command: {2} jarFile: {3}", jobName, workingDirectory, command, jarFile));
         try {
             process = new ProcessBuilder(commandList)

@@ -111,7 +111,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "Agent", key = "#agent.id")
+    @CacheEvict(cacheNames = "Agent", key = "#agentId")
     public void deleteAgent(String agentId) {
         agentRepository.deleteById(agentId);
     }

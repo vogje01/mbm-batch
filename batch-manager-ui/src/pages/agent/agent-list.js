@@ -120,7 +120,7 @@ class AgentView extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={120}/>
+                                width={140}/>
                             <Column
                                 dataField={'lastPing'}
                                 caption={'Last Ping'}
@@ -129,7 +129,7 @@ class AgentView extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={120}/>
+                                width={140}/>
                             <Column
                                 dataField={'active'}
                                 caption={'Active'}

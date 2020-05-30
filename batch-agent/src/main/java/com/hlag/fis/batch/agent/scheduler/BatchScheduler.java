@@ -348,6 +348,7 @@ public class BatchScheduler {
     private void sendJobStart(JobDefinition jobDefinition, Trigger trigger) {
         AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
         agentCommandDto.setNodeName(nodeName);
+        agentCommandDto.setHostName(hostName);
         agentCommandDto.setJobName(jobDefinition.getName());
         agentCommandDto.setGroupName(jobDefinition.getJobGroup().getName());
         agentCommandDto.setNextFireTime(trigger.getNextFireTime());
