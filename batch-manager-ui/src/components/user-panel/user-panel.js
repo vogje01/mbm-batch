@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import ContextMenu, {Position} from 'devextreme-react/context-menu';
 import List from 'devextreme-react/list';
 import {useAuth} from '../../contexts/auth';
@@ -7,9 +7,10 @@ import {useHistory} from "react-router-dom";
 
 export default function ({menuMode}) {
     const history = useHistory();
-    const onProfile = () => {
+
+    const onProfile = useCallback(() => {
         history.push('/profile')
-    };
+    }, [history]);
 
     const {user, logOut} = useAuth();
     const menuItems = useMemo(() => ([

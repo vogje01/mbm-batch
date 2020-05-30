@@ -1,17 +1,26 @@
 import React from 'react';
 import './job-definition-list.scss'
-import {DataGrid} from "devextreme-react";
-import {Column, Editing, FilterRow, Form, Lookup, Pager, Paging, RemoteOperations, RequiredRule, Selection, StringLengthRule} from "devextreme-react/data-grid";
+import DataGrid, {
+    Column,
+    Editing,
+    FilterRow,
+    Form,
+    Lookup,
+    Pager,
+    Paging,
+    RemoteOperations,
+    RequiredRule,
+    Selection,
+    StringLengthRule
+} from "devextreme-react/data-grid";
 import UpdateTimer from "../../utils/update-timer";
 import {GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
-import {Item} from "devextreme-react/autocomplete";
-import {Toolbar} from "devextreme-react/toolbar";
+import Toolbar, {Item} from "devextreme-react/toolbar";
 import {JobDefinitionDataSource} from "./job-definition-data-source";
 import {JobGroupDataSource} from "../job-group/job-group-data-source";
-import JobDefinitionExport from "./job-definition-export";
-import JobDefinitionImport from "./job-definition-import";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
+import {Redirect} from "react-router-dom";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -84,7 +93,7 @@ class JobDefinitionList extends React.Component {
                                 widget="dxButton"
                                 options={{
                                     icon: "material-icons-outlined ic-import", onClick: () => {
-                                        this.toggleImport()
+                                        this.toggleImport();
                                     }
                                 }}/>
                             <Item
@@ -92,7 +101,7 @@ class JobDefinitionList extends React.Component {
                                 widget="dxButton"
                                 options={{
                                     icon: "material-icons-outlined ic-export", onClick: () => {
-                                        this.toggleExport()
+                                        this.toggleExport();
                                     }
                                 }}/>
                         </Toolbar>
@@ -289,14 +298,14 @@ class JobDefinitionList extends React.Component {
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                         </DataGrid>
                         <UpdateTimer/>
-                        {
-                            this.state.showExport ? <JobDefinitionExport closePopup={this.toggleExport.bind(this)}/> : null
-                        }
-                        {
-                            this.state.showExport ? <JobDefinitionImport closePopup={this.toggleImport.bind(this)}/> : null
-                        }
                     </div>
                 </div>
+                {
+                    this.state.showExport ? <Redirect to={'/jobdefinitionexport'}/> : null
+                }
+                {
+                    this.state.showImport ? <Redirect to={'/jobdefinitionimport'}/> : null
+                }
             </React.Fragment>
         );
     }

@@ -37,8 +37,9 @@ class Profile extends React.Component {
 
     handleSubmit(e) {
         e.event.preventDefault();
-        this.state.user.passwordChanged = this.state.passwordChanged;
-        updateItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id + '/update', this.state.user, 'userDto')
+        let user = this.state.user;
+        user.passwordChanged = this.state.passwordChanged;
+        updateItem(process.env.REACT_APP_API_URL + 'users/' + user.id + '/update', user, 'userDto')
             .then((data) => {
                 this.setState({
                     user: data

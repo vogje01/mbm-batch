@@ -1,18 +1,22 @@
 import React from 'react';
-import {Popup} from "devextreme-react/popup";
 import {TextArea} from "devextreme-react";
+
 import {errorMessage, infoMessage} from "../../utils/message-util";
-import {EndTimer} from "../../utils/method-timer";
 
 class JobDefinitionExport extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            currentJobDefinitions: []
+        };
     }
 
-    onShowExportPopup() {
-        fetch(localStorage.getItem('baseUrl') + '/api/jobdefinitions/export')
+    componentDidMount() {
+        fetch(process.env.REACT_APP_API_URL + 'jobdefinitions/export', {
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')},
+            method: 'GET'
+        })
             .then(response => response.json())
             .then((data) => {
                 this.setState({currentJobDefinitions: data})
@@ -20,27 +24,20 @@ class JobDefinitionExport extends React.Component {
             })
             .catch((error) => {
                 errorMessage('Job definitions export error: ' + error.message);
-            })
-            .finally(() => {
-                EndTimer();
             });
     }
 
     render() {
         return (
             <React.Fragment>
-                <Popup
-                    showTitle={true}
-                    title={'Job Definition Export'}
-                    dragEnabled={true}
-                    resizeEnabled={true}
-                    closeOnOutsideClick={true}
-                    onShowing={this.onShowExportPopup}>
-                    <TextArea
-                        width={'100%'}
-                        height={'100%'}
-                        value={JSON.stringify(this.state.currentJobDefinitions, null, 4)}/>
-                </Popup>
+                <h2 className={'content-block'}>Job Definition Export</h2>
+                <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <TextArea
+                            autoResizeEnabled={true}
+                            value={JSON.stringify(this.state.currentJobDefinitions, null, 4)}/>
+                    </div>
+                </div>
             </React.Fragment>
         );
     }

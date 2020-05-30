@@ -2,6 +2,8 @@ import {withNavigationWatcher} from './contexts/navigation';
 import {
     AgentListPage,
     HomePage,
+    JobDefinitionExport,
+    JobDefinitionImport,
     JobDefinitionListPage,
     JobExecutionListPage,
     JobScheduleListPage,
@@ -26,6 +28,14 @@ const routes = [
     {
         path: '/jobdefinitions',
         component: JobDefinitionListPage
+    },
+    {
+        path: '/jobdefinitionexport',
+        component: JobDefinitionExport
+    },
+    {
+        path: '/jobdefinitionimport',
+        component: JobDefinitionImport
     },
     {
         path: '/jobschedules',

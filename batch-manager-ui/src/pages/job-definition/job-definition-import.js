@@ -1,8 +1,6 @@
 import React from 'react';
-import {Popup} from "devextreme-react/popup";
 import {Button, TextArea} from "devextreme-react";
 import {errorMessage, infoMessage} from "../../utils/message-util";
-import {EndTimer} from "../../utils/method-timer";
 
 class JobDefinitionImport extends React.Component {
 
@@ -18,11 +16,11 @@ class JobDefinitionImport extends React.Component {
     }
 
     importJobDefinitions() {
-        fetch(localStorage.getItem('baseUrl') + '/api/jobdefinitions/import',
+        fetch(process.env.REACT_APP_API_URL + 'jobdefinitions/import',
             {
+                headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('webToken')},
                 method: 'PUT',
-                body: JSON.stringify(this.state.currentJobDefinitions),
-                headers: {'Content-Type': 'application/json'}
+                body: JSON.stringify(this.state.currentJobDefinitions)
             })
             .then(response => {
                 if (response.status === 200) {
@@ -32,33 +30,27 @@ class JobDefinitionImport extends React.Component {
             })
             .catch((error) => {
                 errorMessage('Job definitions import error: ' + error.message);
-            })
-            .finally(() => {
-                EndTimer();
             });
     }
 
     render() {
         return (
             <React.Fragment>
-                <Popup
-                    showTitle={true}
-                    title={'Job Definition Import'}
-                    dragEnabled={true}
-                    resizeEnabled={true}
-                    closeOnOutsideClick={true}>
-                    <TextArea
-                        width={'100%'}
-                        height={'90%'}
-                        onValueChanged={this.onImportTextAreaChanged}/>
-                    <Button
-                        width={90}
-                        text={'Import'}
-                        type={'normal'}
-                        stylingMode={'contained'}
-                        onClick={this.importJobDefinitions}
-                        style={{float: 'right', margin: '5px 10px 0 0'}}/>
-                </Popup>
+                <h2 className={'content-block'}>Job Definition Import</h2>
+                <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <TextArea
+                            autoResizeEnabled={true}
+                            onValueChanged={this.onImportTextAreaChanged}/>
+                        <Button
+                            width={90}
+                            text={'Import'}
+                            type={'normal'}
+                            stylingMode={'contained'}
+                            onClick={this.importJobDefinitions}
+                            style={{float: 'right', margin: '5px 10px 0 0'}}/>
+                    </div>
+                </div>
             </React.Fragment>
         );
     }

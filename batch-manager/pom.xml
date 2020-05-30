@@ -13,7 +13,7 @@
     <artifactId>batch-manager</artifactId>
     <name>batch-manager</name>
     <version>0.0.3</version>
-    <description>Momentum Batch Management management REST server</description>
+    <description>Momentum Batch Management REST server</description>
 
     <properties>
         <java.version>14</java.version>
