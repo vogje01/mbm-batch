@@ -24,6 +24,9 @@ public class BatchAgentConfiguration {
     @Value("${agent.nodeName}")
     private String nodeName;
 
+    @Value("${agent.hostName}")
+    private String hostName;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
@@ -39,5 +42,14 @@ public class BatchAgentConfiguration {
             this.nodeName = NetworkUtils.getHostName();
         }
         return nodeName;
+    }
+
+
+    @Bean
+    public String hostName() {
+        if (isNullOrEmpty(this.hostName)) {
+            this.hostName = NetworkUtils.getHostName();
+        }
+        return hostName;
     }
 }

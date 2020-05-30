@@ -103,5 +103,7 @@ public class ChunkNotificationListener implements ChunkListener {
         stepExecutionDto.setStepName(getStepName(chunkContext));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(chunkContext));
         stepExecutionDto.setTotalCount(getStepExecutionTotalCount(chunkContext));
+        stepExecutionDto.setHostName(getHostName(chunkContext));
+        stepExecutionDto.setNodeName(getHostName(chunkContext));
     }
 }

@@ -124,4 +124,12 @@ public class ExecutionParameter {
     public static long getStepExecutionTotalCount(ChunkContext chunkContext) {
         return (Long) chunkContext.getStepContext().getStepExecutionContext().get(TOTAL_COUNT_NAME);
     }
+
+    public static String getHostName(ChunkContext chunkContext) {
+        return chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(HOST_NAME);
+    }
+
+    public static String getNodeName(ChunkContext chunkContext) {
+        return chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(NODE_NAME);
+    }
 }

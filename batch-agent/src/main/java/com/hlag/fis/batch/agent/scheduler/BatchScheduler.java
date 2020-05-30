@@ -56,6 +56,7 @@ public class BatchScheduler {
         this.agentCommandProducer = agentCommandProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
+        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
     @PreDestroy
