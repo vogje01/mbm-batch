@@ -61,7 +61,7 @@ public class JobStatusListener {
     @Transactional
     @KafkaListener(topics = "${kafka.jobStatus.topic}", containerFactory = "jobStatusListenerFactory")
     public void listen(JobStatusDto jobStatusDto) {
-        logger.info(format("Received job status - type: {0} nodeName: {1}", jobStatusDto.getType(), jobStatusDto.getNodeName()));
+        logger.info(format("Received job status - type: {0}", jobStatusDto.getType()));
         switch (jobStatusDto.getType()) {
             case JOB_START:
             case JOB_FINISHED:
