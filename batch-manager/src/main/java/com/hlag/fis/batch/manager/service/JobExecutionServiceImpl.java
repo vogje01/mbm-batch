@@ -79,9 +79,8 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 			jobExecutionInfo.setDeleted(true);
 			jobExecutionRepository.save(jobExecutionInfo);
 			jobExecutionInfo.getStepExecutionInfos().forEach(s -> {
-				s.setDeleted(true);
-				stepExecutionRepository.save(s);
-			});
+                stepExecutionRepository.delete(s);
+            });
 		}
     }
 

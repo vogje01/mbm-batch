@@ -87,12 +87,19 @@ public class StepNotificationListener implements StepExecutionListener {
         // Update step execution info
         stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
         addAdditionalProperties(stepExecution);
+        stepExecutionDto.setExitCode(stepExecution.getExitStatus().getExitCode());
+        stepExecutionDto.setExitMessage(stepExecution.getExitStatus().getExitDescription());
 
         // Send to Kafka
         jobStatusProducer.sendTopic(new JobStatusDto(STEP_FINISHED, stepExecutionDto));
         return stepExecution.getExitStatus();
     }
 
+    /**
+     * Set exit code / message according to the values in the job definition.
+     *
+     * @param stepExecution step execution.
+     */
     private void addAdditionalProperties(StepExecution stepExecution) {
         stepExecutionDto.setId(getStepUuid(stepExecution));
         stepExecutionDto.setJobId(getJobId(stepExecution));

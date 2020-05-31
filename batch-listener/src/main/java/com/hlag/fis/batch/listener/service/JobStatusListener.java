@@ -128,6 +128,11 @@ public class JobStatusListener {
         }
     }
 
+    /**
+     * Process a step status notification.
+     *
+     * @param stepExecutionDto step execution data transfer object.
+     */
     private void stepStatusChanged(StepExecutionDto stepExecutionDto) {
 
         StepExecutionInfo stepExecutionInfo;
@@ -143,13 +148,11 @@ public class JobStatusListener {
         if (stepExecutionInfoOptional.isPresent()) {
             logger.debug(format("Step info found - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
             stepExecutionInfo = stepExecutionInfoOptional.get();
-            if (!stepExecutionInfo.isDeleted()) {
-                stepExecutionInfo.update(stepExecutionDto);
-                stepExecutionInfo.setModifiedAt(new Date());
-                stepExecutionInfo.setModifiedBy("admin");
-                stepExecutionInfoRepository.save(stepExecutionInfo);
-                logger.debug(format("Step info updated - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
-            }
+            stepExecutionInfo.update(stepExecutionDto);
+            stepExecutionInfo.setModifiedAt(new Date());
+            stepExecutionInfo.setModifiedBy("admin");
+            stepExecutionInfoRepository.save(stepExecutionInfo);
+            logger.debug(format("Step info updated - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
         } else {
             logger.info(format("Step not found, creating new one - jobName: {0} stepName: {1} status: {2}", jobName, stepName, stepStatus));
             stepExecutionInfo = new StepExecutionInfo();

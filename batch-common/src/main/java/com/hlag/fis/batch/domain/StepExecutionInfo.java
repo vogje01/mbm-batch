@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.domain;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
@@ -19,9 +19,6 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_STEP_EXECUTION")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
@@ -126,11 +123,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
      */
     @Column(name = "RUNNING_TIME")
     private Long runningTime;
-    /**
-     * Deleted flag
-     */
-    @Column(name = "DELETED")
-    private boolean deleted = false;
     /**
      * Execution context
      */
@@ -338,14 +330,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.runningTime = runningTime;
     }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
     public ExecutionContextInfo getExecutionContext() {
         return executionContext;
     }
@@ -417,7 +401,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 processSkipCount == that.processSkipCount &&
                 writeSkipCount == that.writeSkipCount &&
                 terminateOnly == that.terminateOnly &&
-                deleted == that.deleted &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(stepName, that.stepName) &&
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
@@ -437,7 +420,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, deleted, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
+        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
     }
 
     @Override
@@ -463,7 +446,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 .add("endTime", endTime)
                 .add("lastUpdated", lastUpdated)
                 .add("runningTime", runningTime)
-                .add("deleted", deleted)
                 .add("executionContext", executionContext)
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
