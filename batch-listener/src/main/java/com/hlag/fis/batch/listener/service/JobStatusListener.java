@@ -99,13 +99,11 @@ public class JobStatusListener {
 
             // Update existing job execution info
             jobExecutionInfo = jobExecutionInfoOptional.get();
-            if (!jobExecutionInfo.isDeleted()) {
-                jobExecutionInfo.update(jobExecutionDto);
-                jobExecutionInfo.setModifiedAt(new Date());
-                jobExecutionInfo.setModifiedBy("admin");
-                jobExecutionInfoRepository.save(jobExecutionInfo);
-                logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
-            }
+            jobExecutionInfo.update(jobExecutionDto);
+            jobExecutionInfo.setModifiedAt(new Date());
+            jobExecutionInfo.setModifiedBy("admin");
+            jobExecutionInfoRepository.save(jobExecutionInfo);
+            logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
         } else {
             // Get job execution ID
             long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()) + 1;
