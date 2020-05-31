@@ -81,15 +81,15 @@ public class StepExecutionController {
             // Get total count
             long totalCount = stepService.countAll();
 
-            // Get and convert step exeution infos
+            // Get and convert step execution infos
             Page<StepExecutionInfo> allStepExecutionInfos = stepService.allStepExecutions(PagingUtil.getPageable(page, size, sortBy, sortDir));
-            List<StepExecutionDto> stepExecutionDtoes = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
+            List<StepExecutionDto> stepExecutionDtos = modelConverter.convertStepExecutionToDto(allStepExecutionInfos.toList(), totalCount);
 
             // Add links
-            stepExecutionDtoes.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
+            stepExecutionDtos.forEach(s -> addLinks(s, page, size, sortBy, sortDir));
             Link self = linkTo(methodOn(StepExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
 
-            return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtoes, self));
+            return ResponseEntity.ok(new CollectionModel<>(stepExecutionDtos, self));
 
         } finally {
             logger.debug(format("Step execution list request finished - count: {0} {1}", size, t.elapsedStr()));

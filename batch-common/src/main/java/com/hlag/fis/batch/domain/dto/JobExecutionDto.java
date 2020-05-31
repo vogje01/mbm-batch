@@ -54,6 +54,22 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
     private String exitMessage;
 
     private Long totalSize;
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
 
     private JobInstanceDto jobInstanceDto;
 
@@ -191,6 +207,38 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
         this.totalSize = totalSize;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public JobInstanceDto getJobInstanceDto() {
         return jobInstanceDto;
     }
@@ -233,13 +281,17 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
                 Objects.equal(totalSize, that.totalSize) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(jobInstanceDto, that.jobInstanceDto) &&
                 Objects.equal(jobExecutionParamDtoes, that.jobExecutionParamDtoes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, nodeName, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, jobInstanceDto, jobExecutionParamDtoes);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, nodeName, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobInstanceDto, jobExecutionParamDtoes);
     }
 
     @Override
@@ -261,6 +313,10 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("totalSize", totalSize)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
                 .add("jobInstanceDto", jobInstanceDto)
                 .add("jobExecutionParamDtoes", jobExecutionParamDtoes)
                 .toString();

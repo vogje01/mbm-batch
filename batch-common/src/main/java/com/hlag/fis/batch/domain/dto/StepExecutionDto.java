@@ -70,6 +70,22 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
     private String exitMessage;
 
     private Long totalSize;
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
 
     private JobExecutionDto jobExecutionDto;
 
@@ -278,6 +294,38 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
         this.totalSize = totalSize;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public JobExecutionDto getJobExecutionDto() {
         return jobExecutionDto;
     }
@@ -319,6 +367,10 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("totalSize", totalSize)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
                 .add("jobExecutionDto", jobExecutionDto)
                 .toString();
     }
@@ -354,11 +406,15 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
                 Objects.equal(totalSize, that.totalSize) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(jobExecutionDto, that.jobExecutionDto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, jobExecutionDto);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobExecutionDto);
     }
 }
