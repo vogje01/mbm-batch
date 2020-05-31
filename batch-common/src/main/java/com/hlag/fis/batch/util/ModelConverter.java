@@ -145,6 +145,16 @@ public class ModelConverter {
         return jobExecutionInfo;
     }
 
+    public JobExecutionLogDto convertJobExecutionLogToDto(JobExecutionLog jobExecutionLog, long totalCount) {
+        JobExecutionLogDto jobExecutionLogDto = modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
+        jobExecutionLogDto.setTotalCount(totalCount);
+        return jobExecutionLogDto;
+    }
+
+    public List<JobExecutionLogDto> convertJobExecutionLogToDto(List<JobExecutionLog> jobExecutionLogList, long totalCount) {
+        return jobExecutionLogList.stream().map(j -> convertJobExecutionLogToDto(j, totalCount)).collect(toList());
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job instance
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

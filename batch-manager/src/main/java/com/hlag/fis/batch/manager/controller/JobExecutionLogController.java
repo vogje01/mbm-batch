@@ -9,7 +9,7 @@ import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
 import com.hlag.fis.batch.manager.service.util.PagingUtil;
 import com.hlag.fis.batch.util.MethodTimer;
-import org.modelmapper.ModelMapper;
+import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -49,15 +48,15 @@ public class JobExecutionLogController {
 
     private StepExecutionService stepExecutionService;
 
-    private ModelMapper modelMapper;
+    private ModelConverter modelConverter;
 
     @Autowired
     public JobExecutionLogController(JobExecutionService jobExecutionService, StepExecutionService stepExecutionService,
-                                     JobExecutionLogService jobExecutionLogService, ModelMapper modelMapper) {
+                                     JobExecutionLogService jobExecutionLogService, ModelConverter modelConverter) {
         this.jobExecutionService = jobExecutionService;
         this.stepExecutionService = stepExecutionService;
         this.jobExecutionLogService = jobExecutionLogService;
-        this.modelMapper = modelMapper;
+        this.modelConverter = modelConverter;
     }
 
     /**
@@ -82,24 +81,14 @@ public class JobExecutionLogController {
         // Get paging parameters
         long totalCount = jobExecutionLogService.countByJobId(jobId);
         Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byJobId(jobId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        List<JobExecutionLogDto> jobExecutionLogDtoes = modelConverter.convertJobExecutionLogToDto(allJobExecutionLogs.toList(), totalCount);
 
-        List<JobExecutionLogDto> jobExecutionLogDtos = allJobExecutionLogs.stream()
-                .map(j -> convertToDto(j, totalCount))
-                .collect(Collectors.toList());
-
-        jobExecutionLogDtos.forEach(l -> {
-            try {
-                l.add(linkTo(methodOn(JobExecutionLogController.class).findById(l.getId())).withSelfRel());
-                l.add(linkTo(methodOn(JobExecutionLogController.class).delete(l.getId())).withRel("delete"));
-            } catch (ResourceNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-
-        Link self = linkTo(methodOn(JobExecutionLogController.class).findByJobId(jobId, page, size, sortBy, sortDir)).withSelfRel();
+        // Add links
+        jobExecutionLogDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
+        Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
         logger.debug(format("Job execution log list request finished - count: {0} {1}", allJobExecutionLogs.getSize(), t.elapsedStr()));
 
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtos, self));
+        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtoes, self));
     }
 
     /**
@@ -124,23 +113,14 @@ public class JobExecutionLogController {
 
         long totalCount = jobExecutionLogService.countByStepId(stepId);
         Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byStepId(stepId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        List<JobExecutionLogDto> jobExecutionLogDtoes = modelConverter.convertJobExecutionLogToDto(allJobExecutionLogs.toList(), totalCount);
 
-        List<JobExecutionLogDto> jobExecutionLogDtos = allJobExecutionLogs.stream()
-                .map(j -> convertToDto(j, totalCount))
-                .collect(Collectors.toList());
-
-        jobExecutionLogDtos.forEach(l -> {
-            try {
-                l.add(linkTo(methodOn(JobExecutionLogController.class).findById(l.getId())).withSelfRel());
-                l.add(linkTo(methodOn(JobExecutionLogController.class).delete(l.getId())).withRel("delete"));
-            } catch (ResourceNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
-        Link self = linkTo(methodOn(JobExecutionLogController.class).findByStepId(stepId, page, size, sortBy, sortDir)).withSelfRel();
+        // Add links
+        jobExecutionLogDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
+        Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
         logger.debug(format("Job execution log list request finished - count: {0} {1}", allJobExecutionLogs.getSize(), t.elapsedStr()));
 
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtos, self));
+        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtoes, self));
     }
 
     /**
@@ -168,11 +148,12 @@ public class JobExecutionLogController {
         return null;
     }
 
-    private JobExecutionLogDto convertToDto(JobExecutionLog jobExecutionLog, long totalCount) {
-        JobExecutionLogDto jobExecutionLogDto = modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
-        jobExecutionLogDto.setExceptionConverted(jobExecutionLog.getThrown());
-        jobExecutionLogDto.setInstantConverted(jobExecutionLog.getJavaInstant());
-        jobExecutionLogDto.setTotalSize(totalCount);
-        return jobExecutionLogDto;
+    private void addLinks(JobExecutionLogDto jobExecutionLogDto, int page, int size, String sortBy, String sortDir) {
+        try {
+            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(jobExecutionLogDto.getId())).withSelfRel());
+            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).delete(jobExecutionLogDto.getId())).withRel("delete"));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
