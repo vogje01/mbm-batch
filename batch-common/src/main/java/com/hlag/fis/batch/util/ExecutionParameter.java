@@ -92,7 +92,7 @@ public class ExecutionParameter {
     }
 
     public static String getCompletedExitCode(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(JOB_COMPLETED_EXIT_MESSAGE);
+        return jobExecution.getJobParameters().getString(JOB_COMPLETED_EXIT_CODE);
     }
 
     public static String getCompletedExitMessage(JobExecution jobExecution) {

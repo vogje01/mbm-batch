@@ -92,9 +92,12 @@ public class JobStatusListener {
 
         logger.debug(format("Received status info - jobName: {0} jobUuid: {1}", jobName, jobUuid));
 
+        // Get the current job execution info entity
         Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(jobUuid);
         if (jobExecutionInfoOptional.isPresent()) {
             logger.debug(format("Job execution info found - jobName: {0}  status: {1}", jobName, jobStatus));
+
+            // Update existing job execution info
             jobExecutionInfo = jobExecutionInfoOptional.get();
             if (!jobExecutionInfo.isDeleted()) {
                 jobExecutionInfo.update(jobExecutionDto);
