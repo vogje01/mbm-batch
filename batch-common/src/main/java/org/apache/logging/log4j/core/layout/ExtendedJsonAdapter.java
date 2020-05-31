@@ -8,9 +8,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.hlag.fis.batch.util.ExecutionParameter.JOB_NODE_NAME;
-import static com.hlag.fis.batch.util.ExecutionParameter.JOB_PID_NAME;
-
 /**
  * This class uses log4j2 mixins, in order to add some additional fields like hostname, pid, jobName, jobId etc
  * to the JSON logger used by the manager to save the logs into a single table and still be able to distinguish
@@ -34,8 +31,8 @@ public class ExtendedJsonAdapter implements ExtendedJson {
 
     public ExtendedJsonAdapter() {
         try {
-            mixedFields.put(JOB_NODE_NAME, InetAddress.getLocalHost().getHostName());
-            mixedFields.put(JOB_PID_NAME, ProcessHandle.current().pid());
+            mixedFields.put("jobName", InetAddress.getLocalHost().getHostName());
+            mixedFields.put("jobPid", ProcessHandle.current().pid());
         } catch (UnknownHostException e) {
             LOG.warn("Could not get hostname", e);
         }
