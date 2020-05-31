@@ -108,7 +108,7 @@ public class JobStatusListener {
             }
         } else {
             // Get job execution ID
-            long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName());
+            long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()) + 1;
             logger.debug(format("Max job execution id - jobExecutionId: {0}", jobExecutionId));
 
             // Create job instance
@@ -118,7 +118,7 @@ public class JobStatusListener {
 
             // Save job execution
             jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
-            jobExecutionInfo.setJobExecutionId(jobExecutionId + 1);
+            jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setJobInstanceInfo(jobInstanceInfo);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
