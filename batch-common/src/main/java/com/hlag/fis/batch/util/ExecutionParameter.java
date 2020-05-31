@@ -13,19 +13,41 @@ import org.springframework.batch.core.scope.context.ChunkContext;
  */
 public class ExecutionParameter {
 
-    public static final String JOB_UUID_NAME = "jobUuid";
+    public static final String JOB_UUID_NAME = "job.uuid";
 
-    public static final String JOB_PID_NAME = "jobPid";
+    public static final String JOB_PID_NAME = "job.pid";
 
-    public static final String JOB_SHUTDOWN_NAME = "shutdown";
+    public static final String JOB_SHUTDOWN_NAME = "job.shutdown";
 
-    public static final String JOB_NODE_NAME = "nodeName";
+    public static final String JOB_NODE_NAME = "job.nodeName";
 
-    public static final String JOB_LAUNCH_TIME = "launchTime";
+    public static final String JOB_LAUNCH_TIME = "job.launchTime";
 
-    public static final String JOB_VERSION_NAME = "jobVersion";
+    public static final String JOB_VERSION_NAME = "job.version";
 
-    public static final String JOB_NAME_NAME = "jobName";
+    public static final String JOB_NAME_NAME = "job.name";
+
+    public static final String JOB_DESCRIPTION = "job.description";
+
+    public static final String JOB_GROUP = "job.group";
+
+    public static final String JOB_WORKING_DIRECTORY = "job.workingDirectory";
+
+    public static final String JOB_JAR_FILE = "job.jarFile";
+
+    public static final String JOB_COMMAND = "job.command";
+
+    public static final String JOB_TYPE = "job.type";
+
+    public static final String JOB_ARGUMENTS = "job.arguments";
+
+    public static final String JOB_FAILED_EXIT_CODE = "job.failed.exitCode";
+
+    public static final String JOB_FAILED_EXIT_MESSAGE = "job.failed.exitMessage";
+
+    public static final String JOB_COMPLETED_EXIT_CODE = "job.completed.exitCode";
+
+    public static final String JOB_COMPLETED_EXIT_MESSAGE = "job.completed.exitMessage";
 
     public static final String STEP_UUID_NAME = "stepUuid";
 
@@ -36,14 +58,6 @@ public class ExecutionParameter {
     public static final String HOST_NAME = "agent.hostName";
 
     public static final String NODE_NAME = "agent.nodeName";
-
-    public static final String FAILED_EXIT_CODE = "job.failed.exitCode";
-
-    public static final String FAILED_EXIT_MESSAGE = "job.failed.exitMessage";
-
-    public static final String COMPLETED_EXIT_CODE = "job.completed.exitCode";
-
-    public static final String COMPLETED_EXIT_MESSAGE = "job.completed.exitMessage";
 
     public static String getHostName(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(HOST_NAME);
@@ -70,19 +84,19 @@ public class ExecutionParameter {
     }
 
     public static String getFailedExitCode(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(FAILED_EXIT_CODE);
+        return jobExecution.getJobParameters().getString(JOB_FAILED_EXIT_CODE);
     }
 
     public static String getFailedExitMessage(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(FAILED_EXIT_MESSAGE);
+        return jobExecution.getJobParameters().getString(JOB_FAILED_EXIT_MESSAGE);
     }
 
     public static String getCompletedExitCode(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(COMPLETED_EXIT_MESSAGE);
+        return jobExecution.getJobParameters().getString(JOB_COMPLETED_EXIT_MESSAGE);
     }
 
     public static String getCompletedExitMessage(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(FAILED_EXIT_MESSAGE);
+        return jobExecution.getJobParameters().getString(JOB_COMPLETED_EXIT_MESSAGE);
     }
 
     public static String getJobName(StepExecution stepExecution) {
@@ -110,7 +124,7 @@ public class ExecutionParameter {
     }
 
     public static long getStepExecutionTotalCount(StepExecution stepExecution) {
-        return (Long) stepExecution.getExecutionContext().get(TOTAL_COUNT_NAME);
+        return stepExecution.getExecutionContext().getLong(TOTAL_COUNT_NAME);
     }
 
     public static String getHostName(StepExecution stepExecution) {

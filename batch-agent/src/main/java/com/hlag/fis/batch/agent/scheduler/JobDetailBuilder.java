@@ -6,6 +6,8 @@ import org.quartz.JobDetail;
 
 import java.util.List;
 
+import static com.hlag.fis.batch.util.ExecutionParameter.*;
+
 /**
  * Converts the job definition into a job detail class, needed for the Quartz scheduler.
  *
@@ -34,33 +36,33 @@ public class JobDetailBuilder {
 
 	public JobDetailBuilder() {
 		jobDataMap = new JobDataMap();
-		group = "job.batchGroup";
-		description = "job.batchJobDescription";
+		group = JOB_GROUP;
+		description = JOB_DESCRIPTION;
 	}
 
 	public JobDetailBuilder jobName(String name) {
 		this.identity = name;
-		jobDataMap.put("job.name", name);
+		jobDataMap.put(JOB_NAME_NAME, name);
 		return this;
 	}
 
 	public JobDetailBuilder workingDirectory(String workingDirectory) {
-		jobDataMap.put("job.workingDirectory", workingDirectory);
+		jobDataMap.put(JOB_WORKING_DIRECTORY, workingDirectory);
 		return this;
 	}
 
 	public JobDetailBuilder jarFile(String jarFile) {
-		jobDataMap.put("job.jarFile", jarFile);
+		jobDataMap.put(JOB_JAR_FILE, jarFile);
 		return this;
 	}
 
 	public JobDetailBuilder command(String command) {
-		jobDataMap.put("job.command", command);
+		jobDataMap.put(JOB_COMMAND, command);
 		return this;
 	}
 
 	public JobDetailBuilder jobType(String jobType) {
-		jobDataMap.put("job.type", jobType);
+		jobDataMap.put(JOB_TYPE, jobType);
 		return this;
 	}
 
@@ -75,27 +77,27 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder arguments(List<String> arguments) {
-		jobDataMap.put("job.arguments", arguments);
+		jobDataMap.put(JOB_ARGUMENTS, arguments);
 		return this;
 	}
 
-	public JobDetailBuilder failedExitStatus(String failedExitStatus) {
-		jobDataMap.put("job.failed.exitCode", failedExitStatus);
+	public JobDetailBuilder failedExitCode(String failedExitCode) {
+		jobDataMap.put(JOB_FAILED_EXIT_CODE, failedExitCode);
 		return this;
 	}
 
 	public JobDetailBuilder failedExitMessage(String failedExitMessage) {
-		jobDataMap.put("job.failed.exitMessage", failedExitMessage);
+		jobDataMap.put(JOB_FAILED_EXIT_MESSAGE, failedExitMessage);
 		return this;
 	}
 
-	public JobDetailBuilder completedExitStatus(String completedExitCode) {
-		jobDataMap.put("job.completed.exitCode", completedExitCode);
+	public JobDetailBuilder completedExitCode(String completedExitCode) {
+		jobDataMap.put(JOB_COMPLETED_EXIT_CODE, completedExitCode);
 		return this;
 	}
 
 	public JobDetailBuilder completedExitMessage(String completedExitMessage) {
-		jobDataMap.put("job.completed.exitMessage", completedExitMessage);
+		jobDataMap.put(JOB_COMPLETED_EXIT_MESSAGE, completedExitMessage);
 		return this;
 	}
 

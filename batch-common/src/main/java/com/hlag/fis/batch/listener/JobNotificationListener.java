@@ -13,6 +13,7 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 import static com.hlag.fis.batch.domain.JobStatusType.JOB_FINISHED;
@@ -21,6 +22,12 @@ import static com.hlag.fis.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
+ * Job Notification listener.
+ * <p>
+ * Will be called on startup, error and finish of a job execution. It sends a status message to the batch management server.
+ *
+ * </p>
+ *
  * @author Jens Vogt (jemsvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.1
@@ -36,14 +43,25 @@ public class JobNotificationListener implements JobExecutionListener {
 
     private ModelConverter modelConverter;
 
+    /**
+     * Constructor.
+     *
+     * @param modelConverter model converter.
+     * @param statusProducer Kafka status message producer.
+     */
     @Autowired
     public JobNotificationListener(ModelConverter modelConverter, JobStatusProducer statusProducer) {
         this.modelConverter = modelConverter;
         this.statusProducer = statusProducer;
     }
 
+    /**
+     * Update the job execution infos and sends the job execution info to the server.
+     *
+     * @param jobExecution job execution.
+     */
     @Override
-    public void beforeJob(JobExecution jobExecution) {
+    public void beforeJob(@NotNull JobExecution jobExecution) {
         logger.info(format("Job starting - name: {0} pid: {1}", getJobName(jobExecution), getJobPid(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
         addAdditionalProperties(jobExecution);
@@ -60,7 +78,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param jobExecution job execution.
      */
     @Override
-    public void afterJob(JobExecution jobExecution) {
+    public void afterJob(@NotNull JobExecution jobExecution) {
         logger.info(format("Job finished - name: {0} pid: {1} status: {2} [{3}ms]",
                 getJobName(jobExecution), getJobPid(jobExecution), jobExecution.getStatus(), DateTimeUtils.getRunningTime(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
@@ -85,6 +103,11 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setRunningTime((new Date().getTime() - jobExecution.getStartTime().getTime()));
     }
 
+    /**
+     * Set exit code / message according to the values in the job definition.
+     *
+     * @param jobExecution job execution.
+     */
     private void setExitValues(JobExecution jobExecution) {
         if (jobExecution.getStatus().equals(BatchStatus.FAILED)) {
             jobExecutionDto.setExitCode(getFailedExitCode(jobExecution));
@@ -93,5 +116,6 @@ public class JobNotificationListener implements JobExecutionListener {
             jobExecutionDto.setExitCode(getCompletedExitCode(jobExecution));
             jobExecutionDto.setExitMessage(getCompletedExitMessage(jobExecution));
         }
+        logger.debug(format("Job exit code/message set - exitCode: {0} exitMessage: {1}", jobExecutionDto.getExitCode(), jobExecutionDto.getExitMessage()));
     }
 }

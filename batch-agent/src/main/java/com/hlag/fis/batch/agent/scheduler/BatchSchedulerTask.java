@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static com.hlag.fis.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -120,10 +121,10 @@ public class BatchSchedulerTask extends QuartzJobBean {
      */
     @SuppressWarnings("unchecked")
     private void startJarFile(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString("job.name");
-        String jarFile = jobDataMap.getString("job.jarFile");
-        String command = jobDataMap.getString("job.command");
-        File workingDirectory = jobDataMap.getString("job.workingDirectory") != null ? new File(jobDataMap.getString("job.workingDirectory")) : new File(TMP_DIR);
+        String jobName = jobDataMap.getString(JOB_NAME_NAME);
+        String jarFile = jobDataMap.getString(JOB_JAR_FILE);
+        String command = jobDataMap.getString(JOB_COMMAND);
+        File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
         List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
@@ -150,10 +151,10 @@ public class BatchSchedulerTask extends QuartzJobBean {
      */
     @SuppressWarnings("unchecked")
     private void startDockerImage(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString("job.name");
-        String dockerImage = jobDataMap.getString("job.jarFile");
-        String command = jobDataMap.getString("job.command");
-        File workingDirectory = jobDataMap.getString("job.workingDirectory") != null ? new File(jobDataMap.getString("job.workingDirectory")) : new File(TMP_DIR);
+        String jobName = jobDataMap.getString(JOB_NAME_NAME);
+        String dockerImage = jobDataMap.getString(JOB_JAR_FILE);
+        String command = jobDataMap.getString(JOB_COMMAND);
+        File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
         List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
         List<String> commandList = new ArrayList<>();
         commandList.add(command);

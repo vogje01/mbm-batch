@@ -111,6 +111,8 @@ class JobExecutionList extends React.Component {
                                         <SimpleItem dataField="jobPid" readOnly={true}/>
                                         <SimpleItem dataField="id" readOnly={true}/>
                                         <SimpleItem dataField="jobVersion" readOnly={true}/>
+                                        <SimpleItem dataField="exitCode" readOnly={true}/>
+                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Timing"}>
                                         <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
@@ -216,6 +218,16 @@ class JobExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={60}/>
+                            <Column
+                                dataField={'exitCode'}
+                                caption={'Exit Code'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'exitMessage'}
+                                caption={'Exit Message'}
+                                dataType={'string'}
+                                visible={false}/>
                             <Column
                                 calculateCellValue={getCreateTime}
                                 dataField={'createTime'}

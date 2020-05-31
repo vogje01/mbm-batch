@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.hlag.fis.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -230,8 +231,10 @@ public class BatchScheduler {
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(jobDefinition.getFileName())
                 .arguments(buildArguments(jobDefinition))
-                .failedExitStatus(jobDefinition.getFailedExitCode())
-                .completedExitStatus(jobDefinition.getCompletedExitCode())
+                .failedExitCode(jobDefinition.getFailedExitCode())
+                .failedExitMessage(jobDefinition.getFailedExitMessage())
+                .completedExitCode(jobDefinition.getCompletedExitCode())
+                .completedExitMessage(jobDefinition.getCompletedExitMessage())
                 .build();
     }
 
@@ -250,14 +253,17 @@ public class BatchScheduler {
      * @return command line.
      */
     private List<String> buildArguments(JobDefinition jobDefinition) {
-        List<JobDefinitionParam> params = jobDefinition.getJobDefinitionParams();
+
+        // Add default parameters
         List<String> arguments = new ArrayList<>();
-        arguments.add("-Dagent.hostName=" + hostName);
-        arguments.add("-Dagent.nodeName=" + nodeName);
-        arguments.add("-Djob.failed.existCode=" + jobDefinition.getFailedExitCode());
-        arguments.add("-Djob.failed.existMessage=" + jobDefinition.getFailedExitMessage());
-        arguments.add("-Djob.completed.existCode=" + jobDefinition.getCompletedExitCode());
-        arguments.add("-Djob.completed.existMessage=" + jobDefinition.getCompletedExitCode());
+        arguments.add("-D" + HOST_NAME + "=" + hostName);
+        arguments.add("-D" + NODE_NAME + "=" + nodeName);
+        arguments.add("-D" + JOB_FAILED_EXIT_CODE + "=" + jobDefinition.getFailedExitCode());
+        arguments.add("-D" + JOB_FAILED_EXIT_MESSAGE + "=" + jobDefinition.getFailedExitMessage());
+        arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());
+        arguments.add("-D" + JOB_COMPLETED_EXIT_MESSAGE + "=" + jobDefinition.getCompletedExitCode());
+
+        List<JobDefinitionParam> params = jobDefinition.getJobDefinitionParams();
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }

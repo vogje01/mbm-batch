@@ -78,6 +78,11 @@ public class JobStatusListener {
         }
     }
 
+    /**
+     * Process a job status notification.
+     *
+     * @param jobExecutionDto job execution data transfer object.
+     */
     private void jobStatusChanged(JobExecutionDto jobExecutionDto) {
 
         JobExecutionInfo jobExecutionInfo;
@@ -119,7 +124,7 @@ public class JobStatusListener {
                 jobExecutionParamRepository.save(p);
             });
             logger.debug(format("Job execution parameters created - jobName: {0} size: {1} id: {2}", jobName,
-                jobExecutionInfo.getJobExecutionParams().size(), jobExecutionInfo.getId()));
+                    jobExecutionInfo.getJobExecutionParams().size(), jobExecutionInfo.getId()));
         }
     }
 
