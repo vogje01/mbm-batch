@@ -23,7 +23,7 @@ public class PagingUtil {
      */
     public static Pageable getPageable(int page, int size, String sortBy, String sortDir) {
         if (size <= 0) {
-            return Pageable.unpaged();
+            size = Integer.MAX_VALUE;
         }
         Sort sorting = Sort.unsorted();
         if (sortBy != null) {

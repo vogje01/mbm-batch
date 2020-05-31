@@ -65,6 +65,7 @@ class PerformanceChart extends React.Component {
             nodeName: '',
             selectedAgent: {},
             yAxisTitle: 'System Load [%]',
+            title: 'System Load',
             agents: [],
             startTime: moment().startOf('day').unix(),
             endTime: moment().endOf('day').unix(),
@@ -86,7 +87,7 @@ class PerformanceChart extends React.Component {
     }
 
     componentDidMount() {
-        getItem(process.env.REACT_APP_API_URL + 'agents?page=0&size=-1')
+        getItem(process.env.REACT_APP_API_URL + 'agents?page=0&size=-1&sortBy=nodeName&sortDir=asc')
             .then((data) => {
                 this.setState({agents: data._embedded.agentDtoes, selectedAgent: data._embedded.agentDtoes[0], nodeName: data._embedded.agentDtoes[0].nodeName})
             });
@@ -225,6 +226,7 @@ class PerformanceChart extends React.Component {
         this.setState({
             metric: e.selectedItem.value,
             yAxisTitle: e.selectedItem.yAxisTitle,
+            title: e.selectedItem.name,
             scaleHidden: e.selectedItem.scaleHidden
         });
     }
@@ -266,6 +268,7 @@ class PerformanceChart extends React.Component {
                                 <span>Agent:</span>
                                 <SelectBox items={this.state.agents} displayExpr='nodeName' valueExpr='nodeName'
                                            selectedItem={this.state.selectedAgent}
+                                           value={this.state.nodeName}
                                            onValueChanged={this.handleNodeName}/>
                             </div>
                             <div className="option" style={{float: 'left', marginRight: '20px'}}>
@@ -305,7 +308,7 @@ class PerformanceChart extends React.Component {
                             <ValueAxis title={this.state.yAxisTitle}/>
                             <Legend verticalAlignment="bottom" horizontalAlignment="center" itemTextPosition="bottom"/>
                             <Export enabled={true}/>
-                            <Title text={this.state.yAxisTitle} horizontalAlignment={'center'}/>
+                            <Title text={this.state.title + ': ' + this.state.nodeName} horizontalAlignment={'center'}/>
                             <Point hoverMode={'allArgumentPoints'}/>
                             <Crosshair enabled={true} width={2}>
                                 <HorizontalLine dashStyle={'dot'} visible={true} width={2}>

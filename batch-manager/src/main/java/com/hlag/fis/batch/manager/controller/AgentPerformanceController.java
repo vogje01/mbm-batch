@@ -64,7 +64,7 @@ public class AgentPerformanceController {
     @GetMapping(value = "/byNodeName/{nodeName}", produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<AgentPerformanceDto>> findByNodeNameAndType(@PathVariable("nodeName") String nodeName,
                                                                                       @RequestParam("type") String type,
-                                                                                      @RequestParam("scale") Long scale,
+                                                                                      @RequestParam(value = "scale", required = false) Long scale,
                                                                                       @RequestParam(value = "startTime", required = false) Long startTime,
                                                                                       @RequestParam(value = "endTime", required = false) Long endTime) {
         t.restart();
