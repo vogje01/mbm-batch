@@ -37,6 +37,14 @@ public class ExecutionParameter {
 
     public static final String NODE_NAME = "agent.nodeName";
 
+    public static final String FAILED_EXIT_CODE = "job.failed.exitCode";
+
+    public static final String FAILED_EXIT_MESSAGE = "job.failed.exitMessage";
+
+    public static final String COMPLETED_EXIT_CODE = "job.completed.exitCode";
+
+    public static final String COMPLETED_EXIT_MESSAGE = "job.completed.exitMessage";
+
     public static String getHostName(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(HOST_NAME);
     }
@@ -59,6 +67,22 @@ public class ExecutionParameter {
 
     public static String getJobVersion(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_VERSION_NAME);
+    }
+
+    public static String getFailedExitCode(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(FAILED_EXIT_CODE);
+    }
+
+    public static String getFailedExitMessage(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(FAILED_EXIT_MESSAGE);
+    }
+
+    public static String getCompletedExitCode(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(COMPLETED_EXIT_MESSAGE);
+    }
+
+    public static String getCompletedExitMessage(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(FAILED_EXIT_MESSAGE);
     }
 
     public static String getJobName(StepExecution stepExecution) {

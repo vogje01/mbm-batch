@@ -7,6 +7,7 @@ import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,15 @@ public class JobNotificationListener implements JobExecutionListener {
                 getJobName(jobExecution), getJobPid(jobExecution), jobExecution.getStatus(), DateTimeUtils.getRunningTime(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
         addAdditionalProperties(jobExecution);
+        setExitValues(jobExecution);
         statusProducer.sendTopic(new JobStatusDto(JOB_FINISHED, jobExecutionDto));
     }
 
+    /**
+     * Set additional properties.
+     *
+     * @param jobExecution job execution.
+     */
     private void addAdditionalProperties(JobExecution jobExecution) {
         jobExecutionDto.setId(getJobId(jobExecution));
         jobExecutionDto.setJobName(getJobName(jobExecution));
@@ -76,5 +83,15 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setHostName(getHostName(jobExecution));
         jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setRunningTime((new Date().getTime() - jobExecution.getStartTime().getTime()));
+    }
+
+    private void setExitValues(JobExecution jobExecution) {
+        if (jobExecution.getStatus().equals(BatchStatus.FAILED)) {
+            jobExecutionDto.setExitCode(getFailedExitCode(jobExecution));
+            jobExecutionDto.setExitMessage(getFailedExitMessage(jobExecution));
+        } else if (jobExecution.getStatus().equals(BatchStatus.COMPLETED)) {
+            jobExecutionDto.setExitCode(getCompletedExitCode(jobExecution));
+            jobExecutionDto.setExitMessage(getCompletedExitMessage(jobExecution));
+        }
     }
 }

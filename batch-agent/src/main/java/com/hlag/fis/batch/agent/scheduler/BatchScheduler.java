@@ -254,8 +254,10 @@ public class BatchScheduler {
         List<String> arguments = new ArrayList<>();
         arguments.add("-Dagent.hostName=" + hostName);
         arguments.add("-Dagent.nodeName=" + nodeName);
-        arguments.add("-Djob.failed.existStatus=" + jobDefinition.getFailedExitCode());
-        arguments.add("-Djob.completed.existStatus=" + jobDefinition.getCompletedExitCode());
+        arguments.add("-Djob.failed.existCode=" + jobDefinition.getFailedExitCode());
+        arguments.add("-Djob.failed.existMessage=" + jobDefinition.getFailedExitMessage());
+        arguments.add("-Djob.completed.existCode=" + jobDefinition.getCompletedExitCode());
+        arguments.add("-Djob.completed.existMessage=" + jobDefinition.getCompletedExitCode());
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }

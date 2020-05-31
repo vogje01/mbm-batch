@@ -79,13 +79,23 @@ public class JobDetailBuilder {
 		return this;
 	}
 
-	public JobDetailBuilder failedExitStatus(int failedExitStatus) {
-		jobDataMap.put("job.failed.exitStatus", failedExitStatus);
+	public JobDetailBuilder failedExitStatus(String failedExitStatus) {
+		jobDataMap.put("job.failed.exitCode", failedExitStatus);
 		return this;
 	}
 
-	public JobDetailBuilder completedExitStatus(int completedExitStatus) {
-		jobDataMap.put("job.completed.exitStatus", completedExitStatus);
+	public JobDetailBuilder failedExitMessage(String failedExitMessage) {
+		jobDataMap.put("job.failed.exitMessage", failedExitMessage);
+		return this;
+	}
+
+	public JobDetailBuilder completedExitStatus(String completedExitCode) {
+		jobDataMap.put("job.completed.exitCode", completedExitCode);
+		return this;
+	}
+
+	public JobDetailBuilder completedExitMessage(String completedExitMessage) {
+		jobDataMap.put("job.completed.exitMessage", completedExitMessage);
 		return this;
 	}
 
