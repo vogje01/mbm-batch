@@ -33,4 +33,9 @@ public class JobExecutionParamServiceImpl implements JobExecutionParamService {
     public void deleteById(String logId) {
         jobExecutionParamRepository.deleteById(logId);
     }
+
+    @Override
+    public long countByJobExecutionId(String jobExecutionId) {
+        return jobExecutionParamRepository.countByJobExecutionId(jobExecutionId);
+    }
 }

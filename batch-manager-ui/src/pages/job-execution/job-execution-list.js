@@ -1,4 +1,5 @@
 import React from "react";
+import './job-execution-list.scss'
 import {
     Column,
     DataGrid,
@@ -13,13 +14,14 @@ import {
     Selection,
     Sorting
 } from "devextreme-react/data-grid";
+import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
-import './job-execution-list.scss'
-import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
+import JobExecutionParamList from "./job-execution-param-list";
+import JobExecutionLogList from "./job-execution-log-list";
 
 class JobExecutionList extends React.Component {
 
@@ -127,7 +129,11 @@ class JobExecutionList extends React.Component {
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
                                     </GroupItem>
+                                    <GroupItem colSpan={2} caption={"Parameters"}>
+                                        <JobExecutionParamList jobExecution={this.state.currentJobExecution}/>
+                                    </GroupItem>
                                     <GroupItem colSpan={2} caption={"Logs"}>
+                                        <JobExecutionLogList jobExecution={this.state.currentJobExecution}/>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
@@ -200,8 +206,7 @@ class JobExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={true}
-                                width={50}
-                                visible={false}/>
+                                width={50}/>
                             <Column
                                 dataField={'jobPid'}
                                 caption={'PID'}

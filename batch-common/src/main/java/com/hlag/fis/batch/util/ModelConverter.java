@@ -69,6 +69,16 @@ public class ModelConverter {
         return modelMapper.map(jobExecutionParam, JobExecutionParamDto.class);
     }
 
+    public JobExecutionParamDto convertJobExecutionParamToDto(JobExecutionParam jobExecutionParam, long totalCount) {
+        JobExecutionParamDto jobExecutionParamDto = modelMapper.map(jobExecutionParam, JobExecutionParamDto.class);
+        jobExecutionParamDto.setTotalCount(totalCount);
+        return jobExecutionParamDto;
+    }
+
+    public List<JobExecutionParamDto> convertJobExecutionParamToDto(List<JobExecutionParam> jobExecutionParamList, long totalCount) {
+        return jobExecutionParamList.stream().map(j -> convertJobExecutionParamToDto(j, totalCount)).collect(toList());
+    }
+
     public JobExecutionParam convertJobExecutionParamToEntity(JobExecutionParamDto jobExecutionParamDto) {
         JobExecutionParam jobExecutionParam = modelMapper.map(jobExecutionParamDto, JobExecutionParam.class);
         switch (jobExecutionParamDto.getTypeCd()) {

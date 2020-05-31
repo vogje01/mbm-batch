@@ -50,7 +50,7 @@ class JobDefinitionParamList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentJobDefinition: props.data,
+            currentJobDefinition: props.jobDefinition,
             currentJobDefinitionParam: {},
             typeEditable: false
         };

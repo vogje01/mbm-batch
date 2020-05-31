@@ -20,4 +20,7 @@ public interface JobExecutionParamService {
 
     @CacheEvict
     void deleteById(String logId);
+
+    @Cacheable
+    long countByJobExecutionId(String jobExecutionId);
 }

@@ -7,7 +7,7 @@ import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.RestPreconditions;
 import com.hlag.fis.batch.manager.service.util.PagingUtil;
 import com.hlag.fis.batch.util.MethodTimer;
-import org.modelmapper.ModelMapper;
+import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -43,26 +42,26 @@ public class JobExecutionParamController {
 
     private JobExecutionParamService service;
 
-    private ModelMapper modelMapper;
+    private ModelConverter modelConverter;
 
     @Autowired
-    public JobExecutionParamController(JobExecutionParamService service, ModelMapper modelMapper) {
+    public JobExecutionParamController(JobExecutionParamService service, ModelConverter modelConverter) {
         this.service = service;
-        this.modelMapper = modelMapper;
+        this.modelConverter = modelConverter;
     }
 
     /**
      * Returns one page of job execution params.
      *
-     * @param jobId   UUID of the job.
-     * @param page    page number.
-     * @param size    page size.
-     * @param sortBy  sorting column.
-     * @param sortDir sorting direction.
+     * @param jobExecutionId UUID of the job.
+     * @param page           page number.
+     * @param size           page size.
+     * @param sortBy         sorting column.
+     * @param sortDir        sorting direction.
      * @return one page of job execution params.
      */
     @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobExecutionParamDto>> findByJobId(@PathVariable("jobId") String jobId,
+    public ResponseEntity<CollectionModel<JobExecutionParamDto>> findByJobId(@PathVariable("jobId") String jobExecutionId,
                                                                              @RequestParam("page") int page,
                                                                              @RequestParam("size") int size,
                                                                              @RequestParam(value = "sortBy", required = false) String sortBy,
@@ -70,13 +69,12 @@ public class JobExecutionParamController {
         t.restart();
 
         // Get paging parameters
-        Page<JobExecutionParam> allJobExecutionParams = service.byJobId(jobId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        long totalCount = service.countByJobExecutionId(jobExecutionId);
+        Page<JobExecutionParam> allJobExecutionParams = service.byJobId(jobExecutionId, PagingUtil.getPageable(page, size, sortBy, sortDir));
 
-        List<JobExecutionParamDto> jobExecutionParamDtos = allJobExecutionParams.stream()
-            .map(this::convertToDto)
-            .collect(Collectors.toList());
+        List<JobExecutionParamDto> jobExecutionParamDtoes = modelConverter.convertJobExecutionParamToDto(allJobExecutionParams.toList(), totalCount);
 
-        jobExecutionParamDtos.forEach(l -> {
+        jobExecutionParamDtoes.forEach(l -> {
             try {
                 l.add(linkTo(methodOn(JobExecutionParamController.class).findById(l.getId())).withSelfRel());
                 l.add(linkTo(methodOn(JobExecutionParamController.class).delete(l.getId())).withRel("delete"));
@@ -85,10 +83,10 @@ public class JobExecutionParamController {
             }
         });
 
-        Link self = linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobId, page, size, sortBy, sortDir)).withSelfRel();
+        Link self = linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionId, page, size, sortBy, sortDir)).withSelfRel();
         logger.debug(format("Job execution param list request finished - count: {0} {1}", allJobExecutionParams.getSize(), t.elapsedStr()));
 
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionParamDtos, self));
+        return ResponseEntity.ok(new CollectionModel<>(jobExecutionParamDtoes, self));
     }
 
     /**
@@ -114,9 +112,5 @@ public class JobExecutionParamController {
         RestPreconditions.checkFound(service.byId(paramId));
         service.deleteById(paramId);
         return null;
-    }
-
-    private JobExecutionParamDto convertToDto(JobExecutionParam jobExecutionParam) {
-        return modelMapper.map(jobExecutionParam, JobExecutionParamDto.class);
     }
 }

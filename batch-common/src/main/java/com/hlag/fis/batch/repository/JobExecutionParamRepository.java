@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface JobExecutionParamRepository extends PagingAndSortingRepository<JobExecutionParam, String> {
 
-    @Query("select p from JobExecutionParam p where p.jobExecutionInfo.id = :jobId")
-    Page<JobExecutionParam> findByJobId(@Param("jobId") String jobId, Pageable pageable);
+    @Query("select p from JobExecutionParam p where p.jobExecutionInfo.id = :jobExecutionId")
+    Page<JobExecutionParam> findByJobId(@Param("jobExecutionId") String jobExecutionId, Pageable pageable);
+
+    @Query("select count(p) from JobExecutionParam p where p.jobExecutionInfo.id = :jobExecutionId")
+    long countByJobExecutionId(@Param("jobExecutionId") String jobExecutionId);
 }

@@ -33,7 +33,7 @@ export const JobExecutionParamDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions);
+                let params = getParams(loadOptions, 'keyName');
                 return listItems('jobexecutionparams/byJobId/' + jobExecutionInfo.id + params, 'jobExecutionParamDtoes');
             },
             remove: function (key) {
