@@ -274,6 +274,22 @@ class JobExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={100}/>
+                            <Column
+                                dataField={'createdBy'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'createdAt'}
+                                dataType={'datetime'}
+                                visible={false}/>
+                            <Column
+                                dataField={'modifiedBy'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'modifiedAt'}
+                                dataType={'datetime'}
+                                visible={false}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.hlag.fis.batch.domain.JobExecutionInfo;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
@@ -253,10 +252,6 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     public void setJobExecutionParamDtoes(List<JobExecutionParamDto> jobExecutionParamDtoes) {
         this.jobExecutionParamDtoes = jobExecutionParamDtoes;
-    }
-
-    public void setJobNameConverted(JobExecutionInfo jobExecutionInfo) {
-        jobName = jobExecutionInfo.getJobInstanceInfo() != null ? jobExecutionInfo.getJobInstanceInfo().getJobName() : "JobName";
     }
 
     @Override
