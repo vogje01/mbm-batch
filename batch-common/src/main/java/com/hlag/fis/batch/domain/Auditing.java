@@ -30,25 +30,25 @@ public class Auditing {
      */
     @Column(name = "CREATED_BY")
     @CreatedBy
-    private String createdBy;
+    private String createdBy = "admin";
     /**
      * Created date
      */
     @Column(name = "CREATED_AT")
     @CreatedDate
-    private Date createdAt;
+    private Date createdAt = new Date();
     /**
      * Last modification user
      */
     @Column(name = "MODIFIED_BY")
     @LastModifiedBy
-    private String modifiedBy;
+    private String modifiedBy = "admin";
     /**
      * Last modification date
      */
     @Column(name = "MODIFIED_AT")
     @LastModifiedDate
-    private Date modifiedAt;
+    private Date modifiedAt = new Date();
 
     public Long getVersion() {
         return version;

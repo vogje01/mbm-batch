@@ -3,7 +3,7 @@ import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging,
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
-import {getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
+import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
@@ -120,11 +120,16 @@ class StepExecutionList extends React.Component {
                                         <SimpleItem dataField="exitMessage" readOnly={true}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Timing"}>
-                                        <SimpleItem dataField="startTime" readOnly={true}/>
-                                        <SimpleItem dataField="endTime" readOnly={true}/>
-                                        <SimpleItem dataField="createTime" readOnly={true}/>
-                                        <SimpleItem dataField="lastUpdated" readOnly={true}/>
-                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox" editorOptions={{value: getRunningTime}}/>
+                                        <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getStartTime(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getEndTime(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getCreateTime(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="lastUpdated" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getLastUpdatedTime(this.state.currentStepExecution)}}/>
+                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: getRunningTime(this.state.currentStepExecution)}}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Counter"}>
                                         <SimpleItem dataField="totalCount" readOnly={true}/>
@@ -230,6 +235,7 @@ class StepExecutionList extends React.Component {
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={140}/>
@@ -238,6 +244,7 @@ class StepExecutionList extends React.Component {
                                 dataField={'endTime'}
                                 caption={'Ended'}
                                 dataType={'datetime'}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={140}/>
@@ -246,6 +253,7 @@ class StepExecutionList extends React.Component {
                                 dataField={'lastUpdated'}
                                 caption={'Last Update'}
                                 dataType={'datetime'}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={140}/>
@@ -254,6 +262,7 @@ class StepExecutionList extends React.Component {
                                 dataField={'runningTime'}
                                 caption={'Running'}
                                 dataType={'datetime'}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={100}/>

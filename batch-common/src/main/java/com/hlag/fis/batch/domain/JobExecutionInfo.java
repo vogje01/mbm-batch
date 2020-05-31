@@ -1,9 +1,5 @@
 package com.hlag.fis.batch.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.hlag.fis.batch.domain.dto.JobExecutionDto;
@@ -18,14 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_JOB_EXECUTION")
-@JsonInclude(NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**

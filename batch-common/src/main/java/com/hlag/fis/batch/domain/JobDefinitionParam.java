@@ -1,11 +1,8 @@
 package com.hlag.fis.batch.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,10 +17,8 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "BATCH_JOB_DEFINITION_PARAMS")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobDefinitionParam implements PrimaryKeyIdentifier<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class JobDefinitionParam extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key
@@ -33,12 +28,6 @@ public class JobDefinitionParam implements PrimaryKeyIdentifier<String> {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Integer version = 0;
     /**
      * Key name
      */

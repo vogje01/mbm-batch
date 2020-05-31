@@ -63,6 +63,22 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
      */
     private Long totalSize;
     /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
+    /**
      * Job definition DTO
      */
     private JobDefinitionDto jobDefinitionDto;
@@ -154,6 +170,38 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
         this.totalSize = totalSize;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public JobDefinitionDto getJobDefinitionDto() {
         return jobDefinitionDto;
     }
@@ -178,7 +226,16 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
                 Objects.equal(doubleValue, that.doubleValue) &&
                 Objects.equal(booleanValue, that.booleanValue) &&
                 Objects.equal(totalSize, that.totalSize) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt) &&
                 Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobDefinitionDto);
     }
 
     @Override
@@ -193,14 +250,13 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
                 .add("longValue", longValue)
                 .add("doubleValue", doubleValue)
                 .add("booleanValue", booleanValue)
-                .add("totalCount", totalSize)
+                .add("totalSize", totalSize)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
                 .add("jobDefinitionDto", jobDefinitionDto)
                 .toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue, totalSize, jobDefinitionDto);
     }
 
 }

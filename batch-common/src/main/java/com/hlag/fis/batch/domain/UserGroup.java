@@ -1,9 +1,5 @@
 package com.hlag.fis.batch.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.hibernate.annotations.GenericGenerator;
@@ -21,11 +17,8 @@ import java.util.List;
  * @since 0.0.3
  */
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_USER_GROUP")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@EntityListeners(AuditingEntityListener.class)
 public class UserGroup extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
