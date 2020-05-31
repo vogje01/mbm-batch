@@ -147,7 +147,7 @@ public class ModelConverter {
 
     public JobExecutionLogDto convertJobExecutionLogToDto(JobExecutionLog jobExecutionLog, long totalCount) {
         JobExecutionLogDto jobExecutionLogDto = modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
-        jobExecutionLogDto.setTotalCount(totalCount);
+        jobExecutionLogDto.setTotalSize(totalCount);
         return jobExecutionLogDto;
     }
 

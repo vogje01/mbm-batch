@@ -54,7 +54,7 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
 
     private String extendedStackTrace;
 
-    private long totalCount;
+    private long totalSize;
 
     public String getId() {
         return id;
@@ -184,12 +184,12 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
         this.extendedStackTrace = extendedStackTrace;
     }
 
-    public long getTotalCount() {
-        return totalCount;
+    public long getTotalSize() {
+        return totalSize;
     }
 
-    public void setTotalCount(long totalCount) {
-        this.totalCount = totalCount;
+    public void setTotalSize(long totalSize) {
+        this.totalSize = totalSize;
     }
 
     public void setExceptionConverted(JobExecutionThrown thrown) {
@@ -220,7 +220,7 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
                 .add("timestamp", timestamp)
                 .add("exception", exception)
                 .add("extendedStackTrace", extendedStackTrace)
-                .add("totalCount", totalCount)
+                .add("totalCount", totalSize)
                 .toString();
     }
 
@@ -232,7 +232,7 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
         JobExecutionLogDto that = (JobExecutionLogDto) o;
         return threadId == that.threadId &&
                 threadPriority == that.threadPriority &&
-                totalCount == that.totalCount &&
+                totalSize == that.totalSize &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(jobName, that.jobName) &&
                 Objects.equal(jobPid, that.jobPid) &&
@@ -251,6 +251,6 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobPid, jobUuid, jobVersion, stepName, stepUuid, thread, threadId, threadPriority, loggerName, message, level, timestamp, exception, extendedStackTrace, totalCount);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobPid, jobUuid, jobVersion, stepName, stepUuid, thread, threadId, threadPriority, loggerName, message, level, timestamp, exception, extendedStackTrace, totalSize);
     }
 }
