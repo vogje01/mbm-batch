@@ -109,22 +109,24 @@ class StepExecutionList extends React.Component {
                                 allowUpdating={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <GroupItem colCount={4} caption={"Step Execution Details: " + this.state.currentStepExecution.stepName}>
+                                    <GroupItem colCount={2} caption={"Step Execution Details: " + this.state.currentStepExecution.stepName}>
                                         <SimpleItem dataField="jobName" readOnly={true}/>
                                         <SimpleItem dataField="stepName" readOnly={true}/>
                                         <SimpleItem dataField="hostName" readOnly={true}/>
                                         <SimpleItem dataField="nodeName" readOnly={true}/>
                                         <SimpleItem dataField="status" readOnly={true}/>
                                         <SimpleItem dataField="stepExecutionId" readOnly={true}/>
+                                        <SimpleItem dataField="exitCode" readOnly={true}/>
+                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
                                     </GroupItem>
-                                    <GroupItem colCount={4} caption={"Timing"}>
+                                    <GroupItem colCount={2} caption={"Timing"}>
                                         <SimpleItem dataField="startTime" readOnly={true}/>
                                         <SimpleItem dataField="endTime" readOnly={true}/>
                                         <SimpleItem dataField="createTime" readOnly={true}/>
                                         <SimpleItem dataField="lastUpdated" readOnly={true}/>
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox" editorOptions={{value: getRunningTime}}/>
                                     </GroupItem>
-                                    <GroupItem colCount={4} caption={"Counter"}>
+                                    <GroupItem colCount={2} caption={"Counter"}>
                                         <SimpleItem dataField="totalCount" readOnly={true}/>
                                         <SimpleItem dataField="readCount" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: this.getReadCount(this.state.currentStepExecution)}}/>
@@ -199,6 +201,14 @@ class StepExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={true}
                                 width={100}/>
+                            <Column
+                                dataField={'exitCode'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'exitMessage'}
+                                dataType={'string'}
+                                visible={false}/>
                             <Column
                                 dataField={'hostName'}
                                 caption={'Host name'}
