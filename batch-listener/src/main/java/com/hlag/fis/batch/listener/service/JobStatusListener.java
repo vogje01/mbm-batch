@@ -109,6 +109,7 @@ public class JobStatusListener {
         } else {
             // Get job execution ID
             long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName());
+            logger.debug(format("Max job execution id - jobExecutionId: {0}", jobExecutionId));
 
             // Create job instance
             JobInstanceInfo jobInstanceInfo = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());

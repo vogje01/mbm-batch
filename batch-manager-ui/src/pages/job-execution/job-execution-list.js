@@ -110,6 +110,7 @@ class JobExecutionList extends React.Component {
                                         <SimpleItem dataField="status" readOnly={true}/>
                                         <SimpleItem dataField="jobPid" readOnly={true}/>
                                         <SimpleItem dataField="id" readOnly={true}/>
+                                        <SimpleItem dataField="jobExecutionId" readOnly={true}/>
                                         <SimpleItem dataField="jobVersion" readOnly={true}/>
                                         <SimpleItem dataField="exitCode" readOnly={true}/>
                                         <SimpleItem dataField="exitMessage" readOnly={true}/>
