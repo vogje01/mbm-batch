@@ -3,7 +3,7 @@ import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging,
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
-import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
+import {getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
@@ -124,8 +124,6 @@ class StepExecutionList extends React.Component {
                                                     editorOptions={{value: getStartTime(this.state.currentStepExecution)}}/>
                                         <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getEndTime(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getCreateTime(this.state.currentStepExecution)}}/>
                                         <SimpleItem dataField="lastUpdated" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getLastUpdatedTime(this.state.currentStepExecution)}}/>
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"

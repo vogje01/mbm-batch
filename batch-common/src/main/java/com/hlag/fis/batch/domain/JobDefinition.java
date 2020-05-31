@@ -186,8 +186,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         return failedExitCode;
     }
 
-    public void setFailedExitCode(String failedExitStatus) {
-        this.failedExitCode = failedExitStatus;
+    public void setFailedExitCode(String failedExitCode) {
+        this.failedExitCode = failedExitCode;
     }
 
     public String getFailedExitMessage() {
@@ -202,8 +202,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         return completedExitCode;
     }
 
-    public void setCompletedExitCode(String completedExitStatus) {
-        this.completedExitCode = completedExitStatus;
+    public void setCompletedExitCode(String completedExitCode) {
+        this.completedExitCode = completedExitCode;
     }
 
     public String getCompletedExitMessage() {

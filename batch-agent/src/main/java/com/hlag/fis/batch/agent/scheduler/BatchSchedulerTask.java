@@ -125,7 +125,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         String jarFile = jobDataMap.getString(JOB_JAR_FILE);
         String command = jobDataMap.getString(JOB_COMMAND);
         File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
+        List<String> arguments = (List<String>) jobDataMap.get(JOB_ARGUMENTS);
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
         commandList.addAll(arguments);
@@ -155,7 +155,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         String dockerImage = jobDataMap.getString(JOB_JAR_FILE);
         String command = jobDataMap.getString(JOB_COMMAND);
         File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
+        List<String> arguments = (List<String>) jobDataMap.get(JOB_ARGUMENTS);
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
         commandList.add("run");

@@ -104,6 +104,9 @@ public class JobStatusListener {
                 logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
             }
         } else {
+            // Get job execution ID
+            long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName());
+
             // Create job instance
             JobInstanceInfo jobInstanceInfo = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
             jobInstanceInfo = jobInstanceInfoRepository.save(jobInstanceInfo);
@@ -111,6 +114,7 @@ public class JobStatusListener {
 
             // Save job execution
             jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
+            jobExecutionInfo.setJobExecutionId(jobExecutionId + 1);
             jobExecutionInfo.setJobInstanceInfo(jobInstanceInfo);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");

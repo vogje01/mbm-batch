@@ -96,7 +96,7 @@ public class StepNotificationListener implements StepExecutionListener {
     }
 
     /**
-     * Set exit code / message according to the values in the job definition.
+     * Set additional properties.
      *
      * @param stepExecution step execution.
      */
