@@ -35,7 +35,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
  *     <li>version: Version of the log producer</li>
  * </ul>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.2
  */
 @Entity

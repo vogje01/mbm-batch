@@ -54,6 +54,18 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @Column(name = "WORKING_DIRECTORY")
     private String workingDirectory;
 
+    @Column(name = "FAILED_EXIT_CODE")
+    private String failedExitCode;
+
+    @Column(name = "FAILED_EXIT_MESSAGE")
+    private String failedExitMessage;
+
+    @Column(name = "COMPLETED_EXIT_CODE")
+    private String completedExitCode;
+
+    @Column(name = "COMPLETED_EXIT_MESSAGE")
+    private String completedExitMessage;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "JOB_GROUP_ID")
     private JobGroup jobGroup;
@@ -77,6 +89,10 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.workingDirectory = origin.workingDirectory;
         this.fileName = origin.fileName;
         this.description = origin.description;
+        this.failedExitCode = origin.failedExitCode;
+        this.failedExitMessage = origin.failedExitMessage;
+        this.completedExitCode = origin.completedExitCode;
+        this.completedExitMessage = origin.completedExitMessage;
     }
 
     public String getId() {
@@ -139,6 +155,10 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.active = active;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -167,6 +187,38 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.workingDirectory = workingDirectory;
     }
 
+    public String getFailedExitCode() {
+        return failedExitCode;
+    }
+
+    public void setFailedExitCode(String failedExitStatus) {
+        this.failedExitCode = failedExitStatus;
+    }
+
+    public String getFailedExitMessage() {
+        return failedExitMessage;
+    }
+
+    public void setFailedExitMessage(String failedExitMessage) {
+        this.failedExitMessage = failedExitMessage;
+    }
+
+    public String getCompletedExitCode() {
+        return completedExitCode;
+    }
+
+    public void setCompletedExitCode(String completedExitStatus) {
+        this.completedExitCode = completedExitStatus;
+    }
+
+    public String getCompletedExitMessage() {
+        return completedExitMessage;
+    }
+
+    public void setCompletedExitMessage(String completedExitMessage) {
+        this.completedExitMessage = completedExitMessage;
+    }
+
     public List<JobDefinitionParam> getJobDefinitionParams() {
         return jobDefinitionParams;
     }
@@ -180,16 +232,43 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void addJobDefinitionParam(JobDefinitionParam jobDefinitionParam) {
         if (!jobDefinitionParams.contains(jobDefinitionParam)) {
-            //jobDefinitionParam.setJobDefinition(this);
             jobDefinitionParams.add(jobDefinitionParam);
         }
     }
 
     public void removeJobDefinitionParam(JobDefinitionParam jobDefinitionParam) {
         if (jobDefinitionParams.contains(jobDefinitionParam)) {
-            //jobDefinitionParam.setJobDefinition(null);
             jobDefinitionParams.remove(jobDefinitionParam);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        JobDefinition that = (JobDefinition) o;
+        return Objects.equal(id, that.id) &&
+                Objects.equal(name, that.name) &&
+                Objects.equal(label, that.label) &&
+                Objects.equal(type, that.type) &&
+                Objects.equal(jobVersion, that.jobVersion) &&
+                Objects.equal(description, that.description) &&
+                Objects.equal(active, that.active) &&
+                Objects.equal(fileName, that.fileName) &&
+                Objects.equal(command, that.command) &&
+                Objects.equal(workingDirectory, that.workingDirectory) &&
+                Objects.equal(failedExitCode, that.failedExitCode) &&
+                Objects.equal(failedExitMessage, that.failedExitMessage) &&
+                Objects.equal(completedExitCode, that.completedExitCode) &&
+                Objects.equal(completedExitMessage, that.completedExitMessage) &&
+                Objects.equal(jobGroup, that.jobGroup) &&
+                Objects.equal(jobDefinitionParams, that.jobDefinitionParams);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, jobGroup, jobDefinitionParams);
     }
 
     @Override
@@ -199,36 +278,18 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("name", name)
                 .add("label", label)
                 .add("type", type)
-                .add("version", jobVersion)
-                .add("groupName", jobGroup)
+                .add("jobVersion", jobVersion)
                 .add("description", description)
                 .add("active", active)
                 .add("fileName", fileName)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
+                .add("failedExitStatus", failedExitCode)
+                .add("failedExitMessage", failedExitMessage)
+                .add("completedExitStatus", completedExitCode)
+                .add("completedExitMessage", completedExitMessage)
+                .add("jobGroup", jobGroup)
+                .add("jobDefinitionParams", jobDefinitionParams)
                 .toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        JobDefinition that = (JobDefinition) o;
-        return active == that.active &&
-                Objects.equal(id, that.id) &&
-                Objects.equal(name, that.name) &&
-                Objects.equal(label, that.label) &&
-                Objects.equal(type, that.type) &&
-                Objects.equal(jobVersion, that.jobVersion) &&
-                Objects.equal(jobGroup, that.jobGroup) &&
-                Objects.equal(description, that.description) &&
-                Objects.equal(fileName, that.fileName) &&
-                Objects.equal(command, that.command) &&
-                Objects.equal(workingDirectory, that.workingDirectory);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id, name, label, type, jobVersion, jobGroup, description, active, fileName, command, workingDirectory);
     }
 }

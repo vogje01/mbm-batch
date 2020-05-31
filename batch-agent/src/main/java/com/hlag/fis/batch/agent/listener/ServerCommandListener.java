@@ -17,7 +17,7 @@ import static java.text.MessageFormat.format;
  * Listens for batch command notification messages in the corresponding Kafka topic and executes the corresponding
  * commands.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */

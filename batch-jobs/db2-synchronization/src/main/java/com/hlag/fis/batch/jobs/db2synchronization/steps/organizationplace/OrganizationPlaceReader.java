@@ -17,7 +17,7 @@ import javax.persistence.EntityManagerFactory;
  * a lot of old organization places are synchronized.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.1
  */
 @Component

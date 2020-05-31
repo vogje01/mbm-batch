@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Batch job builder.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.1
  * @since 0.0.1
@@ -25,6 +27,10 @@ import java.util.List;
 public class BatchJobBuilder extends JobBuilderFactory {
 
     private String jobName;
+
+    private int failedExitCode;
+
+    private int completeExitCode;
 
     private Step startStep;
 
@@ -65,6 +71,11 @@ public class BatchJobBuilder extends JobBuilderFactory {
 
     public BatchJobBuilder nextStep(Step step) {
         this.nextFlows.add(createFlowFromStep(step));
+        return this;
+    }
+
+    public BatchJobBuilder withFailedExitCode(int failedExitCode) {
+        this.failedExitCode = failedExitCode;
         return this;
     }
 

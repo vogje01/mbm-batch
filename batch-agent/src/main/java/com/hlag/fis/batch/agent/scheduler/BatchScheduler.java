@@ -24,7 +24,7 @@ import static java.text.MessageFormat.format;
 /**
  * Batch scheduler.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.3
  */
 @Service
@@ -230,6 +230,8 @@ public class BatchScheduler {
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(jobDefinition.getFileName())
                 .arguments(buildArguments(jobDefinition))
+                .failedExitStatus(jobDefinition.getFailedExitCode())
+                .completedExitStatus(jobDefinition.getCompletedExitCode())
                 .build();
     }
 
@@ -252,6 +254,8 @@ public class BatchScheduler {
         List<String> arguments = new ArrayList<>();
         arguments.add("-Dagent.hostName=" + hostName);
         arguments.add("-Dagent.nodeName=" + nodeName);
+        arguments.add("-Djob.failed.existStatus=" + jobDefinition.getFailedExitCode());
+        arguments.add("-Djob.completed.existStatus=" + jobDefinition.getCompletedExitCode());
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }

@@ -18,7 +18,7 @@ import static com.hlag.fis.batch.util.ExecutionParameter.JOB_PID_NAME;
  * <p>
  * The batch job is identified by nodeName, jobName and jobId which is the UUID of the job.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.2
  */
 public class ExtendedJsonAdapter implements ExtendedJson {

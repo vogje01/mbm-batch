@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * Documentation requests processor.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  */
 @Component
 @EnableJpaRepositories(entityManagerFactoryRef = "db2DeveEntityManagerFactory")

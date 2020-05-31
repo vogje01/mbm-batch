@@ -12,7 +12,7 @@ import javax.persistence.EntityManagerFactory;
 /**
  * Job execution info delete writer.
  *
- * @author Jens.Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens.Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */

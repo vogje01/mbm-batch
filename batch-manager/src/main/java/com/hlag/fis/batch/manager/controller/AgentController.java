@@ -33,7 +33,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */

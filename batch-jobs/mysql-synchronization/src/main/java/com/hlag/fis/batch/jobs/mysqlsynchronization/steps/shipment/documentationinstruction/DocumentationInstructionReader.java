@@ -13,7 +13,7 @@ import javax.persistence.EntityManagerFactory;
 /**
  * Reader for the documentation instruction processor.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.2
  */
 @Component

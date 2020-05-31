@@ -22,7 +22,7 @@ import java.util.Optional;
  * <li><b>Documentation request:</b> the documentation request is retrieved by name and supplement.</li>
  * </ul>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.2
  */

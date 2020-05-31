@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
  * Related documentation life cycles will be deleted as well.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.3
  */
 @Component

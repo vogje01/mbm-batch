@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+import static com.hlag.fis.batch.domain.JobStatusType.JOB_FINISHED;
 import static com.hlag.fis.batch.domain.JobStatusType.JOB_START;
 import static com.hlag.fis.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
@@ -63,7 +64,7 @@ public class JobNotificationListener implements JobExecutionListener {
                 getJobName(jobExecution), getJobPid(jobExecution), jobExecution.getStatus(), DateTimeUtils.getRunningTime(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
         addAdditionalProperties(jobExecution);
-        statusProducer.sendTopic(new JobStatusDto(JOB_START, jobExecutionDto));
+        statusProducer.sendTopic(new JobStatusDto(JOB_FINISHED, jobExecutionDto));
     }
 
     private void addAdditionalProperties(JobExecution jobExecution) {

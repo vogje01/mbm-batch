@@ -30,7 +30,7 @@ import static java.text.MessageFormat.format;
 /**
  * Listener for the step notification messages send to the Kafka batchStepExecution queue.
  *
- * @author Jens vogt (jens.vogt@ext.hlag.com)
+ * @author Jens vogt (jensvogt47@gmail.com)
  * @since 0.0.2
  */
 @Service

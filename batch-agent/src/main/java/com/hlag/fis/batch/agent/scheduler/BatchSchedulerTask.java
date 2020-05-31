@@ -29,7 +29,7 @@ import static java.text.MessageFormat.format;
  * Therefore the startup logs can be seen on the agent console.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.3
  */
@@ -51,7 +51,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Kafka producer for agent commands.
      */
-    private AgentCommandProducer agentCommandProducer;
+    private final AgentCommandProducer agentCommandProducer;
     /**
      * The actual process.
      */
@@ -59,19 +59,19 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Process list
      */
-    private Map<String, Process> processList = new HashMap<>();
+    private final Map<String, Process> processList = new HashMap<>();
     /**
      * Random number generator for job name.
      */
-    private Random rand = new Random(System.currentTimeMillis());
+    private final Random rand = new Random(System.currentTimeMillis());
     /**
      * Host name
      */
-    private String hostName;
+    private final String hostName;
     /**
      * Node name
      */
-    private String nodeName;
+    private final String nodeName;
 
     /**
      * Constructor.
@@ -95,7 +95,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         logger.info(format("Executing Job - key: {0}", jobExecutionContext.getJobDetail().getKey()));
 
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
-        switch (jobDataMap.getString("job-type")) {
+        switch (jobDataMap.getString("job.type")) {
             case "JAR":
                 startJarFile(jobDataMap);
                 break;
@@ -120,11 +120,11 @@ public class BatchSchedulerTask extends QuartzJobBean {
      */
     @SuppressWarnings("unchecked")
     private void startJarFile(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString("job-name");
-        String jarFile = jobDataMap.getString("jar-file");
-        String command = jobDataMap.getString("command");
-        File workingDirectory = jobDataMap.getString("working-directory") != null ? new File(jobDataMap.getString("working-directory")) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get("arguments");
+        String jobName = jobDataMap.getString("job.name");
+        String jarFile = jobDataMap.getString("job.jarFile");
+        String command = jobDataMap.getString("job.command");
+        File workingDirectory = jobDataMap.getString("job.workingDirectory") != null ? new File(jobDataMap.getString("job.workingDirectory")) : new File(TMP_DIR);
+        List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
         commandList.addAll(arguments);
@@ -136,7 +136,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
                     .directory(workingDirectory)
                     .inheritIO()
                     .start();
-            logger.info(format("Job started - jobName: {0} pid: {1} arguments: {2}", jobName, process.pid(), getArgumentsAsString(process.info().arguments())));
+            logger.info(format("Job started - jobName: {0} pid: {1} arguments: {2}", jobName, process.pid(), getArgumentsAsString(process.info())));
             processList.put(jobName, process);
         } catch (IOException e) {
             logger.error(format("Could not start job - jarFile: {0} workingDirectory: {1} message: {2}", jarFile, workingDirectory, e.getMessage()), e);
@@ -150,11 +150,11 @@ public class BatchSchedulerTask extends QuartzJobBean {
      */
     @SuppressWarnings("unchecked")
     private void startDockerImage(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString("job-name");
-        String dockerImage = jobDataMap.getString("jar-file");
-        String command = jobDataMap.getString("command");
-        File workingDirectory = jobDataMap.getString("working-directory") != null ? new File(jobDataMap.getString("working-directory")) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get("arguments");
+        String jobName = jobDataMap.getString("job.name");
+        String dockerImage = jobDataMap.getString("job.jarFile");
+        String command = jobDataMap.getString("job.command");
+        File workingDirectory = jobDataMap.getString("job.workingDirectory") != null ? new File(jobDataMap.getString("job.workingDirectory")) : new File(TMP_DIR);
+        List<String> arguments = (List<String>) jobDataMap.get("job.arguments");
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
         commandList.add("run");
@@ -170,8 +170,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
                     .directory(workingDirectory)
                     .inheritIO()
                     .start();
-            String argumentString = getArgumentsAsString(process.info().arguments());
-            logger.info(format("Docker image started - jobName: {0} pid: {1} arguments: {2}", jobName, process.pid(), argumentString));
+            logger.info(format("Docker image started - jobName: {0} pid: {1} arguments: {2}", jobName, process.pid(), getArgumentsAsString(process.info())));
             processList.put(jobName, process);
         } catch (IOException e) {
             logger.error(format("Could not start job - dockerImage: {0} workingDirectory: {1} message: {2}", dockerImage, workingDirectory, e.getMessage()), e);
@@ -214,18 +213,20 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Returns a string of the process arguments.
      *
-     * @param argumentsOptional optional of the arguments.
+     * @param info process handle information.
      * @return string of concatenated arguments.
      */
-    private String getArgumentsAsString(Optional<String[]> argumentsOptional) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private String getArgumentsAsString(ProcessHandle.Info info) {
+        Optional<String[]> argumentsOptional = info.arguments();
         if (argumentsOptional.isPresent()) {
+            StringBuilder stringBuilder = new StringBuilder();
             String[] arguments = argumentsOptional.get();
             for (String argument : arguments) {
                 stringBuilder.append(argument).append(" ");
             }
+            return stringBuilder.toString();
         }
-        return stringBuilder.toString();
+        return "No arguments";
     }
 
     private void cleanupProcessMap() {

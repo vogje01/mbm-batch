@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 /**
  * Paging utilities.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.3
  */
 public class PagingUtil {

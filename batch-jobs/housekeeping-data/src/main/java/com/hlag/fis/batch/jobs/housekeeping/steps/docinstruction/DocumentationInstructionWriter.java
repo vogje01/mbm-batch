@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * Documentation instruction housekeeping writer.
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.3
  */
 @Component

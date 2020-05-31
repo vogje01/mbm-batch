@@ -13,7 +13,7 @@ import javax.persistence.EntityManagerFactory;
 /**
  * Planned shipment housekeeping reader.
  *
- * @author Jens.Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens.Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.2
  */

@@ -23,7 +23,7 @@ import java.util.Optional;
  * between planned shipment and transport unit point is via the planned_shipment_id inside the transport unit point.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
  * @since 0.0.1
  */

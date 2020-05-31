@@ -127,7 +127,7 @@ class JobDefinitionList extends React.Component {
                                 allowUpdating={true}
                                 allowAdding={true}
                                 allowDeleting={true}>
-                                <Form colCount={2}>
+                                <Form>
                                     <GroupItem colCount={2} caption={"Job Definition Details: " + this.state.currentJobDefinition.label}>
                                         <SimpleItem dataField="label">
                                             <StringLengthRule max={256} message="Labels must be less than 256 characters."/>
@@ -147,6 +147,11 @@ class JobDefinitionList extends React.Component {
                                             <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="failedExitCode"/>
+                                        <SimpleItem dataField="failedExitMessage"/>
+                                        <SimpleItem dataField="completedExitCode"/>
+                                        <SimpleItem dataField="completedExitMessage"/>
+                                        <SimpleItem dataField="description" colSpan={2}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Command"}>
@@ -269,6 +274,26 @@ class JobDefinitionList extends React.Component {
                             <Column
                                 dataField={'description'}
                                 caption={'Description'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'failedExitCode'}
+                                caption={'Failed Exit Code'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'failedExitMessage'}
+                                caption={'Failed Exit Message'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'completedExitCode'}
+                                caption={'Completed Exit Code'}
+                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'completedExitMessage'}
+                                caption={'Completed Exit Message'}
                                 dataType={'string'}
                                 visible={false}/>
                             <Column

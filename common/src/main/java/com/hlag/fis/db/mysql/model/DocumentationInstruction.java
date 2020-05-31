@@ -27,7 +27,7 @@ import java.util.List;
  * Normalized documentation instruction model.
  * </p>
  *
- * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @author Jens Vogt (jensvogt47@gmail.com)
  * @since 0.0.1
  */
 @Entity
