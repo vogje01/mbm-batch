@@ -91,8 +91,10 @@ class JobSchedulerList extends React.Component {
                                             <RequiredRule message="Job name required"/>
                                             <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="lastExecution" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="nextExecution" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField={'lastExecution'} editorType={'dxTextBox'}
+                                                    editorOptions={{readOnly: true, value: getLastExecutionTime(this.state.currentJobSchedule)}}/>
+                                        <SimpleItem dataField={'nextExecution'} editorType={'dxTextBox'}
+                                                    editorOptions={{readOnly: true, value: getNextExecutionTime(this.state.currentJobSchedule)}}/>
                                         <SimpleItem dataField="schedule"/>
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
@@ -150,7 +152,7 @@ class JobSchedulerList extends React.Component {
                                 caption={'Last Execution'}
                                 dataType={'datetime'}
                                 dataField={'lastExecution'}
-                                allowEditing={false}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={140}/>
@@ -159,7 +161,7 @@ class JobSchedulerList extends React.Component {
                                 caption={'Next Execution'}
                                 dataType={'datetime'}
                                 dataField={'nextExecution'}
-                                allowEditing={false}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
                                 width={140}/>
