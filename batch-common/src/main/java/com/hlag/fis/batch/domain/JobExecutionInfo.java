@@ -149,7 +149,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     public void update(JobExecutionDto jobExecutionDto) {
         this.id = jobExecutionDto.getId();
         this.jobPid = jobExecutionDto.getJobPid();
-        this.jobExecutionId = jobExecutionDto.getJobExecutionId();
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();
         this.nodeName = jobExecutionDto.getNodeName();
