@@ -14,14 +14,11 @@ import java.util.Optional;
 @Repository
 public interface JobExecutionInfoRepository extends PagingAndSortingRepository<JobExecutionInfo, String> {
 
-    @Query("select j from JobExecutionInfo j where j.deleted = false")
-    Page<JobExecutionInfo> findAllNotDeleted(Pageable pageable);
-
     Page<JobExecutionInfo> findAll(Pageable pageable);
 
     Optional<JobExecutionInfo> findById(String id);
 
-    @Query("select count(j) from JobExecutionInfo j where j.deleted = true or j.lastUpdated < :cutOff")
+    @Query("select count(j) from JobExecutionInfo j where j.lastUpdated < :cutOff")
     long countByLastUpdated(@Param("cutOff") Date cutOff);
 
     @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobInstanceInfo.jobName = :jobName")

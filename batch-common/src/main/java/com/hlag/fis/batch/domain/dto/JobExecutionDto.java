@@ -36,6 +36,8 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     private String nodeName;
 
+    private String startedBy;
+
     private String status;
 
     private Date createTime;
@@ -132,6 +134,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    public String getStartedBy() {
+        return startedBy;
+    }
+
+    public void setStartedBy(String startedBy) {
+        this.startedBy = startedBy;
     }
 
     public String getStatus() {
@@ -267,6 +277,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 Objects.equal(jobPid, that.jobPid) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(nodeName, that.nodeName) &&
+                Objects.equal(startedBy, that.startedBy) &&
                 Objects.equal(status, that.status) &&
                 Objects.equal(createTime, that.createTime) &&
                 Objects.equal(startTime, that.startTime) &&
@@ -286,7 +297,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, nodeName, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobInstanceDto, jobExecutionParamDtoes);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, hostName, nodeName, startedBy, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobInstanceDto, jobExecutionParamDtoes);
     }
 
     @Override
@@ -299,6 +310,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 .add("jobPid", jobPid)
                 .add("hostName", hostName)
                 .add("nodeName", nodeName)
+                .add("startedBy", startedBy)
                 .add("status", status)
                 .add("createTime", createTime)
                 .add("startTime", startTime)

@@ -59,6 +59,8 @@ public class ExecutionParameter {
 
     public static final String NODE_NAME = "agent.nodeName";
 
+    public static final String JOB_STARTED_BY = "user.name";
+
     public static String getHostName(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(HOST_NAME);
     }
@@ -81,6 +83,10 @@ public class ExecutionParameter {
 
     public static String getJobVersion(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_VERSION_NAME);
+    }
+
+    public static String getJobStartedBy(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_STARTED_BY);
     }
 
     public static String getFailedExitCode(JobExecution jobExecution) {

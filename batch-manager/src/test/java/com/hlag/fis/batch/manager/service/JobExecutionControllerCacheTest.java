@@ -99,15 +99,15 @@ public class JobExecutionControllerCacheTest {
 
     @Before
     public void setup() {
-		jobExecutionInfo1.setId(UUID.randomUUID().toString());
-		jobExecutionInfo2.setId(UUID.randomUUID().toString());
+        jobExecutionInfo1.setId(UUID.randomUUID().toString());
+        jobExecutionInfo2.setId(UUID.randomUUID().toString());
 
-		// using real mock for mockito stuff
-		reset(mockJobExecutionRepository); // needed for tests where spring config is cached (= mock is not recreated between tests)
-		when(mockJobExecutionRepository.findById(eq(jobExecutionInfo1.getId()))).thenReturn(Optional.of(jobExecutionInfo1));//NPE Here
-		when(mockJobExecutionRepository.findById(eq(jobExecutionInfo2.getId()))).thenReturn(Optional.of(jobExecutionInfo2));
-		when(mockJobExecutionRepository.findAllNotDeleted(eq(PageRequest.of(0, 10)))).thenReturn(new PageImpl<>(Arrays.asList(jobExecutionInfo1, jobExecutionInfo2)));
-	}
+        // using real mock for mockito stuff
+        reset(mockJobExecutionRepository); // needed for tests where spring config is cached (= mock is not recreated between tests)
+        when(mockJobExecutionRepository.findById(eq(jobExecutionInfo1.getId()))).thenReturn(Optional.of(jobExecutionInfo1));//NPE Here
+        when(mockJobExecutionRepository.findById(eq(jobExecutionInfo2.getId()))).thenReturn(Optional.of(jobExecutionInfo2));
+        when(mockJobExecutionRepository.findAll(eq(PageRequest.of(0, 10)))).thenReturn(new PageImpl<>(Arrays.asList(jobExecutionInfo1, jobExecutionInfo2)));
+    }
 
     @Test
     public void whenFindByJobExecutionId_thenCachedValueIsReturned() {
@@ -133,7 +133,7 @@ public class JobExecutionControllerCacheTest {
 
         // List invocation
         Page<JobExecutionInfo> listResult = service.allJobExecutions(PageRequest.of(0, 10));
-        verify(mockJobExecutionRepository, times(1)).findAllNotDeleted(PageRequest.of(0, 10));
+        verify(mockJobExecutionRepository, times(1)).findAll(PageRequest.of(0, 10));
         assertThat(listResult.getTotalElements()).isEqualTo(2L);
         assertThat(listResult.getContent().get(0)).isEqualTo(jobExecutionInfo1);
         assertThat(listResult.getContent().get(1)).isEqualTo(jobExecutionInfo2);

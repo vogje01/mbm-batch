@@ -67,6 +67,11 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     @Column(name = "STATUS")
     private String status;
     /**
+     * Job status
+     */
+    @Column(name = "STARTED_BY")
+    private String startedBy;
+    /**
      * Start time
      */
     @Column(name = "START_TIME")
@@ -91,11 +96,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
      */
     @Column(name = "RUNNING_TIME")
     private Long runningTime;
-    /**
-     * Deleted flag
-     */
-    @Column(name = "DELETED")
-    private boolean deleted = false;
     /**
      * Exit code form JSR-351
      */
@@ -153,6 +153,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();
         this.nodeName = jobExecutionDto.getNodeName();
+        this.startedBy = jobExecutionDto.getStartedBy();
         this.createTime = jobExecutionDto.getCreateTime();
         this.startTime = jobExecutionDto.getStartTime();
         this.lastUpdated = jobExecutionDto.getLastUpdated();
@@ -229,6 +230,14 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.status = status;
     }
 
+    public String getStartedBy() {
+        return startedBy;
+    }
+
+    public void setStartedBy(String startedBy) {
+        this.startedBy = startedBy;
+    }
+
     public Date getStartTime() {
         return startTime;
     }
@@ -267,14 +276,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
 
     public void setRunningTime(Long runningTime) {
         this.runningTime = runningTime;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getExitCode() {
@@ -373,14 +374,14 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         JobExecutionInfo that = (JobExecutionInfo) o;
-        return deleted == that.deleted &&
-                Objects.equal(id, that.id) &&
+        return Objects.equal(id, that.id) &&
                 Objects.equal(jobExecutionId, that.jobExecutionId) &&
                 Objects.equal(jobPid, that.jobPid) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(status, that.status) &&
+                Objects.equal(startedBy, that.startedBy) &&
                 Objects.equal(startTime, that.startTime) &&
                 Objects.equal(createTime, that.createTime) &&
                 Objects.equal(endTime, that.endTime) &&
@@ -398,7 +399,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startTime, createTime, endTime, lastUpdated, runningTime, deleted, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
+        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startedBy, startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
     }
 
     @Override
@@ -411,12 +412,12 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 .add("nodeName", nodeName)
                 .add("jobVersion", jobVersion)
                 .add("status", status)
+                .add("startedBy", startedBy)
                 .add("startTime", startTime)
                 .add("createTime", createTime)
                 .add("endTime", endTime)
                 .add("lastUpdated", lastUpdated)
                 .add("runningTime", runningTime)
-                .add("deleted", deleted)
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("jobConfigurationLocation", jobConfigurationLocation)

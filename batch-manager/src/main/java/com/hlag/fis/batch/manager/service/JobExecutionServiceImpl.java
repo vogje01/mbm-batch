@@ -55,7 +55,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     public Page<JobExecutionInfo> allJobExecutions(Pageable pageable) {
-        return jobExecutionRepository.findAllNotDeleted(pageable);
+        return jobExecutionRepository.findAll(pageable);
     }
 
     @Override
@@ -76,11 +76,10 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 		Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionRepository.findById(jobExecutionId);
         if (jobExecutionInfoOptional.isPresent()) {
 			JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
-			jobExecutionInfo.setDeleted(true);
-			jobExecutionRepository.save(jobExecutionInfo);
-			jobExecutionInfo.getStepExecutionInfos().forEach(s -> {
+            jobExecutionInfo.getStepExecutionInfos().forEach(s -> {
                 stepExecutionRepository.delete(s);
             });
+            jobExecutionRepository.delete(jobExecutionInfo);
 		}
     }
 

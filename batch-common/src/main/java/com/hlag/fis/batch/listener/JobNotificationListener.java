@@ -100,6 +100,7 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setJobExecutionId(jobExecution.getId());
         jobExecutionDto.setHostName(getHostName(jobExecution));
         jobExecutionDto.setNodeName(getNodeName(jobExecution));
+        jobExecutionDto.setStartedBy(getJobStartedBy(jobExecution));
         jobExecutionDto.setRunningTime((new Date().getTime() - jobExecution.getStartTime().getTime()));
     }
 
