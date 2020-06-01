@@ -6,6 +6,7 @@ import com.google.common.base.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.time.Instant;
 
 /**
  * Job execution log messages.
@@ -44,6 +45,11 @@ public class JobExecutionInstant {
 
     public JobExecutionInstant() {
         // Intentionally empty
+    }
+
+    public JobExecutionInstant(Instant instant) {
+        this.epochSecond = instant.getEpochSecond();
+        this.nanoOfSecond = (long) instant.getNano();
     }
 
     public Long getEpochSecond() {

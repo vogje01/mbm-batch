@@ -8,7 +8,7 @@ import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import AgentJobScheduleView from "./agent-job-schedule-list";
 import {Toolbar} from "devextreme-react/toolbar";
-import {getCreatedAt, getFormattedTime, getLastPing, getLastStart, getModifiedAt} from "../../utils/date-time-util";
+import {getCreatedAt, getLastPing, getLastStart, getModifiedAt} from "../../utils/date-time-util";
 
 class AgentView extends React.Component {
 
@@ -78,9 +78,9 @@ class AgentView extends React.Component {
                                         <SimpleItem dataField="pid" edtitorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                         <SimpleItem dataField="lastStart" editorType="dxTextBox"
-                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastStart'), readOnly: true}}/>
+                                                    edtitorOptions={{value: getLastStart(this.state.currentAgent), readOnly: true}}/>
                                         <SimpleItem dataField="lastPing" editorType="dxTextBox"
-                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
+                                                    edtitorOptions={{value: getLastPing(this.state.currentAgent), readOnly: true}}/>
                                     </GroupItem>
                                     <GroupItem caption={"Schedules"}>
                                         <AgentJobScheduleView agent={this.state.currentAgent}/>

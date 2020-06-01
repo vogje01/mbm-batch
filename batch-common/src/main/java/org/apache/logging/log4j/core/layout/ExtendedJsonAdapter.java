@@ -31,7 +31,7 @@ public class ExtendedJsonAdapter implements ExtendedJson {
 
     public ExtendedJsonAdapter() {
         try {
-            mixedFields.put("jobName", InetAddress.getLocalHost().getHostName());
+            mixedFields.put("hostName", InetAddress.getLocalHost().getHostName());
             mixedFields.put("jobPid", ProcessHandle.current().pid());
         } catch (UnknownHostException e) {
             LOG.warn("Could not get hostname", e);

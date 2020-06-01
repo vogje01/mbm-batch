@@ -3,11 +3,11 @@ package com.hlag.fis.batch.listener;
 import com.hlag.fis.batch.domain.StepExecutionInfo;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
-import org.slf4j.Logger;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,8 @@ import static java.text.MessageFormat.format;
 @Component
 public class ChunkNotificationListener implements ChunkListener {
 
-    private static final Logger logger = BatchLogger.getStepLogger(ChunkNotificationListener.class);
+    @BatchLogging
+    private static BatchLoggerJob logger;
 
     private ModelMapper modelMapper;
 

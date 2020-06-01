@@ -98,7 +98,7 @@ public class PerformanceConsolidationConfiguration {
     }
 
     @Bean
-    @Qualifier("batch")
+    @Primary
     public PlatformTransactionManager batchTransactionManager() {
         return new ResourcelessTransactionManager();
     }

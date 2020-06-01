@@ -35,4 +35,3 @@ Configuration:
         level: debug
         AppenderRef:
           - ref: File_Appender
-          - ref: Kafka_Appender

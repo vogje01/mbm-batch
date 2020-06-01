@@ -50,6 +50,12 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
 
+    @Column(name = "HOST_NAME")
+    private String hostName;
+
+    @Column(name = "NODE_NAME")
+    private String nodeName;
+
     @Column(name = "PID")
     private Long jobPid;
 
@@ -87,6 +93,9 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     @Enumerated(EnumType.STRING)
     private JobLogMessageLevel level;
 
+    @Column(name = "TIMESTAMP")
+    private Long Timestamp;
+
     @Embedded
     private JobExecutionInstant instant;
 
@@ -99,6 +108,22 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public Long getJobPid() {
@@ -197,12 +222,23 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
         this.level = level;
     }
 
+    public Long getTimestamp() {
+        return Timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        Timestamp = timestamp;
+    }
+
     public JobExecutionInstant getInstant() {
         return instant;
     }
 
     public Instant getJavaInstant() {
-        return Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
+        if (instant != null) {
+            return Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
+        }
+        return null;
     }
 
     public void setInstant(JobExecutionInstant instant) {
@@ -218,32 +254,13 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("jobPid", jobPid)
-                .add("jobName", jobName)
-                .add("jobUuid", jobUuid)
-                .add("stepName", stepName)
-                .add("stepUuid", stepUuid)
-                .add("jobVersion", jobVersion)
-                .add("thread", thread)
-                .add("threadId", threadId)
-                .add("threadPriority", threadPriority)
-                .add("loggerName", loggerName)
-                .add("message", message)
-                .add("level", level)
-                .add("instant", instant)
-                .add("thrown", thrown)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JobExecutionLog that = (JobExecutionLog) o;
         return Objects.equal(id, that.id) &&
+                Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(jobPid, that.jobPid) &&
                 Objects.equal(jobName, that.jobName) &&
                 Objects.equal(jobUuid, that.jobUuid) &&
@@ -262,6 +279,30 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, jobPid, jobName, jobUuid, stepName, stepUuid, jobVersion, thread, threadId, threadPriority, loggerName, message, level, instant, thrown);
+        return Objects.hashCode(id, hostName, nodeName, jobPid, jobName, jobUuid, stepName, stepUuid, jobVersion, thread, threadId, threadPriority, loggerName, message, level, instant, thrown);
     }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("hostName", hostName)
+                .add("nodeName", nodeName)
+                .add("jobPid", jobPid)
+                .add("jobName", jobName)
+                .add("jobUuid", jobUuid)
+                .add("stepName", stepName)
+                .add("stepUuid", stepUuid)
+                .add("jobVersion", jobVersion)
+                .add("thread", thread)
+                .add("threadId", threadId)
+                .add("threadPriority", threadPriority)
+                .add("loggerName", loggerName)
+                .add("message", message)
+                .add("level", level)
+                .add("instant", instant)
+                .add("thrown", thrown)
+                .toString();
+    }
+
 }

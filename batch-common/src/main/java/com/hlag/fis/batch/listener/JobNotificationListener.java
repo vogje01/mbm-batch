@@ -2,11 +2,11 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobExecutionDto;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import com.hlag.fis.batch.util.ModelConverter;
-import org.slf4j.Logger;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -35,7 +35,8 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobNotificationListener implements JobExecutionListener {
 
-    private static final Logger logger = BatchLogger.getLogger(JobNotificationListener.class);
+    @BatchLogging
+    private static BatchLoggerJob logger;
 
     private JobExecutionDto jobExecutionDto = new JobExecutionDto();
 
@@ -62,6 +63,8 @@ public class JobNotificationListener implements JobExecutionListener {
      */
     @Override
     public void beforeJob(@NotNull JobExecution jobExecution) {
+        logger.setJobUuid(getJobId(jobExecution));
+        logger.setJobVersion(getJobVersion(jobExecution));
         logger.info(format("Job starting - name: {0} pid: {1}", getJobName(jobExecution), getJobPid(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
         addAdditionalProperties(jobExecution);

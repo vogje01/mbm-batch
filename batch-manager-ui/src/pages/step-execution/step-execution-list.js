@@ -7,6 +7,7 @@ import {getCreatedAt, getEndTime, getLastUpdatedTime, getModifiedAt, getRunningT
 import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
+import StepExecutionLogList from "./step-execution-log-list";
 
 class StepExecutionList extends React.Component {
     constructor(props) {
@@ -129,7 +130,7 @@ class StepExecutionList extends React.Component {
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getRunningTime(this.state.currentStepExecution)}}/>
                                     </GroupItem>
-                                    <GroupItem colCount={2} caption={"Counter"}>
+                                    <GroupItem colSpan={2} colCount={4} caption={"Counter"}>
                                         <SimpleItem dataField="totalCount" readOnly={true}/>
                                         <SimpleItem dataField="readCount" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: this.getReadCount(this.state.currentStepExecution)}}/>
@@ -144,7 +145,8 @@ class StepExecutionList extends React.Component {
                                         <SimpleItem dataField="commitCount" readOnly={true}/>
                                         <SimpleItem dataField="rollbackCount" readOnly={true}/>
                                     </GroupItem>
-                                    <GroupItem colSpan={4} caption={"Logs"}>
+                                    <GroupItem colSpan={2} caption={"Logs"}>
+                                        <StepExecutionLogList stepExecution={this.state.currentStepExecution}/>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>

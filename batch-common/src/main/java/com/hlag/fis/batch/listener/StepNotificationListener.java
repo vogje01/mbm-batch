@@ -2,11 +2,11 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -28,7 +28,8 @@ import static java.text.MessageFormat.format;
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
-    private static final Logger logger = BatchLogger.getStepLogger(StepNotificationListener.class);
+    @BatchLogging
+    private static BatchLoggerJob logger;
 
     private ModelMapper modelMapper;
 
@@ -52,8 +53,8 @@ public class StepNotificationListener implements StepExecutionListener {
     public void beforeStep(StepExecution stepExecution) {
 
         String stepUuid = UUID.randomUUID().toString();
-        BatchLogger.setStepId(stepUuid);
-        BatchLogger.setStepName(stepExecution.getStepName());
+        logger.setStepUuid(stepUuid);
+        logger.setStepName(stepExecution.getStepName());
         logger.info(format("Step starting - name: {0} uuid: {1}", getStepName(stepExecution), stepUuid));
 
         // Fill in context

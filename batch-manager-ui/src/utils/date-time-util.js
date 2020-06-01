@@ -1,12 +1,8 @@
 import * as moment from 'moment';
-import 'moment/locale/pt-br';
+import 'moment/locale/en-gb';
 
 export const dateTimeFormat = 'DD.MM.YYYY HH:mm:ss';
 export const dateTimeFormatMillis = 'DD.MM.YYYY HH:mm:ss.SSS';
-
-export const formatDateTime = (dateTime) => {
-    return moment().format(dateTimeFormat);
-};
 
 export const convertUTCToLocalDateTime = (dateTime) => {
     return moment(dateTime).format(dateTimeFormat)
@@ -21,7 +17,7 @@ export const getCurrentDateTime = () => {
 };
 
 export const zeroPad = (num, places) => {
-    var zero = places - num.toString().length + 1;
+    let zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join("0") + num;
 };
 
@@ -76,10 +72,6 @@ export const getCreatedAt = (rowData) => {
 
 export const getModifiedAt = (rowData) => {
     return rowData && rowData.modifiedAt ? convertUTCToLocalDateTime(rowData.modifiedAt) : null;
-}
-
-export const getFormattedTime = (rowData, attribute) => {
-    return rowData && rowData[attribute] ? convertUTCToLocalDateTime(rowData[attribute]) : null;
 }
 
 export const getRangeStart = (scale) => {
