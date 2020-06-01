@@ -202,7 +202,7 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     }
 
     public Instant getJavaInstant() {
-        return Instant.ofEpochSecond(instant.getEpochSecond());
+        return Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
     }
 
     public void setInstant(JobExecutionInstant instant) {

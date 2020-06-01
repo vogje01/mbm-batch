@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import 'moment/locale/pt-br';
 
 export const dateTimeFormat = 'DD.MM.YYYY HH:mm:ss';
+export const dateTimeFormatMillis = 'DD.MM.YYYY HH:mm:ss.SSS';
 
 export const formatDateTime = (dateTime) => {
     return moment().format(dateTimeFormat);
@@ -9,6 +10,10 @@ export const formatDateTime = (dateTime) => {
 
 export const convertUTCToLocalDateTime = (dateTime) => {
     return moment(dateTime).format(dateTimeFormat)
+};
+
+export const convertUTCToLocalDateTimeMillis = (dateTime) => {
+    return moment(dateTime).format(dateTimeFormatMillis)
 };
 
 export const getCurrentDateTime = () => {
@@ -54,7 +59,7 @@ export const getLastExecutionTime = (jobSchedule) => {
 };
 
 export const getTimestamp = (rowData) => {
-    return rowData && rowData.timestamp ? convertUTCToLocalDateTime(rowData.timestamp) : null;
+    return rowData && rowData.timestamp ? convertUTCToLocalDateTimeMillis(rowData.timestamp) : null;
 };
 
 export const getLastStart = (rowData) => {
