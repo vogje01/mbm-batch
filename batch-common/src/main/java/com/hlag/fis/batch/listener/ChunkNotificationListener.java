@@ -3,7 +3,7 @@ package com.hlag.fis.batch.listener;
 import com.hlag.fis.batch.domain.StepExecutionInfo;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
-import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import org.modelmapper.ModelMapper;
@@ -20,7 +20,7 @@ import static java.text.MessageFormat.format;
 public class ChunkNotificationListener implements ChunkListener {
 
     @BatchLogging
-    private static BatchLoggerJob logger;
+    private static BatchLogger logger;
 
     private ModelMapper modelMapper;
 

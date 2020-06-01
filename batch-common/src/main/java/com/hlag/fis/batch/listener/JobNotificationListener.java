@@ -2,7 +2,7 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobExecutionDto;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
-import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
@@ -36,7 +36,7 @@ import static java.text.MessageFormat.format;
 public class JobNotificationListener implements JobExecutionListener {
 
     @BatchLogging
-    private static BatchLoggerJob logger;
+    private static BatchLogger logger;
 
     private JobExecutionDto jobExecutionDto = new JobExecutionDto();
 

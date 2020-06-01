@@ -1,9 +1,7 @@
 package com.hlag.fis.batch.builder;
 
-import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.logging.BatchLogging;
-import com.hlag.fis.batch.util.NetworkUtils;
-import org.apache.logging.log4j.core.layout.ExtendedJsonAdapter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -17,7 +15,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.hlag.fis.batch.util.ExecutionParameter.*;
@@ -34,19 +31,19 @@ import static java.text.MessageFormat.format;
 public class BatchJobRunner {
 
     @BatchLogging
-    private BatchLoggerJob logger;
+    private BatchLogger logger;
 
     private JobLauncher jobLauncher;
 
-    private String jobName = "System";
+    private String nodeName;
 
-    private Job job;
+    private String jobName;
 
     private Long jobPid;
 
-    private String jobUuid;
+    private Job job;
 
-    private String nodeName;
+    private String jobUuid;
 
     private String jobVersion;
 
@@ -55,23 +52,17 @@ public class BatchJobRunner {
     private ApplicationArguments applicationArguments;
 
     @Autowired
-    public BatchJobRunner(JobLauncher jobLauncher, ApplicationArguments applicationArguments, BuildProperties buildProperties) {
+    public BatchJobRunner(JobLauncher jobLauncher, ApplicationArguments applicationArguments, BuildProperties buildProperties, String nodeName) {
         this.jobLauncher = jobLauncher;
         this.applicationArguments = applicationArguments;
-        this.nodeName = Objects.requireNonNull(NetworkUtils.getHostName());
-        this.jobPid = ProcessHandle.current().pid();
         this.jobUuid = UUID.randomUUID().toString();
+        this.jobPid = ProcessHandle.current().pid();
         this.jobVersion = buildProperties.getVersion();
-        logger.setJobName(jobName);
-        logger.setJobUuid(jobUuid);
-        logger.setJobVersion(jobVersion);
-        logger.setClazz(BatchJobRunner.class);
-        //logger = BatchLogger.getJobLogger(jobName, jobUuid, jobVersion, BatchJobRunner.class);
+        this.nodeName = nodeName;
     }
 
     public BatchJobRunner jobName(String jobName) {
         this.jobName = jobName;
-        logger.setJobName(jobName);
         return this;
     }
 
@@ -86,6 +77,9 @@ public class BatchJobRunner {
     }
 
     public void start() {
+        logger.setJobName(jobName);
+        logger.setJobUuid(jobUuid);
+        logger.setJobVersion(jobVersion);
         logger.info(format("Starting batch job - jobName: {0}", jobName));
         try {
             jobLauncher.run(job, getJobParameters());
@@ -96,10 +90,6 @@ public class BatchJobRunner {
 
     private JobParameters getJobParameters() {
         long currentTime = System.currentTimeMillis();
-        ExtendedJsonAdapter.addMixedFields(JOB_PID_NAME, jobPid);
-        ExtendedJsonAdapter.addMixedFields(JOB_NAME_NAME, jobName);
-        ExtendedJsonAdapter.addMixedFields(JOB_UUID_NAME, jobUuid);
-        ExtendedJsonAdapter.addMixedFields(JOB_VERSION_NAME, jobVersion);
 
         // Add command line arguments
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder()

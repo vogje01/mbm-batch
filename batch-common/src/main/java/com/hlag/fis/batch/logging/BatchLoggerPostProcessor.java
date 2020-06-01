@@ -25,14 +25,14 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
 
     private String hostName;
 
-    private BatchLoggerJob jobLogger;
+    private BatchLogger jobLogger;
 
     @Autowired
     BatchLoggerPostProcessor(BatchLogProducer batchLogProducer, String nodeName, String hostName) {
         this.hostName = hostName;
         this.nodeName = nodeName;
         this.batchLogProducer = batchLogProducer;
-        jobLogger = new BatchLoggerJob(hostName, nodeName, batchLogProducer);
+        jobLogger = new BatchLogger(hostName, nodeName, batchLogProducer);
     }
 
     /* (non-Javadoc)
@@ -46,7 +46,7 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
         for (Field field : fields) {
             if (Logger.class.isAssignableFrom(field.getType()) && field.getAnnotation(BatchLogging.class) != null) {
 
-                logger.debug("Attempting to inject a SLF4J logger on bean: " + bean.getClass());
+                if (logger.isTraceEnabled()) logger.trace("Attempting to inject a SLF4J logger on bean: " + bean.getClass());
 
                 field.setAccessible(true);
                 BatchLogging batchLogging = field.getAnnotation(BatchLogging.class);
@@ -55,7 +55,7 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
                     jobLogger.setJobName(batchLogging.jobName());
                     jobLogger.setStepName(batchLogging.stepName());
                     field.set(bean, jobLogger);
-                    logger.debug("Successfully injected a SLF4J logger on bean: " + bean.getClass());
+                    if (logger.isTraceEnabled()) logger.debug("Successfully injected a SLF4J logger on bean: " + bean.getClass());
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     logger.warn("Could not inject logger for class: " + bean.getClass(), e);
                 }

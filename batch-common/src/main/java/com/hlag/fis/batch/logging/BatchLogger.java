@@ -8,7 +8,7 @@ import org.slf4j.Marker;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BatchLoggerJob implements Logger {
+public class BatchLogger implements Logger {
 
     private String jobName;
 
@@ -32,7 +32,7 @@ public class BatchLoggerJob implements Logger {
 
     private String hostName;
 
-    public BatchLoggerJob(String hostName, String nodeName, BatchLogProducer batchLogProducer) {
+    public BatchLogger(String hostName, String nodeName, BatchLogProducer batchLogProducer) {
         this.hostName = hostName;
         this.nodeName = nodeName;
         this.batchLogProducer = batchLogProducer;
