@@ -14,7 +14,7 @@ import {
     Selection,
     Sorting
 } from "devextreme-react/data-grid";
-import {getCreateTime, getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
+import {getCreatedAt, getCreateTime, getEndTime, getLastUpdatedTime, getModifiedAt, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
@@ -124,10 +124,12 @@ class JobExecutionList extends React.Component {
                                                     editorOptions={{value: getEndTime(this.state.currentJobExecution), readOnly: true}}/>
                                         <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getCreateTime(this.state.currentJobExecution), readOnly: true}}/>
-                                        <SimpleItem dataField="lastUpdated" readOnly={true} editorType="dxTextBox"
+                                        <SimpleItem dataField="lastUpdated" editorType="dxTextBox"
                                                     editorOptions={{value: getLastUpdatedTime(this.state.currentJobExecution), readOnly: true}}/>
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
+                                        <SimpleItem dataField="startedBy" readOnly={true} editorType="dxTextBox"
+                                                    editorOptions={{value: this.state.currentJobExecution.startedBy}}/>
                                     </GroupItem>
                                     <GroupItem colSpan={2} caption={"Parameters"}>
                                         <JobExecutionParamList jobExecution={this.state.currentJobExecution}/>
@@ -137,9 +139,11 @@ class JobExecutionList extends React.Component {
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getCreatedAt(this.state.currentJobExecution), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getModifiedAt(this.state.currentJobExecution), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>
@@ -280,6 +284,9 @@ class JobExecutionList extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={100}/>
+                            <Column
+                                dataField={'startedBy'}
+                                visible={false}/>
                             <Column
                                 dataField={'createdBy'}
                                 dataType={'string'}

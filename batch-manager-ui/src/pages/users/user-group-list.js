@@ -17,6 +17,7 @@ import {UserGroupDataSource} from "./user-group-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
 import UsergroupUserView from "./usergroup-user-list";
+import {getFormattedTime} from "../../utils/date-time-util";
 
 class UserGroupList extends React.Component {
 
@@ -76,15 +77,34 @@ class UserGroupList extends React.Component {
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Users"}>
                                         <UsergroupUserView userGroup={this.state.currentUserGroup}/>
                                     </SimpleItem>
                                 </Form>
                             </Editing>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit user group',
+                                        icon: 'material-icons-outlined ic-edit',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete user group',
+                                        icon: 'material-icons-outlined ic-delete',
+                                        visible: this.isDeleteVisible
+                                    }]}/>
                             <Column
                                 caption={'Name'}
                                 dataField={'name'}
@@ -124,23 +144,6 @@ class UserGroupList extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit user group',
-                                        icon: 'material-icons-outlined ic-edit',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete user group',
-                                        icon: 'material-icons-outlined ic-delete',
-                                        visible: this.isDeleteVisible
-                                    }]}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>

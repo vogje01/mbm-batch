@@ -15,8 +15,6 @@ import {
     UserListPage
 } from './pages';
 
-import {AuthProvider} from "./contexts/auth";
-
 const routes = [
     {
         path: '/jobexecutions',
@@ -69,10 +67,6 @@ const routes = [
     {
         path: '/home',
         component: HomePage
-    },
-    {
-        path: '/login',
-        component: AuthProvider
     }
 ];
 

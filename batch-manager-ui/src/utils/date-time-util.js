@@ -53,17 +53,29 @@ export const getLastExecutionTime = (jobSchedule) => {
     return jobSchedule && jobSchedule.lastExecution ? convertUTCToLocalDateTime(jobSchedule.lastExecution) : null;
 };
 
-export const getLastStartTime = (agent) => {
-    return agent && agent.lastStart ? convertUTCToLocalDateTime(agent.lastStart) : null;
-};
-
-export const getLastPingTime = (agent) => {
-    return agent && agent.lastPing ? convertUTCToLocalDateTime(agent.lastPing) : null;
-};
-
 export const getTimestamp = (rowData) => {
     return rowData && rowData.timestamp ? convertUTCToLocalDateTime(rowData.timestamp) : null;
 };
+
+export const getLastStart = (rowData) => {
+    return rowData && rowData.lastStart ? convertUTCToLocalDateTime(rowData.lastStart) : null;
+};
+
+export const getLastPing = (rowData) => {
+    return rowData && rowData.lastPing ? convertUTCToLocalDateTime(rowData.lastPing) : null;
+};
+
+export const getCreatedAt = (rowData) => {
+    return rowData && rowData.createdAt ? convertUTCToLocalDateTime(rowData.createdAt) : null;
+}
+
+export const getModifiedAt = (rowData) => {
+    return rowData && rowData.modifiedAt ? convertUTCToLocalDateTime(rowData.modifiedAt) : null;
+}
+
+export const getFormattedTime = (rowData, attribute) => {
+    return rowData && rowData[attribute] ? convertUTCToLocalDateTime(rowData[attribute]) : null;
+}
 
 export const getRangeStart = (scale) => {
     return moment().startOf(scale).unix();

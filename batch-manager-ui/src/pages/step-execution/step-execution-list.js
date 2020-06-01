@@ -3,7 +3,7 @@ import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging,
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
-import {getEndTime, getLastUpdatedTime, getRunningTime, getStartTime} from "../../utils/date-time-util";
+import {getCreatedAt, getEndTime, getLastUpdatedTime, getModifiedAt, getRunningTime, getStartTime} from "../../utils/date-time-util";
 import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
@@ -148,9 +148,11 @@ class StepExecutionList extends React.Component {
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getCreatedAt(this.state.currentStepExecution), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getModifiedAt(this.state.currentStepExecution), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>

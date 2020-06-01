@@ -48,12 +48,12 @@ export const navigation = [
             {
                 text: 'Agents',
                 path: '/performanceagent',
-                icon: 'material-icons-outlined ic-performance'
+                icon: 'material-icons-outlined ic-agent'
             },
             {
                 text: 'Jobs',
                 path: '/performancejob',
-                icon: 'material-icons-outlined ic-performance'
+                icon: 'material-icons-outlined ic-dashboard'
             }
         ]
     },

@@ -21,6 +21,7 @@ import {JobGroupDataSource} from "../job-group/job-group-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
+import {getCreatedAt, getModifiedAt} from "../../utils/date-time-util";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -173,9 +174,11 @@ class JobDefinitionList extends React.Component {
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getCreatedAt(this.state.currentJobDefinition), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getModifiedAt(this.state.currentJobDefinition), readOnly: true}}/>
                                     </GroupItem>
                                     <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
                                         <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>

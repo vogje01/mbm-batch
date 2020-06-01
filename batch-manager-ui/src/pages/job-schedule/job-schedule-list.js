@@ -11,7 +11,7 @@ import {JobDefinitionDataSource} from "../job-definition/job-definition-data-sou
 import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
-import {getLastExecutionTime, getNextExecutionTime} from "../../utils/date-time-util";
+import {getCreatedAt, getLastExecutionTime, getModifiedAt, getNextExecutionTime} from "../../utils/date-time-util";
 
 class JobSchedulerList extends React.Component {
 
@@ -104,9 +104,11 @@ class JobSchedulerList extends React.Component {
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getCreatedAt(this.state.currentJobSchedule), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getModifiedAt(this.state.currentJobSchedule), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>

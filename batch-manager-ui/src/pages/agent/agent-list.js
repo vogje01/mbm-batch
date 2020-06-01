@@ -8,6 +8,7 @@ import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import AgentJobScheduleView from "./agent-job-schedule-list";
 import {Toolbar} from "devextreme-react/toolbar";
+import {getCreatedAt, getFormattedTime, getLastPing, getLastStart, getModifiedAt} from "../../utils/date-time-util";
 
 class AgentView extends React.Component {
 
@@ -76,17 +77,21 @@ class AgentView extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="pid" edtitorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                                        <SimpleItem dataField="lastStart" edtitorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="lastPing" edtitorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="lastStart" editorType="dxTextBox"
+                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastStart'), readOnly: true}}/>
+                                        <SimpleItem dataField="lastPing" editorType="dxTextBox"
+                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
                                     </GroupItem>
                                     <GroupItem caption={"Schedules"}>
                                         <AgentJobScheduleView agent={this.state.currentAgent}/>
                                     </GroupItem>
                                     <GroupItem caption={"Auditing"} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getCreatedAt(this.state.currentAgent), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                                    editorOptions={{value: getModifiedAt(this.state.currentAgent), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>
@@ -130,6 +135,7 @@ class AgentView extends React.Component {
                                 allowFiltering={false}
                                 width={80}/>
                             <Column
+                                calculateCellValue={getLastStart}
                                 dataField={'lastStart'}
                                 caption={'Last Start'}
                                 dataType={'datetime'}
@@ -139,6 +145,7 @@ class AgentView extends React.Component {
                                 allowFiltering={false}
                                 width={140}/>
                             <Column
+                                calculateCellValue={getLastPing}
                                 dataField={'lastPing'}
                                 caption={'Last Ping'}
                                 dataType={'datetime'}
