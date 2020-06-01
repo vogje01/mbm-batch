@@ -3,7 +3,7 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.jobcount;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class JobCountStep {
 
     private static final String STEP_NAME = "Job count";
 
-    @BatchLogging(stepName = STEP_NAME)
+    @BatchStepLogger(value = STEP_NAME)
     private static Logger logger = LoggerFactory.getLogger(JobCountStep.class);
 
     @Value("${consolidation.batch.jobCount.chunkSize}")

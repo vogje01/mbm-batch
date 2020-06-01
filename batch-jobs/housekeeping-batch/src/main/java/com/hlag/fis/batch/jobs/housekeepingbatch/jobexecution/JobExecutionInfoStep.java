@@ -2,7 +2,7 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class JobExecutionInfoStep {
 
     private static final String STEP_NAME = "Housekeeping JobExecutionInfo";
 
-    @BatchLogging(stepName = STEP_NAME)
+    @BatchStepLogger(value = STEP_NAME)
     private static Logger logger = LoggerFactory.getLogger(JobExecutionInfoStep.class);
 
     @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")

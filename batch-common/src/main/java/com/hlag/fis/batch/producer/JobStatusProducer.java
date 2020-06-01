@@ -2,7 +2,7 @@ package com.hlag.fis.batch.producer;
 
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.listener.StepNotificationListener;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchJobLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobStatusProducer {
 
-    @BatchLogging
+    @BatchJobLogger
     private static Logger logger = LoggerFactory.getLogger(StepNotificationListener.class);
 
     @Value(value = "${kafka.jobStatus.topic}")

@@ -2,7 +2,7 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.jobcount;
 
 import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobCountProcessor implements ItemProcessor<Object[], AgentPerformance> {
 
-    @BatchLogging
-    private static final Logger logger = LoggerFactory.getLogger(JobCountProcessor.class);
+    @BatchStepLogger(value = "Job count")
+    private static Logger logger = LoggerFactory.getLogger(JobCountProcessor.class);
 
     private AgentPerformanceRepository agentPerformanceRepository;
 

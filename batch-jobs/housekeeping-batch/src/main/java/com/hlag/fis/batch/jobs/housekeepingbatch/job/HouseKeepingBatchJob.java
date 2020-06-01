@@ -6,7 +6,7 @@ import com.hlag.fis.batch.builder.BatchJobRunner;
 import com.hlag.fis.batch.jobs.housekeepingbatch.agentperformance.AgentPerformanceStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution.JobExecutionInfoStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog.JobExecutionLogStep;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchJobLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -22,7 +22,7 @@ public class HouseKeepingBatchJob {
 
     private static final String JOB_NAME = "Housekeeping Batch";
 
-    @BatchLogging(jobName = JOB_NAME)
+    @BatchJobLogger(value = JOB_NAME)
     private static Logger logger = LoggerFactory.getLogger(HouseKeepingBatchJob.class);
 
     private BatchJobRunner batchJobRunner;

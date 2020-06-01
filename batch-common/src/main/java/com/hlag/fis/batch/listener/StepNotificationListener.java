@@ -2,8 +2,8 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
+import com.hlag.fis.batch.logging.BatchJobLogger;
 import com.hlag.fis.batch.logging.BatchLogger;
-import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.modelmapper.ModelMapper;
@@ -28,7 +28,7 @@ import static java.text.MessageFormat.format;
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
-    @BatchLogging
+    @BatchJobLogger
     private static BatchLogger logger;
 
     private ModelMapper modelMapper;
@@ -93,6 +93,10 @@ public class StepNotificationListener implements StepExecutionListener {
 
         // Send to Kafka
         jobStatusProducer.sendTopic(new JobStatusDto(STEP_FINISHED, stepExecutionDto));
+
+        // Remove step logger informations
+        logger.setStepName(null);
+        logger.setStepUuid(null);
         return stepExecution.getExitStatus();
     }
 

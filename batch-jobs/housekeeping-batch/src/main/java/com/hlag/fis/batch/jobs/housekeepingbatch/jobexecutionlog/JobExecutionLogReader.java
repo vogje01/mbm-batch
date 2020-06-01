@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog;
 
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobExecutionLogReader {
 
-    @BatchLogging(jobName = "Housekeeping JobExecutionLog")
+    @BatchStepLogger(value = "Housekeeping JobExecutionLog")
     private static Logger logger = LoggerFactory.getLogger(JobExecutionLogReader.class);
 
     @Value("${houseKeeping.batch.jobExecutionLog.chunkSize}")

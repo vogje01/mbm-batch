@@ -28,13 +28,7 @@ public class BatchLogger implements Logger {
 
     private BatchLogProducer batchLogProducer;
 
-    private String nodeName;
-
-    private String hostName;
-
     public BatchLogger(String hostName, String nodeName, BatchLogProducer batchLogProducer) {
-        this.hostName = hostName;
-        this.nodeName = nodeName;
         this.batchLogProducer = batchLogProducer;
         jobExecutionLog.setJobPid(ProcessHandle.current().pid());
         jobExecutionLog.setHostName(hostName);
@@ -109,6 +103,12 @@ public class BatchLogger implements Logger {
     @Override
     public void trace(String s) {
         logger.trace(s);
+        if (logger.isTraceEnabled()) {
+            jobExecutionLog.setMessage(s);
+            jobExecutionLog.setLevel(JobLogMessageLevel.TRACE);
+            jobExecutionLog.setTimestamp(System.currentTimeMillis());
+            batchLogProducer.sendBatchLog(jobExecutionLog);
+        }
     }
 
     @Override
@@ -169,11 +169,12 @@ public class BatchLogger implements Logger {
     @Override
     public void debug(String s) {
         logger.debug(s);
-        jobExecutionLog.setLevel(JobLogMessageLevel.DEBUG);
-        jobExecutionLog.setMessage(s);
-        jobExecutionLog.setTimestamp(System.currentTimeMillis());
-        //jobExecutionLog.setInstant(new JobExecutionInstant(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
-        batchLogProducer.sendBatchLog(jobExecutionLog);
+        if (logger.isDebugEnabled()) {
+            jobExecutionLog.setLevel(JobLogMessageLevel.DEBUG);
+            jobExecutionLog.setMessage(s);
+            jobExecutionLog.setTimestamp(System.currentTimeMillis());
+            batchLogProducer.sendBatchLog(jobExecutionLog);
+        }
     }
 
     @Override
@@ -234,11 +235,12 @@ public class BatchLogger implements Logger {
     @Override
     public void info(String s) {
         logger.info(s);
-        jobExecutionLog.setLevel(JobLogMessageLevel.INFO);
-        jobExecutionLog.setMessage(s);
-        jobExecutionLog.setTimestamp(System.currentTimeMillis());
-//        jobExecutionLog.setInstant(new JobExecutionInstant(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
-        batchLogProducer.sendBatchLog(jobExecutionLog);
+        if (logger.isInfoEnabled()) {
+            jobExecutionLog.setLevel(JobLogMessageLevel.INFO);
+            jobExecutionLog.setMessage(s);
+            jobExecutionLog.setTimestamp(System.currentTimeMillis());
+            batchLogProducer.sendBatchLog(jobExecutionLog);
+        }
     }
 
     @Override
@@ -299,11 +301,12 @@ public class BatchLogger implements Logger {
     @Override
     public void warn(String s) {
         logger.warn(s);
-        jobExecutionLog.setLevel(JobLogMessageLevel.WARN);
-        jobExecutionLog.setMessage(s);
-        jobExecutionLog.setTimestamp(System.currentTimeMillis());
-//        jobExecutionLog.setInstant(new JobExecutionInstant(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
-        batchLogProducer.sendBatchLog(jobExecutionLog);
+        if (logger.isWarnEnabled()) {
+            jobExecutionLog.setLevel(JobLogMessageLevel.WARN);
+            jobExecutionLog.setMessage(s);
+            jobExecutionLog.setTimestamp(System.currentTimeMillis());
+            batchLogProducer.sendBatchLog(jobExecutionLog);
+        }
     }
 
     @Override
@@ -364,11 +367,12 @@ public class BatchLogger implements Logger {
     @Override
     public void error(String s) {
         logger.error(s);
-        jobExecutionLog.setLevel(JobLogMessageLevel.ERROR);
-        jobExecutionLog.setMessage(s);
-        jobExecutionLog.setTimestamp(System.currentTimeMillis());
-//        jobExecutionLog.setInstant(new JobExecutionInstant(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
-        batchLogProducer.sendBatchLog(jobExecutionLog);
+        if (logger.isErrorEnabled()) {
+            jobExecutionLog.setLevel(JobLogMessageLevel.ERROR);
+            jobExecutionLog.setMessage(s);
+            jobExecutionLog.setTimestamp(System.currentTimeMillis());
+            batchLogProducer.sendBatchLog(jobExecutionLog);
+        }
     }
 
     @Override

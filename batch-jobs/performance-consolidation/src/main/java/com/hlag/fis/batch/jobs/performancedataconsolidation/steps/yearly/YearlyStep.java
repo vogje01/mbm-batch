@@ -3,7 +3,7 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.yearly;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,8 @@ public class YearlyStep {
 
     private static final String STEP_NAME = "Yearly Consolidation";
 
-    @BatchLogging(stepName = STEP_NAME)
-    private static final Logger logger = LoggerFactory.getLogger(YearlyStep.class);
+    @BatchStepLogger(value = STEP_NAME)
+    private static Logger logger = LoggerFactory.getLogger(YearlyStep.class);
 
     @Value("${consolidation.batch.yearly.chunkSize}")
     private int chunkSize;

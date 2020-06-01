@@ -8,7 +8,7 @@ import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.monthly.Monthl
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.stepcount.StepCountStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.weekly.WeeklyStep;
 import com.hlag.fis.batch.jobs.performancedataconsolidation.steps.yearly.YearlyStep;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchJobLogger;
 import org.slf4j.Logger;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class PerformanceConsolidationBatchJob {
 
     private static final String JOB_NAME = "Performance Consolidation";
 
-    @BatchLogging(jobName = JOB_NAME)
+    @BatchJobLogger(value = JOB_NAME)
     private static Logger logger;
 
     private BatchJobRunner batchJobRunner;

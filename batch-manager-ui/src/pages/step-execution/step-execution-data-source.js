@@ -26,7 +26,7 @@ export const StepExecutionLogDataSource = (stepExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'instant.epochSecond');
+                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp');
                 return getList(url, 'jobExecutionLogDtoes')
             }
         })

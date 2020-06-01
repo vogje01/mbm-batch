@@ -9,9 +9,7 @@ import java.lang.annotation.RetentionPolicy;
  * @since 0.0.1
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BatchLogging {
+public @interface BatchJobLogger {
 
-    String jobName() default "";
-
-    String stepName() default "";
+    String value() default "";
 }

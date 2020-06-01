@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.agentperformance;
 
 import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.logging.BatchLogging;
+import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class AgentPerformanceReader {
 
-    @BatchLogging(stepName = "Housekeeping Agent Performance")
+    @BatchStepLogger(value = "Housekeeping Agent Performance")
     private static Logger logger = LoggerFactory.getLogger(AgentPerformanceReader.class);
 
     @Value("${houseKeeping.batch.agentPerformance.chunkSize}")

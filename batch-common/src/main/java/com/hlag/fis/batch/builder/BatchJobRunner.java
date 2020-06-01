@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.builder;
 
+import com.hlag.fis.batch.logging.BatchJobLogger;
 import com.hlag.fis.batch.logging.BatchLogger;
-import com.hlag.fis.batch.logging.BatchLogging;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -30,7 +30,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchJobRunner {
 
-    @BatchLogging
+    @BatchJobLogger
     private BatchLogger logger;
 
     private JobLauncher jobLauncher;
