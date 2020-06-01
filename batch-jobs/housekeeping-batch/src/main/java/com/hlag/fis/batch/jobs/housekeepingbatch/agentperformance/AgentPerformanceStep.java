@@ -3,10 +3,11 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.agentperformance;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,8 @@ public class AgentPerformanceStep {
 
     private static final String STEP_NAME = "Housekeeping Agent Performance";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, AgentPerformanceStep.class);
+    @BatchLogging(stepName = STEP_NAME)
+    private static Logger logger = LoggerFactory.getLogger(AgentPerformanceStep.class);
 
     @Value("${houseKeeping.batch.agentPerformance.chunkSize}")
     private int chunkSize;

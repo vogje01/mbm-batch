@@ -77,7 +77,6 @@ public class HouseKeepingBatchConfiguration {
         return hibernateProperties;
     }
 
-    //@Bean(name = "mysqlSessionFactory")
     public SessionFactory sessionFactory() {
         return Objects.requireNonNull(entityManagerFactoryBean().getObject()).unwrap(SessionFactory.class);
     }
@@ -98,13 +97,13 @@ public class HouseKeepingBatchConfiguration {
     }
 
     @Bean
-    @Qualifier("batch")
+    @Primary
     public PlatformTransactionManager batchTransactionManager() {
         return new ResourcelessTransactionManager();
     }
 
     @Bean
-    @Qualifier("batch")
+    @Primary
     public JobRepository getJobRepository() throws Exception {
         JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
         factory.setDataSource(batchDataSource());

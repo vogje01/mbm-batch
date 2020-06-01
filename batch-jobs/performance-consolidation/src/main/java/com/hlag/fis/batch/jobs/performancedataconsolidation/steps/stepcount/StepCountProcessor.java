@@ -2,6 +2,7 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.stepcount;
 
 import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class StepCountProcessor implements ItemProcessor<Object[], AgentPerformance> {
 
+    @BatchLogging(stepName = "StepCount")
     private static final Logger logger = LoggerFactory.getLogger(StepCountProcessor.class);
 
     private AgentPerformanceRepository agentPerformanceRepository;

@@ -94,7 +94,7 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     private JobLogMessageLevel level;
 
     @Column(name = "TIMESTAMP")
-    private Long Timestamp;
+    private Long timestamp;
 
     @Embedded
     private JobExecutionInstant instant;
@@ -223,11 +223,11 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     }
 
     public Long getTimestamp() {
-        return Timestamp;
+        return timestamp;
     }
 
     public void setTimestamp(Long timestamp) {
-        Timestamp = timestamp;
+        this.timestamp = timestamp;
     }
 
     public JobExecutionInstant getInstant() {

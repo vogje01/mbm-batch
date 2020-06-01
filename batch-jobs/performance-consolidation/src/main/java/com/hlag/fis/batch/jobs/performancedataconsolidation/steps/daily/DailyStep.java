@@ -3,9 +3,10 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.daily;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,8 @@ public class DailyStep {
 
     private static final String STEP_NAME = "Daily consolidation";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, DailyStep.class);
+    @BatchLogging(stepName = STEP_NAME)
+    private static final Logger logger = LoggerFactory.getLogger(DailyStep.class);
 
     @Value("${consolidation.batch.daily.chunkSize}")
     private int chunkSize;

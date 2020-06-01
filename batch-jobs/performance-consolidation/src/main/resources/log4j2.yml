@@ -15,16 +15,6 @@ Configuration:
       fileName: ${log-path}/performance-consolidation.log
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
-    Kafka:
-      name: Kafka_Appender
-      topic: batchJobExecutionLog
-      ExtendedJsonLayout:
-        compact: true
-        complete: false
-        jsonAdapterClassName: org.apache.logging.log4j.core.layout.ExtendedJsonAdapter
-      property:
-        name: bootstrap.servers
-        value: batchmanager:9092
   Loggers:
     Root:
       level: warn

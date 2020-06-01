@@ -24,7 +24,7 @@ public class BatchLogProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchLogProducer.class);
 
-    @Value(value = "${kafka.logging.topic}")
+    @Value(value = "${kafka.jobLogging.topic}")
     private String loggingTopic;
 
     private KafkaTemplate<String, JobExecutionLog> template;

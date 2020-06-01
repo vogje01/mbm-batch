@@ -1,9 +1,8 @@
 package com.hlag.fis.batch.manager.service.common;
 
 import com.hlag.fis.batch.domain.dto.ServerCommandDto;
-import com.hlag.fis.batch.listener.StepNotificationListener;
-import com.hlag.fis.batch.logging.BatchLogger;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -24,7 +23,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class ServerCommandProducer {
 
-    private static final Logger logger = BatchLogger.getLogger(StepNotificationListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerCommandProducer.class);
 
     @Value(value = "${kafka.serverCommand.topic}")
     private String topicName;

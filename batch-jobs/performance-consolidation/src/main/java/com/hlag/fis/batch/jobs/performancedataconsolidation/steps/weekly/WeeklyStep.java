@@ -3,9 +3,10 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.weekly;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,8 @@ public class WeeklyStep {
 
     private static final String STEP_NAME = "Weekly Consolidation";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, WeeklyStep.class);
+    @BatchLogging(stepName = STEP_NAME)
+    private static final Logger logger = LoggerFactory.getLogger(WeeklyStep.class);
 
     @Value("${consolidation.batch.weekly.chunkSize}")
     private int chunkSize;

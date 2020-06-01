@@ -2,10 +2,11 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,8 @@ public class JobExecutionInfoStep {
 
     private static final String STEP_NAME = "Housekeeping JobExecutionInfo";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, JobExecutionInfoStep.class);
+    @BatchLogging(stepName = STEP_NAME)
+    private static Logger logger = LoggerFactory.getLogger(JobExecutionInfoStep.class);
 
     @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")
     private int chunkSize;

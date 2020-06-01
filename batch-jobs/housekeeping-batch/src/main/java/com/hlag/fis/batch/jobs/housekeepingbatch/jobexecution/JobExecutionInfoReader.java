@@ -1,5 +1,6 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
 import org.slf4j.Logger;
@@ -20,7 +21,8 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobExecutionInfoReader {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobExecutionInfoReader.class);
+    @BatchLogging(jobName = "Housekeeping JobExecutionInfo")
+    private static Logger logger = LoggerFactory.getLogger(JobExecutionInfoReader.class);
 
     @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")
     private int chunkSize;
@@ -40,7 +42,7 @@ public class JobExecutionInfoReader {
         Date cutOff = DateTimeUtils.getCutOffDate(houseKeepingDays);
         logger.debug(format("Job execution reader starting - cutOff: {1}", cutOff));
 
-        String queryString = "select j from JobExecutionInfo j where j.deleted = true or j.lastUpdated < :cutOff";
+        String queryString = "select j from JobExecutionInfo j where j.lastUpdated < :cutOff";
         Map<String, Date> parameters = new HashMap<>();
         parameters.put("cutOff", cutOff);
         return new CursorReaderBuilder<>(mysqlEmf)

@@ -3,9 +3,10 @@ package com.hlag.fis.batch.jobs.performancedataconsolidation.steps.monthly;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,8 @@ public class MonthlyStep {
 
     private static final String STEP_NAME = "Monthly Consolidation";
 
-    private static final Logger logger = BatchLogger.getStepLogger(STEP_NAME, MonthlyStep.class);
+    @BatchLogging(stepName = STEP_NAME)
+    private static final Logger logger = LoggerFactory.getLogger(MonthlyStep.class);
 
     @Value("${consolidation.batch.monthly.chunkSize}")
     private int chunkSize;

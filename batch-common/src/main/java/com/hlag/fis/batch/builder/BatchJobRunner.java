@@ -1,9 +1,9 @@
 package com.hlag.fis.batch.builder;
 
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.hlag.fis.batch.logging.BatchLoggerJob;
+import com.hlag.fis.batch.logging.BatchLogging;
 import com.hlag.fis.batch.util.NetworkUtils;
 import org.apache.logging.log4j.core.layout.ExtendedJsonAdapter;
-import org.slf4j.Logger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -33,7 +33,8 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchJobRunner {
 
-    private Logger logger;
+    @BatchLogging
+    private BatchLoggerJob logger;
 
     private JobLauncher jobLauncher;
 
@@ -61,12 +62,16 @@ public class BatchJobRunner {
         this.jobPid = ProcessHandle.current().pid();
         this.jobUuid = UUID.randomUUID().toString();
         this.jobVersion = buildProperties.getVersion();
-        logger = BatchLogger.getJobLogger(jobName, jobUuid, jobVersion, BatchJobRunner.class);
+        logger.setJobName(jobName);
+        logger.setJobUuid(jobUuid);
+        logger.setJobVersion(jobVersion);
+        logger.setClazz(BatchJobRunner.class);
+        //logger = BatchLogger.getJobLogger(jobName, jobUuid, jobVersion, BatchJobRunner.class);
     }
 
     public BatchJobRunner jobName(String jobName) {
         this.jobName = jobName;
-        logger = BatchLogger.setJobName(jobName);
+        logger.setJobName(jobName);
         return this;
     }
 

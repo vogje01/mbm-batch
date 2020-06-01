@@ -34,7 +34,7 @@ kafka:
     topic: batchJobStatus
     partitions: 1
     replicas: 1
-  logging:
+  jobLogging:
     offsetReset: latest
     topic: batchJobExecutionLog
     partitions: 1
