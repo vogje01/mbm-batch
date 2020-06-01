@@ -19,10 +19,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @Configuration
 public class BatchJobConfiguration extends AbstractKafkaConfiguration {
 
-    @Value("${agent.nodeName}")
+    @Value("${agent.nodeName:#{null}}")
     private String nodeName;
 
-    @Value("${agent.hostName}")
+    @Value("${agent.hostName:#{null}}")
     private String hostName;
 
     @Bean
