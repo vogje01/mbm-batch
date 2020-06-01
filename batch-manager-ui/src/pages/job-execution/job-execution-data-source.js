@@ -22,7 +22,7 @@ export const JobExecutionLogDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, jobExecutionInfo._links.logs.href, 'instant.epochSecond');
+                let url = mergeParams(loadOptions, jobExecutionInfo._links.logs.href, 'timestamp');
                 return getList(url, 'jobExecutionLogDtoes')
             }
         })
