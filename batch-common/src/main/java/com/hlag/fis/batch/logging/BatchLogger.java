@@ -104,6 +104,9 @@ public class BatchLogger implements Logger {
     public void trace(String s) {
         logger.trace(s);
         if (logger.isTraceEnabled()) {
+            jobExecutionLog.setThread(Thread.currentThread().getName());
+            jobExecutionLog.setThreadId(Thread.currentThread().getId());
+            jobExecutionLog.setThreadPriority(Thread.currentThread().getPriority());
             jobExecutionLog.setMessage(s);
             jobExecutionLog.setLevel(JobLogMessageLevel.TRACE);
             jobExecutionLog.setTimestamp(System.currentTimeMillis());
@@ -170,6 +173,9 @@ public class BatchLogger implements Logger {
     public void debug(String s) {
         logger.debug(s);
         if (logger.isDebugEnabled()) {
+            jobExecutionLog.setThread(Thread.currentThread().getName());
+            jobExecutionLog.setThreadId(Thread.currentThread().getId());
+            jobExecutionLog.setThreadPriority(Thread.currentThread().getPriority());
             jobExecutionLog.setLevel(JobLogMessageLevel.DEBUG);
             jobExecutionLog.setMessage(s);
             jobExecutionLog.setTimestamp(System.currentTimeMillis());
@@ -236,6 +242,9 @@ public class BatchLogger implements Logger {
     public void info(String s) {
         logger.info(s);
         if (logger.isInfoEnabled()) {
+            jobExecutionLog.setThread(Thread.currentThread().getName());
+            jobExecutionLog.setThreadId(Thread.currentThread().getId());
+            jobExecutionLog.setThreadPriority(Thread.currentThread().getPriority());
             jobExecutionLog.setLevel(JobLogMessageLevel.INFO);
             jobExecutionLog.setMessage(s);
             jobExecutionLog.setTimestamp(System.currentTimeMillis());
@@ -302,6 +311,9 @@ public class BatchLogger implements Logger {
     public void warn(String s) {
         logger.warn(s);
         if (logger.isWarnEnabled()) {
+            jobExecutionLog.setThread(Thread.currentThread().getName());
+            jobExecutionLog.setThreadId(Thread.currentThread().getId());
+            jobExecutionLog.setThreadPriority(Thread.currentThread().getPriority());
             jobExecutionLog.setLevel(JobLogMessageLevel.WARN);
             jobExecutionLog.setMessage(s);
             jobExecutionLog.setTimestamp(System.currentTimeMillis());
@@ -368,6 +380,9 @@ public class BatchLogger implements Logger {
     public void error(String s) {
         logger.error(s);
         if (logger.isErrorEnabled()) {
+            jobExecutionLog.setThread(Thread.currentThread().getName());
+            jobExecutionLog.setThreadId(Thread.currentThread().getId());
+            jobExecutionLog.setThreadPriority(Thread.currentThread().getPriority());
             jobExecutionLog.setLevel(JobLogMessageLevel.ERROR);
             jobExecutionLog.setMessage(s);
             jobExecutionLog.setTimestamp(System.currentTimeMillis());

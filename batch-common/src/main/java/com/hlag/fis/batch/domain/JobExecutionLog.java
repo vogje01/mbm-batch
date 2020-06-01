@@ -78,7 +78,7 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
     private String thread;
 
     @Column(name = "THREAD_ID")
-    private Integer threadId;
+    private Long threadId;
 
     @Column(name = "THREAD_PRIORITY")
     private Integer threadPriority;
@@ -182,11 +182,11 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
         this.thread = thread;
     }
 
-    public Integer getThreadId() {
+    public Long getThreadId() {
         return threadId;
     }
 
-    public void setThreadId(Integer threadId) {
+    public void setThreadId(Long threadId) {
         this.threadId = threadId;
     }
 
