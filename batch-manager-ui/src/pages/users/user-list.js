@@ -239,16 +239,12 @@ class UserList extends React.Component {
                                 dataField={'dateTimeFormat'}
                                 caption={'Date Format'}
                                 visible={false}
-                                allowEditing={true}
-                                allowSorting={true}
-                                allowReordering={true}/>
+                                allowEditing={true}/>
                             <Column
                                 dataField={'numberFormat'}
                                 caption={'Number Format'}
                                 visible={false}
-                                allowEditing={true}
-                                allowSorting={true}
-                                allowReordering={true}/>
+                                allowEditing={true}/>
                             <Column
                                 dataField={'active'}
                                 caption={'Active'}
