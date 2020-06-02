@@ -88,44 +88,45 @@ class UserList extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"User Details: " + this.state.currentUser.userId}>
-                                        <SimpleItem id={'userId'} dataField="userId" colSpan={2}>
+                                    <SimpleItem itemType="group" colCount={2} caption={"User Details: " + this.state.currentUser.userId}>
+                                        <SimpleItem id={'userId'} dataField="userId">
                                             <RequiredRule message="UserId is required"/>
                                             <StringLengthRule min={5} max={7} message="UserId must be exactly 7 characters long."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}} colSpan={2}>
+                                        <SimpleItem dataField="password" editorType={"dxTextBox"} editorOptions={{mode: "password"}}>
                                             <RequiredRule message="Password is required"/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="firstName" colSpan={2}>
+                                        <SimpleItem dataField="firstName">
                                             <RequiredRule message="First name is required"/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="lastName" colSpan={2}>
+                                        <SimpleItem dataField="lastName">
                                             <RequiredRule message="Last name is required"/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="email" colSpan={2}>
+                                        <SimpleItem dataField="email">
                                             <EmailRule message="Email is invalid"/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="phone" colSpan={2}>
+                                        <SimpleItem dataField="phone">
                                             <PatternRule message="The phone must have a correct phone format" pattern={this.phonePattern}/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
-                                        <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
+                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                         <SimpleItem
-                                            colSpan={2}
                                             dataField={'theme'}
                                             editorType={'dxSelectBox'}
                                             editorOptions={{dataSource: themesList, onSelectionChanged: this.themeSelectionChanged}}>
                                             <RequiredRule/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
+                                    </SimpleItem>
+                                    <SimpleItem itemType="group" colSpan={2} caption={"User Groups"}>
+                                        <UserUsergroupView user={this.state.currentUser}/>
+                                    </SimpleItem>
+                                    <SimpleItem itemType="group" colSpan={2} colCount={4} caption={"User Auditing"}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'modifiedAt'), readOnly: true}}/>
-                                    </SimpleItem>
-                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"User Groups"}>
-                                        <UserUsergroupView user={this.state.currentUser}/>
                                     </SimpleItem>
                                 </Form>
                             </Editing>
