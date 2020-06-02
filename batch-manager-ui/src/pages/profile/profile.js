@@ -43,6 +43,10 @@ class Profile extends React.Component {
     }
 
     themeSelectionChanged(e) {
+        themes.ready(() => {
+            console.log("theme loaded: " + e.value);
+            this.setState({});
+        });
         themes.current(e.value);
     }
 

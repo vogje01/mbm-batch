@@ -8,14 +8,18 @@ export const dateTimeFormat = {
     ENUS: 'MM/DD/YYYY hh:mm:ss A'
 };
 
-export const dateTimeFormatMillis = 'DD.MM.YYYY HH:mm:ss.SSS';
+export const dateTimeFormatMillis = {
+    DE: 'DD.MM.YYYY HH:mm:ss.SSS',
+    ENGB: 'DD/MM/YYYY HH:mm:ss.SSS',
+    ENUS: 'MM/DD/YYYY hh:mm:ss.SSS A'
+};
 
 export const convertUTCToLocalDateTime = (dateTime) => {
     return moment(dateTime).format(dateTimeFormat[localStorage.getItem('dateTimeFormat')]);
 };
 
 export const convertUTCToLocalDateTimeMillis = (dateTime) => {
-    return moment(dateTime).format(dateTimeFormatMillis)
+    return moment(dateTime).format(dateTimeFormat[localStorage.getItem('dateTimeFormat')])
 };
 
 export const getCurrentDateTime = () => {
