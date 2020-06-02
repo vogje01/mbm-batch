@@ -407,6 +407,7 @@ public class ModelConverter {
 
     public User convertUserToEntity(UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);
+        user.setDateTimeFormat(DateTimeFormat.valueOf(userDto.getDateTimeFormat()));
 
         // Convert user groups
         List<UserGroup> userGroups = userDto.getUserGroupDtoes()

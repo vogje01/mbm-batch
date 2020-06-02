@@ -21,6 +21,8 @@ export const UserDataSource = () => {
                 user.email = values.email ? values.email : user.email;
                 user.phone = values.phone ? values.phone : user.phone;
                 user.theme = values.theme ? values.theme : user.theme;
+                user.numberFormat = values.numberFormat ? values.numberFormat : user.numberFormat;
+                user.dateTimeFormat = values.dateTimeFormat ? values.dateTimeFormat : user.dateTimeFormat;
                 user.description = values.description ? values.description : user.description;
                 user.active = values.active ? values.active : user.active;
                 let url = user._links.update.href;

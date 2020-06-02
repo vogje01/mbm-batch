@@ -2,11 +2,16 @@ import * as moment from 'moment';
 import 'moment/locale/en-gb';
 import 'moment/locale/de';
 
-export const dateTimeFormat = 'DD.MM.YYYY HH:mm:ss';
+export const dateTimeFormat = {
+    DE: 'DD.MM.YYYY HH:mm:ss',
+    ENGB: 'DD/MM/YYYY HH:mm:ss',
+    ENUS: 'MM/DD/YYYY hh:mm:ss A'
+};
+
 export const dateTimeFormatMillis = 'DD.MM.YYYY HH:mm:ss.SSS';
 
 export const convertUTCToLocalDateTime = (dateTime) => {
-    return moment(dateTime).format(dateTimeFormat)
+    return moment(dateTime).format(dateTimeFormat[localStorage.getItem('dateTimeFormat')]);
 };
 
 export const convertUTCToLocalDateTimeMillis = (dateTime) => {
@@ -14,7 +19,7 @@ export const convertUTCToLocalDateTimeMillis = (dateTime) => {
 };
 
 export const getCurrentDateTime = () => {
-    return moment().format(dateTimeFormat);
+    return moment().format(dateTimeFormat[localStorage.getItem('dateTimeFormat')]);
 };
 
 export const zeroPad = (num, places) => {

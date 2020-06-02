@@ -14,7 +14,7 @@ import {
     Selection,
     StringLengthRule
 } from "devextreme-react/data-grid";
-import {EmptyItem, SimpleItem} from "devextreme-react/form";
+import {SimpleItem} from "devextreme-react/form";
 import {UserDataSource} from "./user-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
@@ -32,8 +32,15 @@ const themesList = [
 ];
 
 const dateFormatList = [
-    'de',
-    'en-gb'
+    {label: 'de', value: 'DE'},
+    {label: 'en-gb', value: 'ENGB'},
+    {label: 'en-us', value: 'ENUS'}
+];
+
+const numberFormatList = [
+    {label: 'de', value: 'DE'},
+    {label: 'en-gb', value: 'ENGB'},
+    {label: 'en-us', value: 'ENUS'}
 ];
 
 class UserList extends React.Component {
@@ -45,7 +52,8 @@ class UserList extends React.Component {
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
-        this.dateFormatSelectionChanged = this.dateFormatSelectionChanged.bind(this);
+        this.dateFormatValueChanged = this.dateFormatValueChanged.bind(this);
+        this.numberFormatValueChanged = this.numberFormatValueChanged.bind(this);
         this.isDeleteVisible = this.isDeleteVisible.bind(this);
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
     }
@@ -62,8 +70,12 @@ class UserList extends React.Component {
         themes.current(e.value);
     }
 
-    dateFormatSelectionChanged(e) {
-        themes.current(e.value);
+    dateFormatValueChanged(e) {
+        localStorage.setItem('dateTimeFormat', e.value);
+    }
+
+    numberFormatValueChanged(e) {
+        localStorage.setItem('numberFormat', e.value);
     }
 
     render() {
@@ -126,12 +138,27 @@ class UserList extends React.Component {
                                             <RequiredRule/>
                                         </SimpleItem>
                                         <SimpleItem
-                                            dataField={'dateFormat'}
+                                            dataField={'dateTimeFormat'}
                                             editorType={'dxSelectBox'}
-                                            editorOptions={{dataSource: dateFormatList, onSelectionChanged: this.dateFormatSelectionChanged}}>
+                                            editorOptions={{
+                                                dataSource: dateFormatList,
+                                                valueExpr: 'value',
+                                                displayExpr: 'label',
+                                                onValueChanged: this.dateFormatValueChanged
+                                            }}>
                                             <RequiredRule/>
                                         </SimpleItem>
-                                        <EmptyItem/>
+                                        <SimpleItem
+                                            dataField={'numberFormat'}
+                                            editorType={'dxSelectBox'}
+                                            editorOptions={{
+                                                dataSource: numberFormatList,
+                                                valueExpr: 'value',
+                                                displayExpr: 'label',
+                                                onValueChanged: this.numberFormatValueChanged
+                                            }}>
+                                            <RequiredRule/>
+                                        </SimpleItem>
                                         <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colSpan={2} caption={"User Groups"}>
@@ -140,10 +167,10 @@ class UserList extends React.Component {
                                     <SimpleItem itemType="group" colSpan={2} colCount={4} caption={"User Auditing"}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'createdAt'), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUser, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'modifiedAt'), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUser, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
                                 </Form>
                             </Editing>
@@ -209,9 +236,17 @@ class UserList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}/>
                             <Column
-                                dataField={'dateFormat'}
+                                dataField={'dateTimeFormat'}
                                 caption={'Date Format'}
                                 visible={false}
+                                allowEditing={true}
+                                allowSorting={true}
+                                allowReordering={true}/>
+                            <Column
+                                dataField={'numberFormat'}
+                                caption={'Number Format'}
+                                visible={false}
+                                allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}/>
                             <Column

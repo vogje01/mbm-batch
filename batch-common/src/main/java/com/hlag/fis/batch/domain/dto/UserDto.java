@@ -61,7 +61,7 @@ public class UserDto extends RepresentationModel<UserDto> {
     /**
      * Date format
      */
-    private String dateFormat;
+    private String dateTimeFormat;
     /**
      * Number format
      */
@@ -187,12 +187,12 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.theme = theme;
     }
 
-    public String getDateFormat() {
-        return dateFormat;
+    public String getDateTimeFormat() {
+        return dateTimeFormat;
     }
 
-    public void setDateFormat(String dateFormat) {
-        this.dateFormat = dateFormat;
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
     }
 
     public String getNumberFormat() {
@@ -282,7 +282,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(email, userDto.email) &&
                 Objects.equal(phone, userDto.phone) &&
                 Objects.equal(theme, userDto.theme) &&
-                Objects.equal(dateFormat, userDto.dateFormat) &&
+                Objects.equal(dateTimeFormat, userDto.dateTimeFormat) &&
                 Objects.equal(numberFormat, userDto.numberFormat) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
@@ -297,7 +297,7 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, dateFormat, numberFormat, description, active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, dateTimeFormat, numberFormat, description, active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
     }
 
     @Override
@@ -312,7 +312,7 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("email", email)
                 .add("phone", phone)
                 .add("theme", theme)
-                .add("dateFormat", dateFormat)
+                .add("dateFormat", dateTimeFormat)
                 .add("numberFormat", numberFormat)
                 .add("description", description)
                 .add("active", active)

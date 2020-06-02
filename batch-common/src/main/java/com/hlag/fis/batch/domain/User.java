@@ -115,6 +115,8 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
         this.email = user.email;
         this.phone = user.phone;
         this.theme = user.theme;
+        this.dateTimeFormat = user.dateTimeFormat;
+        this.numberFormat = user.numberFormat;
         this.description = user.description;
         this.active = user.active;
     }
@@ -191,6 +193,22 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
         this.theme = theme;
     }
 
+    public DateTimeFormat getDateTimeFormat() {
+        return dateTimeFormat;
+    }
+
+    public void setDateTimeFormat(DateTimeFormat dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
+    }
+
+    public NumberFormat getNumberFormat() {
+        return numberFormat;
+    }
+
+    public void setNumberFormat(NumberFormat numberFormat) {
+        this.numberFormat = numberFormat;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -235,7 +253,10 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
                 Objects.equal(firstName, user.firstName) &&
                 Objects.equal(email, user.email) &&
                 Objects.equal(phone, user.phone) &&
+                Objects.equal(avatar, user.avatar) &&
                 Objects.equal(theme, user.theme) &&
+                dateTimeFormat == user.dateTimeFormat &&
+                numberFormat == user.numberFormat &&
                 Objects.equal(description, user.description) &&
                 Objects.equal(active, user.active) &&
                 Objects.equal(userGroups, user.userGroups);
@@ -243,7 +264,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, theme, description, active, userGroups);
+        return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, avatar, theme, dateTimeFormat, numberFormat, description, active, userGroups);
     }
 
     public Boolean getActive() {
@@ -264,7 +285,10 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("firstName", firstName)
                 .add("email", email)
                 .add("phone", phone)
+                .add("avatar", avatar)
                 .add("theme", theme)
+                .add("dateTimeFormat", dateTimeFormat)
+                .add("numberFormat", numberFormat)
                 .add("description", description)
                 .add("active", active)
                 .add("userGroups", userGroups)
