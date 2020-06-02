@@ -1,6 +1,6 @@
 import React from 'react';
 import './profile.scss';
-import Form, {EmailRule, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
+import Form, {EmailRule, EmptyItem, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
 import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
 import {getFormattedTime} from "../../utils/date-time-util";
@@ -12,6 +12,18 @@ const themesList = [
     'material.orange.light.compact',
     'material.lime.dark.compact',
     'material.lime.light.compact'
+];
+
+const dateFormatList = [
+    {label: 'de', value: 'DE'},
+    {label: 'en-gb', value: 'ENGB'},
+    {label: 'en-us', value: 'ENUS'}
+];
+
+const numberFormatList = [
+    {label: 'de', value: 'DE'},
+    {label: 'en-gb', value: 'ENGB'},
+    {label: 'en-us', value: 'ENUS'}
 ];
 
 class Profile extends React.Component {
@@ -26,17 +38,24 @@ class Profile extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.passwordChanged = this.passwordChanged.bind(this);
         this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
+        this.dateFormatValueChanged = this.dateFormatValueChanged.bind(this);
+        this.numberFormatValueChanged = this.numberFormatValueChanged.bind(this);
     }
 
     themeSelectionChanged(e) {
-        console.log(window.localStorage.getItem("dx-theme"));
-        window.localStorage.setItem("dx-theme", e.value);
-        console.log(window.localStorage.getItem("dx-theme"));
         themes.current(e.value);
     }
 
     passwordChanged(e) {
         this.setState({passwordChanged: true});
+    }
+
+    dateFormatValueChanged(e) {
+        localStorage.setItem('dateTimeFormat', e.value);
+    }
+
+    numberFormatValueChanged(e) {
+        localStorage.setItem('numberFormat', e.value);
     }
 
     handleSubmit(e) {
@@ -98,6 +117,30 @@ class Profile extends React.Component {
                                                 dataSource: themesList,
                                                 onValueChanged: this.themeSelectionChanged
                                             }}/>
+                                <SimpleItem
+                                    dataField={'dateTimeFormat'}
+                                    editorType={'dxSelectBox'}
+                                    editorOptions={{
+                                        dataSource: dateFormatList,
+                                        valueExpr: 'value',
+                                        displayExpr: 'label',
+                                        onValueChanged: this.dateFormatValueChanged
+                                    }}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <SimpleItem
+                                    dataField={'numberFormat'}
+                                    editorType={'dxSelectBox'}
+                                    editorOptions={{
+                                        dataSource: numberFormatList,
+                                        valueExpr: 'value',
+                                        displayExpr: 'label',
+                                        onValueChanged: this.numberFormatValueChanged
+                                    }}>
+                                    <RequiredRule/>
+                                </SimpleItem>
+                                <EmptyItem/>
+                                <EmptyItem/>
                                 <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                             </SimpleItem>
                             <SimpleItem itemType="group" colCount={4} caption={"Auditing"}>
