@@ -78,9 +78,9 @@ class AgentView extends React.Component {
                                         <SimpleItem dataField="pid" edtitorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                         <SimpleItem dataField="lastStart" editorType="dxTextBox"
-                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastStart'), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastStart'), readOnly: true}}/>
                                         <SimpleItem dataField="lastPing" editorType="dxTextBox"
-                                                    edtitorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
                                     </GroupItem>
                                     <GroupItem caption={"Schedules"}>
                                         <AgentJobScheduleView agent={this.state.currentAgent}/>

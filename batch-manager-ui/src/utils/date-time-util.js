@@ -7,23 +7,25 @@ export const dateTimeFormat = {
     ENGB: 'DD/MM/YYYY HH:mm:ss',
     ENUS: 'MM/DD/YYYY hh:mm:ss A'
 };
+export const localDateTimeFormat = dateTimeFormat[localStorage.getItem('dateTimeFormat')];
 
 export const dateTimeFormatMillis = {
     DE: 'DD.MM.YYYY HH:mm:ss.SSS',
     ENGB: 'DD/MM/YYYY HH:mm:ss.SSS',
     ENUS: 'MM/DD/YYYY hh:mm:ss.SSS A'
 };
+export const localDateTimeMillisFormat = dateTimeFormatMillis[localStorage.getItem('dateTimeFormat')];
 
 export const convertUTCToLocalDateTime = (dateTime) => {
-    return moment(dateTime).format(dateTimeFormat[localStorage.getItem('dateTimeFormat')]);
+    return moment(dateTime).format(localDateTimeFormat);
 };
 
 export const convertUTCToLocalDateTimeMillis = (dateTime) => {
-    return moment(dateTime).format(dateTimeFormatMillis[localStorage.getItem('dateTimeFormat')])
+    return moment(dateTime).format(localDateTimeMillisFormat)
 };
 
 export const getCurrentDateTime = () => {
-    return moment().format(dateTimeFormat[localStorage.getItem('dateTimeFormat')]);
+    return moment().format(localDateTimeFormat);
 };
 
 export const zeroPad = (num, places) => {
@@ -45,6 +47,7 @@ export const getTimestamp = (rowData) => {
 };
 
 export const getFormattedTime = (rowData, attribute) => {
+    console.log('attribute: ' + attribute + ' data: ' + rowData[attribute]);
     return rowData && rowData[attribute] ? convertUTCToLocalDateTime(rowData[attribute]) : null;
 }
 
