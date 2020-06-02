@@ -11,7 +11,7 @@ import {JobDefinitionDataSource} from "../job-definition/job-definition-data-sou
 import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
-import {getCreatedAt, getLastExecutionTime, getModifiedAt, getNextExecutionTime} from "../../utils/date-time-util";
+import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
 
 class JobSchedulerList extends React.Component {
 
@@ -92,9 +92,9 @@ class JobSchedulerList extends React.Component {
                                             <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
                                         </SimpleItem>
                                         <SimpleItem dataField={'lastExecution'} editorType={'dxTextBox'}
-                                                    editorOptions={{readOnly: true, value: getLastExecutionTime(this.state.currentJobSchedule)}}/>
+                                                    editorOptions={{readOnly: true, value: getFormattedTime(this.state.currentJobSchedule, 'lastExecution')}}/>
                                         <SimpleItem dataField={'nextExecution'} editorType={'dxTextBox'}
-                                                    editorOptions={{readOnly: true, value: getNextExecutionTime(this.state.currentJobSchedule)}}/>
+                                                    editorOptions={{readOnly: true, value: getFormattedTime(this.state.currentJobSchedule, 'nextExecution')}}/>
                                         <SimpleItem dataField="schedule"/>
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
@@ -105,10 +105,10 @@ class JobSchedulerList extends React.Component {
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getCreatedAt(this.state.currentJobSchedule), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobSchedule, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getModifiedAt(this.state.currentJobSchedule), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobSchedule, 'modifiedAt'), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>
@@ -150,7 +150,7 @@ class JobSchedulerList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}/>
                             <Column
-                                calculateCellValue={getLastExecutionTime}
+                                cellTemplate={dateTimeCellTemplate}
                                 caption={'Last Execution'}
                                 dataType={'datetime'}
                                 dataField={'lastExecution'}
@@ -159,7 +159,7 @@ class JobSchedulerList extends React.Component {
                                 allowReordering={true}
                                 width={140}/>
                             <Column
-                                calculateCellValue={getNextExecutionTime}
+                                cellTemplate={dateTimeCellTemplate}
                                 caption={'Next Execution'}
                                 dataType={'datetime'}
                                 dataField={'nextExecution'}

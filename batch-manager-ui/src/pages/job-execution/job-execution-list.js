@@ -14,7 +14,7 @@ import {
     Selection,
     Sorting
 } from "devextreme-react/data-grid";
-import {getFormattedTime, getRunningTime} from "../../utils/date-time-util";
+import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
@@ -54,10 +54,6 @@ class JobExecutionList extends React.Component {
                 }
             }
         }
-    }
-
-    dateTimeCellTemplate(container, options) {
-        container.textContent = getFormattedTime(options.data, options.column.dataField);
     }
 
     selectionChanged(e) {
@@ -246,7 +242,7 @@ class JobExecutionList extends React.Component {
                                 dataField={'createTime'}
                                 caption={'Created'}
                                 dataType={'datetime'}
-                                cellTemplate={this.dateTimeCellTemplate}
+                                cellTemplate={dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
@@ -256,7 +252,7 @@ class JobExecutionList extends React.Component {
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
-                                cellTemplate={this.dateTimeCellTemplate}
+                                cellTemplate={dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
@@ -265,7 +261,7 @@ class JobExecutionList extends React.Component {
                                 dataField={'endTime'}
                                 caption={'Ended'}
                                 dataType={'datetime'}
-                                cellTemplate={this.dateTimeCellTemplate}
+                                cellTemplate={dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
@@ -274,7 +270,7 @@ class JobExecutionList extends React.Component {
                                 dataField={'lastUpdated'}
                                 caption={'Last Update'}
                                 dataType={'datetime'}
-                                cellTemplate={this.dateTimeCellTemplate}
+                                cellTemplate={dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}

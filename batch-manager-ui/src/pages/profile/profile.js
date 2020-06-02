@@ -3,7 +3,7 @@ import './profile.scss';
 import Form, {EmailRule, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
 import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
-import {getCreatedAt, getModifiedAt} from "../../utils/date-time-util";
+import {getFormattedTime} from "../../utils/date-time-util";
 
 const themesList = [
     'material.blue.dark.compact',
@@ -103,10 +103,10 @@ class Profile extends React.Component {
                             <SimpleItem itemType="group" colCount={4} caption={"Auditing"}>
                                 <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                            editorOptions={{value: getCreatedAt(this.state.user), readOnly: true}}/>
+                                            editorOptions={{value: getFormattedTime(this.state.user, 'createdAt'), readOnly: true}}/>
                                 <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                 <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                            editorOptions={{value: getModifiedAt(this.state.user), readOnly: true}}/>
+                                            editorOptions={{value: getFormattedTime(this.state.user, 'modifiedAt'), readOnly: true}}/>
                             </SimpleItem>
                             <SimpleItem editorType={'dxButton'} colSpan={1} editorOptions={{
                                 horizontalAlignment: 'left',

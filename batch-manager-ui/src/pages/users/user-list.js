@@ -20,7 +20,7 @@ import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
 import UserUsergroupView from "./user-usergroup-list";
 import themes from "devextreme/ui/themes";
-import {getCreatedAt, getModifiedAt} from "../../utils/date-time-util";
+import {getFormattedTime} from "../../utils/date-time-util";
 
 const themesList = [
     'material.blue.dark.compact',
@@ -119,10 +119,10 @@ class UserList extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getCreatedAt(this.state.currentUserGroup), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getModifiedAt(this.state.currentUserGroup), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"User Groups"}>
                                         <UserUsergroupView user={this.state.currentUser}/>

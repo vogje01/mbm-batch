@@ -17,7 +17,7 @@ import {UserGroupDataSource} from "./user-group-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
 import UsergroupUserView from "./usergroup-user-list";
-import {getCreatedAt, getModifiedAt} from "../../utils/date-time-util";
+import {getFormattedTime} from "../../utils/date-time-util";
 
 class UserGroupList extends React.Component {
 
@@ -78,10 +78,10 @@ class UserGroupList extends React.Component {
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getCreatedAt(this.state.currentUserGroup), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getModifiedAt(this.state.currentUserGroup), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentUserGroup, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Users"}>
                                         <UsergroupUserView userGroup={this.state.currentUserGroup}/>
