@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 
 import static java.time.temporal.ChronoField.*;
@@ -67,5 +68,14 @@ public class DateTimeUtils {
 
     public static long getRunningTime(StepExecution stepExecution) {
         return stepExecution.getEndTime() != null ? (stepExecution.getEndTime().getTime() - stepExecution.getStartTime().getTime()) : 0;
+    }
+
+    public static Date getStartOfDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DATE);
+        calendar.set(year, month, day, 0, 0, 0);
+        return calendar.getTime();
     }
 }

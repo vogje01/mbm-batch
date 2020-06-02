@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,6 +21,9 @@ public interface AgentPerformanceRepository extends PagingAndSortingRepository<A
 
     @Query("select count(a) from AgentPerformance a where a.type = :type and a.lastUpdate < :cutOff")
     long countByLastUpdated(@Param("type") AgentPerformanceType type, @Param("cutOff") Timestamp cutOff);
+
+    @Query("select distinct a.nodeName from AgentPerformance a")
+    List<String> countNodeNames();
 
     @Query("select a from AgentPerformance a where a.nodeName = :nodeName and a.type = :type and a.lastUpdate = :lastUpdate")
     Optional<AgentPerformance> findByTimestamp(@Param("nodeName") String nodeName,

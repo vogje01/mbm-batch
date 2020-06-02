@@ -56,6 +56,16 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "LAST_PING")
     private Date lastPing;
     /**
+     * Average system load day
+     */
+    @Column(name = "AVG_SYSTEM_LOAD_DAY")
+    private Double avgSystemLoadDay;
+    /**
+     * Average system load week
+     */
+    @Column(name = "AVG_SYSTEM_LOAD_WEEK")
+    private Double avgSystemLoadWeek;
+    /**
      * Active
      */
     @Column(name = "ACTIVE")
@@ -123,6 +133,22 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
         this.lastPing = lastPing;
     }
 
+    public Double getAvgSystemLoadDay() {
+        return avgSystemLoadDay;
+    }
+
+    public void setAvgSystemLoadDay(Double avgSystemLoadDay) {
+        this.avgSystemLoadDay = avgSystemLoadDay;
+    }
+
+    public Double getAvgSystemLoadWeek() {
+        return avgSystemLoadWeek;
+    }
+
+    public void setAvgSystemLoadWeek(Double avgSystemLoadWeek) {
+        this.avgSystemLoadWeek = avgSystemLoadWeek;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -155,6 +181,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Agent agent = (Agent) o;
         return Objects.equal(id, agent.id) &&
                 Objects.equal(nodeName, agent.nodeName) &&
@@ -162,13 +189,15 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 Objects.equal(pid, agent.pid) &&
                 Objects.equal(lastStart, agent.lastStart) &&
                 Objects.equal(lastPing, agent.lastPing) &&
+                Objects.equal(avgSystemLoadDay, agent.avgSystemLoadDay) &&
+                Objects.equal(avgSystemLoadWeek, agent.avgSystemLoadWeek) &&
                 Objects.equal(active, agent.active) &&
                 Objects.equal(schedules, agent.schedules);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, nodeName, hostName, pid, lastStart, lastPing, active, schedules);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, avgSystemLoadDay, avgSystemLoadWeek, active, schedules);
     }
 
     @Override
@@ -180,6 +209,8 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("pid", pid)
                 .add("lastStart", lastStart)
                 .add("lastPing", lastPing)
+                .add("avgSystemLoadDay", avgSystemLoadDay)
+                .add("avgSystemLoadWeek", avgSystemLoadWeek)
                 .add("active", active)
                 .add("schedules", schedules)
                 .toString();

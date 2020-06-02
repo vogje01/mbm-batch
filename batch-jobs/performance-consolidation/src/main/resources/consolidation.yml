@@ -2,6 +2,9 @@
 consolidation:
   batch:
     # Job count
+    agentLoad:
+      chunkSize: 1000
+    # Job count
     jobCount:
       chunkSize: 1000
     # Step count
