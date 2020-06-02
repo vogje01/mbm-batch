@@ -72,6 +72,18 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "THEME")
     private String theme;
     /**
+     * Date time format
+     */
+    @Column(name = "DATE_FORMAT")
+    @Enumerated(EnumType.STRING)
+    private DateTimeFormat dateTimeFormat;
+    /**
+     * Number format
+     */
+    @Column(name = "NUMBER_FORMAT")
+    @Enumerated(EnumType.STRING)
+    private NumberFormat numberFormat;
+    /**
      * Description
      */
     @Column(name = "DESCRIPTION")

@@ -59,6 +59,14 @@ public class UserDto extends RepresentationModel<UserDto> {
      */
     private String theme;
     /**
+     * Date format
+     */
+    private String dateFormat;
+    /**
+     * Number format
+     */
+    private String numberFormat;
+    /**
      * Description
      */
     private String description;
@@ -179,6 +187,30 @@ public class UserDto extends RepresentationModel<UserDto> {
         this.theme = theme;
     }
 
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getNumberFormat() {
+        return numberFormat;
+    }
+
+    public void setNumberFormat(String numberFormat) {
+        this.numberFormat = numberFormat;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public Boolean getPasswordChanged() {
         return passwordChanged;
     }
@@ -250,6 +282,8 @@ public class UserDto extends RepresentationModel<UserDto> {
                 Objects.equal(email, userDto.email) &&
                 Objects.equal(phone, userDto.phone) &&
                 Objects.equal(theme, userDto.theme) &&
+                Objects.equal(dateFormat, userDto.dateFormat) &&
+                Objects.equal(numberFormat, userDto.numberFormat) &&
                 Objects.equal(description, userDto.description) &&
                 Objects.equal(active, userDto.active) &&
                 Objects.equal(passwordChanged, userDto.passwordChanged) &&
@@ -263,15 +297,7 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, description, active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
+        return Objects.hashCode(super.hashCode(), id, version, userId, password, lastName, firstName, email, phone, theme, dateFormat, numberFormat, description, active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes, totalSize);
     }
 
     @Override
@@ -286,6 +312,8 @@ public class UserDto extends RepresentationModel<UserDto> {
                 .add("email", email)
                 .add("phone", phone)
                 .add("theme", theme)
+                .add("dateFormat", dateFormat)
+                .add("numberFormat", numberFormat)
                 .add("description", description)
                 .add("active", active)
                 .add("passwordChanged", passwordChanged)

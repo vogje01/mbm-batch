@@ -14,7 +14,7 @@ import {
     Selection,
     StringLengthRule
 } from "devextreme-react/data-grid";
-import {SimpleItem} from "devextreme-react/form";
+import {EmptyItem, SimpleItem} from "devextreme-react/form";
 import {UserDataSource} from "./user-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
@@ -31,6 +31,11 @@ const themesList = [
     'material.lime.light.compact'
 ];
 
+const dateFormatList = [
+    'de',
+    'en-gb'
+];
+
 class UserList extends React.Component {
 
     constructor(props) {
@@ -40,6 +45,7 @@ class UserList extends React.Component {
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.themeSelectionChanged = this.themeSelectionChanged.bind(this);
+        this.dateFormatSelectionChanged = this.dateFormatSelectionChanged.bind(this);
         this.isDeleteVisible = this.isDeleteVisible.bind(this);
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
     }
@@ -53,6 +59,10 @@ class UserList extends React.Component {
     }
 
     themeSelectionChanged(e) {
+        themes.current(e.value);
+    }
+
+    dateFormatSelectionChanged(e) {
         themes.current(e.value);
     }
 
@@ -115,6 +125,13 @@ class UserList extends React.Component {
                                             editorOptions={{dataSource: themesList, onSelectionChanged: this.themeSelectionChanged}}>
                                             <RequiredRule/>
                                         </SimpleItem>
+                                        <SimpleItem
+                                            dataField={'dateFormat'}
+                                            editorType={'dxSelectBox'}
+                                            editorOptions={{dataSource: dateFormatList, onSelectionChanged: this.dateFormatSelectionChanged}}>
+                                            <RequiredRule/>
+                                        </SimpleItem>
+                                        <EmptyItem/>
                                         <SimpleItem dataField="description" editorType="dxTextArea" colSpan={2} editorOptions={{height: 100}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colSpan={2} caption={"User Groups"}>
@@ -188,6 +205,12 @@ class UserList extends React.Component {
                             <Column
                                 dataField={'theme'}
                                 caption={'Theme'}
+                                visible={false}
+                                allowSorting={true}
+                                allowReordering={true}/>
+                            <Column
+                                dataField={'dateFormat'}
+                                caption={'Date Format'}
                                 visible={false}
                                 allowSorting={true}
                                 allowReordering={true}/>
