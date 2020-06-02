@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.agentload;
+package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import org.springframework.batch.item.ItemStreamReader;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class AgentLoadReader {
+public class AgentLoadDayReader {
 
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
@@ -23,7 +23,7 @@ public class AgentLoadReader {
     private EntityManagerFactory mysqlEmf;
 
     @Autowired
-    AgentLoadReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
+    AgentLoadDayReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 

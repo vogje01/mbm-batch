@@ -1,8 +1,10 @@
 package com.hlag.fis.batch.jobs.performancebatch.job;
 
+import com.hlag.fis.batch.builder.BatchFlowBuilder;
 import com.hlag.fis.batch.builder.BatchJobBuilder;
 import com.hlag.fis.batch.builder.BatchJobRunner;
-import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.AgentLoadStep;
+import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day.AgentLoadDayStep;
+import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week.AgentLoadWeekStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.daily.DailyStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.JobCountStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.monthly.MonthlyStep;
@@ -31,7 +33,9 @@ public class PerformanceConsolidationBatchJob {
 
     private BatchJobBuilder batchJobBuilder;
 
-    private AgentLoadStep agentLoadStep;
+    private AgentLoadDayStep agentLoadDayStep;
+
+    private AgentLoadWeekStep agentLoadWeekStep;
 
     private JobCountStep jobCountStep;
 
@@ -48,7 +52,8 @@ public class PerformanceConsolidationBatchJob {
     @Autowired
     public PerformanceConsolidationBatchJob(BatchJobBuilder batchJobBuilder,
                                             BatchJobRunner batchJobRunner,
-                                            AgentLoadStep agentLoadStep,
+                                            AgentLoadDayStep agentLoadDayStep,
+                                            AgentLoadWeekStep agentLoadWeekStep,
                                             JobCountStep jobCountStep,
                                             StepCountStep stepCountStep,
                                             DailyStep dailyStep,
@@ -57,7 +62,8 @@ public class PerformanceConsolidationBatchJob {
                                             YearlyStep yearlyStep) {
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
-        this.agentLoadStep = agentLoadStep;
+        this.agentLoadDayStep = agentLoadDayStep;
+        this.agentLoadWeekStep = agentLoadWeekStep;
         this.jobCountStep = jobCountStep;
         this.stepCountStep = stepCountStep;
         this.dailyStep = dailyStep;
@@ -84,9 +90,14 @@ public class PerformanceConsolidationBatchJob {
         logger.info(format("Initializing job - jobName: {0}", JOB_NAME));
         return batchJobBuilder
                 .name(JOB_NAME)
-                .startStep(agentLoadStep.agentLoadProcessing())
-                .nextStep(jobCountStep.jobCountProcessing())
-                .nextStep(stepCountStep.stepCountProcessing())
+                // Parallel steps
+                .startFlow(new BatchFlowBuilder<>("Agent Load")
+                        .splitSteps(agentLoadDayStep.agentLoadProcessing(), agentLoadWeekStep.agentLoadProcessing())
+                        .build())
+                // Parallel steps
+                .nextFlow(new BatchFlowBuilder<>("Job count")
+                        .splitSteps(jobCountStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
+                        .build())
                 .nextStep(dailyStep.dailyConsolidation())
                 .nextStep(weeklyStep.weeklyConsolidation())
                 .nextStep(monthlyStep.monthlyConsolidation())

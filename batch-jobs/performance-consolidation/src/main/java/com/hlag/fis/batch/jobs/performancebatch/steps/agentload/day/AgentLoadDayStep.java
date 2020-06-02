@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.agentload;
+package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
@@ -15,38 +15,38 @@ import static java.text.MessageFormat.format;
 
 
 @Component
-public class AgentLoadStep {
+public class AgentLoadDayStep {
 
     private static final String STEP_NAME = "Agent Load Day";
 
     @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadStep.class);
+    private static Logger logger = LoggerFactory.getLogger(AgentLoadDayStep.class);
 
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
     private AgentPerformanceRepository agentPerformanceRepository;
 
-    private AgentLoadReader agentLoadReader;
+    private AgentLoadDayReader agentLoadDayReader;
 
-    private AgentLoadProcessor agentLoadProcessor;
+    private AgentLoadDayProcessor agentLoadProcessor;
 
-    private AgentLoadWriter agentLoadWriter;
+    private AgentLoadDayWriter agentLoadDayWriter;
 
     private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
-    public AgentLoadStep(
+    public AgentLoadDayStep(
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
             AgentPerformanceRepository agentPerformanceRepository,
-            AgentLoadReader agentLoadReader,
-            AgentLoadProcessor agentLoadProcessor,
-            AgentLoadWriter agentLoadWriter) {
+            AgentLoadDayReader agentLoadDayReader,
+            AgentLoadDayProcessor agentLoadProcessor,
+            AgentLoadDayWriter agentLoadDayWriter) {
         this.stepBuilder = stepBuilder;
         this.agentPerformanceRepository = agentPerformanceRepository;
-        this.agentLoadReader = agentLoadReader;
+        this.agentLoadDayReader = agentLoadDayReader;
         this.agentLoadProcessor = agentLoadProcessor;
-        this.agentLoadWriter = agentLoadWriter;
+        this.agentLoadDayWriter = agentLoadDayWriter;
         logger.debug(format("Step initialized - name: {0}", STEP_NAME));
     }
 
@@ -57,9 +57,9 @@ public class AgentLoadStep {
         return stepBuilder
                 .name(STEP_NAME)
                 .chunkSize(chunkSize)
-                .reader(agentLoadReader.getReader())
+                .reader(agentLoadDayReader.getReader())
                 .processor(agentLoadProcessor)
-                .writer(agentLoadWriter.getWriter())
+                .writer(agentLoadDayWriter.getWriter())
                 .total(totalCount)
                 .build();
     }

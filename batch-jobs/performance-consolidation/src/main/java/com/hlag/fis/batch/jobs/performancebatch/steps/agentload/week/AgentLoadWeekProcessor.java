@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.agentload;
+package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
 import com.hlag.fis.batch.domain.Agent;
 import com.hlag.fis.batch.logging.BatchStepLogger;
@@ -14,15 +14,15 @@ import java.util.Optional;
 import static java.text.MessageFormat.format;
 
 @Component
-public class AgentLoadProcessor implements ItemProcessor<Object[], Agent> {
+public class AgentLoadWeekProcessor implements ItemProcessor<Object[], Agent> {
 
     @BatchStepLogger(value = "Job count")
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadProcessor.class);
+    private static Logger logger = LoggerFactory.getLogger(AgentLoadWeekProcessor.class);
 
     private AgentRepository agentRepository;
 
     @Autowired
-    public AgentLoadProcessor(AgentRepository agentRepository) {
+    public AgentLoadWeekProcessor(AgentRepository agentRepository) {
         this.agentRepository = agentRepository;
     }
 
@@ -33,7 +33,7 @@ public class AgentLoadProcessor implements ItemProcessor<Object[], Agent> {
         Optional<Agent> agentOptional = agentRepository.findByNodeName((String) tuple[0]);
         if (agentOptional.isPresent()) {
             Agent agent = agentOptional.get();
-            agent.setAvgSystemLoadDay((Double) tuple[1]);
+            agent.setAvgSystemLoadWeek((Double) tuple[1]);
             return agent;
         }
         return null;

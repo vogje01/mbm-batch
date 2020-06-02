@@ -1,6 +1,6 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.agentload;
+package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
+import com.hlag.fis.batch.domain.Agent;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +17,17 @@ import javax.persistence.EntityManagerFactory;
  * @since 0.0.3
  */
 @Component
-public class AgentLoadWriter {
+public class AgentLoadDayWriter {
 
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    public AgentLoadWriter(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    public AgentLoadDayWriter(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
     @SuppressWarnings("unchecked")
-    public ItemWriter<AgentPerformance> getWriter() {
-        return new MysqlWriterBuilder<AgentPerformance>(entityManagerFactory).build();
+    public ItemWriter<Agent> getWriter() {
+        return new MysqlWriterBuilder<Agent>(entityManagerFactory).build();
     }
 }
