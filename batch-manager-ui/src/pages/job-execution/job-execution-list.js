@@ -14,7 +14,7 @@ import {
     Selection,
     Sorting
 } from "devextreme-react/data-grid";
-import {getCreatedAt, getCreateTime, getEndTime, getLastUpdatedTime, getModifiedAt, getRunningTime, getStartTime} from "../../utils/date-time-util";
+import {getFormattedTime, getRunningTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
@@ -54,6 +54,10 @@ class JobExecutionList extends React.Component {
                 }
             }
         }
+    }
+
+    dateTimeCellTemplate(container, options) {
+        container.textContent = getFormattedTime(options.data, options.column.dataField);
     }
 
     selectionChanged(e) {
@@ -119,13 +123,13 @@ class JobExecutionList extends React.Component {
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Timing"}>
                                         <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getStartTime(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'startTime'), readOnly: true}}/>
                                         <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getEndTime(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'endTime'), readOnly: true}}/>
                                         <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getCreateTime(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'createTime'), readOnly: true}}/>
                                         <SimpleItem dataField="lastUpdated" editorType="dxTextBox"
-                                                    editorOptions={{value: getLastUpdatedTime(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'lastUpdated'), readOnly: true}}/>
                                         <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
                                         <SimpleItem dataField="startedBy" readOnly={true} editorType="dxTextBox"
@@ -140,10 +144,10 @@ class JobExecutionList extends React.Component {
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getCreatedAt(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getModifiedAt(this.state.currentJobExecution), readOnly: true}}/>
+                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'modifiedAt'), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>
@@ -239,38 +243,38 @@ class JobExecutionList extends React.Component {
                                 dataType={'string'}
                                 visible={false}/>
                             <Column
-                                calculateCellValue={getCreateTime}
                                 dataField={'createTime'}
                                 caption={'Created'}
                                 dataType={'datetime'}
+                                cellTemplate={this.dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={120}
                                 visible={false}/>
                             <Column
-                                calculateCellValue={getStartTime}
                                 dataField={'startTime'}
                                 caption={'Started'}
                                 dataType={'datetime'}
+                                cellTemplate={this.dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={140}/>
                             <Column
-                                calculateCellValue={getEndTime}
                                 dataField={'endTime'}
                                 caption={'Ended'}
                                 dataType={'datetime'}
+                                cellTemplate={this.dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={140}/>
                             <Column
-                                calculateCellValue={getLastUpdatedTime}
                                 dataField={'lastUpdated'}
                                 caption={'Last Update'}
                                 dataType={'datetime'}
+                                cellTemplate={this.dateTimeCellTemplate}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}

@@ -3,6 +3,7 @@ import './profile.scss';
 import Form, {EmailRule, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
 import {updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
+import {getCreatedAt, getModifiedAt} from "../../utils/date-time-util";
 
 const themesList = [
     'material.blue.dark.compact',
@@ -28,7 +29,10 @@ class Profile extends React.Component {
     }
 
     themeSelectionChanged(e) {
-        themes.current(e.selectedItem);
+        console.log(window.localStorage.getItem("dx-theme"));
+        window.localStorage.setItem("dx-theme", e.value);
+        console.log(window.localStorage.getItem("dx-theme"));
+        themes.current(e.value);
     }
 
     passwordChanged(e) {
@@ -92,23 +96,25 @@ class Profile extends React.Component {
                                             editorType={"dxSelectBox"}
                                             editorOptions={{
                                                 dataSource: themesList,
-                                                onSelectionChanged: this.themeSelectionChanged
+                                                onValueChanged: this.themeSelectionChanged
                                             }}/>
                                 <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                             </SimpleItem>
                             <SimpleItem itemType="group" colCount={4} caption={"Auditing"}>
                                 <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                <SimpleItem dataField="createdAt" editorOptions={{readOnly: true}}/>
+                                <SimpleItem dataField="createdAt" editorType="dxTextBox"
+                                            editorOptions={{value: getCreatedAt(this.state.user), readOnly: true}}/>
                                 <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                <SimpleItem dataField="modifiedAt" editorOptions={{readOnly: true}}/>
-                                <SimpleItem editorType={'dxButton'} colSpan={1} editorOptions={{
-                                    horizontalAlignment: 'left',
-                                    text: 'Save',
-                                    type: 'success',
-                                    useSubmitBehavior: false,
-                                    onClick: this.handleSubmit
-                                }}/>
+                                <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
+                                            editorOptions={{value: getModifiedAt(this.state.user), readOnly: true}}/>
                             </SimpleItem>
+                            <SimpleItem editorType={'dxButton'} colSpan={1} editorOptions={{
+                                horizontalAlignment: 'left',
+                                text: 'Save',
+                                type: 'success',
+                                useSubmitBehavior: false,
+                                onClick: this.handleSubmit
+                            }}/>
                         </Form>
                     </form>
                 </div>

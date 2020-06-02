@@ -43,10 +43,12 @@ function AuthProvider(props) {
                 if (data !== undefined) {
                     localStorage.setItem('webToken', data.token);
                     localStorage.setItem('user', JSON.stringify(data.userDto));
+                    localStorage.setItem('theme', data.userDto.theme);
                     setUser({
                         user: data.userDto.userId,
                         firstName: data.userDto.firstName,
                         lastName: data.userDto.lastName,
+                        theme: data.userDto.theme,
                         avatarUrl: data.userDto._links.avatar.href
                     });
                     themes.current(data.userDto.theme);

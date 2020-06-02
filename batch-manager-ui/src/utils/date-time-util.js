@@ -74,6 +74,10 @@ export const getModifiedAt = (rowData) => {
     return rowData && rowData.modifiedAt ? convertUTCToLocalDateTime(rowData.modifiedAt) : null;
 }
 
+export const getFormattedTime = (rowData, attribute) => {
+    return rowData && rowData[attribute] ? convertUTCToLocalDateTime(rowData[attribute]) : null;
+}
+
 export const getRangeStart = (scale) => {
     return moment().startOf(scale).unix();
 };
