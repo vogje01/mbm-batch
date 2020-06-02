@@ -19,7 +19,7 @@ export const convertUTCToLocalDateTime = (dateTime) => {
 };
 
 export const convertUTCToLocalDateTimeMillis = (dateTime) => {
-    return moment(dateTime).format(dateTimeFormat[localStorage.getItem('dateTimeFormat')])
+    return moment(dateTime).format(dateTimeFormatMillis[localStorage.getItem('dateTimeFormat')])
 };
 
 export const getCurrentDateTime = () => {
