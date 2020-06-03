@@ -43,7 +43,7 @@ public class AgentServiceImpl implements AgentService {
     private final CacheManager cacheManager;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param agentRepository agent repository.
      * @param cacheManager    cache manager.
