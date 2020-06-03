@@ -135,6 +135,14 @@ class AgentView extends React.Component {
                                 allowFiltering={false}
                                 width={80}/>
                             <Column
+                                caption={'Load'}
+                                dataField={'avgLoadDay'}
+                                allowEditing={false}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={false}
+                                width={80}/>
+                            <Column
                                 cellTemplate={dateTimeCellTemplate}
                                 dataField={'lastStart'}
                                 caption={'Last Start'}
