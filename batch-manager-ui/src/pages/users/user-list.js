@@ -88,7 +88,6 @@ class UserList extends React.Component {
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
                         <DataGrid
-                            id={'UserTable'}
                             dataSource={UserDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}

@@ -27,7 +27,7 @@ public interface UserGroupService {
 
     void deleteUserGroup(String userGroup);
 
-    UserGroup addUser(String id, String userId);
+    UserGroup addUser(String userGroupId, String id) throws ResourceNotFoundException;
 
-    UserGroup removeUser(String id, String userId);
+    UserGroup removeUser(String userGroupId, String id) throws ResourceNotFoundException;
 }

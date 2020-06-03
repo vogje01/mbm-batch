@@ -45,13 +45,13 @@ public class JobDefinitionController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobDefinitionService jobDefinitionService;
+    private final JobDefinitionService jobDefinitionService;
 
-    private JobGroupService jobGroupService;
+    private final JobGroupService jobGroupService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.

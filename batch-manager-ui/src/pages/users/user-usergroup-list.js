@@ -4,6 +4,7 @@ import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selec
 import {UserUsergroupDataSource} from "./user-data-source";
 import {UserGroupDataSource} from "./user-group-data-source";
 import {SimpleItem} from "devextreme-react/form";
+import {Label} from "devextreme-react/bar-gauge";
 
 class UserUsergroupView extends React.Component {
 
@@ -21,7 +22,6 @@ class UserUsergroupView extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'UserGroupTable'}
                     dataSource={UserUsergroupDataSource(this.props.user)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -44,12 +44,17 @@ class UserUsergroupView extends React.Component {
                         allowDeleting={true}>
                         <Form>
                             <SimpleItem
-                                dataField={'name'}
+                                dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: UserGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}/>
+                                editorOptions={{dataSource: UserGroupDataSource(), valueExpr: 'id', displayExpr: 'name'}}>
+                                <Label text={'Name'}/>
+                            </SimpleItem>
                         </Form>
                     </Editing>
+                    <Column
+                        dataField={'id'}
+                        visible={false}/>
                     <Column
                         caption={'Name'}
                         dataField={'name'}

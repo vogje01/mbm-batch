@@ -47,11 +47,11 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private UserService userService;
+    private final UserService userService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.
@@ -141,7 +141,7 @@ public class UserController {
         List<UserDto> userUserGroupDtoes = modelConverter.convertUserToDto(userGroupUsers.toList(), totalCount);
 
         // Add links
-        userUserGroupDtoes.forEach(this::addLinks);
+        userUserGroupDtoes.forEach(u -> addLinks(u, page, size, sortBy, sortDir));
 
         // Add self link
         Link self = linkTo(methodOn(UserGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
@@ -157,7 +157,7 @@ public class UserController {
      * @return user DTO.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
-    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) throws ResourceNotFoundException {
+    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) {
 
         t.restart();
         Optional<User> userOptional = userService.findByUserId(userDto.getUserId());
@@ -224,21 +224,21 @@ public class UserController {
     /**
      * Add an user group to an user.
      *
-     * @param id   ID of user.
-     * @param name user group name.
+     * @param id          ID of user.
+     * @param userGroupId user group ID.
      */
-    @PutMapping(value = "/{id}/addUserGroup", consumes = {"application/hal+json"})
-    public ResponseEntity<UserDto> addUserGroup(@PathVariable String id, @RequestParam(value = "name") String name) throws ResourceNotFoundException {
+    @GetMapping("/{id}/addUserGroup/{userGroupId}")
+    public ResponseEntity<UserDto> addUserGroup(@PathVariable String id, @PathVariable String userGroupId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(userService.findById(id));
 
-        User user = userService.addUserGroup(id, name);
+        // Add user group to user
+        User user = userService.addUserGroup(id, userGroupId);
         UserDto userDto = modelConverter.convertUserToDto(user);
 
         // Add link
         addLinks(userDto);
-        logger.debug(format("Finished add user group to user request - id: {0} userGroup: {1} {2}", id, name, t.elapsedStr()));
+        logger.debug(format("Finished add user group to user request - id: {0} userGroup: {1} {2}", id, userGroupId, t.elapsedStr()));
 
         return ResponseEntity.ok(userDto);
     }
@@ -249,12 +249,12 @@ public class UserController {
      * @param id          ID of user.
      * @param userGroupId user group ID.
      */
-    @PutMapping(value = "/{id}/removeUserGroup/{userGroupId}", consumes = {"application/hal+json"})
+    @GetMapping("/{id}/removeUserGroup/{userGroupId}")
     public ResponseEntity<UserDto> removeUserGroup(@PathVariable String id, @PathVariable String userGroupId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(userService.findById(id));
 
+        // Remove user group from user.
         User user = userService.removeUserGroup(id, userGroupId);
         UserDto userDto = modelConverter.convertUserToDto(user);
 
@@ -269,6 +269,7 @@ public class UserController {
      * Return the avatar PNG file.
      *
      * @param id ID of user.
+     * @return avatar image as PNG file.
      */
     @GetMapping(value = "/avatar/{id}", produces = {"image/png"})
     public ResponseEntity<byte[]> avatar(@PathVariable String id) throws ResourceNotFoundException {
@@ -292,18 +293,37 @@ public class UserController {
         throw new ResourceNotFoundException();
     }
 
+    /**
+     * Add HATOAS links to user data transfer object.
+     *
+     * @param userDto user transfer object
+     */
     private void addLinks(UserDto userDto) {
         try {
             userDto.add(linkTo(methodOn(UserController.class).findById(userDto.getId())).withSelfRel());
             userDto.add(linkTo(methodOn(UserController.class).insertUser(userDto)).withRel("insert"));
             userDto.add(linkTo(methodOn(UserController.class).updateUser(userDto.getId(), userDto)).withRel("update"));
             userDto.add(linkTo(methodOn(UserController.class).deleteUser(userDto.getId())).withRel("delete"));
-            userDto.add(linkTo(methodOn(UserController.class).addUserGroup(userDto.getId(), null)).withRel("addUserGroup"));
-            userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(userDto.getId(), null)).withRel("removeUserGroup"));
+            userDto.add(linkTo(methodOn(UserController.class).addUserGroup(null, null)).withRel("addUserGroup").expand(userDto.getId(), ""));
+            userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(null, null)).withRel("removeUserGroup").expand(userDto.getId(), ""));
             userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
             userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), 0, 100, "name", "ASC")).withRel("userGroups"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", userDto.getId()), e);
         }
+    }
+
+    /**
+     * Add HATOAS links to user data transfer object.
+     *
+     * @param userDto user transfer object
+     * @param page    page index.
+     * @param size    page size.
+     * @param sortBy  sort attribute.
+     * @param sortDir sort direction.
+     */
+    private void addLinks(UserDto userDto, int page, int size, String sortBy, String sortDir) {
+        addLinks((userDto));
+        userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), page, size, sortBy, sortDir)).withRel("userGroups"));
     }
 }

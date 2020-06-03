@@ -145,21 +145,21 @@ public class UserServiceImpl implements UserService {
     /**
      * Adds a user group to an user.
      *
-     * @param id   user ID.
-     * @param name user group name to add.
+     * @param id          user ID.
+     * @param userGroupId user group ID.
      */
     @Override
     @CachePut(cacheNames = "User", key = "#id")
-    public User addUserGroup(String id, String name) {
+    public User addUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
         Optional<User> userOptional = userRepository.findById(id);
-        Optional<UserGroup> userGroupOptional = userGroupRepository.findByName(name);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
             user.addUserGroup(userGroup);
             return userRepository.save(user);
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     /**
@@ -170,8 +170,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @CachePut(cacheNames = "User", key = "#id")
-    public User removeUserGroup(String id, String userGroupId) {
-        Optional<User> userOptional = findById(id);
+    public User removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
+        Optional<User> userOptional = userRepository.findById(id);
         Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
             user.removeUserGroup(userGroup);
             return userRepository.save(user);
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     public void changePassword(User user, String password) {

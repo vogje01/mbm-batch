@@ -29,9 +29,9 @@ public interface UserService {
 
     void deleteUser(String userId);
 
-    User addUserGroup(String id, String name);
+    User addUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
 
-    User removeUserGroup(String id, String userGroupId);
+    User removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
 
     void resetPassword(User user) throws ResourceNotFoundException;
 

@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
 
 export const UserGroupDataSource = () => {
     return new DataSource({
@@ -38,14 +38,10 @@ export const UsergroupUserDataSource = (userGroup) => {
                 return getList(url, 'userDtoes');
             },
             insert: function (user) {
-                let url = userGroup._links.addGroup.href;
-                url = url.replace("{userId}", user.userId)
-                return insertItem(url)
+                return getItem(userGroup._links.addUser.href + user.id);
             },
             remove: function (user) {
-                let url = userGroup._links.removeGroup.href;
-                url = url.replace("{userId}", user.userId)
-                return insertItem(url);
+                return getItem(userGroup._links.removeUser.href + user.id);
             }
         })
     });

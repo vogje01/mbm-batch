@@ -129,14 +129,14 @@ public class UserGroupServiceImpl implements UserGroupService {
     /**
      * Adds a user to an user group.
      *
-     * @param id     user group ID.
-     * @param userId user id to add.
+     * @param userGroupId user group ID.
+     * @param userId      user id to add.
      */
     @Override
-    @CachePut(cacheNames = "UserGroup", key = "#id")
-    public UserGroup addUser(String id, String userId) {
-        Optional<User> userOptional = userRepository.findByUserId(userId);
-        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(id);
+    @CachePut(cacheNames = "UserGroup", key = "#userGroupId")
+    public UserGroup addUser(String userGroupId, String id) throws ResourceNotFoundException {
+        Optional<User> userOptional = userRepository.findById(id);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
@@ -144,20 +144,20 @@ public class UserGroupServiceImpl implements UserGroupService {
             userRepository.save(user);
             return userGroup;
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     /**
      * Removes a user from an user group.
      *
-     * @param id     user group ID.
-     * @param userId user ID to remove.
+     * @param userGroupId user group ID.
+     * @param id          user ID to remove.
      */
     @Override
-    @CachePut(cacheNames = "UserGroup", key = "#id")
-    public UserGroup removeUser(String id, String userId) {
-        Optional<User> userOptional = userRepository.findByUserId(userId);
-        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(id);
+    @CachePut(cacheNames = "UserGroup", key = "#userGroupId")
+    public UserGroup removeUser(String userGroupId, String id) throws ResourceNotFoundException {
+        Optional<User> userOptional = userRepository.findById(id);
+        Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
@@ -165,6 +165,6 @@ public class UserGroupServiceImpl implements UserGroupService {
             userRepository.save(user);
             return userGroup;
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 }

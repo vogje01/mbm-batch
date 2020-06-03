@@ -3,7 +3,7 @@ import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {UsergroupUserDataSource} from "./user-group-data-source";
 import {UserDataSource} from "./user-data-source";
-import {SimpleItem} from "devextreme-react/form";
+import {Label, SimpleItem} from "devextreme-react/form";
 
 class UsergroupUserView extends React.Component {
 
@@ -14,7 +14,6 @@ class UsergroupUserView extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'UserGroupTable'}
                     dataSource={UsergroupUserDataSource(this.props.userGroup)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -25,8 +24,7 @@ class UsergroupUserView extends React.Component {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
-                    rowAlternationEnabled={true}
-                    style={{padding: "5px 0px 0px 0px"}}>
+                    rowAlternationEnabled={true}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
@@ -37,14 +35,19 @@ class UsergroupUserView extends React.Component {
                         allowDeleting={true}>
                         <Form>
                             <SimpleItem
-                                dataField={'userId'}
+                                dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: UserDataSource(), valueExpr: 'userId', displayExpr: 'userId'}}/>
+                                editorOptions={{dataSource: UserDataSource(), valueExpr: 'id', displayExpr: 'userId'}}>
+                                <Label text={'UserID'}/>
+                            </SimpleItem>
                         </Form>
                     </Editing>
                     <Column
-                        caption={'UserId'}
+                        dataField={'id'}
+                        visible={false}/>
+                    <Column
+                        caption={'UserID'}
                         dataField={'userId'}
                         allowEditing={true}
                         allowFiltering={true}
