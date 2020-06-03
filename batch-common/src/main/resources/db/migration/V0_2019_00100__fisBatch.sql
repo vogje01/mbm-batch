@@ -28,7 +28,7 @@ CREATE TABLE BATCH_JOB_DEFINITION
     JOB_VERSION            VARCHAR(32),
     DESCRIPTION            TEXT,
     ACTIVE                 BIT                  DEFAULT FALSE,
-    TYPE                   ENUM ('JAR', 'DOCKER'),
+    TYPE                   ENUM ('JAR', 'DOCKER', 'SCRIPT'),
     FILE_NAME              VARCHAR(256),
     COMMAND                VARCHAR(256),
     WORKING_DIRECTORY      VARCHAR(256),

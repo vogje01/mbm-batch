@@ -213,7 +213,7 @@ public class UserGroupController {
     }
 
     /**
-     * Removes a user from an user group.
+     * Adds an user to an user group.
      *
      * @param id     ID of user.
      * @param userId user ID.

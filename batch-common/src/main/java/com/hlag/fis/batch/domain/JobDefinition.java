@@ -29,7 +29,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     private String label;
 
     @Column(name = "TYPE")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private JobDefinitionType type;
 
     @Column(name = "JOB_VERSION")
     private String jobVersion;
@@ -114,11 +115,11 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.label = label;
     }
 
-    public String getType() {
+    public JobDefinitionType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(JobDefinitionType type) {
         this.type = type;
     }
 

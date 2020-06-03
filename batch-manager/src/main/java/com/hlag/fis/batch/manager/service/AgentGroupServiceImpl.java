@@ -1,13 +1,16 @@
 package com.hlag.fis.batch.manager.service;
 
+import com.hlag.fis.batch.domain.Agent;
 import com.hlag.fis.batch.domain.AgentGroup;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.repository.AgentGroupRepository;
+import com.hlag.fis.batch.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,18 +27,14 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentGroupServiceImpl.class);
 
+    private AgentRepository agentRepository;
+
     private AgentGroupRepository agentGroupRepository;
 
     @Autowired
-    public AgentGroupServiceImpl(AgentGroupRepository agentGroupRepository,
-                                 JobScheduleService jobScheduleService) {
+    public AgentGroupServiceImpl(AgentGroupRepository agentGroupRepository, AgentRepository agentRepository) {
         this.agentGroupRepository = agentGroupRepository;
-    }
-
-    @Override
-    @Cacheable
-    public Page<AgentGroup> findAll(Pageable pageable) {
-        return agentGroupRepository.findAll(pageable);
+        this.agentRepository = agentRepository;
     }
 
     @Override
@@ -46,6 +45,31 @@ public class AgentGroupServiceImpl implements AgentGroupService {
     @Override
     public long countByAgent(String agentId) {
         return agentGroupRepository.countByAgentId(agentId);
+    }
+
+    @Override
+    @Cacheable
+    public Page<AgentGroup> findAll(Pageable pageable) {
+        return agentGroupRepository.findAll(pageable);
+    }
+
+    @Override
+    @Cacheable
+    public AgentGroup findById(final String agentGroupId) {
+        Optional<AgentGroup> agentGroup = agentGroupRepository.findById(agentGroupId);
+        return agentGroup.orElse(null);
+    }
+
+    @Override
+    @Cacheable
+    public AgentGroup findByName(final String agentGroupName) {
+        Optional<AgentGroup> agentGroup = agentGroupRepository.findByName(agentGroupName);
+        return agentGroup.orElse(null);
+    }
+
+    @Override
+    public Page<AgentGroup> findByAgentId(String agentId, Pageable pageable) {
+        return agentGroupRepository.findByAgentId(agentId, pageable);
     }
 
     /**
@@ -89,23 +113,45 @@ public class AgentGroupServiceImpl implements AgentGroupService {
         agentGroupInfo.ifPresent(agentGroup -> agentGroupRepository.delete(agentGroup));
     }
 
+    /**
+     * Adds a agent to an agent group.
+     *
+     * @param id      agent group ID.
+     * @param agentId agent id to add.
+     */
     @Override
-    @Cacheable
-    public AgentGroup findById(final String agentGroupId) {
-        Optional<AgentGroup> agentGroup = agentGroupRepository.findById(agentGroupId);
-        return agentGroup.orElse(null);
+    @CachePut(cacheNames = "AgentGroup", key = "#id")
+    public AgentGroup addAgent(String id, String agentId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(id);
+        if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            AgentGroup agentGroup = agentGroupOptional.get();
+            agent.addAgentGroup(agentGroup);
+            agentRepository.save(agent);
+            return agentGroup;
+        }
+        throw new ResourceNotFoundException();
     }
 
+    /**
+     * Removes a agent from an agent group.
+     *
+     * @param id      agent group ID.
+     * @param agentId agent ID to remove.
+     */
     @Override
-    @Cacheable
-    public AgentGroup findByName(final String agentGroupName) {
-        Optional<AgentGroup> agentGroup = agentGroupRepository.findByName(agentGroupName);
-        return agentGroup.orElse(null);
+    @CachePut(cacheNames = "AgentGroup", key = "#id")
+    public AgentGroup removeAgent(String id, String agentId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(id);
+        if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            AgentGroup agentGroup = agentGroupOptional.get();
+            agent.removeAgentGroup(agentGroup);
+            agentRepository.save(agent);
+            return agentGroup;
+        }
+        throw new ResourceNotFoundException();
     }
-
-    @Override
-    public Page<AgentGroup> findByAgentId(String agentId, Pageable pageable) {
-        return agentGroupRepository.findByAgentId(agentId, pageable);
-    }
-
 }

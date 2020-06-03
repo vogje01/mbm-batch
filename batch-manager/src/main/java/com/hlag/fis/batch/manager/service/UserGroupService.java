@@ -30,5 +30,4 @@ public interface UserGroupService {
     UserGroup addUser(String id, String userId);
 
     UserGroup removeUser(String id, String userId);
-
 }

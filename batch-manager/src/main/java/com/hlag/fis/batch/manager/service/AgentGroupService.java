@@ -25,4 +25,8 @@ public interface AgentGroupService {
                                 AgentGroup agentGroup) throws ResourceNotFoundException;
 
     void deleteAgentGroup(final String id);
+
+    AgentGroup addAgent(String id, String agentId) throws ResourceNotFoundException;
+
+    AgentGroup removeAgent(String id, String agentId) throws ResourceNotFoundException;
 }

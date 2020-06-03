@@ -3,7 +3,7 @@ import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {AgentGroupAgentDataSource} from "./agent-group-data-source";
 import {AgentDataSource} from "./agent-data-source";
-import {SimpleItem} from "devextreme-react/form";
+import {Label, SimpleItem} from "devextreme-react/form";
 
 class AgentgroupAgentView extends React.Component {
 
@@ -35,10 +35,12 @@ class AgentgroupAgentView extends React.Component {
                         allowDeleting={true}>
                         <Form>
                             <SimpleItem
-                                dataField={'agentId'}
+                                dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: AgentDataSource(), valueExpr: 'agentId', displayExpr: 'agentId'}}/>
+                                editorOptions={{dataSource: AgentDataSource(), valueExpr: 'id', displayExpr: 'nodeName'}}>
+                                <Label text={'Node Name'}/>
+                            </SimpleItem>
                         </Form>
                     </Editing>
                     <Column
@@ -48,6 +50,11 @@ class AgentgroupAgentView extends React.Component {
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
+                    <Column
+                        caption={'ID'}
+                        dataField={'id'}
+                        allowEditing={true}
+                        visible={false}/>
                     <Column
                         caption={'Active'}
                         dataField={'active'}

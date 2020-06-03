@@ -25,7 +25,8 @@ import {getFormattedTime} from "../../utils/date-time-util";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
-    {type: 'DOCKER', name: 'DOCKER'}
+    {type: 'DOCKER', name: 'DOCKER'},
+    {type: 'SCRIPT', name: 'SCRIPT'}
 ];
 
 class JobDefinitionList extends React.Component {
@@ -107,7 +108,6 @@ class JobDefinitionList extends React.Component {
                                 }}/>
                         </Toolbar>
                         <DataGrid
-                            id={'jobDefinitionTable'}
                             dataSource={JobDefinitionDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
@@ -152,7 +152,7 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="failedExitMessage"/>
                                         <SimpleItem dataField="completedExitCode"/>
                                         <SimpleItem dataField="completedExitMessage"/>
-                                        <SimpleItem dataField="description" colSpan={2}/>
+                                        <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 100}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Command"}>

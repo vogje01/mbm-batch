@@ -226,7 +226,7 @@ public class BatchScheduler {
         return new JobDetailBuilder().jobName(jobDefinition.getName())
                 .groupName(jobDefinition.getJobGroup().getName())
                 .description(jobDefinition.getDescription())
-                .jobType(jobDefinition.getType())
+                .jobType(jobDefinition.getType().name())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(jobDefinition.getFileName())
