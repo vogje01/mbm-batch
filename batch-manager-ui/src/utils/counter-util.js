@@ -9,3 +9,12 @@ export const getPctCounter = (totalCounter, counter) => {
     }
     return counter ? counter : '0 (0.00%)';
 };
+
+export const getFormattedNumber = (rowData, attribute) => {
+    return rowData && rowData[attribute] ? truncate(rowData[attribute], 2) : null;
+}
+
+export const numericCellTemplate = (container, options) => {
+    container.textContent = getFormattedNumber(options.data, options.column.dataField);
+}
+

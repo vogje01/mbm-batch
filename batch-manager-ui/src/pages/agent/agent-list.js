@@ -4,11 +4,12 @@ import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperati
 import {AgentDataSource} from "./agent-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
-import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {GroupItem, Label, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import AgentJobScheduleView from "./agent-job-schedule-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
+import {getFormattedNumber, numericCellTemplate} from "../../utils/counter-util";
 
 class AgentView extends React.Component {
 
@@ -81,6 +82,14 @@ class AgentView extends React.Component {
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastStart'), readOnly: true}}/>
                                         <SimpleItem dataField="lastPing" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
+                                        <SimpleItem editorType="dxTextBox"
+                                                    editorOptions={{value: getFormattedNumber(this.state.currentAgent, 'avgSystemLoadDay'), readOnly: true}}>
+                                            <Label location={'top'} alignment={'left'} text={'System Load (Day)'}/>
+                                        </SimpleItem>
+                                        <SimpleItem editorType="dxTextBox"
+                                                    editorOptions={{value: getFormattedNumber(this.state.currentAgent, 'avgSystemLoadWeek'), readOnly: true}}>
+                                            <Label location={'top'} alignment={'left'} text={'System Load (Week)'}/>
+                                        </SimpleItem>
                                     </GroupItem>
                                     <GroupItem caption={"Schedules"}>
                                         <AgentJobScheduleView agent={this.state.currentAgent}/>
@@ -135,6 +144,7 @@ class AgentView extends React.Component {
                                 allowFiltering={false}
                                 width={80}/>
                             <Column
+                                cellTemplate={numericCellTemplate}
                                 caption={'Load'}
                                 dataField={'avgSystemLoadDay'}
                                 allowEditing={false}
@@ -142,6 +152,10 @@ class AgentView extends React.Component {
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={80}/>
+                            <Column
+                                cellTemplate={numericCellTemplate}
+                                dataField={'avgSystemLoadWeek'}
+                                visible={false}/>
                             <Column
                                 cellTemplate={dateTimeCellTemplate}
                                 dataField={'lastStart'}
