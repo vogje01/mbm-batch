@@ -1,8 +1,10 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.AgentGroup;
 import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
+import com.hlag.fis.batch.repository.AgentGroupRepository;
 import com.hlag.fis.batch.repository.AgentRepository;
 import com.hlag.fis.batch.repository.JobScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class AgentServiceImpl implements AgentService {
 
     private AgentRepository agentRepository;
 
+    private AgentGroupRepository agentGroupRepository;
+
     private JobScheduleRepository jobScheduleRepository;
 
     private CacheManager cacheManager;
@@ -45,8 +49,10 @@ public class AgentServiceImpl implements AgentService {
      * @param cacheManager    cache manager.
      */
     @Autowired
-    public AgentServiceImpl(AgentRepository agentRepository, JobScheduleRepository jobScheduleRepository, CacheManager cacheManager) {
+    public AgentServiceImpl(AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
+                            JobScheduleRepository jobScheduleRepository, CacheManager cacheManager) {
         this.agentRepository = agentRepository;
+        this.agentGroupRepository = agentGroupRepository;
         this.jobScheduleRepository = jobScheduleRepository;
         this.cacheManager = cacheManager;
     }
@@ -115,6 +121,47 @@ public class AgentServiceImpl implements AgentService {
     public void deleteAgent(String agentId) {
         agentRepository.deleteById(agentId);
     }
+
+    /**
+     * Adds a agent group to an agent.
+     *
+     * @param id   agent ID.
+     * @param name agent group name to add.
+     */
+    @Override
+    @CachePut(cacheNames = "Agent", key = "#id")
+    public Agent addAgentGroup(String id, String name) {
+        Optional<Agent> agentOptional = agentRepository.findById(id);
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findByName(name);
+        if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            AgentGroup agentGroup = agentGroupOptional.get();
+            agent.addAgentGroup(agentGroup);
+            return agentRepository.save(agent);
+        }
+        return null;
+    }
+
+    /**
+     * Removes a agent group from an agent.
+     *
+     * @param id           agent ID.
+     * @param agentGroupId agent group ID to remove.
+     */
+    @Override
+    @CachePut(cacheNames = "Agent", key = "#id")
+    public Agent removeAgentGroup(String id, String agentGroupId) {
+        Optional<Agent> agentOptional = findById(id);
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
+        if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
+            Agent agent = agentOptional.get();
+            AgentGroup agentGroup = agentGroupOptional.get();
+            agent.removeAgentGroup(agentGroup);
+            return agentRepository.save(agent);
+        }
+        return null;
+    }
+
 
     /**
      * Adds a schedule to an agent.

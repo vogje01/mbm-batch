@@ -38,14 +38,14 @@ export const AgentAgentGroupDataSource = (agent) => {
                     return getList(url, 'agentGroupDtoes');
                 }
             },
-            insert: function (agent) {
-                let url = agent._links.addGroup.href;
-                url = url.replace("{agentId}", agent.agentId)
+            insert: function (agentGroup) {
+                let url = agent._links.addAgentGroup.href;
+                url = url.replace("{name}", agentGroup.name)
                 return insertItem(url)
             },
-            remove: function (agent) {
-                let url = agent._links.removeGroup.href;
-                url = url.replace("{agentId}", agent.agentId)
+            remove: function (agentGroup) {
+                let url = agent._links.removeAgentGroup.href;
+                url = url.replace("{agentGroupId}", agentGroup.id)
                 return insertItem(url);
             }
         })

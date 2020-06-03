@@ -29,6 +29,10 @@ public interface AgentService {
 
     void deleteAgent(String agentId);
 
+    Agent addAgentGroup(String id, String name);
+
+    Agent removeAgentGroup(String id, String agentGroupId);
+
     Agent addSchedule(String id, String name);
 
     Agent removeSchedule(String id, String scheduleId);

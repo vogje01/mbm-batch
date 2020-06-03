@@ -218,11 +218,11 @@ public class UserController {
         userService.deleteUser(id);
 
         logger.debug(format("Finished delete user request - id: {0} {1}", id, t.elapsedStr()));
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
     /**
-     * Removes a user group from an user.
+     * Add an user group to an user.
      *
      * @param id   ID of user.
      * @param name user group name.
