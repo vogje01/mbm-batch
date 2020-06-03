@@ -39,11 +39,11 @@ public class JobExecutionController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobExecutionService jobExecutionService;
+    private final JobExecutionService jobExecutionService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public JobExecutionController(@Qualifier("production") JobExecutionService jobExecutionService, ModelConverter modelConverter) {

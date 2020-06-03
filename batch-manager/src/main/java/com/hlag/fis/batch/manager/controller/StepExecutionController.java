@@ -41,13 +41,13 @@ public class StepExecutionController {
 
     private static final Logger logger = LoggerFactory.getLogger(StepExecutionController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private StepExecutionService stepService;
+    private final StepExecutionService stepService;
 
-    private JobExecutionService jobService;
+    private final JobExecutionService jobService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.

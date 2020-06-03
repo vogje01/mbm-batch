@@ -39,11 +39,11 @@ public class AgentPerformanceController {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentPerformanceController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private AgentPerformanceService service;
+    private final AgentPerformanceService service;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.

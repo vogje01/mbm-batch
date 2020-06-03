@@ -287,7 +287,7 @@ public class JobDefinitionController {
     }
 
     /**
-     * Add HATOAS links.
+     * Add HATEOAS links.
      *
      * @param jobDefinitionDto job definition data transfer object.
      * @param page             page number.

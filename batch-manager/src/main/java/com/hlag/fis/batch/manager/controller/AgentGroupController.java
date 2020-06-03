@@ -40,11 +40,11 @@ public class AgentGroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentGroupController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private AgentGroupService agentGroupService;
+    private final AgentGroupService agentGroupService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.

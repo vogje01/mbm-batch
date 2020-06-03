@@ -39,19 +39,20 @@ public class JobDefinitionParamController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionParamController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobDefinitionService jobDefinitionService;
+    private final JobDefinitionService jobDefinitionService;
 
-    private JobDefinitionParamService jobDefinitionParamService;
+    private final JobDefinitionParamService jobDefinitionParamService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.
      *
      * @param jobDefinitionService      job definition service implementation.
      * @param jobDefinitionParamService job definition param service implementation.
+     * @param modelConverter            model converter.
      */
     @Autowired
     public JobDefinitionParamController(JobDefinitionService jobDefinitionService, JobDefinitionParamService jobDefinitionParamService, ModelConverter modelConverter) {
@@ -68,12 +69,11 @@ public class JobDefinitionParamController {
      * @param sortBy  sorting column.
      * @param sortDir sorting direction.
      * @return on page of job definitions.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<JobDefinitionParamDto>> findAll(@RequestParam("page") int page, @RequestParam("size") int size,
                                                                           @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                          @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+                                                                          @RequestParam(value = "sortDir", required = false) String sortDir) {
         t.restart();
 
         // Get paging parameters
@@ -98,10 +98,9 @@ public class JobDefinitionParamController {
      *
      * @param jobDefinitionParamId job definition parameter UUID.
      * @return job definition parameter with given ID or error.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(value = "/{jobDefinitionParamId}")
-    public ResponseEntity<JobDefinitionParamDto> findById(@PathVariable("jobDefinitionParamId") String jobDefinitionParamId) throws ResourceNotFoundException {
+    public ResponseEntity<JobDefinitionParamDto> findById(@PathVariable("jobDefinitionParamId") String jobDefinitionParamId) {
         JobDefinitionParam jobDefinitionParam = jobDefinitionParamService.findById(jobDefinitionParamId);
         JobDefinitionParamDto jobDefinitionParamDto = modelConverter.convertJobDefinitionParamToDto(jobDefinitionParam);
         addLinks(jobDefinitionParamDto);

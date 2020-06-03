@@ -40,15 +40,15 @@ public class JobExecutionLogController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionLogController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobExecutionLogService jobExecutionLogService;
+    private final JobExecutionLogService jobExecutionLogService;
 
-    private JobExecutionService jobExecutionService;
+    private final JobExecutionService jobExecutionService;
 
-    private StepExecutionService stepExecutionService;
+    private final StepExecutionService stepExecutionService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public JobExecutionLogController(JobExecutionService jobExecutionService, StepExecutionService stepExecutionService,

@@ -41,11 +41,11 @@ public class UserGroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserGroupController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private UserGroupService userGroupService;
+    private final UserGroupService userGroupService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.
@@ -152,7 +152,7 @@ public class UserGroupController {
      * @return userGroup DTO.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
-    public ResponseEntity<UserGroupDto> insertUserGroup(@RequestBody UserGroupDto userGroupDto) throws ResourceNotFoundException {
+    public ResponseEntity<UserGroupDto> insertUserGroup(@RequestBody UserGroupDto userGroupDto) {
 
         t.restart();
         Optional<UserGroup> userGroupOptional = userGroupService.findByName(userGroupDto.getName());

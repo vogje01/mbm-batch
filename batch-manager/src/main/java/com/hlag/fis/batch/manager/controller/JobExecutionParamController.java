@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -26,7 +27,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 /**
  * Job execution param REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -38,11 +39,11 @@ public class JobExecutionParamController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionParamController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobExecutionParamService service;
+    private final JobExecutionParamService service;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public JobExecutionParamController(JobExecutionParamService service, ModelConverter modelConverter) {
@@ -65,7 +66,7 @@ public class JobExecutionParamController {
                                                                              @RequestParam("page") int page,
                                                                              @RequestParam("size") int size,
                                                                              @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                             @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+                                                                             @RequestParam(value = "sortDir", required = false) String sortDir) {
         t.restart();
 
         // Get paging parameters
@@ -97,8 +98,12 @@ public class JobExecutionParamController {
      * @throws ResourceNotFoundException in case the job execution param is not existing.
      */
     @GetMapping(value = "/{paramId}")
-    public JobExecutionParam findById(@PathVariable("paramId") String paramId) throws ResourceNotFoundException {
-        return RestPreconditions.checkFound(service.byId(paramId).get());
+    public ResponseEntity<JobExecutionParam> findById(@PathVariable("paramId") String paramId) throws ResourceNotFoundException {
+        Optional<JobExecutionParam> jobExecutionParamOptional = service.byId(paramId);
+        if (jobExecutionParamOptional.isPresent()) {
+            return ResponseEntity.ok(jobExecutionParamOptional.get());
+        }
+        throw new ResourceNotFoundException();
     }
 
     /**
@@ -111,6 +116,6 @@ public class JobExecutionParamController {
     public ResponseEntity<Void> delete(@PathVariable("paramId") String paramId) throws ResourceNotFoundException {
         RestPreconditions.checkFound(service.byId(paramId));
         service.deleteById(paramId);
-        return null;
+        return ResponseEntity.ok().build();
     }
 }

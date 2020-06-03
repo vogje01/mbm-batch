@@ -40,11 +40,11 @@ public class JobGroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobGroupController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobGroupService jobGroupService;
+    private final JobGroupService jobGroupService;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.
@@ -65,14 +65,13 @@ public class JobGroupController {
      * @param sortBy  sorting column.
      * @param sortDir sorting direction.
      * @return on page of job groups.
-     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<JobGroupDto>> findAll(@RequestParam("page") int page,
                                                                 @RequestParam("size") int size,
                                                                 @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+                                                                @RequestParam(value = "sortDir", required = false) String sortDir) {
         t.restart();
 
         // Get paging parameters
@@ -144,10 +143,9 @@ public class JobGroupController {
      *
      * @param jobGroupDto job group DTO.
      * @return job group resource.
-     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"})
-    public ResponseEntity<JobGroupDto> insert(@RequestBody JobGroupDto jobGroupDto) throws ResourceNotFoundException {
+    public ResponseEntity<JobGroupDto> insert(@RequestBody JobGroupDto jobGroupDto) {
         t.restart();
 
         // Get job group
