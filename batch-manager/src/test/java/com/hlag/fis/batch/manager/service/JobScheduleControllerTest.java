@@ -136,7 +136,7 @@ public class JobScheduleControllerTest {
         jobScheduleDtoList.add(jobScheduleDto1);
         jobScheduleDtoList.add(jobScheduleDto2);
 
-        when(jobScheduleService.allScheduledJobs(any())).thenReturn(new PageImpl<>(jobScheduleList));
+        when(jobScheduleService.findAll(any())).thenReturn(new PageImpl<>(jobScheduleList));
         when(modelConverter.convertJobScheduleToDto(anyList(), anyLong())).thenReturn(jobScheduleDtoList);
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
@@ -154,7 +154,7 @@ public class JobScheduleControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobScheduleService.allScheduledJobs(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobScheduleService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
                 //.andDo(print())

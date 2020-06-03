@@ -12,6 +12,12 @@ import java.util.Optional;
 
 public interface JobScheduleRepository extends PagingAndSortingRepository<JobSchedule, String> {
 
+    @Query("select count(a) from JobSchedule j left join j.agents a where j.id = :scheduleId")
+    long countAgents(@Param("scheduleId") String scheduleId);
+
+    @Query("select count(ag) from JobSchedule j left join j.agentGroups ag where j.id = :scheduleId")
+    long countAgentGroups(@Param("scheduleId") String scheduleId);
+
     @Query("select j from JobSchedule j left join j.jobDefinition d where j.active = :active")
     Page<JobSchedule> findAllActive(@Param("active") boolean active, Pageable pageable);
 
@@ -26,9 +32,6 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
 
     @Query("select j from JobSchedule j left join j.jobDefinition d where d.id = :jobDefinitionId")
     List<JobSchedule> findByJobDefinitionId(@Param("jobDefinitionId") String jobDefinitionId);
-
-    @Query("select count(a) from JobSchedule j left join j.agents a where j.id = :scheduleId")
-    long countAgents(@Param("scheduleId") String scheduleId);
 
     @Query("select j from JobSchedule j left join j.agents a where a.id = :agentId")
     Page<JobSchedule> findByAgentId(@Param("agentId") String agentId, Pageable pageable);

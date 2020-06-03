@@ -57,8 +57,8 @@ class JobScheduleAgentGroupList extends React.Component {
                         dataField={'id'}
                         visible={false}/>
                     <Column
-                        dataField={'nodeName'}
-                        caption={'Node Name'}
+                        dataField={'name'}
+                        caption={'Name'}
                         dataType={'string'}
                         allowSorting={true}
                         allowReordering={true}

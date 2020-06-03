@@ -93,7 +93,7 @@ public class JobScheduleControllerCacheTest {
         }
 
         // List invocation
-        Page<JobSchedule> listResult = service.allScheduledJobs(PageRequest.of(0, 10));
+        Page<JobSchedule> listResult = service.findAll(PageRequest.of(0, 10));
         verify(mockJobScheduleRepository, times(1)).findAll(PageRequest.of(0, 10));
         assertThat(listResult.getTotalElements()).isEqualTo(2L);
         assertThat(listResult.getContent().get(0)).isEqualTo(jobSchedule1);
@@ -123,7 +123,7 @@ public class JobScheduleControllerCacheTest {
 
         @Bean
         public JobScheduleService jobScheduleService() {
-            return new JobScheduleServiceImpl(jobScheduleRepository(), agentRepository(), null, mockModelConverter);
+            return new JobScheduleServiceImpl(jobScheduleRepository(), agentRepository(), null, null, mockModelConverter);
         }
 
         @Bean

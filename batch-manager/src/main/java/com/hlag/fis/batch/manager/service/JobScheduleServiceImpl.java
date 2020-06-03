@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.manager.service;
 
 import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.AgentGroup;
 import com.hlag.fis.batch.domain.JobDefinition;
 import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.domain.dto.JobScheduleDto;
@@ -8,6 +9,7 @@ import com.hlag.fis.batch.domain.dto.ServerCommandDto;
 import com.hlag.fis.batch.domain.dto.ServerCommandType;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
 import com.hlag.fis.batch.manager.service.common.ServerCommandProducer;
+import com.hlag.fis.batch.repository.AgentGroupRepository;
 import com.hlag.fis.batch.repository.AgentRepository;
 import com.hlag.fis.batch.repository.JobScheduleRepository;
 import com.hlag.fis.batch.util.ModelConverter;
@@ -37,27 +39,40 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     private AgentRepository agentRepository;
 
+    private AgentGroupRepository agentGroupRepository;
+
     private ServerCommandProducer serverCommandProducer;
 
     private ModelConverter modelConverter;
 
     @Autowired
-    public JobScheduleServiceImpl(JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository,
+    public JobScheduleServiceImpl(JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
                                   ServerCommandProducer serverCommandProducer, ModelConverter modelConverter) {
         this.jobScheduleRepository = jobScheduleRepository;
         this.serverCommandProducer = serverCommandProducer;
         this.agentRepository = agentRepository;
+        this.agentGroupRepository = agentGroupRepository;
         this.modelConverter = modelConverter;
-    }
-
-    @Override
-    public Page<JobSchedule> allScheduledJobs(Pageable pageable) {
-        return jobScheduleRepository.findAll(pageable);
     }
 
     @Override
     public long countAll() {
         return jobScheduleRepository.count();
+    }
+
+    @Override
+    public long countAgents(String jobScheduleId) {
+        return jobScheduleRepository.countAgents(jobScheduleId);
+    }
+
+    @Override
+    public long countAgentGroups(String jobScheduleId) {
+        return jobScheduleRepository.countAgentGroups(jobScheduleId);
+    }
+
+    @Override
+    public Page<JobSchedule> findAll(Pageable pageable) {
+        return jobScheduleRepository.findAll(pageable);
     }
 
     @Override
@@ -69,6 +84,14 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     @Override
     public Optional<JobSchedule> findByGroupAndName(String groupName, String jobName) {
         return jobScheduleRepository.findByGroupAndName(groupName, jobName);
+    }
+
+
+    @Override
+    @Transactional
+    @CachePut(cacheNames = "JobDefinition", key = "#jobSchedule.id")
+    public JobSchedule insertJobSchedule(JobSchedule jobSchedule) {
+        return jobScheduleRepository.save(jobSchedule);
     }
 
     @Override
@@ -131,13 +154,6 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     }
 
     @Override
-    @Transactional
-    @CachePut(cacheNames = "JobDefinition", key = "#jobSchedule.id")
-    public JobSchedule insertJobSchedule(JobSchedule jobSchedule) {
-        return jobScheduleRepository.save(jobSchedule);
-    }
-
-    @Override
     public Page<Agent> getAgents(String jobScheduleId, Pageable pageable) throws ResourceNotFoundException {
         Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
         if (jobScheduleOptional.isPresent()) {
@@ -148,15 +164,10 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     }
 
     @Override
-    public long countAgents(String jobScheduleId) {
-        return jobScheduleRepository.countAgents(jobScheduleId);
-    }
-
-    @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobSchedule addAgent(String jobScheduleId, String nodeName) throws ResourceNotFoundException {
+    public JobScheduleDto addAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
 
-        Optional<Agent> agentOptional = agentRepository.findByNodeName(nodeName);
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
         if (agentOptional.isPresent()) {
 
             // Get hte agent
@@ -178,7 +189,9 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 serverCommandDto.setNodeName(agent.getNodeName());
                 serverCommandProducer.sendTopic(serverCommandDto);
 
-                return jobSchedule;
+                return jobScheduleDto;
+            } else {
+                throw new ResourceNotFoundException();
             }
         }
         throw new ResourceNotFoundException();
@@ -186,7 +199,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobSchedule removeAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
+    public JobScheduleDto removeAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
 
         Optional<Agent> agentOptional = agentRepository.findById(agentId);
         if (agentOptional.isPresent()) {
@@ -210,7 +223,87 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 serverCommandDto.setNodeName(agent.getNodeName());
                 serverCommandProducer.sendTopic(serverCommandDto);
 
-                return jobSchedule;
+                return jobScheduleDto;
+            } else {
+                throw new ResourceNotFoundException();
+            }
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @Override
+    public Page<AgentGroup> getAgentGroups(String jobScheduleId, Pageable pageable) throws ResourceNotFoundException {
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
+        if (jobScheduleOptional.isPresent()) {
+            List<AgentGroup> AgentGroups = jobScheduleOptional.get().getAgentGroups();
+            return new PageImpl<>(AgentGroups, pageable, AgentGroups.size());
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @Override
+    @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
+    public JobScheduleDto addAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
+
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
+        if (agentGroupOptional.isPresent()) {
+
+            // Get hte agentGroup
+            AgentGroup agentGroup = agentGroupOptional.get();
+
+            // Get job schedule
+            Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
+            if (jobScheduleOptional.isPresent()) {
+
+                JobSchedule jobSchedule = jobScheduleOptional.get();
+                jobSchedule.addAgentGroup(agentGroup);
+                jobSchedule = jobScheduleRepository.save(jobSchedule);
+
+                // Create server command
+                JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.START_JOB, jobScheduleDto);
+
+                // Send to agentGroup
+                serverCommandDto.setNodeName(agentGroup.getName());
+                serverCommandProducer.sendTopic(serverCommandDto);
+
+                return jobScheduleDto;
+            } else {
+                throw new ResourceNotFoundException();
+            }
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @Override
+    @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
+    public JobScheduleDto removeAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
+
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
+        if (agentGroupOptional.isPresent()) {
+
+            // Get the agentGroup
+            AgentGroup agentGroup = agentGroupOptional.get();
+
+            // Get job schedule
+            Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
+            if (jobScheduleOptional.isPresent()) {
+
+                JobSchedule jobSchedule = jobScheduleOptional.get();
+                jobSchedule.removeAgentGroup(agentGroup);
+                jobSchedule = jobScheduleRepository.save(jobSchedule);
+
+                // Create server command
+                JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.REMOVE_JOB, jobScheduleDto);
+
+                // Send to agentGroup
+                serverCommandDto.setNodeName(agentGroup.getName());
+                serverCommandProducer.sendTopic(serverCommandDto);
+
+                return jobScheduleDto;
+            } else {
+                throw new ResourceNotFoundException();
             }
         }
         throw new ResourceNotFoundException();

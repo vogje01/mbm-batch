@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../utils/param-util";
-import {deleteItem, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, insertItem, listItems, updateItem} from "../../utils/server-connection";
 
 export const JobScheduleDataSource = () => {
     return new DataSource({
@@ -38,14 +38,10 @@ export const JobScheduleAgentDataSource = (jobSchedule) => {
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
             },
             insert: function (agent) {
-                let url = jobSchedule._links.addAgent.href;
-                url = url.replace("{nodeName}", agent.nodeName)
-                return insertItem(url)
+                return getItem(jobSchedule._links.addAgent.href + agent.id);
             },
             remove: function (agent) {
-                let url = jobSchedule._links.removeAgent.href;
-                url = url.replace("{agentId}", agent.id)
-                return insertItem(url)
+                return getItem(jobSchedule._links.removeAgent.href + agent.id);
             }
         })
     });
@@ -58,15 +54,11 @@ export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
                 let params = getParams(loadOptions, 'name');
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
             },
-            insert: function (agent) {
-                let url = jobSchedule._links.addAgent.href;
-                url = url.replace("{nodeName}", agent.nodeName)
-                return insertItem(url)
+            insert: function (agentGroup) {
+                return getItem(jobSchedule._links.addAgentGroup.href + agentGroup.id);
             },
-            remove: function (agent) {
-                let url = jobSchedule._links.removeAgent.href;
-                url = url.replace("{agentId}", agent.id)
-                return insertItem(url)
+            remove: function (agentGroup) {
+                return getItem(jobSchedule._links.removeAgentGroup.href + agentGroup.id);
             }
         })
     });

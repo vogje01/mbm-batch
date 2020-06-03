@@ -52,7 +52,7 @@ const getItem = (url) => {
     return fetch(url, initGet())
         .then(response => {
             if (response.status === 401) {
-                errorMessage("Could not get list of items.")
+                errorMessage("Could not get item.")
             }
             return response.json()
         }).finally(() => {
