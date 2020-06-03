@@ -132,6 +132,36 @@ public class AgentController {
     }
 
     /**
+     * Returns one page of agents belonging to an agent group.
+     *
+     * @return on page of agents.
+     */
+    @GetMapping(value = "/{id}/byAgentGroup", produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<AgentDto>> findByAgentGroup(@PathVariable String id, @RequestParam(value = "page") int page,
+                                                                      @RequestParam("size") int size,
+                                                                      @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                                      @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Get paging parameters
+        long totalCount = agentService.countByAgentGroup(id);
+        Page<Agent> agentGroupAgents = agentService.findByAgentGroup(id, PagingUtil.getPageable(page, size, sortBy, sortDir));
+
+        // Convert to DTOs
+        List<AgentDto> agentAgentGroupDtoes = modelConverter.convertAgentToDto(agentGroupAgents.toList(), totalCount);
+
+        // Add links
+        agentAgentGroupDtoes.forEach(this::addLinks);
+
+        // Add self link
+        Link self = linkTo(methodOn(AgentGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
+        logger.debug(format("Finished find by agent request- count: {0} {1}", agentGroupAgents.getSize(), t.elapsedStr()));
+
+        return ResponseEntity.ok(new CollectionModel<>(agentAgentGroupDtoes, self));
+    }
+
+    /**
      * Updates an agent.
      *
      * @param agentDto agent DTO to update.

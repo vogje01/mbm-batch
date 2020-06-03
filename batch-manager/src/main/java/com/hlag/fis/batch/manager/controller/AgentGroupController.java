@@ -240,6 +240,7 @@ public class AgentGroupController {
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).findById(agentGroupDto.getId())).withSelfRel());
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).update(agentGroupDto.getId(), agentGroupDto)).withRel("update"));
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).delete(agentGroupDto.getId())).withRel("delete"));
+            agentGroupDto.add(linkTo(methodOn(AgentController.class).findByAgentGroup(agentGroupDto.getId(), 0, 100, "name", "ASC")).withRel("agents"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", agentGroupDto.getId()), e);
         }

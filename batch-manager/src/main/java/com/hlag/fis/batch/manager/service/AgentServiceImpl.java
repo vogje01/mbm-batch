@@ -78,6 +78,11 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    public long countByAgentGroup(String agentGroupId) {
+        return agentRepository.countByAgentGroupId(agentGroupId);
+    }
+
+    @Override
     public long countSchedules(String agentId) {
         return agentRepository.countSchedules(agentId);
     }
@@ -102,6 +107,11 @@ public class AgentServiceImpl implements AgentService {
     @Cacheable(cacheNames = "Agent", key = "#nodeName")
     public Optional<Agent> findByNodeName(String nodeName) {
         return agentRepository.findByNodeName(nodeName);
+    }
+
+    @Override
+    public Page<Agent> findByAgentGroup(String agentGroupId, Pageable pageable) {
+        return agentRepository.findByAgentGroupId(agentGroupId, pageable);
     }
 
     @Override

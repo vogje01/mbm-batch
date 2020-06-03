@@ -51,3 +51,26 @@ export const AgentAgentGroupDataSource = (agent) => {
         })
     });
 };
+
+export const AgentGroupAgentDataSource = (agentGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                if (!agentGroup._links) return;
+                let url = agentGroup._links.agents.href;
+                url = mergeParams(loadOptions, url, 'agentId');
+                return getList(url, 'agentDtoes');
+            },
+            insert: function (agent) {
+                let url = agentGroup._links.addGroup.href;
+                url = url.replace("{agentId}", agent.agentId)
+                return insertItem(url)
+            },
+            remove: function (agent) {
+                let url = agentGroup._links.removeGroup.href;
+                url = url.replace("{agentId}", agent.agentId)
+                return insertItem(url);
+            }
+        })
+    });
+};

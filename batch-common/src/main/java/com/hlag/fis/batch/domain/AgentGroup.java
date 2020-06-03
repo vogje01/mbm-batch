@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class AgentGroup implements PrimaryKeyIdentifier<String> {
+public class AgentGroup extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key
@@ -29,12 +29,6 @@ public class AgentGroup implements PrimaryKeyIdentifier<String> {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Integer version = 0;
     /**
      * Group name
      */
@@ -123,7 +117,6 @@ public class AgentGroup implements PrimaryKeyIdentifier<String> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("name", name)
                 .add("description", description)
                 .add("active", active)
@@ -137,13 +130,12 @@ public class AgentGroup implements PrimaryKeyIdentifier<String> {
         AgentGroup agentGroup = (AgentGroup) o;
         return active == agentGroup.active &&
                 Objects.equal(id, agentGroup.id) &&
-                Objects.equal(version, agentGroup.version) &&
                 Objects.equal(name, agentGroup.name) &&
                 Objects.equal(description, agentGroup.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, name, description, active);
+        return Objects.hashCode(id, name, description, active);
     }
 }
