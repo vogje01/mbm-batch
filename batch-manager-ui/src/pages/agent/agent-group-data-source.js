@@ -58,14 +58,10 @@ export const AgentGroupAgentDataSource = (agentGroup) => {
                 return getList(url, 'agentDtoes');
             },
             insert: function (agent) {
-                let url = agentGroup._links.addAgent.href;
-                url = url.replace("{agentId}", agent.id)
-                return insertItem(url)
+                return getItem(agentGroup._links.addAgent.href + agent.id);
             },
             remove: function (agent) {
-                let url = agentGroup._links.removeAgent.href;
-                url = url.replace("{agentId}", agent.id)
-                return insertItem(url);
+                return getItem(agentGroup._links.removeAgent.href + agent.id);
             }
         })
     });
