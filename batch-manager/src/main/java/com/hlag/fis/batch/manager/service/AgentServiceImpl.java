@@ -34,13 +34,13 @@ import java.util.Optional;
 @Service
 public class AgentServiceImpl implements AgentService {
 
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
-    private AgentGroupRepository agentGroupRepository;
+    private final AgentGroupRepository agentGroupRepository;
 
-    private JobScheduleRepository jobScheduleRepository;
+    private final JobScheduleRepository jobScheduleRepository;
 
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     /**
      * Constructor
@@ -135,33 +135,33 @@ public class AgentServiceImpl implements AgentService {
     /**
      * Adds a agent group to an agent.
      *
-     * @param id   agent ID.
-     * @param name agent group name to add.
+     * @param agentId      agent ID.
+     * @param agentGroupId agent group name to add.
      */
     @Override
-    @CachePut(cacheNames = "Agent", key = "#id")
-    public Agent addAgentGroup(String id, String name) {
-        Optional<Agent> agentOptional = agentRepository.findById(id);
-        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findByName(name);
+    @CachePut(cacheNames = "Agent", key = "#agentId")
+    public Agent addAgentGroup(String agentId, String agentGroupId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
             Agent agent = agentOptional.get();
             AgentGroup agentGroup = agentGroupOptional.get();
             agent.addAgentGroup(agentGroup);
             return agentRepository.save(agent);
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 
     /**
      * Removes a agent group from an agent.
      *
-     * @param id           agent ID.
+     * @param agentId      agent ID.
      * @param agentGroupId agent group ID to remove.
      */
     @Override
-    @CachePut(cacheNames = "Agent", key = "#id")
-    public Agent removeAgentGroup(String id, String agentGroupId) {
-        Optional<Agent> agentOptional = findById(id);
+    @CachePut(cacheNames = "Agent", key = "#agentId")
+    public Agent removeAgentGroup(String agentId, String agentGroupId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
         Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
             Agent agent = agentOptional.get();
@@ -169,7 +169,7 @@ public class AgentServiceImpl implements AgentService {
             agent.removeAgentGroup(agentGroup);
             return agentRepository.save(agent);
         }
-        return null;
+        throw new ResourceNotFoundException();
     }
 
 

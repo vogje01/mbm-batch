@@ -33,9 +33,9 @@ public interface AgentService {
 
     void deleteAgent(String agentId);
 
-    Agent addAgentGroup(String id, String name);
+    Agent addAgentGroup(String id, String name) throws ResourceNotFoundException;
 
-    Agent removeAgentGroup(String id, String agentGroupId);
+    Agent removeAgentGroup(String id, String agentGroupId) throws ResourceNotFoundException;
 
     Agent addSchedule(String id, String name);
 
