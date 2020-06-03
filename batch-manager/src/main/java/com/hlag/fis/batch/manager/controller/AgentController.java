@@ -214,7 +214,7 @@ public class AgentController {
         t.restart();
         RestPreconditions.checkFound(agentService.findById(agentId));
 
-        // Add agent group
+        // Add agent group to agent
         Agent agent = agentService.addAgentGroup(agentId, agentGroupId);
         AgentDto agentDto = modelConverter.convertAgentToDto(agent);
 
@@ -279,23 +279,23 @@ public class AgentController {
     }
 
     /**
-     * Removes a schedule from an agent.
+     * Add a schedule to an agent.
      *
-     * @param id   ID of agent.
-     * @param name schedule name.
+     * @param agentId       agent ID.
+     * @param jobScheduleId job schedule ID.
      */
-    @PutMapping(value = "/{id}/addJobSchedule", consumes = {"application/hal+json"})
-    public ResponseEntity<AgentDto> addSchedule(@PathVariable String id, @RequestParam(value = "name") String name) throws ResourceNotFoundException {
+    @GetMapping(value = "/{agentId}/addJobSchedule/{jobScheduleId}")
+    public ResponseEntity<AgentDto> addSchedule(@PathVariable String agentId, @PathVariable String jobScheduleId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(agentService.findById(id));
 
-        Agent agent = agentService.addSchedule(id, name);
+        // Add job schedule to agent.
+        Agent agent = agentService.addSchedule(agentId, jobScheduleId);
         AgentDto agentDto = modelConverter.convertAgentToDto(agent);
 
         // Add link
         addLinks(agentDto);
-        logger.debug(format("Finished add user group to user request - id: {0} userGroup: {1} {2}", id, name, t.elapsedStr()));
+        logger.debug(format("Finished add job schedule to agent request - agentId: {0} jobScheduleId: {1} {2}", agentId, jobScheduleId, t.elapsedStr()));
 
         return ResponseEntity.ok(agentDto);
     }
@@ -303,22 +303,22 @@ public class AgentController {
     /**
      * Removes a schedule from an agent.
      *
-     * @param id            ID of agent.
+     * @param agentId       agent ID.
      * @param jobScheduleId job schedule ID.
      */
-    @PutMapping(value = "/{id}/removeJobSchedule/{jobScheduleId}", consumes = {"application/hal+json"})
-    public ResponseEntity<AgentDto> removeSchedule(@PathVariable String id, @PathVariable String jobScheduleId) throws ResourceNotFoundException {
+    @GetMapping(value = "/{agentId}/removeJobSchedule/{jobScheduleId}")
+    public ResponseEntity<AgentDto> removeSchedule(@PathVariable String agentId, @PathVariable String jobScheduleId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(agentService.findById(id));
 
-        Agent agent = agentService.removeSchedule(id, jobScheduleId);
+        // Remove job schedule from agent
+        Agent agent = agentService.removeSchedule(agentId, jobScheduleId);
         AgentDto agentDto = modelConverter.convertAgentToDto(agent);
 
         // Add link
         addLinks(agentDto);
+        logger.debug(format("Finished remove job schedule from agent request - agentId: {0} jobScheduleId: {1} {2}", agentId, jobScheduleId, t.elapsedStr()));
 
-        logger.debug(format("Finished remove job schedule from agent request - id: {0} jobScheduleId: {1} {2}", id, jobScheduleId, t.elapsedStr()));
         return ResponseEntity.ok(agentDto);
     }
 
@@ -334,8 +334,8 @@ public class AgentController {
             agentDto.add(linkTo(methodOn(AgentController.class).deleteAgent(agentDto.getId())).withRel("delete"));
             agentDto.add(linkTo(methodOn(AgentController.class).addAgentGroup(null, null)).withRel("addAgentGroup").expand(agentDto.getId(), ""));
             agentDto.add(linkTo(methodOn(AgentController.class).removeAgentGroup(null, null)).withRel("removeAgentGroup").expand(agentDto.getId(), ""));
-            agentDto.add(linkTo(methodOn(AgentController.class).addSchedule(agentDto.getId(), null)).withRel("addJobSchedule"));
-            agentDto.add(linkTo(methodOn(AgentController.class).removeSchedule(agentDto.getId(), null)).withRel("removeJobSchedule"));
+            agentDto.add(linkTo(methodOn(AgentController.class).addSchedule(null, null)).withRel("addJobSchedule").expand(agentDto.getId(), ""));
+            agentDto.add(linkTo(methodOn(AgentController.class).removeSchedule(null, null)).withRel("removeJobSchedule").expand(agentDto.getId(), ""));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", agentDto.getId()), e);
         }

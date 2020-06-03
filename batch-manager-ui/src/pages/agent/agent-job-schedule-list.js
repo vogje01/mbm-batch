@@ -3,6 +3,7 @@ import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging,
 import {AgentScheduleDataSource} from "./agent-data-source";
 import {JobScheduleDataSource} from "../job-schedule/job-schedule-data-source";
 import {SimpleItem} from "devextreme-react/form";
+import {Label} from "devextreme-react/bar-gauge";
 
 class AgentJobScheduleView extends React.Component {
 
@@ -22,7 +23,6 @@ class AgentJobScheduleView extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'jobScheduleAgentTable'}
                     dataSource={AgentScheduleDataSource(this.props.agent)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -47,12 +47,17 @@ class AgentJobScheduleView extends React.Component {
                         allowUpdating={true}>
                         <Form>
                             <SimpleItem
-                                dataField={'name'}
+                                dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: JobScheduleDataSource(), valueExpr: 'name', displayExpr: 'name'}}/>
+                                editorOptions={{dataSource: JobScheduleDataSource(), valueExpr: 'id', displayExpr: 'name'}}>
+                                <Label text={'Name'}/>
+                            </SimpleItem>
                         </Form>
                     </Editing>
+                    <Column
+                        dataField="id"
+                        visible={false}/>
                     <Column
                         dataField="name"
                         caption={'Name'}
