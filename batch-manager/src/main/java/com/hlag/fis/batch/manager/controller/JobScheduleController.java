@@ -7,7 +7,6 @@ import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.domain.dto.AgentDto;
 import com.hlag.fis.batch.domain.dto.AgentGroupDto;
 import com.hlag.fis.batch.domain.dto.JobScheduleDto;
-import com.hlag.fis.batch.manager.service.AgentService;
 import com.hlag.fis.batch.manager.service.JobDefinitionService;
 import com.hlag.fis.batch.manager.service.JobScheduleService;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
@@ -46,20 +45,17 @@ public class JobScheduleController {
 
     private static final Logger logger = LoggerFactory.getLogger(JobScheduleController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private JobScheduleService jobScheduleService;
+    private final JobScheduleService jobScheduleService;
 
-    private AgentService agentService;
+    private final JobDefinitionService jobDefinitionService;
 
-    private JobDefinitionService jobDefinitionService;
-
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
-    public JobScheduleController(JobScheduleService jobScheduleService, AgentService agentService, JobDefinitionService jobDefinitionService, ModelConverter modelConverter) {
+    public JobScheduleController(JobScheduleService jobScheduleService, JobDefinitionService jobDefinitionService, ModelConverter modelConverter) {
         this.jobScheduleService = jobScheduleService;
-        this.agentService = agentService;
         this.jobDefinitionService = jobDefinitionService;
         this.modelConverter = modelConverter;
     }
@@ -88,19 +84,19 @@ public class JobScheduleController {
         return ResponseEntity.ok(new CollectionModel<>(jobScheduleDtoes, self, insert));
     }
 
-    @GetMapping(value = "/{scheduleId}", produces = {"application/hal+json"})
-    public ResponseEntity<JobScheduleDto> findById(String scheduleId) throws ResourceNotFoundException {
-        JobSchedule jobSchedule = jobScheduleService.findById(scheduleId).orElse(null);
+    @GetMapping(value = "/{jobScheduleId}", produces = {"application/hal+json"})
+    public ResponseEntity<JobScheduleDto> findById(@PathVariable String jobScheduleId) throws ResourceNotFoundException {
+        JobSchedule jobSchedule = jobScheduleService.findById(jobScheduleId).orElse(null);
         if (jobSchedule != null) {
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).findById(scheduleId)).withSelfRel());
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).findById(jobScheduleId)).withSelfRel());
             return ResponseEntity.ok(jobScheduleDto);
         }
         throw new ResourceNotFoundException();
     }
 
     @GetMapping(value = "/{groupName}/{jobName}", produces = {"application/hal+json"})
-    public ResponseEntity<JobScheduleDto> findByGroupAndName(String groupName, String jobName) throws ResourceNotFoundException {
+    public ResponseEntity<JobScheduleDto> findByGroupAndName(@PathVariable String groupName, @PathVariable String jobName) throws ResourceNotFoundException {
         JobSchedule jobSchedule = jobScheduleService.findByGroupAndName(groupName, jobName).orElse(null);
         if (jobSchedule != null) {
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
@@ -307,8 +303,8 @@ public class JobScheduleController {
     /**
      * Add an agentGroup to a job schedule.
      *
-     * @param jobScheduleId job schedule UUID.
-     * @param jobScheduleId job schedule UUID.
+     * @param jobScheduleId job schedule ID.
+     * @param agentGroupId  agent group ID.
      * @return job schedule resource.
      * @throws ResourceNotFoundException in case the job schedule is not existing.
      */
