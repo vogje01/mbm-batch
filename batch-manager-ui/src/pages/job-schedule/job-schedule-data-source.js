@@ -50,3 +50,24 @@ export const JobScheduleAgentDataSource = (jobSchedule) => {
         })
     });
 };
+
+export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                let params = getParams(loadOptions, 'name');
+                return listItems('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
+            },
+            insert: function (agent) {
+                let url = jobSchedule._links.addAgent.href;
+                url = url.replace("{nodeName}", agent.nodeName)
+                return insertItem(url)
+            },
+            remove: function (agent) {
+                let url = jobSchedule._links.removeAgent.href;
+                url = url.replace("{agentId}", agent.id)
+                return insertItem(url)
+            }
+        })
+    });
+};

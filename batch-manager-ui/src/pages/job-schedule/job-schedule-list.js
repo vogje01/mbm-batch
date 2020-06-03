@@ -12,6 +12,7 @@ import JobScheduleAgentList from "./job-schedule-agent-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
 import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
+import JobScheduleAgentGroupList from "./job-schedule-agentgroup-list";
 
 class JobSchedulerList extends React.Component {
 
@@ -57,7 +58,6 @@ class JobSchedulerList extends React.Component {
                                 }}/>
                         </Toolbar>
                         <DataGrid
-                            id={'jobScheduleTable'}
                             dataSource={JobScheduleDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
@@ -80,7 +80,7 @@ class JobSchedulerList extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <GroupItem caption={"Schedule Details: " + this.state.currentJobSchedule.name} colCount={2}>
+                                    <GroupItem colCount={4} colSpan={2} caption={"Schedule Details: " + this.state.currentJobSchedule.name}>
                                         <SimpleItem dataField="name">
                                             <RequiredRule message="Schedule name required"/>
                                             <StringLengthRule min={2} message="Schedule name must be at least 2 characters long."/>
@@ -99,8 +99,11 @@ class JobSchedulerList extends React.Component {
                                         <EmptyItem colSpan={2}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
                                     </GroupItem>
-                                    <GroupItem caption={"Agents"}>
+                                    <GroupItem caption={"Agents"} colCount={4}>
                                         <JobScheduleAgentList schedule={this.state.currentJobSchedule}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Agent Groups"} colCount={4}>
+                                        <JobScheduleAgentGroupList schedule={this.state.currentJobSchedule}/>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>

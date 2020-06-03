@@ -1,10 +1,11 @@
 import React from 'react';
 import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
-import {JobScheduleAgentDataSource} from "./job-schedule-data-source";
+import {JobScheduleAgentGroupDataSource} from "./job-schedule-data-source";
 import {SimpleItem} from "devextreme-react/form";
-import {AgentDataSource} from "../agent/agent-data-source";
+import {AgentGroupDataSource} from "../agent/agent-group-data-source";
+import {Label} from "devextreme-react/circular-gauge";
 
-class JobScheduleAgentList extends React.Component {
+class JobScheduleAgentGroupList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +21,7 @@ class JobScheduleAgentList extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    dataSource={JobScheduleAgentDataSource(this.props.schedule)}
+                    dataSource={JobScheduleAgentGroupDataSource(this.props.schedule)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
@@ -44,12 +45,17 @@ class JobScheduleAgentList extends React.Component {
                         allowUpdating={true}>
                         <Form>
                             <SimpleItem
-                                dataField={'nodeName'}
+                                dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: AgentDataSource(), valueExpr: 'nodeName', displayExpr: 'nodeName'}}/>
+                                editorOptions={{dataSource: AgentGroupDataSource(), valueExpr: 'id', displayExpr: 'name'}}>
+                                <Label text={'Name'}/>
+                            </SimpleItem>
                         </Form>
                     </Editing>
+                    <Column
+                        dataField={'id'}
+                        visible={false}/>
                     <Column
                         dataField={'nodeName'}
                         caption={'Node Name'}
@@ -91,4 +97,4 @@ class JobScheduleAgentList extends React.Component {
     }
 }
 
-export default JobScheduleAgentList;
+export default JobScheduleAgentGroupList;

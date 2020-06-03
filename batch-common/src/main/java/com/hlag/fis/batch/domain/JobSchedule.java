@@ -48,6 +48,13 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
             inverseJoinColumns = @JoinColumn(name = "AGENT_ID"))
     private List<Agent> agents = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_AGENT_GROUP_SCHEDULE",
+            joinColumns = @JoinColumn(name = "SCHEDULE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "AGENT_GROUP_ID"))
+    private List<AgentGroup> agentGroups = new ArrayList<>();
+
     @JsonCreator
     public JobSchedule() {
         // JSON constructor
@@ -144,6 +151,32 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
     public void removeAgent(Agent agent) {
         if (agents.contains(agent)) {
             agents.remove(agent);
+        }
+    }
+
+    public List<AgentGroup> getAgentGroups() {
+        return agentGroups;
+    }
+
+    public void setAgentGroups(List<AgentGroup> agentGroups) {
+        this.agentGroups = agentGroups;
+    }
+
+    /**
+     * Adds a agent group to the schedule. All agents in the agent group will be removed from the agent list.
+     *
+     * @param agentGroup agent group to add.
+     */
+    public void addAgentGroup(AgentGroup agentGroup) {
+        if (!agentGroups.contains(agentGroup)) {
+            agentGroups.add(agentGroup);
+        }
+        agents.removeAll(agentGroup.getAgents());
+    }
+
+    public void removeAgentGroup(AgentGroup agentGroup) {
+        if (agentGroups.contains(agentGroup)) {
+            agentGroups.remove(agentGroup);
         }
     }
 
