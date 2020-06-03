@@ -8,6 +8,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.Date;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
@@ -35,6 +37,22 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
      * Deleted flag
      */
     private boolean active = false;
+    /**
+     * Created by
+     */
+    private String createdBy;
+    /**
+     * Created at
+     */
+    private Date createdAt;
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+    /**
+     * Modified at
+     */
+    private Date modifiedAt;
     /**
      * Total count
      */
@@ -79,6 +97,38 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
         this.active = deleted;
     }
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
+
     public long getTotalSize() {
         return totalSize;
     }
@@ -95,7 +145,11 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
                 .add("name", name)
                 .add("description", description)
                 .add("active", active)
-                .add("totalCount", totalSize)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .add("totalSize", totalSize)
                 .toString();
     }
 
@@ -103,17 +157,22 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         AgentGroupDto that = (AgentGroupDto) o;
         return active == that.active &&
                 totalSize == that.totalSize &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(version, that.version) &&
                 Objects.equal(name, that.name) &&
-                Objects.equal(description, that.description);
+                Objects.equal(description, that.description) &&
+                Objects.equal(createdBy, that.createdBy) &&
+                Objects.equal(createdAt, that.createdAt) &&
+                Objects.equal(modifiedBy, that.modifiedBy) &&
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, name, description, active, totalSize);
+        return Objects.hashCode(super.hashCode(), id, version, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
     }
 }

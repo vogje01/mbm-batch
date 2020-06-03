@@ -14,7 +14,6 @@ class AgentgroupAgentView extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'AgentGroupTable'}
                     dataSource={AgentGroupAgentDataSource(this.props.agentGroup)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
@@ -25,8 +24,7 @@ class AgentgroupAgentView extends React.Component {
                     showColumnLines={true}
                     showRowLines={true}
                     showBorders={true}
-                    rowAlternationEnabled={true}
-                    style={{padding: "5px 0px 0px 0px"}}>
+                    rowAlternationEnabled={true}>
                     <FilterRow visible={true}/>
                     <Selection mode={'single'}/>
                     <Editing
@@ -44,12 +42,20 @@ class AgentgroupAgentView extends React.Component {
                         </Form>
                     </Editing>
                     <Column
-                        caption={'AgentId'}
-                        dataField={'agentId'}
+                        caption={'Node Name'}
+                        dataField={'nodeName'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
                         allowReordering={true}/>
+                    <Column
+                        caption={'Active'}
+                        dataField={'active'}
+                        allowEditing={false}
+                        allowFiltering={true}
+                        allowSorting={true}
+                        allowReordering={true}
+                        width={80}/>
                     <Column
                         allowSorting={false}
                         allowReordering={false}

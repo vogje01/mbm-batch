@@ -12,11 +12,10 @@ import {
     Selection,
     StringLengthRule
 } from "devextreme-react/data-grid";
-import {EmptyItem, SimpleItem} from "devextreme-react/form";
-import {AgentGroupDataSource} from "./agent-group-data-source";
+import {EmptyItem, GroupItem, SimpleItem} from "devextreme-react/form";
 import UpdateTimer from "../../utils/update-timer";
-//import AgentgroupAgentView from "./agentgroup-agent-list";
 import {getFormattedTime} from "../../utils/date-time-util";
+import {AgentGroupDataSource} from "./agent-group-data-source";
 import AgentgroupAgentView from "./agentgroup-agent-list";
 
 class AgentGroupList extends React.Component {
@@ -41,11 +40,10 @@ class AgentGroupList extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2 className={'content-block'}>Agents</h2>
+                <h2 className={'content-block'}>Agent Groups</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
                         <DataGrid
-                            id={'AgentGroupTable'}
                             dataSource={AgentGroupDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
@@ -67,7 +65,7 @@ class AgentGroupList extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Agent Group Details: " + this.state.currentAgentGroup.name}>
+                                    <GroupItem itemType="group" colCount={4} colSpan={4} caption={"Agent Group Details: " + this.state.currentAgentGroup.name}>
                                         <SimpleItem dataField="name" colSpan={2}>
                                             <RequiredRule message="Name is required"/>
                                             <StringLengthRule min={2} message="Name must be at least 2 characters long."/>
@@ -76,16 +74,18 @@ class AgentGroupList extends React.Component {
                                         <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
                                         <EmptyItem colSpan={2}/>
+                                    </GroupItem>
+                                    <GroupItem itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
+                                        <AgentgroupAgentView agentGroup={this.state.currentAgentGroup}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Auditing"} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgentGroup, 'createdAt'), readOnly: true}}/>
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgentGroup, 'modifiedAt'), readOnly: true}}/>
-                                    </SimpleItem>
-                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
-                                        <AgentgroupAgentView agentGroup={this.state.currentAgentGroup}/>
-                                    </SimpleItem>
+                                    </GroupItem>
                                 </Form>
                             </Editing>
                             <Column

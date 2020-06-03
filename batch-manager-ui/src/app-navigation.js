@@ -16,7 +16,7 @@ export const navigation = [
             {
                 text: 'Step Executions',
                 path: '/stepexecutions',
-                icon: 'material-icons-outlined ic-bookmarks'
+                icon: 'material-icons-outlined ic-step-executions'
             }
         ]
     },
