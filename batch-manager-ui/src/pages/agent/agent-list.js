@@ -136,7 +136,7 @@ class AgentView extends React.Component {
                                 width={80}/>
                             <Column
                                 caption={'Load'}
-                                dataField={'avgLoadDay'}
+                                dataField={'avgSystemLoadDay'}
                                 allowEditing={false}
                                 allowSorting={true}
                                 allowReordering={true}

@@ -47,7 +47,6 @@ export const getTimestamp = (rowData) => {
 };
 
 export const getFormattedTime = (rowData, attribute) => {
-    console.log('attribute: ' + attribute + ' data: ' + rowData[attribute]);
     return rowData && rowData[attribute] ? convertUTCToLocalDateTime(rowData[attribute]) : null;
 }
 
