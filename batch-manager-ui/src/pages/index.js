@@ -10,6 +10,7 @@ export {default as JobDefinitionExport} from './job-definition/job-definition-ex
 export {default as JobDefinitionImport} from './job-definition/job-definition-import';
 export {default as JobScheduleListPage} from './job-schedule/job-schedule-list';
 export {default as AgentListPage} from './agent/agent-list';
+export {default as AgentGroupListPage} from './agent/agent-group-list';
 // Performance
 export {default as PerformanceAgentPage} from './performance/performance-agent';
 export {default as PerformanceJobPage} from './performance/performance-job';

@@ -1,5 +1,6 @@
 import {withNavigationWatcher} from './contexts/navigation';
 import {
+    AgentGroupListPage,
     AgentListPage,
     HomePage,
     JobDefinitionExport,
@@ -43,6 +44,10 @@ const routes = [
     {
         path: '/agents',
         component: AgentListPage
+    },
+    {
+        path: '/agentgroups',
+        component: AgentGroupListPage
     },
     {
         path: '/performanceagent',

@@ -320,10 +320,6 @@ public class ModelConverter {
         return modelMapper.map(jobGroup, JobGroupDto.class);
     }
 
-    public List<JobGroupDto> convertJobGroupToDto(List<JobGroup> jobGroups) {
-        return jobGroups.stream().map(this::convertJobGroupToDto).collect(toList());
-    }
-
     public JobGroupDto convertJobGroupToDto(JobGroup jobGroup, long totalCount) {
         JobGroupDto jobGroupDto = convertJobGroupToDto(jobGroup);
         jobGroupDto.setTotalSize(totalCount);
@@ -363,6 +359,27 @@ public class ModelConverter {
 
     public Agent convertAgentToEntity(AgentDto agentDto) {
         return modelMapper.map(agentDto, Agent.class);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Agent groups
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public AgentGroupDto convertAgentGroupToDto(AgentGroup agentGroup) {
+        return modelMapper.map(agentGroup, AgentGroupDto.class);
+    }
+
+    public AgentGroupDto convertAgentGroupToDto(AgentGroup agentGroup, long totalCount) {
+        AgentGroupDto agentGroupDto = convertAgentGroupToDto(agentGroup);
+        agentGroupDto.setTotalSize(totalCount);
+        return agentGroupDto;
+    }
+
+    public List<AgentGroupDto> convertAgentGroupToDto(List<AgentGroup> agentGroups, long totalCount) {
+        return agentGroups.stream().map(j -> convertAgentGroupToDto(j, totalCount)).collect(toList());
+    }
+
+    public AgentGroup convertAgentGroupToEntity(AgentGroupDto agentGroupDto) {
+        return modelMapper.map(agentGroupDto, AgentGroup.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

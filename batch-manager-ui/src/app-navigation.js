@@ -38,7 +38,13 @@ export const navigation = [
                 text: 'Agents',
                 path: '/agents',
                 icon: 'material-icons-outlined ic-agent'
+            },
+            {
+                text: 'Agent Groups',
+                path: '/agentgroups',
+                icon: 'material-icons-outlined ic-agents'
             }
+
         ]
     },
     {
