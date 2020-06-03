@@ -34,13 +34,18 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 
     @Override
     @Cacheable
-    public Page<AgentGroup> allAgentGroups(Pageable pageable) {
+    public Page<AgentGroup> findAll(Pageable pageable) {
         return agentGroupRepository.findAll(pageable);
     }
 
     @Override
     public long countAll() {
         return agentGroupRepository.count();
+    }
+
+    @Override
+    public long countByAgent(String agentId) {
+        return agentGroupRepository.countByAgentId(agentId);
     }
 
     /**
@@ -86,15 +91,20 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 
     @Override
     @Cacheable
-    public AgentGroup getAgentGroup(final String agentGroupId) {
+    public AgentGroup findById(final String agentGroupId) {
         Optional<AgentGroup> agentGroup = agentGroupRepository.findById(agentGroupId);
         return agentGroup.orElse(null);
     }
 
     @Override
     @Cacheable
-    public AgentGroup getAgentGroupByName(final String agentGroupName) {
+    public AgentGroup findByName(final String agentGroupName) {
         Optional<AgentGroup> agentGroup = agentGroupRepository.findByName(agentGroupName);
         return agentGroup.orElse(null);
+    }
+
+    @Override
+    public Page<AgentGroup> findByAgentId(String agentId, Pageable pageable) {
+        return agentGroupRepository.findByAgentId(agentId, pageable);
     }
 }

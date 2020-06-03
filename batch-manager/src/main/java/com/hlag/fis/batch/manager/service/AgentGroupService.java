@@ -2,25 +2,27 @@ package com.hlag.fis.batch.manager.service;
 
 import com.hlag.fis.batch.domain.AgentGroup;
 import com.hlag.fis.batch.manager.service.common.ResourceNotFoundException;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AgentGroupService {
 
-    Page<AgentGroup> allAgentGroups(Pageable pageable);
-
     long countAll();
 
-    AgentGroup getAgentGroup(final String id);
+    long countByAgent(String agentId);
 
-    AgentGroup getAgentGroupByName(final String name);
+    AgentGroup findById(final String id);
+
+    AgentGroup findByName(final String name);
+
+    Page<AgentGroup> findAll(Pageable pageable);
+
+    Page<AgentGroup> findByAgentId(final String agentId, Pageable pageable);
 
     AgentGroup insertAgentGroup(AgentGroup agentGroup);
 
     AgentGroup updateAgentGroup(final String agentGroupId,
                                 AgentGroup agentGroup) throws ResourceNotFoundException;
 
-    @CacheEvict
     void deleteAgentGroup(final String id);
 }

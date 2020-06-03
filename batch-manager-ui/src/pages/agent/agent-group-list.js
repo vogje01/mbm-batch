@@ -15,7 +15,6 @@ import {
 import {EmptyItem, SimpleItem} from "devextreme-react/form";
 import {AgentGroupDataSource} from "./agent-group-data-source";
 import UpdateTimer from "../../utils/update-timer";
-import './agent-list.scss'
 //import AgentgroupAgentView from "./agentgroup-agent-list";
 import {getFormattedTime} from "../../utils/date-time-util";
 
@@ -84,7 +83,7 @@ class AgentGroupList extends React.Component {
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgentGroup, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
                                     <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Agents"}>
-                                        <AgentgroupAgentView agentGroup={this.state.currentAgentGroup}/>
+                                        {/*<AgentgroupAgentView agentGroup={this.state.currentAgentGroup}/>*/}
                                     </SimpleItem>
                                 </Form>
                             </Editing>

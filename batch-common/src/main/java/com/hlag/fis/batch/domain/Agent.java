@@ -71,6 +71,15 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "ACTIVE")
     private Boolean active;
     /**
+     * Agent groups many to many relationship
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_AGENT_AGENT_GROUP",
+            joinColumns = @JoinColumn(name = "AGENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "AGENT_GROUP_ID"))
+    private List<AgentGroup> agentGroups = new ArrayList<>();
+    /**
      * Schedules
      */
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "agents")
@@ -155,6 +164,29 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public List<AgentGroup> getAgentGroups() {
+        return agentGroups;
+    }
+
+    public void setAgentGroups(List<AgentGroup> agentGroups) {
+        this.agentGroups.clear();
+        if (agentGroups != null) {
+            agentGroups.forEach(this::addAgentGroup);
+        }
+    }
+
+    public void addAgentGroup(AgentGroup agentGroup) {
+        if (!agentGroups.contains(agentGroup)) {
+            agentGroups.add(agentGroup);
+        }
+    }
+
+    public void removeAgentGroup(AgentGroup agentGroup) {
+        if (agentGroups.contains(agentGroup)) {
+            agentGroups.remove(agentGroup);
+        }
     }
 
     public List<JobSchedule> getSchedules() {

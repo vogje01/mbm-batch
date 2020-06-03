@@ -77,7 +77,7 @@ public class AgentGroupController {
 
         // Get paging parameters
         long totalCount = agentGroupService.countAll();
-        Page<AgentGroup> allAgentGroups = agentGroupService.allAgentGroups(PagingUtil.getPageable(page, size, sortBy, sortDir));
+        Page<AgentGroup> allAgentGroups = agentGroupService.findAll(PagingUtil.getPageable(page, size, sortBy, sortDir));
 
         List<AgentGroupDto> agentGroupDtoes = modelConverter.convertAgentGroupToDto(allAgentGroups.toList(), totalCount);
 
@@ -104,9 +104,9 @@ public class AgentGroupController {
     public ResponseEntity<AgentGroupDto> findById(@PathVariable("agentGroupId") String agentGroupId) throws ResourceNotFoundException {
         t.restart();
 
-        RestPreconditions.checkFound(agentGroupService.getAgentGroup(agentGroupId));
+        RestPreconditions.checkFound(agentGroupService.findById(agentGroupId));
 
-        AgentGroup agentGroup = agentGroupService.getAgentGroup(agentGroupId);
+        AgentGroup agentGroup = agentGroupService.findById(agentGroupId);
         AgentGroupDto agentGroupDto = modelConverter.convertAgentGroupToDto(agentGroup);
 
         // Add links
@@ -127,9 +127,9 @@ public class AgentGroupController {
     @GetMapping(value = "/byName", produces = {"application/hal+json"})
     public ResponseEntity<AgentGroupDto> findByName(@RequestParam("name") String agentGroupName) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(agentGroupService.getAgentGroupByName(agentGroupName));
+        RestPreconditions.checkFound(agentGroupService.findByName(agentGroupName));
 
-        AgentGroup agentGroup = agentGroupService.getAgentGroupByName(agentGroupName);
+        AgentGroup agentGroup = agentGroupService.findByName(agentGroupName);
         AgentGroupDto agentGroupDto = modelConverter.convertAgentGroupToDto(agentGroup);
 
         // Add links
@@ -137,6 +137,36 @@ public class AgentGroupController {
         logger.debug(format("Agent group by name request finished - id: {0} [{1}]", agentGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(agentGroupDto);
+    }
+
+    /**
+     * Returns one page of agent groups.
+     *
+     * @return on page of agent groups.
+     */
+    @GetMapping(value = "/{id}/byAgent", produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<AgentGroupDto>> findByAgent(@PathVariable String id, @RequestParam(value = "page") int page,
+                                                                      @RequestParam("size") int size,
+                                                                      @RequestParam(value = "sortBy", required = false) String sortBy,
+                                                                      @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Get paging parameters
+        long totalCount = agentGroupService.countByAgent(id);
+        Page<AgentGroup> agentAgentGroups = agentGroupService.findByAgentId(id, PagingUtil.getPageable(page, size, sortBy, sortDir));
+
+        // Convert to DTOs
+        List<AgentGroupDto> agentAgentGroupDtoes = modelConverter.convertAgentGroupToDto(agentAgentGroups.toList(), totalCount);
+
+        // Add links
+        agentAgentGroupDtoes.forEach(this::addLinks);
+
+        // Add self link
+        Link self = linkTo(methodOn(AgentGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
+        logger.debug(format("Finished find by agent request- count: {0} {1}", agentAgentGroups.getSize(), t.elapsedStr()));
+
+        return ResponseEntity.ok(new CollectionModel<>(agentAgentGroupDtoes, self));
     }
 
     /**
@@ -174,7 +204,7 @@ public class AgentGroupController {
     public ResponseEntity<AgentGroupDto> update(@PathVariable("agentGroupId") String agentGroupId,
                                                 @RequestBody AgentGroupDto agentGroupDto) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(agentGroupService.getAgentGroup(agentGroupId));
+        RestPreconditions.checkFound(agentGroupService.findById(agentGroupId));
 
         // Get agent group
         AgentGroup agentGroup = modelConverter.convertAgentGroupToEntity(agentGroupDto);
@@ -199,7 +229,7 @@ public class AgentGroupController {
     @DeleteMapping(value = "/{agentGroupId}/delete")
     public ResponseEntity<Void> delete(@PathVariable("agentGroupId") String agentGroupId) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(agentGroupService.getAgentGroup(agentGroupId));
+        RestPreconditions.checkFound(agentGroupService.findById(agentGroupId));
         agentGroupService.deleteAgentGroup(agentGroupId);
         logger.debug(format("Agent groups deleted - id: {0} {1}", agentGroupId, t.elapsedStr()));
         return null;

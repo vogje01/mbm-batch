@@ -28,22 +28,23 @@ export const AgentGroupDataSource = () => {
     });
 };
 
-export const AgentgroupAgentDataSource = (agentGroup) => {
+export const AgentAgentGroupDataSource = (agent) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (!agentGroup._links) return;
-                let url = agentGroup._links.agents.href;
-                url = mergeParams(loadOptions, url, 'agentId');
-                return getList(url, 'agentDtoes');
+                if (agent._links !== undefined) {
+                    let url = agent._links.agentGroups.href;
+                    url = mergeParams(loadOptions, url, 'name');
+                    return getList(url, 'agentGroupDtoes');
+                }
             },
             insert: function (agent) {
-                let url = agentGroup._links.addGroup.href;
+                let url = agent._links.addGroup.href;
                 url = url.replace("{agentId}", agent.agentId)
                 return insertItem(url)
             },
             remove: function (agent) {
-                let url = agentGroup._links.removeGroup.href;
+                let url = agent._links.removeGroup.href;
                 url = url.replace("{agentId}", agent.agentId)
                 return insertItem(url);
             }

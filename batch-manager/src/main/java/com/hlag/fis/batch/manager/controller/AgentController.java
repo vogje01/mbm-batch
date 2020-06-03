@@ -275,5 +275,10 @@ public class AgentController {
      */
     private void addLinks(AgentDto agentDto, int page, int size, String sortBy, String sortDir) {
         addLinks(agentDto);
+        try {
+            agentDto.add(linkTo(methodOn(AgentGroupController.class).findByAgent(agentDto.getId(), page, size, sortBy, sortDir)).withRel("agentGroups"));
+        } catch (ResourceNotFoundException e) {
+            logger.error(format("Could not add links to DTO - id: {0}", agentDto.getId()), e);
+        }
     }
 }

@@ -50,7 +50,6 @@ public class UserGroupController {
     /**
      * Constructor.
      *
-     * @param userService      user service implementation.
      * @param userGroupService user group service implementation.
      * @param modelConverter   model converter.
      */

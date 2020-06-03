@@ -10,6 +10,7 @@ import AgentJobScheduleView from "./agent-job-schedule-list";
 import {Toolbar} from "devextreme-react/toolbar";
 import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
 import {getFormattedNumber, numericCellTemplate} from "../../utils/counter-util";
+import AgentAgentgroupView from "./agent-agentgroup-list";
 
 class AgentView extends React.Component {
 
@@ -67,7 +68,7 @@ class AgentView extends React.Component {
                                 allowAdding={true}
                                 allowDeleting={true}>
                                 <Form>
-                                    <GroupItem colCount={2} caption={"Agent Details: " + this.state.currentAgent.nodeName}>
+                                    <GroupItem colCount={4} colSpan={2} caption={"Agent Details: " + this.state.currentAgent.nodeName}>
                                         <SimpleItem dataField="nodeName">
                                             <RequiredRule message="Node name is required"/>
                                             <StringLengthRule min={2} message="Node name must be at least 2 characters long."/>
@@ -91,8 +92,11 @@ class AgentView extends React.Component {
                                             <Label location={'top'} alignment={'left'} text={'System Load (Week)'}/>
                                         </SimpleItem>
                                     </GroupItem>
-                                    <GroupItem caption={"Schedules"}>
+                                    <GroupItem caption={"Schedules"} colCount={4} colSpan={2}>
                                         <AgentJobScheduleView agent={this.state.currentAgent}/>
+                                    </GroupItem>
+                                    <GroupItem caption={"Agent Groups"} colCount={4} colSpan={2}>
+                                        <AgentAgentgroupView agent={this.state.currentAgent}/>
                                     </GroupItem>
                                     <GroupItem caption={"Auditing"} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>

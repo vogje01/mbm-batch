@@ -9,6 +9,8 @@ import com.google.common.base.Objects;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -48,6 +50,11 @@ public class AgentGroup implements PrimaryKeyIdentifier<String> {
      */
     @Column(name = "ACTIVE")
     private boolean active = false;
+    /**
+     * Link to the corresponding agents.
+     */
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "agentGroups")
+    private List<Agent> agents = new ArrayList<>();
 
     /**
      * Constructor
@@ -92,6 +99,24 @@ public class AgentGroup implements PrimaryKeyIdentifier<String> {
 
     public void setActive(boolean deleted) {
         this.active = deleted;
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
+
+    public void addAgent(Agent agent) {
+        if (!agents.contains(agent)) {
+            agents.add(agent);
+        }
+    }
+
+    public void removeAgent(Agent agent) {
+        agents.remove(agent);
     }
 
     @Override
