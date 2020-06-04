@@ -26,15 +26,15 @@ public class DailyStep {
     @Value("${consolidation.batch.daily.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private DailyReader dailyReader;
+    private final DailyReader dailyReader;
 
-    private DailyProcessor dailyProcessor;
+    private final DailyProcessor dailyProcessor;
 
-    private DailyWriter dailyWriter;
+    private final DailyWriter dailyWriter;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private final BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
     public DailyStep(

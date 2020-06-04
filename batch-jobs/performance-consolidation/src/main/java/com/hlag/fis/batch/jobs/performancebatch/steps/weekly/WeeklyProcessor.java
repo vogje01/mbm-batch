@@ -1,8 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.weekly;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,58 +9,32 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Optional;
 
-import static java.lang.Math.round;
-
 @Component
-public class WeeklyProcessor implements ItemProcessor<Object[], AgentPerformance> {
+public class WeeklyProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private BatchPerformanceRepository batchPerformanceRepository;
 
     @Autowired
-    public WeeklyProcessor(AgentPerformanceRepository agentPerformanceRepository) {
-        this.agentPerformanceRepository = agentPerformanceRepository;
+    public WeeklyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
+        this.batchPerformanceRepository = batchPerformanceRepository;
     }
 
     @Override
-    public AgentPerformance process(Object[] tuple) {
+    public BatchPerformance process(Object[] tuple) {
+
+        // Get metric
+        String metric = tuple[1] + ".weekly";
 
         // Check old record
-        Optional<AgentPerformance> agentPerformanceOptional = agentPerformanceRepository.findByTimestamp((String) tuple[0], AgentPerformanceType.WEEKLY, (Timestamp) tuple[1]);
-        AgentPerformance agentPerformance = agentPerformanceOptional.orElseGet(AgentPerformance::new);
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], metric, (Timestamp) tuple[3]);
+        BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        agentPerformance.setType(AgentPerformanceType.WEEKLY);
-        agentPerformance.setNodeName((String) tuple[0]);
-        agentPerformance.setLastUpdate(((Timestamp) tuple[1]));
+        batchPerformance.setQualifier((String) tuple[0]);
+        batchPerformance.setMetric(metric);
+        batchPerformance.setValue((Double) tuple[2]);
+        batchPerformance.setTimestamp((Timestamp) tuple[3]);
 
-        // System load
-        agentPerformance.setSystemLoad((Double) tuple[2]);
-
-        // Real memory
-        agentPerformance.setTotalRealMemory(round((Double) tuple[3]));
-        agentPerformance.setFreeRealMemory(round((Double) tuple[4]));
-        agentPerformance.setUsedRealMemory(round((Double) tuple[5]));
-        agentPerformance.setFreeRealMemoryPct((Double) tuple[6]);
-        agentPerformance.setUsedRealMemoryPct((Double) tuple[7]);
-
-        // Virtual memory
-        agentPerformance.setTotalVirtMemory(round((Double) tuple[8]));
-        agentPerformance.setFreeVirtMemory(round((Double) tuple[9]));
-        agentPerformance.setUsedVirtMemory(round((Double) tuple[10]));
-        agentPerformance.setFreeVirtMemoryPct((Double) tuple[11]);
-        agentPerformance.setUsedVirtMemoryPct((Double) tuple[12]);
-
-        // Swap space
-        agentPerformance.setTotalSwap(round((Double) tuple[13]));
-        agentPerformance.setFreeSwap(round((Double) tuple[14]));
-        agentPerformance.setUsedSwap(round((Double) tuple[15]));
-        agentPerformance.setFreeSwapPct((Double) tuple[16]);
-        agentPerformance.setUsedSwapPct((Double) tuple[17]);
-
-        // Job step count
-        agentPerformance.setJobCount(tuple[18] != null ? round((Double) tuple[18]) : 0);
-        agentPerformance.setStepCount(tuple[19] != null ? round((Double) tuple[19]) : 0);
-
-        return agentPerformance;
+        return batchPerformance;
     }
 }

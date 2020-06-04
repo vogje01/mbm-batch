@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
 import com.hlag.fis.batch.domain.AgentPerformance;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * Job execution info delete writer.
+ * Daily performance consolidation writer.
  *
  * @author Jens.Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
@@ -19,7 +20,7 @@ import javax.persistence.EntityManagerFactory;
 @Component
 public class DailyWriter {
 
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public DailyWriter(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
@@ -28,6 +29,6 @@ public class DailyWriter {
 
     @SuppressWarnings("unchecked")
     public ItemWriter<AgentPerformance> getWriter() {
-        return new MysqlWriterBuilder<AgentPerformance>(entityManagerFactory).build();
+        return new MysqlWriterBuilder<BatchPerformance>(entityManagerFactory).build();
     }
 }

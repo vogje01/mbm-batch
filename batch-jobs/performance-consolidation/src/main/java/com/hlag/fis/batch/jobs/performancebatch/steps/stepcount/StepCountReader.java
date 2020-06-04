@@ -17,7 +17,7 @@ public class StepCountReader {
     @Value("${consolidation.batch.stepCount.chunkSize}")
     private int chunkSize;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
     StepCountReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
@@ -25,7 +25,7 @@ public class StepCountReader {
     }
 
     ItemStreamReader getReader() {
-        String queryString = "select s.nodeName, count(s.nodeName), from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) as lastUpdate "
+        String queryString = "select s.nodeName, count(s.nodeName), from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) as timestamp "
                 + "from StepExecutionInfo s "
                 + "where s.nodeName is not null "
                 + "group by s.nodeName, from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval)";

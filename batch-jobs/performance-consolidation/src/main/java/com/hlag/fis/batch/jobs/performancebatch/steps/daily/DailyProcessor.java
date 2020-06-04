@@ -1,8 +1,10 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,53 +12,38 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Optional;
 
-import static java.lang.Math.round;
+import static java.text.MessageFormat.format;
 
 @Component
-public class DailyProcessor implements ItemProcessor<Object[], AgentPerformance> {
+public class DailyProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    @BatchStepLogger(value = "Daily consolidation")
+    private static Logger logger = LoggerFactory.getLogger(DailyProcessor.class);
+
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
     @Autowired
-    public DailyProcessor(AgentPerformanceRepository agentPerformanceRepository) {
-        this.agentPerformanceRepository = agentPerformanceRepository;
+    public DailyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
+        this.batchPerformanceRepository = batchPerformanceRepository;
     }
 
     @Override
-    public AgentPerformance process(Object[] tuple) {
+    public BatchPerformance process(Object[] tuple) {
+        logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
+
+        // Get metric
+        String metric = tuple[1] + ".daily";
 
         // Check old record
-        Optional<AgentPerformance> agentPerformanceOptional = agentPerformanceRepository.findByTimestamp((String) tuple[0], AgentPerformanceType.DAILY, (Timestamp) tuple[1]);
-        AgentPerformance agentPerformance = agentPerformanceOptional.orElseGet(AgentPerformance::new);
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], metric, (Timestamp) tuple[3]);
+        BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        agentPerformance.setType(AgentPerformanceType.DAILY);
-        agentPerformance.setNodeName((String) tuple[0]);
-        agentPerformance.setLastUpdate((Timestamp) tuple[1]);
+        batchPerformance.setQualifier((String) tuple[0]);
+        batchPerformance.setMetric(metric);
+        batchPerformance.setValue((Double) tuple[2]);
+        batchPerformance.setTimestamp((Timestamp) tuple[3]);
 
-        // System load
-        agentPerformance.setSystemLoad((Double) tuple[2]);
-
-        // Real memory
-        agentPerformance.setTotalRealMemory(round((Double) tuple[3]));
-        agentPerformance.setFreeRealMemory(round((Double) tuple[4]));
-        agentPerformance.setUsedRealMemory(round((Double) tuple[5]));
-        agentPerformance.setFreeRealMemoryPct((Double) tuple[6]);
-        agentPerformance.setUsedRealMemoryPct((Double) tuple[7]);
-
-        // Virtual memory
-        agentPerformance.setTotalVirtMemory(round((Double) tuple[8]));
-        agentPerformance.setFreeVirtMemory(round((Double) tuple[9]));
-        agentPerformance.setUsedVirtMemory(round((Double) tuple[10]));
-        agentPerformance.setFreeVirtMemoryPct((Double) tuple[11]);
-        agentPerformance.setUsedVirtMemoryPct((Double) tuple[12]);
-
-        // Swap space
-        agentPerformance.setTotalSwap(round((Double) tuple[13]));
-        agentPerformance.setFreeSwap(round((Double) tuple[14]));
-        agentPerformance.setUsedSwap(round((Double) tuple[15]));
-        agentPerformance.setFreeSwapPct((Double) tuple[16]);
-        agentPerformance.setUsedSwapPct((Double) tuple[17]);
-        return agentPerformance;
+        return batchPerformance;
     }
 }
