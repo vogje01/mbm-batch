@@ -27,8 +27,7 @@ public class StepCountReader {
     ItemStreamReader getReader() {
         String queryString = "select s.nodeName, count(s.nodeName), from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) as lastUpdate "
                 + "from StepExecutionInfo s "
-                + "group by s.nodeName, from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval) "
-                + "order by lastUpdate";
+                + "group by s.nodeName, from_unixtime(floor((unix_timestamp(s.startTime) / :interval)) * :interval)";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);
         return new CursorReaderBuilder(mysqlEmf)

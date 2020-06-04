@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import javax.persistence.EntityManagerFactory;
 @Component
 public class JobCountWriter {
 
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public JobCountWriter(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
@@ -27,7 +27,7 @@ public class JobCountWriter {
     }
 
     @SuppressWarnings("unchecked")
-    public ItemWriter<AgentPerformance> getWriter() {
-        return new MysqlWriterBuilder<AgentPerformance>(entityManagerFactory).build();
+    public ItemWriter<BatchPerformance> getWriter() {
+        return new MysqlWriterBuilder<BatchPerformance>(entityManagerFactory).build();
     }
 }

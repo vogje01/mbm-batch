@@ -2,8 +2,10 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount;
 
 import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -23,6 +25,8 @@ public class JobCountProcessor implements ItemProcessor<Object[], AgentPerforman
 
     private AgentPerformanceRepository agentPerformanceRepository;
 
+    private BatchPerformanceRepository batchPerformanceRepository;
+
     @Autowired
     public JobCountProcessor(AgentPerformanceRepository agentPerformanceRepository) {
         this.agentPerformanceRepository = agentPerformanceRepository;
@@ -39,6 +43,8 @@ public class JobCountProcessor implements ItemProcessor<Object[], AgentPerforman
             logger.trace(format("Job agent performance updated - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
             return agentPerformance;
         }
+
+        batchPerformanceRepository.save(new BatchPerformance((String) tuple[1], "node.job.count", (double) tuple[1]));
         return null;
     }
 }

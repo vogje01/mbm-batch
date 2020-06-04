@@ -2,6 +2,7 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.AgentPerformanceType;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
@@ -26,19 +27,19 @@ public class JobCountStep {
     @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private JobCountReader jobCountReader;
+    private final JobCountReader jobCountReader;
 
-    private JobCountProcessor jobCountProcessor;
+    private final JobCountProcessor jobCountProcessor;
 
-    private JobCountWriter jobCountWriter;
+    private final JobCountWriter jobCountWriter;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private final BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder;
 
     @Autowired
     public JobCountStep(
-            BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
+            BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
             AgentPerformanceRepository agentPerformanceRepository,
             JobCountReader jobCountReader,
             JobCountProcessor jobCountProcessor,

@@ -17,7 +17,7 @@ public class JobCountReader {
     @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
     JobCountReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
