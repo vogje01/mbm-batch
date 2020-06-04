@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JobCountCompletedReader {
+public class JobCountFailedReader {
 
     @Value("${consolidation.batch.jobStatus.chunkSize}")
     private int chunkSize;
@@ -19,14 +19,14 @@ public class JobCountCompletedReader {
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    JobCountCompletedReader(EntityManagerFactory mysqlEmf) {
+    JobCountFailedReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 
     ItemStreamReader getReader() {
         String queryString = "select j.nodeName, count(j.nodeName), from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) as timestamp "
                 + "from JobExecutionInfo j "
-                + "where j.nodeName is not null and j.status = 'COMPLETED' "
+                + "where j.nodeName is not null and j.status = 'FAILED' "
                 + "group by j.nodeName, from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval)";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);
