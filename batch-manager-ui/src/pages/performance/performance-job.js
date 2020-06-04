@@ -27,8 +27,8 @@ import {PerformanceDataSource} from "./performance-data-source";
 import {DateBox} from 'devextreme-react';
 
 const sources = [
-    {value: 'jobCount', name: 'Job Count', yAxisTitle: 'Job Count [#]', scaleHidden: true},
-    {value: 'stepCount', name: 'Step Count', yAxisTitle: 'Job Count [#]', scaleHidden: true},
+    {value: 'node.job.count', name: 'Job Count', yAxisTitle: 'Job Count [#]', scaleHidden: true},
+    {value: 'node.step.count', name: 'Step Count', yAxisTitle: 'Job Count [#]', scaleHidden: true},
 ];
 
 const scales = [
@@ -45,7 +45,7 @@ class PerformanceChart extends React.Component {
         super(props);
         this.state = {
             type: 'DAILY',
-            metric: 'jobCount',
+            metric: 'node.job.count',
             timeRange: 'Today',
             scale: 0,
             scaleHidden: true,
@@ -239,7 +239,7 @@ class PerformanceChart extends React.Component {
 
     getSource(item) {
         if (this.state.metric === item.value) {
-            return <Series key={item.value} valueField={item.value} name={item.name} width={2}>
+            return <Series key={item.value} valueField={'value'} name={item.name} width={2}>
                 <Point size={4}/>
             </Series>;
         }
@@ -282,8 +282,8 @@ class PerformanceChart extends React.Component {
                     <div className={'dx-card responsive-paddings'} style={{background: '#282828'}}>
                         <Chart id="chart"
                                palette="Office"
-                               dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}>
-                            <CommonSeriesSettings argumentField="lastUpdate" type={'line'}/>
+                               dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.metric, this.state.scale, this.state.startTime, this.state.endTime)}>
+                            <CommonSeriesSettings argumentField="timestamp" type={'line'}/>
                             {sources.map(this.getSource)}
                             <ArgumentAxis argumentType="datetime" visualRange={{startValue: this.state.limitStart, endValue: this.state.limitEnd}}
                                           discreteAxisDivisionMode="crossLabels" valueMarginsEnabled={true}>
