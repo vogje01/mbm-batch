@@ -33,7 +33,7 @@ public class AgentLoadWeekStep {
 
     private final AgentLoadWeekWriter agentLoadWeekWriter;
 
-    private BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
+    private final BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
 
     @Autowired
     public AgentLoadWeekStep(
