@@ -15,7 +15,7 @@ import org.springframework.kafka.core.ProducerFactory;
 
 @EnableKafka
 @Configuration
-public class PerformanceConsolidationJobStatusConfiguration extends AbstractKafkaConfiguration {
+public class PerformanceBatchJobStatusConfiguration extends AbstractKafkaConfiguration {
 
     @Value(value = "${kafka.jobStatus.topic}")
     private String topic;

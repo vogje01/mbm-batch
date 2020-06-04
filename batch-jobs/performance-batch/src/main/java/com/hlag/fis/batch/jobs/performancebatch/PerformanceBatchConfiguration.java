@@ -29,7 +29,7 @@ import java.util.Properties;
 @EnableConfigurationProperties
 @EnableBatchProcessing
 @EnableJpaRepositories(basePackages = {"com.hlag.fis.batch.repository"})
-public class PerformanceConsolidationConfiguration {
+public class PerformanceBatchConfiguration {
 
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("consolidation.yml")};
 

@@ -23,6 +23,9 @@ public interface BatchPerformanceRepository extends PagingAndSortingRepository<B
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric")
     Optional<BatchPerformance> findByQualifierAndMetric(@Param("qualifier") String qualifier, @Param("metric") String metric);
 
+    @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric and b.type = :type")
+    Optional<BatchPerformance> findByQualifierAndMetricAndType(@Param("qualifier") String qualifier, @Param("metric") String metric, @Param("type") BatchPerformanceType type);
+
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric and b.timestamp = :timestamp")
     Optional<BatchPerformance> findByQualifierAndMetricAndTimestamp(@Param("qualifier") String qualifier, @Param("metric") String metric, @Param("timestamp") Timestamp timestamp);
 

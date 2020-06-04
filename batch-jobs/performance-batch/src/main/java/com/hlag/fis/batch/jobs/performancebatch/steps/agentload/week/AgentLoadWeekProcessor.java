@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.Optional;
 
+import static java.text.MessageFormat.format;
+
 @Component
 public class AgentLoadWeekProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
@@ -28,7 +30,8 @@ public class AgentLoadWeekProcessor implements ItemProcessor<Object[], BatchPerf
 
     @Override
     public BatchPerformance process(Object[] tuple) {
-        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetric((String) tuple[0], "node.load.week");
+        logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1}", tuple[0], tuple[1]));
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndType((String) tuple[0], "node.load.week", BatchPerformanceType.RAW);
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
         batchPerformance.setType(BatchPerformanceType.RAW);
         batchPerformance.setTimestamp(new Timestamp(System.currentTimeMillis()));
