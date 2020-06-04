@@ -3,7 +3,6 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +22,7 @@ public class AgentLoadWeekReader {
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    AgentLoadWeekReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
+    AgentLoadWeekReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 

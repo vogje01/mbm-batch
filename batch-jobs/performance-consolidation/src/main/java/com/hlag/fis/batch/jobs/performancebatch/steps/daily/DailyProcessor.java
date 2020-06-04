@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.slf4j.Logger;
@@ -31,16 +32,14 @@ public class DailyProcessor implements ItemProcessor<Object[], BatchPerformance>
     public BatchPerformance process(Object[] tuple) {
         logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
 
-        // Get metric
-        String metric = tuple[1] + ".daily";
-
         // Check old record
-        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], metric, (Timestamp) tuple[3]);
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3]);
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
+        batchPerformance.setType(BatchPerformanceType.DAILY);
         batchPerformance.setQualifier((String) tuple[0]);
-        batchPerformance.setMetric(metric);
+        batchPerformance.setMetric((String) tuple[1]);
         batchPerformance.setValue((Double) tuple[2]);
         batchPerformance.setTimestamp((Timestamp) tuple[3]);
 

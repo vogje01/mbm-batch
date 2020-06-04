@@ -4,7 +4,6 @@ import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManagerFactory;
@@ -22,7 +21,7 @@ public class MonthlyWriter {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    public MonthlyWriter(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
+    public MonthlyWriter(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 

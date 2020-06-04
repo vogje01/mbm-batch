@@ -16,7 +16,7 @@ import java.util.Optional;
 @Component
 public class AgentLoadWeekProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    @BatchStepLogger(value = "Job count")
+    @BatchStepLogger(value = "Agent Load Week")
     private static Logger logger = LoggerFactory.getLogger(AgentLoadWeekProcessor.class);
 
     private final BatchPerformanceRepository batchPerformanceRepository;
