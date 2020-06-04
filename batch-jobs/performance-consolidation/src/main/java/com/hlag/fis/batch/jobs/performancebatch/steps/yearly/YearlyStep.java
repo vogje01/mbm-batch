@@ -26,15 +26,15 @@ public class YearlyStep {
     @Value("${consolidation.batch.yearly.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private YearlyReader yearlyReader;
+    private final YearlyReader yearlyReader;
 
-    private YearlyProcessor yearlyProcessor;
+    private final YearlyProcessor yearlyProcessor;
 
-    private YearlyWriter yearlyWriter;
+    private final YearlyWriter yearlyWriter;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private final BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
     public YearlyStep(

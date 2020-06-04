@@ -158,25 +158,25 @@ public class AgentCommandListener {
         agentPerformance.setUsedSwapPct((double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0);
         agentPerformanceRepository.save(agentPerformance);
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", agentCommandDto.getSystemLoad()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load.raw", agentCommandDto.getSystemLoad()));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.total", agentCommandDto.getTotalRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free", agentCommandDto.getFreeRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used", agentCommandDto.getUsedRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.pct", (double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.pct", (double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.total.raw", agentCommandDto.getTotalRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.raw", agentCommandDto.getFreeRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.raw", agentCommandDto.getUsedRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.pct.raw", (double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.pct.raw", (double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.total", agentCommandDto.getTotalVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free", agentCommandDto.getFreeVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used", agentCommandDto.getUsedVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.pct", (double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.pct", (double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.total.raw", agentCommandDto.getTotalVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.raw", agentCommandDto.getFreeVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.raw", agentCommandDto.getUsedVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.pct.raw", (double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.pct.raw", (double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.total", agentCommandDto.getTotalSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free", agentCommandDto.getFreeSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used", agentCommandDto.getUsedSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.pct", (double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct", (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.total.raw", agentCommandDto.getTotalSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.raw", agentCommandDto.getFreeSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.raw", agentCommandDto.getUsedSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.pct.raw", (double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct.raw", (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
     }
 
     /**

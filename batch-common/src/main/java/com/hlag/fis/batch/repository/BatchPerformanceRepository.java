@@ -12,6 +12,9 @@ import java.util.Optional;
 @Repository
 public interface BatchPerformanceRepository extends PagingAndSortingRepository<BatchPerformance, String> {
 
+    @Query("select count(b) from BatchPerformance b where b.metric like :metric")
+    long countByMetric(@Param("metric") String metric);
+
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric")
     Optional<BatchPerformance> findByQualifierAndMetric(@Param("qualifier") String qualifier, @Param("metric") String metric);
 
