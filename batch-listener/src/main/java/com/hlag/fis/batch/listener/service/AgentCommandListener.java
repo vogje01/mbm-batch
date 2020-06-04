@@ -1,11 +1,13 @@
 package com.hlag.fis.batch.listener.service;
 
-import com.hlag.fis.batch.domain.*;
+import com.hlag.fis.batch.domain.Agent;
+import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
+import com.hlag.fis.batch.domain.JobSchedule;
 import com.hlag.fis.batch.domain.dto.AgentCommandDto;
 import com.hlag.fis.batch.domain.dto.JobScheduleDto;
 import com.hlag.fis.batch.domain.dto.ServerCommandDto;
 import com.hlag.fis.batch.domain.dto.ServerCommandType;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import com.hlag.fis.batch.repository.AgentRepository;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import com.hlag.fis.batch.repository.JobScheduleRepository;
@@ -17,8 +19,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,8 +39,6 @@ public class AgentCommandListener {
 
     private final AgentRepository agentRepository;
 
-    private final AgentPerformanceRepository agentPerformanceRepository;
-
     private final BatchPerformanceRepository batchPerformanceRepository;
 
     private final JobScheduleRepository jobScheduleRepository;
@@ -49,12 +48,10 @@ public class AgentCommandListener {
     private final ModelConverter modelConverter;
 
     @Autowired
-    public AgentCommandListener(AgentRepository agentRepository, AgentPerformanceRepository agentPerformanceRepository,
-                                BatchPerformanceRepository batchPerformanceRepository,
+    public AgentCommandListener(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
                                 JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
                                 ModelConverter modelConverter) {
         this.agentRepository = agentRepository;
-        this.agentPerformanceRepository = agentPerformanceRepository;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.jobScheduleRepository = jobScheduleRepository;
         this.serverCommandProducer = serverCommandProducer;
@@ -128,35 +125,6 @@ public class AgentCommandListener {
      * @param agentCommandDto agent command info.
      */
     private void receivedPerformance(AgentCommandDto agentCommandDto) {
-        AgentPerformance agentPerformance = new AgentPerformance();
-        agentPerformance.setNodeName(agentCommandDto.getNodeName());
-        agentPerformance.setType(AgentPerformanceType.ALL);
-        agentPerformance.setLastUpdate(Timestamp.valueOf(LocalDateTime.now()));
-
-        // System load
-        agentPerformance.setSystemLoad(agentCommandDto.getSystemLoad());
-
-        // Real memory
-        agentPerformance.setTotalRealMemory(agentCommandDto.getTotalRealMemory());
-        agentPerformance.setFreeRealMemory(agentCommandDto.getFreeRealMemory());
-        agentPerformance.setUsedRealMemory(agentCommandDto.getUsedRealMemory());
-        agentPerformance.setFreeRealMemoryPct((double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0);
-        agentPerformance.setUsedRealMemoryPct((double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0);
-
-        // Virtual memory
-        agentPerformance.setTotalVirtMemory(agentCommandDto.getTotalVirtMemory());
-        agentPerformance.setFreeVirtMemory(agentCommandDto.getFreeVirtMemory());
-        agentPerformance.setUsedVirtMemory(agentCommandDto.getUsedVirtMemory());
-        agentPerformance.setFreeVirtMemoryPct((double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0);
-        agentPerformance.setUsedVirtMemoryPct((double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0);
-
-        // Swap space
-        agentPerformance.setTotalSwap(agentCommandDto.getTotalSwap());
-        agentPerformance.setFreeSwap(agentCommandDto.getFreeSwap());
-        agentPerformance.setUsedSwap(agentCommandDto.getUsedSwap());
-        agentPerformance.setFreeSwapPct((double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0);
-        agentPerformance.setUsedSwapPct((double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0);
-        agentPerformanceRepository.save(agentPerformance);
 
         batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", BatchPerformanceType.RAW, agentCommandDto.getSystemLoad()));
 
@@ -224,7 +192,7 @@ public class AgentCommandListener {
      *
      * @param agent agent, which should execute the job.
      */
-    private void startJobs(Agent agent) {
+    private void startJobs(@NotNull Agent agent) {
 
         // Check agent
         Optional<Agent> agentOptional = agentRepository.findById(agent.getId());

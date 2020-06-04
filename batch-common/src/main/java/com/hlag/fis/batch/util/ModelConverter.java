@@ -338,17 +338,6 @@ public class ModelConverter {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Agent performance
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<AgentPerformanceDto> convertAgentPerformanceToDto(List<AgentPerformance> agentPerformanceList) {
-        return agentPerformanceList.stream().map(this::convertAgentPerformanceToDto).collect(toList());
-    }
-
-    public AgentPerformanceDto convertAgentPerformanceToDto(AgentPerformance agentPerformance) {
-        return modelMapper.map(agentPerformance, AgentPerformanceDto.class);
-    }
-
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Batch performance
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public List<BatchPerformanceDto> convertBatchPerformanceToDto(List<BatchPerformance> batchPerformanceList) {

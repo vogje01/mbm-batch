@@ -3,7 +3,7 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.logging.BatchStepLogger;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -25,7 +25,7 @@ public class AgentLoadDayStep {
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
-    private final AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentRepository agentRepository;
 
     private final AgentLoadDayReader agentLoadDayReader;
 
@@ -38,12 +38,12 @@ public class AgentLoadDayStep {
     @Autowired
     public AgentLoadDayStep(
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
-            AgentPerformanceRepository agentPerformanceRepository,
+            AgentRepository agentRepository,
             AgentLoadDayReader agentLoadDayReader,
             AgentLoadDayProcessor agentLoadProcessor,
             AgentLoadDayWriter agentLoadDayWriter) {
         this.stepBuilder = stepBuilder;
-        this.agentPerformanceRepository = agentPerformanceRepository;
+        this.agentRepository = agentRepository;
         this.agentLoadDayReader = agentLoadDayReader;
         this.agentLoadProcessor = agentLoadProcessor;
         this.agentLoadDayWriter = agentLoadDayWriter;
@@ -52,7 +52,7 @@ public class AgentLoadDayStep {
 
     @SuppressWarnings("unchecked")
     public Step agentLoadProcessing() {
-        long totalCount = agentPerformanceRepository.countNodeNames().size();
+        long totalCount = agentRepository.count();
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)
