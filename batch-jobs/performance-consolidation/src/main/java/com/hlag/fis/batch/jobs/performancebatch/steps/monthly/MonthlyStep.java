@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.monthly;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
@@ -52,7 +53,7 @@ public class MonthlyStep {
 
     @SuppressWarnings("unchecked")
     public Step monthlyConsolidation() {
-        long totalCount = batchPerformanceRepository.countByMetric(".daily");
+        long totalCount = batchPerformanceRepository.countByType(BatchPerformanceType.WEEKLY);
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

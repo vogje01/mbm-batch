@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.repository;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,9 @@ public interface BatchPerformanceRepository extends PagingAndSortingRepository<B
 
     @Query("select count(b) from BatchPerformance b where b.metric like :metric")
     long countByMetric(@Param("metric") String metric);
+
+    @Query("select count(b) from BatchPerformance b where b.type = :type")
+    long countByType(@Param("type") BatchPerformanceType type);
 
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric")
     Optional<BatchPerformance> findByQualifierAndMetric(@Param("qualifier") String qualifier, @Param("metric") String metric);

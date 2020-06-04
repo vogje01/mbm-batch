@@ -1,11 +1,10 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -27,7 +26,7 @@ public class JobCountStep {
     @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
 
-    private final AgentPerformanceRepository agentPerformanceRepository;
+    private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
     private final JobCountReader jobCountReader;
 
@@ -40,12 +39,12 @@ public class JobCountStep {
     @Autowired
     public JobCountStep(
             BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
-            AgentPerformanceRepository agentPerformanceRepository,
+            JobExecutionInfoRepository jobExecutionInfoRepository,
             JobCountReader jobCountReader,
             JobCountProcessor jobCountProcessor,
             JobCountWriter jobCountWriter) {
         this.stepBuilder = stepBuilder;
-        this.agentPerformanceRepository = agentPerformanceRepository;
+        this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobCountReader = jobCountReader;
         this.jobCountProcessor = jobCountProcessor;
         this.jobCountWriter = jobCountWriter;
@@ -54,7 +53,7 @@ public class JobCountStep {
 
     @SuppressWarnings("unchecked")
     public Step jobCountProcessing() {
-        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.DAILY);
+        long totalCount = jobExecutionInfoRepository.count();
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

@@ -1,6 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.yearly;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
@@ -52,7 +53,7 @@ public class YearlyStep {
 
     @SuppressWarnings("unchecked")
     public Step yearlyConsolidation() {
-        long totalCount = batchPerformanceRepository.countByMetric(".monthly");
+        long totalCount = batchPerformanceRepository.countByType(BatchPerformanceType.MONTHLY);
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

@@ -1,11 +1,10 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.stepcount;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.domain.JobExecutionInfo;
+import com.hlag.fis.batch.domain.StepExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.StepExecutionInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -27,7 +26,7 @@ public class StepCountStep {
     @Value("${consolidation.batch.stepCount.chunkSize}")
     private int chunkSize;
 
-    private final AgentPerformanceRepository agentPerformanceRepository;
+    private final StepExecutionInfoRepository stepExecutionInfoRepository;
 
     private final StepCountReader stepCountReader;
 
@@ -35,17 +34,17 @@ public class StepCountStep {
 
     private final StepCountWriter stepCountWriter;
 
-    private final BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder;
+    private final BatchStepBuilder<StepExecutionInfo, BatchPerformance> stepBuilder;
 
     @Autowired
     public StepCountStep(
-            BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
-            AgentPerformanceRepository agentPerformanceRepository,
+            BatchStepBuilder<StepExecutionInfo, BatchPerformance> stepBuilder,
+            StepExecutionInfoRepository stepExecutionInfoRepository,
             StepCountReader stepCountReader,
             StepCountProcessor stepCountProcessor,
             StepCountWriter stepCountWriter) {
         this.stepBuilder = stepBuilder;
-        this.agentPerformanceRepository = agentPerformanceRepository;
+        this.stepExecutionInfoRepository = stepExecutionInfoRepository;
         this.stepCountReader = stepCountReader;
         this.stepCountProcessor = stepCountProcessor;
         this.stepCountWriter = stepCountWriter;
@@ -54,7 +53,7 @@ public class StepCountStep {
 
     @SuppressWarnings("unchecked")
     public Step stepCountProcessing() {
-        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.DAILY);
+        long totalCount = stepExecutionInfoRepository.count();
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

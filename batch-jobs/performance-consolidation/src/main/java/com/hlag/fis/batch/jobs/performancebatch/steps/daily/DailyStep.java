@@ -2,6 +2,7 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class DailyStep {
 
     @SuppressWarnings("unchecked")
     public Step dailyConsolidation() {
-        long totalCount = batchPerformanceRepository.countByMetric("%.raw");
+        long totalCount = batchPerformanceRepository.countByType(BatchPerformanceType.RAW);
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)
