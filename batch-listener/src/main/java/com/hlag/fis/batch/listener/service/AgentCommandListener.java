@@ -1,15 +1,13 @@
 package com.hlag.fis.batch.listener.service;
 
-import com.hlag.fis.batch.domain.Agent;
-import com.hlag.fis.batch.domain.AgentPerformance;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
-import com.hlag.fis.batch.domain.JobSchedule;
+import com.hlag.fis.batch.domain.*;
 import com.hlag.fis.batch.domain.dto.AgentCommandDto;
 import com.hlag.fis.batch.domain.dto.JobScheduleDto;
 import com.hlag.fis.batch.domain.dto.ServerCommandDto;
 import com.hlag.fis.batch.domain.dto.ServerCommandType;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import com.hlag.fis.batch.repository.AgentRepository;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import com.hlag.fis.batch.repository.JobScheduleRepository;
 import com.hlag.fis.batch.util.ModelConverter;
 import org.slf4j.Logger;
@@ -38,22 +36,26 @@ public class AgentCommandListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentCommandListener.class);
 
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private JobScheduleRepository jobScheduleRepository;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
-    private ServerCommandProducer serverCommandProducer;
+    private final JobScheduleRepository jobScheduleRepository;
 
-    private ModelConverter modelConverter;
+    private final ServerCommandProducer serverCommandProducer;
+
+    private final ModelConverter modelConverter;
 
     @Autowired
     public AgentCommandListener(AgentRepository agentRepository, AgentPerformanceRepository agentPerformanceRepository,
+                                BatchPerformanceRepository batchPerformanceRepository,
                                 JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
                                 ModelConverter modelConverter) {
         this.agentRepository = agentRepository;
         this.agentPerformanceRepository = agentPerformanceRepository;
+        this.batchPerformanceRepository = batchPerformanceRepository;
         this.jobScheduleRepository = jobScheduleRepository;
         this.serverCommandProducer = serverCommandProducer;
         this.modelConverter = modelConverter;
@@ -155,6 +157,26 @@ public class AgentCommandListener {
         agentPerformance.setFreeSwapPct((double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0);
         agentPerformance.setUsedSwapPct((double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0);
         agentPerformanceRepository.save(agentPerformance);
+
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", agentCommandDto.getSystemLoad()));
+
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.total", agentCommandDto.getTotalRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free", agentCommandDto.getFreeRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used", agentCommandDto.getUsedRealMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.pct", (double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.pct", (double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.total", agentCommandDto.getTotalVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free", agentCommandDto.getFreeVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used", agentCommandDto.getUsedVirtMemory()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.pct", (double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.pct", (double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.total", agentCommandDto.getTotalSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free", agentCommandDto.getFreeSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used", agentCommandDto.getUsedSwap()));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.pct", (double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
+        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct", (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
     }
 
     /**
@@ -206,7 +228,7 @@ public class AgentCommandListener {
 
         // Check agent
         Optional<Agent> agentOptional = agentRepository.findById(agent.getId());
-        if(agentOptional.isEmpty()) {
+        if (agentOptional.isEmpty()) {
             logger.info(format("Agent not active - nodeName: {0}", agent.getNodeName()));
             return;
         }

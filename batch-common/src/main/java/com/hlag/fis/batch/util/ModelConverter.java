@@ -9,7 +9,6 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class ModelConverter {
 
-    private SimpleDateFormat parameterDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public ModelConverter(ModelMapper modelMapper) {
@@ -36,9 +33,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job executions
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<JobExecutionDto> convertJobExecutionToDto(List<JobExecutionInfo> jobExecutionList) {
-        return jobExecutionList.stream().map(this::convertJobExecutionToDto).collect(toList());
-    }
 
     public JobExecutionDto convertJobExecutionToDto(JobExecutionInfo jobExecutionInfo) {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
@@ -82,18 +76,10 @@ public class ModelConverter {
     public JobExecutionParam convertJobExecutionParamToEntity(JobExecutionParamDto jobExecutionParamDto) {
         JobExecutionParam jobExecutionParam = modelMapper.map(jobExecutionParamDto, JobExecutionParam.class);
         switch (jobExecutionParamDto.getTypeCd()) {
-            case "STRING":
-                jobExecutionParam.setStringVal(jobExecutionParamDto.getStringVal());
-                break;
-            case "DATE":
-                jobExecutionParam.setDateVal(jobExecutionParamDto.getDateVal());
-                break;
-            case "LONG":
-                jobExecutionParam.setLongVal(jobExecutionParamDto.getLongVal());
-                break;
-            case "DOUBLE":
-                jobExecutionParam.setDoubleVal(jobExecutionParamDto.getDoubleVal());
-                break;
+            case "STRING" -> jobExecutionParam.setStringVal(jobExecutionParamDto.getStringVal());
+            case "DATE" -> jobExecutionParam.setDateVal(jobExecutionParamDto.getDateVal());
+            case "LONG" -> jobExecutionParam.setLongVal(jobExecutionParamDto.getLongVal());
+            case "DOUBLE" -> jobExecutionParam.setDoubleVal(jobExecutionParamDto.getDoubleVal());
         }
         return jobExecutionParam;
 
@@ -105,18 +91,10 @@ public class ModelConverter {
         jobExecutionParamDto.setKeyName(entry.getKey());
         jobExecutionParamDto.setTypeCd(entry.getValue().getType().name());
         switch (entry.getValue().getType()) {
-            case STRING:
-                jobExecutionParamDto.setStringVal((String) entry.getValue().getValue());
-                break;
-            case DATE:
-                jobExecutionParamDto.setDateVal((Date) entry.getValue().getValue());
-                break;
-            case LONG:
-                jobExecutionParamDto.setLongVal((Long) entry.getValue().getValue());
-                break;
-            case DOUBLE:
-                jobExecutionParamDto.setDoubleVal((Double) entry.getValue().getValue());
-                break;
+            case STRING -> jobExecutionParamDto.setStringVal((String) entry.getValue().getValue());
+            case DATE -> jobExecutionParamDto.setDateVal((Date) entry.getValue().getValue());
+            case LONG -> jobExecutionParamDto.setLongVal((Long) entry.getValue().getValue());
+            case DOUBLE -> jobExecutionParamDto.setDoubleVal((Double) entry.getValue().getValue());
         }
         return jobExecutionParamDto;
     }
@@ -179,10 +157,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Step executions
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<StepExecutionDto> convertStepExecutionToDto(List<StepExecutionInfo> stepExecutionList) {
-        return stepExecutionList.stream().map(this::convertStepExecutionToDto).collect(toList());
-    }
-
     public StepExecutionDto convertStepExecutionToDto(StepExecutionInfo stepExecutionInfo) {
         StepExecutionDto stepExecutionDto = modelMapper.map(stepExecutionInfo, StepExecutionDto.class);
         stepExecutionDto.setJobNameConverted(stepExecutionInfo.getJobExecutionInfo());
@@ -191,8 +165,7 @@ public class ModelConverter {
         return stepExecutionDto;
     }
 
-    public List<StepExecutionDto> convertStepExecutionToDto(List<StepExecutionInfo> stepExecutionList,
-                                                            long totalCount) {
+    public List<StepExecutionDto> convertStepExecutionToDto(List<StepExecutionInfo> stepExecutionList, long totalCount) {
         return stepExecutionList.stream().map(s -> convertStepExecutionToDto(s, totalCount)).collect(toList());
     }
 
@@ -205,10 +178,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job schedules
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<JobScheduleDto> convertJobScheduleToDto(List<JobSchedule> jobScheduleList) {
-        return jobScheduleList.stream().map(this::convertJobScheduleToDto).collect(toList());
-    }
-
     public JobScheduleDto convertJobScheduleToDto(JobSchedule jobSchedule) {
         JobScheduleDto jobScheduleDto = modelMapper.map(jobSchedule, JobScheduleDto.class);
         if (jobSchedule.getJobDefinition() != null) {
@@ -262,10 +231,6 @@ public class ModelConverter {
         return jobDefinitionDto;
     }
 
-    public List<JobDefinitionDto> convertJobDefinitionToDto(List<JobDefinition> jobDefinitions) {
-        return jobDefinitions.stream().map(this::convertJobDefinitionToDto).collect(toList());
-    }
-
     public JobDefinitionDto convertJobDefinitionToDto(JobDefinition jobDefinition, long totalCount) {
         JobDefinitionDto jobDefinitionDto = convertJobDefinitionToDto(jobDefinition);
         jobDefinitionDto.setTotalSize(totalCount);
@@ -280,19 +245,13 @@ public class ModelConverter {
         return modelMapper.map(jobDefinitionParam, JobDefinitionParamDto.class);
     }
 
-    public List<JobDefinitionParamDto> convertJobDefinitionParamToDto(List<JobDefinitionParam> jobDefinitionParams) {
-        return jobDefinitionParams.stream().map(this::convertJobDefinitionParamToDto).collect(toList());
-    }
-
-    public JobDefinitionParamDto convertJobDefinitionParamToDto(JobDefinitionParam jobDefinitionParam,
-                                                                long totalCount) {
+    public JobDefinitionParamDto convertJobDefinitionParamToDto(JobDefinitionParam jobDefinitionParam, long totalCount) {
         JobDefinitionParamDto jobDefinitionParamDto = convertJobDefinitionParamToDto(jobDefinitionParam);
         jobDefinitionParamDto.setTotalSize(totalCount);
         return jobDefinitionParamDto;
     }
 
-    public List<JobDefinitionParamDto> convertJobDefinitionParamToDto(List<JobDefinitionParam> jobDefinitionParams,
-                                                                      long totalCount) {
+    public List<JobDefinitionParamDto> convertJobDefinitionParamToDto(List<JobDefinitionParam> jobDefinitionParams, long totalCount) {
         return jobDefinitionParams.stream().map(j -> convertJobDefinitionParamToDto(j, totalCount)).collect(toList());
     }
 
@@ -337,10 +296,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Agent
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<AgentDto> convertAgentToDto(List<Agent> agentList) {
-        return agentList.stream().map(this::convertAgentToDto).collect(toList());
-    }
-
     public AgentDto convertAgentToDto(Agent agent) {
         AgentDto agentDto = modelMapper.map(agent, AgentDto.class);
         agentDto.setScheduleDtos(agent.getSchedules().stream().map(this::convertJobScheduleToDto).collect(toList()));
@@ -404,7 +359,7 @@ public class ModelConverter {
         UserDto userDto = modelMapper.map(user, UserDto.class);
 
         // Add user groups
-        user.getUserGroups().stream().forEach(g -> g.setUsers(null));
+        user.getUserGroups().forEach(g -> g.setUsers(null));
         userDto.setUserGroupDtoes(user.getUserGroups()
                 .stream()
                 .map(this::convertUserGroupToDto)
@@ -440,10 +395,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // User group
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<UserGroupDto> convertUserGroupToDto(List<UserGroup> userGroupList) {
-        return userGroupList.stream().map(this::convertUserGroupToDto).collect(toList());
-    }
-
     public UserGroupDto convertUserGroupToDto(UserGroup userGroup) {
         return modelMapper.map(userGroup, UserGroupDto.class);
     }

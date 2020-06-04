@@ -46,13 +46,13 @@ public class AgentService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentService.class);
 
-    private AgentCommandDto agentCommandDto;
+    private final AgentCommandDto agentCommandDto;
 
-    private OperatingSystemMXBean osBean;
+    private final OperatingSystemMXBean osBean;
 
-    private BatchSchedulerTask schedulerTask;
+    private final BatchSchedulerTask schedulerTask;
 
-    private AgentCommandProducer agentCommandProducer;
+    private final AgentCommandProducer agentCommandProducer;
 
     /**
      * Constructor.

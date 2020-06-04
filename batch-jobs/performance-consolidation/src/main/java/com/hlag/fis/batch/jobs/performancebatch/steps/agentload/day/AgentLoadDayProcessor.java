@@ -16,10 +16,10 @@ import static java.text.MessageFormat.format;
 @Component
 public class AgentLoadDayProcessor implements ItemProcessor<Object[], Agent> {
 
-    @BatchStepLogger(value = "Job count")
+    @BatchStepLogger(value = "Agent Load Day")
     private static Logger logger = LoggerFactory.getLogger(AgentLoadDayProcessor.class);
 
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
     @Autowired
     public AgentLoadDayProcessor(AgentRepository agentRepository) {

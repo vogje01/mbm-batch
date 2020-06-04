@@ -27,8 +27,7 @@ public class JobCountReader {
     ItemStreamReader getReader() {
         String queryString = "select j.nodeName, count(j.nodeName), from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) as lastUpdate "
                 + "from JobExecutionInfo j "
-                + "group by j.nodeName, from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) "
-                + "order by lastUpdate";
+                + "group by j.nodeName, from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) ";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);
         return new CursorReaderBuilder(mysqlEmf)

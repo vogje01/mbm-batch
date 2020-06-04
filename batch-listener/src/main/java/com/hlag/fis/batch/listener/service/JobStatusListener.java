@@ -35,15 +35,15 @@ public class JobStatusListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobStatusListener.class);
 
-    private JobExecutionInfoRepository jobExecutionInfoRepository;
+    private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
-    private JobExecutionParamRepository jobExecutionParamRepository;
+    private final JobExecutionParamRepository jobExecutionParamRepository;
 
-    private JobInstanceInfoRepository jobInstanceInfoRepository;
+    private final JobInstanceInfoRepository jobInstanceInfoRepository;
 
-    private StepExecutionInfoRepository stepExecutionInfoRepository;
+    private final StepExecutionInfoRepository stepExecutionInfoRepository;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public JobStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
