@@ -1,10 +1,9 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.weekly;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -26,25 +25,25 @@ public class WeeklyStep {
     @Value("${consolidation.batch.weekly.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
-    private WeeklyReader weeklyReader;
+    private final WeeklyReader weeklyReader;
 
-    private WeeklyProcessor weeklyProcessor;
+    private final WeeklyProcessor weeklyProcessor;
 
-    private WeeklyWriter weeklyWriter;
+    private final WeeklyWriter weeklyWriter;
 
     private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
     public WeeklyStep(
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
-            AgentPerformanceRepository agentPerformanceRepository,
+            BatchPerformanceRepository batchPerformanceRepository,
             WeeklyReader weeklyReader,
             WeeklyProcessor weeklyProcessor,
             WeeklyWriter weeklyWriter) {
         this.stepBuilder = stepBuilder;
-        this.agentPerformanceRepository = agentPerformanceRepository;
+        this.batchPerformanceRepository = batchPerformanceRepository;
         this.weeklyReader = weeklyReader;
         this.weeklyProcessor = weeklyProcessor;
         this.weeklyWriter = weeklyWriter;
@@ -53,7 +52,7 @@ public class WeeklyStep {
 
     @SuppressWarnings("unchecked")
     public Step weeklyConsolidation() {
-        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.DAILY);
+        long totalCount = batchPerformanceRepository.countByMetric(".daily");
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

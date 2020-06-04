@@ -52,7 +52,7 @@ public class DailyStep {
 
     @SuppressWarnings("unchecked")
     public Step dailyConsolidation() {
-        long totalCount = batchPerformanceRepository.countByMetric(".monthly");
+        long totalCount = batchPerformanceRepository.countByMetric("%.raw");
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

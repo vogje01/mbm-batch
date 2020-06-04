@@ -28,6 +28,7 @@ public class DailyReader {
         String queryString = "select " +
                 "b.qualifier, b.metric, avg(b.value), from_unixtime(floor((unix_timestamp(b.timestamp) / :interval)) * :interval) as timestamp " +
                 "from BatchPerformance b " +
+                "where b.metric like '%.raw' " +
                 "group by b.metric, b.qualifier, from_unixtime(floor((unix_timestamp(b.timestamp) / :interval)) * :interval)";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);

@@ -1,10 +1,9 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.yearly;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.AgentPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
 import com.hlag.fis.batch.logging.BatchStepLogger;
-import com.hlag.fis.batch.repository.AgentPerformanceRepository;
+import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
@@ -26,7 +25,7 @@ public class YearlyStep {
     @Value("${consolidation.batch.yearly.chunkSize}")
     private int chunkSize;
 
-    private final AgentPerformanceRepository agentPerformanceRepository;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
     private final YearlyReader yearlyReader;
 
@@ -39,12 +38,12 @@ public class YearlyStep {
     @Autowired
     public YearlyStep(
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
-            AgentPerformanceRepository agentPerformanceRepository,
+            BatchPerformanceRepository batchPerformanceRepository,
             YearlyReader yearlyReader,
             YearlyProcessor yearlyProcessor,
             YearlyWriter yearlyWriter) {
         this.stepBuilder = stepBuilder;
-        this.agentPerformanceRepository = agentPerformanceRepository;
+        this.batchPerformanceRepository = batchPerformanceRepository;
         this.yearlyReader = yearlyReader;
         this.yearlyProcessor = yearlyProcessor;
         this.yearlyWriter = yearlyWriter;
@@ -53,7 +52,7 @@ public class YearlyStep {
 
     @SuppressWarnings("unchecked")
     public Step yearlyConsolidation() {
-        long totalCount = agentPerformanceRepository.countByType(AgentPerformanceType.WEEKLY);
+        long totalCount = batchPerformanceRepository.countByMetric(".monthly");
         logger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)

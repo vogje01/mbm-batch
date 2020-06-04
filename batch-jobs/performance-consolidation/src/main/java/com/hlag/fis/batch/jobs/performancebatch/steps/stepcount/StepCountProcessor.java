@@ -23,6 +23,6 @@ public class StepCountProcessor implements ItemProcessor<Object[], BatchPerforma
     @Override
     public BatchPerformance process(Object[] tuple) {
         logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
-        return new BatchPerformance((String) tuple[0], "node.step.count", ((Long) tuple[1]).doubleValue());
+        return new BatchPerformance((String) tuple[0], "node.step.count.raw", ((Long) tuple[1]).doubleValue());
     }
 }

@@ -47,6 +47,12 @@ public class BatchPerformance implements PrimaryKeyIdentifier<String> {
     @Column(name = "VALUE")
     private Double value;
     /**
+     * Type
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TYPE")
+    private BatchPerformanceType type;
+    /**
      * Timestamp
      */
     @Column(name = "TIMESTAMP")
@@ -56,10 +62,11 @@ public class BatchPerformance implements PrimaryKeyIdentifier<String> {
         // Intentionally empty
     }
 
-    public BatchPerformance(String qualifier, String metric, double value) {
+    public BatchPerformance(String qualifier, String metric, BatchPerformanceType type, double value) {
         this.qualifier = qualifier;
         this.metric = metric;
         this.value = value;
+        this.type = type;
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
@@ -95,6 +102,14 @@ public class BatchPerformance implements PrimaryKeyIdentifier<String> {
         this.metric = metric;
     }
 
+    public BatchPerformanceType getType() {
+        return type;
+    }
+
+    public void setType(BatchPerformanceType type) {
+        this.type = type;
+    }
+
     public Double getValue() {
         return value;
     }
@@ -121,12 +136,13 @@ public class BatchPerformance implements PrimaryKeyIdentifier<String> {
                 Objects.equal(qualifier, that.qualifier) &&
                 Objects.equal(metric, that.metric) &&
                 Objects.equal(value, that.value) &&
+                type == that.type &&
                 Objects.equal(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, qualifier, metric, value, timestamp);
+        return Objects.hashCode(id, version, qualifier, metric, value, type, timestamp);
     }
 
     @Override
@@ -137,6 +153,7 @@ public class BatchPerformance implements PrimaryKeyIdentifier<String> {
                 .add("qualifier", qualifier)
                 .add("metric", metric)
                 .add("value", value)
+                .add("type", type)
                 .add("timestamp", timestamp)
                 .toString();
     }
