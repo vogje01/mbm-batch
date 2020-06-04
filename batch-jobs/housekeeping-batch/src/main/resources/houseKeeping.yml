@@ -17,7 +17,7 @@ houseKeeping:
       houseKeepingDays: 20
       chunkSize: 1000
     # Performance data
-    agentPerformance:
+    batchPerformance:
       entityActive: true
       houseKeepingDays: 1
       chunkSize: 1000

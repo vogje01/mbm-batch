@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +29,17 @@ public class JobExecutionInfoReader {
     @Value("${houseKeeping.batch.jobExecutionInfo.houseKeepingDays}")
     private int houseKeepingDays;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    JobExecutionInfoReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
+    JobExecutionInfoReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 
     ItemStreamReader getReader() {
 
         Date cutOff = DateTimeUtils.getCutOffDate(houseKeepingDays);
-        logger.debug(format("Job execution reader starting - cutOff: {1}", cutOff));
+        logger.debug(format("Job execution reader starting - cutOff: {0}", cutOff));
 
         String queryString = "select j from JobExecutionInfo j where j.lastUpdated < :cutOff";
         Map<String, Date> parameters = new HashMap<>();

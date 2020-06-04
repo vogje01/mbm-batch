@@ -3,7 +3,6 @@ package com.hlag.fis.batch.writer;
 import com.hlag.fis.batch.domain.PrimaryKeyIdentifier;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -17,7 +16,6 @@ import javax.persistence.EntityManagerFactory;
 public class MysqlDeleteWriter<T extends PrimaryKeyIdentifier<String>> extends AbstractDeleteWriter<T> {
 
     @Autowired
-    @Qualifier("mysqlEntityManagerFactory")
     private EntityManagerFactory entityManagerFactory;
 
     public JpaItemWriter getWriter() {

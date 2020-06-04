@@ -1,9 +1,8 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.job;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hlag.fis.batch.builder.BatchJobBuilder;
 import com.hlag.fis.batch.builder.BatchJobRunner;
-import com.hlag.fis.batch.jobs.housekeepingbatch.agentperformance.AgentPerformanceStep;
+import com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance.BatchPerformanceStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution.JobExecutionInfoStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog.JobExecutionLogStep;
 import com.hlag.fis.batch.logging.BatchJobLogger;
@@ -25,31 +24,27 @@ public class HouseKeepingBatchJob {
     @BatchJobLogger(value = JOB_NAME)
     private static Logger logger = LoggerFactory.getLogger(HouseKeepingBatchJob.class);
 
-    private BatchJobRunner batchJobRunner;
+    private final BatchJobRunner batchJobRunner;
 
-    private BatchJobBuilder batchJobBuilder;
+    private final BatchJobBuilder batchJobBuilder;
 
-    private JobExecutionInfoStep jobExecutionInfoStep;
+    private final JobExecutionInfoStep jobExecutionInfoStep;
 
-    private JobExecutionLogStep jobExecutionLogStep;
+    private final JobExecutionLogStep jobExecutionLogStep;
 
-    private AgentPerformanceStep agentPerformanceStep;
-
-    private ObjectMapper objectMapper;
+    private final BatchPerformanceStep batchPerformanceStep;
 
     @Autowired
     public HouseKeepingBatchJob(JobExecutionInfoStep jobExecutionInfoStep,
                                 JobExecutionLogStep jobExecutionLogStep,
                                 BatchJobBuilder batchJobBuilder,
                                 BatchJobRunner batchJobRunner,
-                                AgentPerformanceStep agentPerformanceStep,
-                                ObjectMapper objectMapper) {
+                                BatchPerformanceStep batchPerformanceStep) {
         this.jobExecutionInfoStep = jobExecutionInfoStep;
         this.jobExecutionLogStep = jobExecutionLogStep;
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
-        this.agentPerformanceStep = agentPerformanceStep;
-        this.objectMapper = objectMapper;
+        this.batchPerformanceStep = batchPerformanceStep;
     }
 
     @PostConstruct
@@ -73,7 +68,7 @@ public class HouseKeepingBatchJob {
                 .name(JOB_NAME)
                 .startStep(jobExecutionInfoStep.houseKeepingJobExecutionInfos())
                 .nextStep(jobExecutionLogStep.houseKeepingJobExecutionLogs())
-                .nextStep(agentPerformanceStep.houseKeepingAgentPerformances())
+                .nextStep(batchPerformanceStep.houseKeepingBatchPerformances())
                 .build();
     }
 }

@@ -5,26 +5,21 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.support.JobRepositoryFactoryBean;
+import org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean;
 import org.springframework.batch.support.transaction.ResourcelessTransactionManager;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.util.Objects;
@@ -33,15 +28,10 @@ import java.util.Properties;
 @Configuration
 @EnableCaching
 @EnableBatchProcessing
-@EnableJpaRepositories(
-        basePackages = {"com.hlag.fis.batch.repository"},
-        entityManagerFactoryRef = "mysqlEntityManagerFactory",
-        transactionManagerRef = "mysqlTransactionManager"
-)
+@EnableJpaRepositories(basePackages = {"com.hlag.fis.batch.repository"})
 public class HouseKeepingBatchConfiguration {
 
-    private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"),
-            new ClassPathResource("houseKeeping.yml")};
+    private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("houseKeeping.yml")};
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
@@ -52,14 +42,14 @@ public class HouseKeepingBatchConfiguration {
         return configurer;
     }
 
-    @Bean(name = "mysqlDataSource")
+    @Bean
     @ConfigurationProperties(prefix = "mysql.datasource")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "mysqlEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         em.setPersistenceUnitName("MysqlPU");
@@ -78,52 +68,33 @@ public class HouseKeepingBatchConfiguration {
     }
 
     public SessionFactory sessionFactory() {
-        return Objects.requireNonNull(entityManagerFactoryBean().getObject()).unwrap(SessionFactory.class);
+        return Objects.requireNonNull(entityManagerFactory().getObject()).unwrap(SessionFactory.class);
     }
 
-    @Bean(name = "mysqlTransactionManager")
-    public HibernateTransactionManager jpaTransactionManager() {
+    @Bean
+    public HibernateTransactionManager transactionManager() {
         return new HibernateTransactionManager(sessionFactory());
     }
 
     @Bean
-    @Primary
-    public DataSource batchDataSource() {
-        EmbeddedDatabaseBuilder embeddedDatabaseBuilder = new EmbeddedDatabaseBuilder();
-        return embeddedDatabaseBuilder.addScript("classpath:org/springframework/batch/core/schema-drop-h2.sql")
-                .addScript("classpath:org/springframework/batch/core/schema-h2.sql")
-                .setType(EmbeddedDatabaseType.H2)
-                .build();
+    public JobRepository jobRepository() {
+        MapJobRepositoryFactoryBean factoryBean = new MapJobRepositoryFactoryBean(new ResourcelessTransactionManager());
+        try {
+            return factoryBean.getObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Bean
-    @Primary
-    public PlatformTransactionManager batchTransactionManager() {
-        return new ResourcelessTransactionManager();
-    }
-
-    @Bean
-    @Primary
-    public JobRepository getJobRepository() throws Exception {
-        JobRepositoryFactoryBean factory = new JobRepositoryFactoryBean();
-        factory.setDataSource(batchDataSource());
-        factory.setTransactionManager(batchTransactionManager());
-        factory.afterPropertiesSet();
-        return factory.getObject();
-    }
-
-    @Bean
-    @Qualifier("batch")
-    public JobLauncher getJobLauncher() throws Exception {
+    public JobLauncher jobLauncher(JobRepository jobRepository) {
         SimpleJobLauncher jobLauncher = new SimpleJobLauncher();
-        jobLauncher.setJobRepository(getJobRepository());
-        jobLauncher.setTaskExecutor(getTaskExecutor());
-        jobLauncher.afterPropertiesSet();
+        jobLauncher.setJobRepository(jobRepository);
         return jobLauncher;
     }
 
     @Bean
-    @Qualifier("batch")
     public ThreadPoolTaskExecutor getTaskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(10);

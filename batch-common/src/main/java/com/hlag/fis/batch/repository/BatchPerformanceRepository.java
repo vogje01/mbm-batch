@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface BatchPerformanceRepository extends PagingAndSortingRepository<BatchPerformance, String> {
 
-    @Query("select count(b) from BatchPerformance b where b.metric like :metric")
-    long countByMetric(@Param("metric") String metric);
+    @Query("select count(b) from BatchPerformance b where b.type = :type and b.timestamp < :cutOff")
+    long countByTimestamp(@Param("type") BatchPerformanceType type, @Param("cutOff") Timestamp cutOff);
 
     @Query("select count(b) from BatchPerformance b where b.type = :type")
     long countByType(@Param("type") BatchPerformanceType type);

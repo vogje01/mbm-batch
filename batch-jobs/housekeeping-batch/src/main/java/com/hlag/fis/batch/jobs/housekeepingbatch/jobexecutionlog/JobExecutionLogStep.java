@@ -28,15 +28,15 @@ public class JobExecutionLogStep {
     @Value("${houseKeeping.batch.jobExecutionLog.houseKeepingDays}")
     private int houseKeepingDays;
 
-    private JobExecutionLogRepository jobExecutionLogRepository;
+    private final JobExecutionLogRepository jobExecutionLogRepository;
 
-    private BatchStepBuilder<JobExecutionLog, JobExecutionLog> batchStepBuilder;
+    private final BatchStepBuilder<JobExecutionLog, JobExecutionLog> batchStepBuilder;
 
-    private JobExecutionLogReader jobExecutionLogReader;
+    private final JobExecutionLogReader jobExecutionLogReader;
 
-    private JobExecutionLogProcessor jobExecutionLogProcessor;
+    private final JobExecutionLogProcessor jobExecutionLogProcessor;
 
-    private JobExecutionLogWriter jobExecutionLogWriter;
+    private final JobExecutionLogWriter jobExecutionLogWriter;
 
     @Autowired
     public JobExecutionLogStep(

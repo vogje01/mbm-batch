@@ -1,6 +1,6 @@
-package com.hlag.fis.batch.jobs.housekeepingbatch.agentperformance;
+package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.hlag.fis.batch.domain.AgentPerformanceType;
+import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,32 +19,32 @@ import java.util.Map;
 import static java.text.MessageFormat.format;
 
 @Component
-public class AgentPerformanceReader {
+public class BatchPerformanceReader {
 
-    @BatchStepLogger(value = "Housekeeping Agent Performance")
-    private static Logger logger = LoggerFactory.getLogger(AgentPerformanceReader.class);
+    @BatchStepLogger(value = "Housekeeping Batch Performance")
+    private static Logger logger = LoggerFactory.getLogger(BatchPerformanceReader.class);
 
-    @Value("${houseKeeping.batch.agentPerformance.chunkSize}")
+    @Value("${houseKeeping.batch.batchPerformance.chunkSize}")
     private int chunkSize;
 
-    @Value("${houseKeeping.batch.agentPerformance.houseKeepingDays}")
+    @Value("${houseKeeping.batch.batchPerformance.houseKeepingDays}")
     private int houseKeepingDays;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    AgentPerformanceReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
+    BatchPerformanceReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 
     ItemStreamReader getReader() {
 
         Timestamp cutOff = DateTimeUtils.getCutOffTimestampMidnight(houseKeepingDays);
-        logger.debug(format("Agent performance reader starting - cutOff: {1}", cutOff));
+        logger.debug(format("Batch performance reader starting - cutOff: {0}", cutOff));
 
-        String queryString = "select a from AgentPerformance a where a.type = :type and a.lastUpdate < :cutOff";
+        String queryString = "select a from BatchPerformance a where a.type = :type and a.timestamp < :cutOff";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("type", AgentPerformanceType.ALL);
+        parameters.put("type", BatchPerformanceType.RAW);
         parameters.put("cutOff", cutOff);
         return new CursorReaderBuilder<>(mysqlEmf)
                 .queryString(queryString)
