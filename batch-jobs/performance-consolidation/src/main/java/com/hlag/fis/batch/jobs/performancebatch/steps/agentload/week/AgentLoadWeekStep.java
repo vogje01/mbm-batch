@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.JobExecutionInfo;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
@@ -25,19 +25,19 @@ public class AgentLoadWeekStep {
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private AgentLoadWeekReader agentLoadWeekReader;
+    private final AgentLoadWeekReader agentLoadWeekReader;
 
-    private AgentLoadWeekProcessor agentLoadProcessor;
+    private final AgentLoadWeekProcessor agentLoadProcessor;
 
-    private AgentLoadWeekWriter agentLoadWeekWriter;
+    private final AgentLoadWeekWriter agentLoadWeekWriter;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
 
     @Autowired
     public AgentLoadWeekStep(
-            BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
+            BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             AgentPerformanceRepository agentPerformanceRepository,
             AgentLoadWeekReader agentLoadWeekReader,
             AgentLoadWeekProcessor agentLoadProcessor,

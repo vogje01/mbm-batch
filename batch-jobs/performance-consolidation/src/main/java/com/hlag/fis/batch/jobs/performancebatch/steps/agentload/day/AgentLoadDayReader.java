@@ -20,7 +20,7 @@ public class AgentLoadDayReader {
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
     AgentLoadDayReader(@Qualifier("mysqlEntityManagerFactory") EntityManagerFactory mysqlEmf) {
@@ -30,10 +30,10 @@ public class AgentLoadDayReader {
     ItemStreamReader getReader() {
         LocalDateTime startDateTime = LocalDate.now().atStartOfDay().minusDays(1);
         LocalDateTime endDateTime = LocalDate.now().atStartOfDay();
-        String queryString = "select a.nodeName, avg(a.systemLoad) "
-                + "from AgentPerformance a "
-                + "where a.lastUpdate >= :startDateTime and a.lastUpdate <= :endDateTime "
-                + "group by a.nodeName";
+        String queryString = "select b.qualifier, avg(b.value) "
+                + "from BatchPerformance b "
+                + "where b.metric = 'host.total.system.load' and b.timestamp >= :startDateTime "//and b.timestamp <= :endDateTime "
+                + "group by b.qualifier";
         Map<String, Timestamp> parameters = new HashMap<>();
         parameters.put("startDateTime", Timestamp.valueOf(startDateTime));
         parameters.put("endDateTime", Timestamp.valueOf(endDateTime));

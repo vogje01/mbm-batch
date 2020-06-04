@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.JobExecutionInfo;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentPerformanceRepository;
 import org.slf4j.Logger;
@@ -25,19 +25,19 @@ public class AgentLoadDayStep {
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
-    private AgentPerformanceRepository agentPerformanceRepository;
+    private final AgentPerformanceRepository agentPerformanceRepository;
 
-    private AgentLoadDayReader agentLoadDayReader;
+    private final AgentLoadDayReader agentLoadDayReader;
 
-    private AgentLoadDayProcessor agentLoadProcessor;
+    private final AgentLoadDayProcessor agentLoadProcessor;
 
-    private AgentLoadDayWriter agentLoadDayWriter;
+    private final AgentLoadDayWriter agentLoadDayWriter;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private final BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
 
     @Autowired
     public AgentLoadDayStep(
-            BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
+            BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             AgentPerformanceRepository agentPerformanceRepository,
             AgentLoadDayReader agentLoadDayReader,
             AgentLoadDayProcessor agentLoadProcessor,

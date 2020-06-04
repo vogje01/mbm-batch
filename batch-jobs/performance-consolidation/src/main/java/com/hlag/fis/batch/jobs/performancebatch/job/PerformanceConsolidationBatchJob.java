@@ -29,25 +29,25 @@ public class PerformanceConsolidationBatchJob {
     @BatchJobLogger(value = JOB_NAME)
     private static Logger logger;
 
-    private BatchJobRunner batchJobRunner;
+    private final BatchJobRunner batchJobRunner;
 
-    private BatchJobBuilder batchJobBuilder;
+    private final BatchJobBuilder batchJobBuilder;
 
-    private AgentLoadDayStep agentLoadDayStep;
+    private final AgentLoadDayStep agentLoadDayStep;
 
-    private AgentLoadWeekStep agentLoadWeekStep;
+    private final AgentLoadWeekStep agentLoadWeekStep;
 
-    private JobCountStep jobCountStep;
+    private final JobCountStep jobCountStep;
 
-    private StepCountStep stepCountStep;
+    private final StepCountStep stepCountStep;
 
-    private DailyStep dailyStep;
+    private final DailyStep dailyStep;
 
-    private WeeklyStep weeklyStep;
+    private final WeeklyStep weeklyStep;
 
-    private MonthlyStep monthlyStep;
+    private final MonthlyStep monthlyStep;
 
-    private YearlyStep yearlyStep;
+    private final YearlyStep yearlyStep;
 
     @Autowired
     public PerformanceConsolidationBatchJob(BatchJobBuilder batchJobBuilder,
