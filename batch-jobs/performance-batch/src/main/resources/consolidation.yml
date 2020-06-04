@@ -10,6 +10,9 @@ consolidation:
     # Step count
     stepCount:
       chunkSize: 1000
+    # Job status count
+    jobStatus:
+      chunkSize: 1000
     # Daily consolidation
     daily:
       chunkSize: 1000

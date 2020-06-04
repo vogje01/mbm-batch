@@ -7,6 +7,7 @@ import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day.AgentLoadDay
 import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week.AgentLoadWeekStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.daily.DailyStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.JobCountStep;
+import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status.JobCountCompletedStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.monthly.MonthlyStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.stepcount.StepCountStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.weekly.WeeklyStep;
@@ -39,6 +40,8 @@ public class PerformanceConsolidationBatchJob {
 
     private final JobCountStep jobCountStep;
 
+    private final JobCountCompletedStep jobCountCompletedStep;
+
     private final StepCountStep stepCountStep;
 
     private final DailyStep dailyStep;
@@ -55,6 +58,7 @@ public class PerformanceConsolidationBatchJob {
                                             AgentLoadDayStep agentLoadDayStep,
                                             AgentLoadWeekStep agentLoadWeekStep,
                                             JobCountStep jobCountStep,
+                                            JobCountCompletedStep jobCountCompletedStep,
                                             StepCountStep stepCountStep,
                                             DailyStep dailyStep,
                                             WeeklyStep weeklyStep,
@@ -65,6 +69,7 @@ public class PerformanceConsolidationBatchJob {
         this.agentLoadDayStep = agentLoadDayStep;
         this.agentLoadWeekStep = agentLoadWeekStep;
         this.jobCountStep = jobCountStep;
+        this.jobCountCompletedStep = jobCountCompletedStep;
         this.stepCountStep = stepCountStep;
         this.dailyStep = dailyStep;
         this.weeklyStep = weeklyStep;
@@ -96,7 +101,7 @@ public class PerformanceConsolidationBatchJob {
                         .build())
                 // Parallel steps
                 .nextFlow(new BatchFlowBuilder<>("Job count")
-                        .splitSteps(jobCountStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
+                        .splitSteps(jobCountStep.jobCountProcessing(), jobCountCompletedStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
                         .build())
                 .nextStep(dailyStep.dailyConsolidation())
                 .nextStep(weeklyStep.weeklyConsolidation())

@@ -1,5 +1,5 @@
 --
--- Hapag-Lloyd batch management schema
+-- Momentum batch management schema
 --
 
 --
@@ -247,40 +247,6 @@ CREATE TABLE BATCH_JOB_SCHEDULE
     CONSTRAINT JOB_SCHEDULE_JOBDEFINITION_FK FOREIGN KEY (JOB_DEFINITION_ID)
         REFERENCES BATCH_JOB_DEFINITION (ID)
 ) ENGINE = InnoDB;
-
---
--- Batch agent performance
---
-CREATE TABLE BATCH_AGENT_PERFORMANCE
-(
-    ID                   VARCHAR(36)  NOT NULL PRIMARY KEY,
-    VERSION              BIGINT       NOT NULL                                DEFAULT 0,
-    NODE_NAME            VARCHAR(36)  NOT NULL,
-    HOST_NAME            VARCHAR(128) NOT NULL,
-    TYPE                 ENUM ('ALL', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY') DEFAULT 'ALL',
-    SYSTEM_LOAD          DOUBLE,
-    TOTAL_REAL_MEMORY    BIGINT,
-    FREE_REAL_MEMORY     BIGINT,
-    USED_REAL_MEMORY     BIGINT,
-    TOTAL_VIRT_MEMORY    BIGINT,
-    FREE_VIRT_MEMORY     BIGINT,
-    USED_VIRT_MEMORY     BIGINT,
-    TOTAL_SWAP           BIGINT,
-    FREE_SWAP            BIGINT,
-    USED_SWAP            BIGINT,
-    FREE_REAL_MEMORY_PCT DOUBLE,
-    USED_REAL_MEMORY_PCT DOUBLE,
-    FREE_VIRT_MEMORY_PCT DOUBLE,
-    USED_VIRT_MEMORY_PCT DOUBLE,
-    FREE_SWAP_PCT        DOUBLE,
-    USED_SWAP_PCT        DOUBLE,
-    JOB_COUNT            BIGINT                                               DEFAULT 0,
-    STEP_COUNT           BIGINT                                               DEFAULT 0,
-    LAST_UPDATE          DATETIME
-) ENGINE = InnoDB;
-
-ALTER TABLE BATCH_AGENT_PERFORMANCE
-    ADD INDEX (NODE_NAME, TYPE, LAST_UPDATE);
 
 --
 -- Batch performance
