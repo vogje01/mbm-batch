@@ -27,12 +27,12 @@ public class AgentLoadDayReader {
     }
 
     ItemStreamReader getReader() {
-        LocalDateTime startDateTime = LocalDate.now().atStartOfDay().minusDays(1);
-        LocalDateTime endDateTime = LocalDate.now().atStartOfDay();
         String queryString = "select b.qualifier, avg(b.value) "
                 + "from BatchPerformance b "
-                + "where b.type='RAW' and b.metric = 'host.total.system.load' and b.timestamp >= :startDateTime "//and b.timestamp <= :endDateTime "
+                + "where b.type='RAW' and b.metric = 'host.total.system.load' and b.timestamp >= :startDateTime and b.timestamp <= :endDateTime "
                 + "group by b.qualifier";
+        LocalDateTime startDateTime = LocalDate.now().atStartOfDay().minusDays(1);
+        LocalDateTime endDateTime = LocalDate.now().atStartOfDay();
         Map<String, Timestamp> parameters = new HashMap<>();
         parameters.put("startDateTime", Timestamp.valueOf(startDateTime));
         parameters.put("endDateTime", Timestamp.valueOf(endDateTime));

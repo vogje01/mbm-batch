@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 import static java.text.MessageFormat.format;
 
 @Component
-public class JobCountProcessor implements ItemProcessor<Object[], BatchPerformance> {
+public class JobCountNodeProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
     @BatchStepLogger(value = "Job count")
-    private static Logger logger = LoggerFactory.getLogger(JobCountProcessor.class);
+    private static Logger logger = LoggerFactory.getLogger(JobCountNodeProcessor.class);
 
     @Autowired
-    public JobCountProcessor() {
+    public JobCountNodeProcessor() {
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.hlag.fis.batch.builder.BatchJobRunner;
 import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day.AgentLoadDayStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week.AgentLoadWeekStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.daily.DailyStep;
-import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.JobCountStep;
+import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.JobCountNodeStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status.JobCountCompletedStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status.JobCountFailedStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.monthly.MonthlyStep;
@@ -24,7 +24,7 @@ import javax.annotation.PostConstruct;
 import static java.text.MessageFormat.format;
 
 @Component
-public class PerformanceConsolidationBatchJob {
+public class PerformanceBatchJob {
 
     private static final String JOB_NAME = "Performance Consolidation";
 
@@ -39,7 +39,7 @@ public class PerformanceConsolidationBatchJob {
 
     private final AgentLoadWeekStep agentLoadWeekStep;
 
-    private final JobCountStep jobCountStep;
+    private final JobCountNodeStep jobCountNodeStep;
 
     private final JobCountCompletedStep jobCountCompletedStep;
 
@@ -56,23 +56,23 @@ public class PerformanceConsolidationBatchJob {
     private final YearlyStep yearlyStep;
 
     @Autowired
-    public PerformanceConsolidationBatchJob(BatchJobBuilder batchJobBuilder,
-                                            BatchJobRunner batchJobRunner,
-                                            AgentLoadDayStep agentLoadDayStep,
-                                            AgentLoadWeekStep agentLoadWeekStep,
-                                            JobCountStep jobCountStep,
-                                            JobCountCompletedStep jobCountCompletedStep,
-                                            JobCountFailedStep jobCountFailedStep,
-                                            StepCountStep stepCountStep,
-                                            DailyStep dailyStep,
-                                            WeeklyStep weeklyStep,
-                                            MonthlyStep monthlyStep,
-                                            YearlyStep yearlyStep) {
+    public PerformanceBatchJob(BatchJobBuilder batchJobBuilder,
+                               BatchJobRunner batchJobRunner,
+                               AgentLoadDayStep agentLoadDayStep,
+                               AgentLoadWeekStep agentLoadWeekStep,
+                               JobCountNodeStep jobCountNodeStep,
+                               JobCountCompletedStep jobCountCompletedStep,
+                               JobCountFailedStep jobCountFailedStep,
+                               StepCountStep stepCountStep,
+                               DailyStep dailyStep,
+                               WeeklyStep weeklyStep,
+                               MonthlyStep monthlyStep,
+                               YearlyStep yearlyStep) {
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
         this.agentLoadDayStep = agentLoadDayStep;
         this.agentLoadWeekStep = agentLoadWeekStep;
-        this.jobCountStep = jobCountStep;
+        this.jobCountNodeStep = jobCountNodeStep;
         this.jobCountCompletedStep = jobCountCompletedStep;
         this.jobCountFailedStep = jobCountFailedStep;
         this.stepCountStep = stepCountStep;
@@ -92,9 +92,9 @@ public class PerformanceConsolidationBatchJob {
     }
 
     /**
-     * Create the database synchronization jobs.
+     * Create the agent load day jobs.
      *
-     * @return database synchronization jobs.
+     * @return agent load day jobs.
      */
     public Job houseKeepingJob() {
         logger.info(format("Initializing job - jobName: {0}", JOB_NAME));
@@ -106,7 +106,7 @@ public class PerformanceConsolidationBatchJob {
                         .build())
                 // Parallel steps
                 .nextFlow(new BatchFlowBuilder<>("Job count")
-                        .splitSteps(jobCountStep.jobCountProcessing(), jobCountCompletedStep.jobCountProcessing(), jobCountFailedStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
+                        .splitSteps(jobCountNodeStep.jobCountProcessing(), jobCountCompletedStep.jobCountProcessing(), jobCountFailedStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
                         .build())
                 .nextStep(dailyStep.dailyConsolidation())
                 .nextStep(weeklyStep.weeklyConsolidation())

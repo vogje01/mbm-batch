@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JobCountReader {
+public class JobCountNodeReader {
 
     @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
@@ -19,7 +19,7 @@ public class JobCountReader {
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    JobCountReader(EntityManagerFactory mysqlEmf) {
+    JobCountNodeReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 

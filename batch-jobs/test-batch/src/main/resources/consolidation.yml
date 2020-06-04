@@ -1,0 +1,27 @@
+# Housekeeping for the batch tables
+consolidation:
+  batch:
+    # Agent load
+    agentLoad:
+      chunkSize: 1000
+    # Job count
+    jobCount:
+      chunkSize: 1000
+    # Step count
+    stepCount:
+      chunkSize: 1000
+    # Job status count
+    jobStatus:
+      chunkSize: 1000
+    # Daily consolidation
+    daily:
+      chunkSize: 1000
+    # Weekly consolidation
+    weekly:
+      chunkSize: 1000
+    # Monthly consolidation
+    monthly:
+      chunkSize: 1000
+    # Yearly consolidation
+    yearly:
+      chunkSize: 1000

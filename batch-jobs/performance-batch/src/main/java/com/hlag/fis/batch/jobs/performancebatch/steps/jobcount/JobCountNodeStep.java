@@ -16,38 +16,38 @@ import static java.text.MessageFormat.format;
 
 
 @Component
-public class JobCountStep {
+public class JobCountNodeStep {
 
     private static final String STEP_NAME = "Job count";
 
     @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(JobCountStep.class);
+    private static Logger logger = LoggerFactory.getLogger(JobCountNodeStep.class);
 
     @Value("${consolidation.batch.jobCount.chunkSize}")
     private int chunkSize;
 
     private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
-    private final JobCountReader jobCountReader;
+    private final JobCountNodeReader jobCountNodeReader;
 
-    private final JobCountProcessor jobCountProcessor;
+    private final JobCountNodeProcessor jobCountNodeProcessor;
 
-    private final JobCountWriter jobCountWriter;
+    private final JobCountNodeWriter jobCountNodeWriter;
 
     private final BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder;
 
     @Autowired
-    public JobCountStep(
+    public JobCountNodeStep(
             BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
             JobExecutionInfoRepository jobExecutionInfoRepository,
-            JobCountReader jobCountReader,
-            JobCountProcessor jobCountProcessor,
-            JobCountWriter jobCountWriter) {
+            JobCountNodeReader jobCountNodeReader,
+            JobCountNodeProcessor jobCountNodeProcessor,
+            JobCountNodeWriter jobCountNodeWriter) {
         this.stepBuilder = stepBuilder;
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
-        this.jobCountReader = jobCountReader;
-        this.jobCountProcessor = jobCountProcessor;
-        this.jobCountWriter = jobCountWriter;
+        this.jobCountNodeReader = jobCountNodeReader;
+        this.jobCountNodeProcessor = jobCountNodeProcessor;
+        this.jobCountNodeWriter = jobCountNodeWriter;
         logger.debug(format("Step initialized - name: {0}", STEP_NAME));
     }
 
@@ -58,9 +58,9 @@ public class JobCountStep {
         return stepBuilder
                 .name(STEP_NAME)
                 .chunkSize(chunkSize)
-                .reader(jobCountReader.getReader())
-                .processor(jobCountProcessor)
-                .writer(jobCountWriter.getWriter())
+                .reader(jobCountNodeReader.getReader())
+                .processor(jobCountNodeProcessor)
+                .writer(jobCountNodeWriter.getWriter())
                 .total(totalCount)
                 .build();
     }
