@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class BatchManagerConfiguration implements WebMvcConfigurer {
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecution", "JobExecutionLog", "JobExecutionParam",
-            "StepExecution", "JobSchedule", "JobGroup", "Agent", "AgentGroup", "AgentPerformance", "User", "UserGroup", "UserDetails"};
+            "StepExecution", "JobSchedule", "JobGroup", "Agent", "AgentGroup", "AgentPerformance", "BatchPerformance", "User", "UserGroup", "UserDetails"};
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {

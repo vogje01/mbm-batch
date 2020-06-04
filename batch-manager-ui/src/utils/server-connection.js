@@ -54,8 +54,13 @@ const getItem = (url) => {
             if (response.status === 401) {
                 errorMessage("Could not get item.")
             }
-            return response.json()
-        }).finally(() => {
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data);
+            return data;
+        })
+        .finally(() => {
             EndTimer();
         });
 };

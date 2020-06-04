@@ -26,9 +26,9 @@ import {PerformanceDataSource} from "./performance-data-source";
 import {DateBox} from 'devextreme-react';
 
 const sources = [
-    {value: 'systemLoad', name: 'System Load', yAxisTitle: 'System Load [%]', scaleHidden: true},
-    {value: 'freeRealMemoryPct', name: 'Free Real Memory Percentage', yAxisTitle: 'Free Real Memory [%]', scaleHidden: true},
-    {value: 'usedRealMemoryPct', name: 'Used Real Memory Percentage', yAxisTitle: 'Used Real Memory [%]', scaleHidden: true},
+    {value: 'host.total.system.load', valueField: 'value', name: 'System Load', yAxisTitle: 'System Load [%]', scaleHidden: true},
+    {value: 'host.real.memory.free.pct', name: 'Free Real Memory Percentage', yAxisTitle: 'Free Real Memory [%]', scaleHidden: true},
+    {value: 'host.real.memory.used.pct', name: 'Used Real Memory Percentage', yAxisTitle: 'Used Real Memory [%]', scaleHidden: true},
     {value: 'freeVirtMemoryPct', name: 'Free Virtual Memory Percentage', yAxisTitle: 'Free Virtual Memory [%]', scaleHidden: true},
     {value: 'usedVirtMemoryPct', name: 'Used Virtual Memory Percentage', yAxisTitle: 'Used Virtual Memory [%]', scaleHidden: true},
     {value: 'freeSwapPct', name: 'Free Swap Percentage', yAxisTitle: 'Free Swap [%]', scaleHidden: true},
@@ -57,7 +57,7 @@ class PerformanceChart extends React.Component {
         super(props);
         this.state = {
             type: 'DAILY',
-            metric: 'systemLoad',
+            metric: 'host.total.system.load',
             timeRange: 'Today',
             scale: 0,
             scaleHidden: true,
@@ -251,7 +251,7 @@ class PerformanceChart extends React.Component {
 
     getSource(item) {
         if (this.state.metric === item.value) {
-            return <Series key={item.value} valueField={item.value} name={item.name} width={2}>
+            return <Series key={item.value} valueField={'value'} name={item.name} width={2}>
                 <Point size={4}/>
             </Series>;
         }
@@ -295,8 +295,8 @@ class PerformanceChart extends React.Component {
                         <Chart
                             id="chart"
                             palette="Office"
-                            dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.scale, this.state.startTime, this.state.endTime)}>
-                            <CommonSeriesSettings argumentField="lastUpdate" type={'line'}/>
+                            dataSource={PerformanceDataSource(this.state.nodeName, this.state.type, this.state.metric, this.state.scale, this.state.startTime, this.state.endTime)}>
+                            <CommonSeriesSettings argumentField="timestamp" type={'line'}/>
                             {sources.map(this.getSource)}
                             <ArgumentAxis argumentType="datetime" visualRange={{startValue: this.state.limitStart, endValue: this.state.limitEnd}}
                                           discreteAxisDivisionMode="crossLabels" valueMarginsEnabled={true}>

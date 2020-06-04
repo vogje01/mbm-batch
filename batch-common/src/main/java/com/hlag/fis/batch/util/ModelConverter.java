@@ -349,6 +349,17 @@ public class ModelConverter {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Batch performance
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public List<BatchPerformanceDto> convertBatchPerformanceToDto(List<BatchPerformance> batchPerformanceList) {
+        return batchPerformanceList.stream().map(this::convertBatchPerformanceToDto).collect(toList());
+    }
+
+    public BatchPerformanceDto convertBatchPerformanceToDto(BatchPerformance batchPerformance) {
+        return modelMapper.map(batchPerformance, BatchPerformanceDto.class);
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // User
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public List<UserDto> convertUserToDto(List<User> userList) {

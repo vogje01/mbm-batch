@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,4 +25,10 @@ public interface BatchPerformanceRepository extends PagingAndSortingRepository<B
 
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric and b.timestamp = :timestamp")
     Optional<BatchPerformance> findByQualifierAndMetricAndTimestamp(@Param("qualifier") String qualifier, @Param("metric") String metric, @Param("timestamp") Timestamp timestamp);
+
+    @Query("select b from BatchPerformance b where b.qualifier = :nodeName and b.type = :type and " +
+            "b.metric = :metric and b.timestamp >= :startTime and b.timestamp <= :endTime order by b.timestamp")
+    List<BatchPerformance> findData(@Param("nodeName") String nodeName, @Param("type") BatchPerformanceType type, @Param("metric") String metric,
+                                    @Param("startTime") Timestamp startTime, @Param("endTime") Timestamp endTime);
+
 }

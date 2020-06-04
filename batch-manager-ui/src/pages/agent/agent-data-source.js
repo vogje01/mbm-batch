@@ -6,6 +6,9 @@ import {deleteItem, getItem, listItems, updateItem} from "../../utils/server-con
 export const AgentDataSource = () => {
     return new DataSource({
         store: new CustomStore({
+            byKey: function (key) {
+
+            },
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'nodeName');
                 return listItems('agents' + params, 'agentDtoes');
