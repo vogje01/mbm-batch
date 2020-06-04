@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.weekly;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import javax.persistence.EntityManagerFactory;
 @Component
 public class WeeklyWriter {
 
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
     public WeeklyWriter(EntityManagerFactory entityManagerFactory) {
@@ -26,7 +26,7 @@ public class WeeklyWriter {
     }
 
     @SuppressWarnings("unchecked")
-    public ItemWriter<AgentPerformance> getWriter() {
-        return new MysqlWriterBuilder<AgentPerformance>(entityManagerFactory).build();
+    public ItemWriter<BatchPerformance> getWriter() {
+        return new MysqlWriterBuilder<BatchPerformance>(entityManagerFactory).build();
     }
 }

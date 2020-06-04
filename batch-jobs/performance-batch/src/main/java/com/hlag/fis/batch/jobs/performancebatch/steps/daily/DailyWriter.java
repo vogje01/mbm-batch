@@ -1,6 +1,5 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
@@ -27,7 +26,7 @@ public class DailyWriter {
     }
 
     @SuppressWarnings("unchecked")
-    public ItemWriter<AgentPerformance> getWriter() {
+    public ItemWriter<BatchPerformance> getWriter() {
         return new MysqlWriterBuilder<BatchPerformance>(entityManagerFactory).build();
     }
 }

@@ -25,9 +25,9 @@ public class AgentGroupServiceImpl implements AgentGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentGroupServiceImpl.class);
 
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
-    private AgentGroupRepository agentGroupRepository;
+    private final AgentGroupRepository agentGroupRepository;
 
     @Autowired
     public AgentGroupServiceImpl(AgentGroupRepository agentGroupRepository, AgentRepository agentRepository) {

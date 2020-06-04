@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.monthly;
 
-import com.hlag.fis.batch.domain.AgentPerformance;
+import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class MonthlyWriter {
     }
 
     @SuppressWarnings("unchecked")
-    public ItemWriter<AgentPerformance> getWriter() {
-        return new MysqlWriterBuilder<AgentPerformance>(entityManagerFactory).build();
+    public ItemWriter<BatchPerformance> getWriter() {
+        return new MysqlWriterBuilder<BatchPerformance>(entityManagerFactory).build();
     }
 }
