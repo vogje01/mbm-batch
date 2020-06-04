@@ -1,7 +1,7 @@
 # Housekeeping for the batch tables
 consolidation:
   batch:
-    # Job count
+    # Agent load
     agentLoad:
       chunkSize: 1000
     # Job count

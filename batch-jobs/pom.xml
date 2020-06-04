@@ -11,17 +11,13 @@
 		<version>0.0.3</version>
 	</parent>
 
-	<groupId>com.hlag.fis</groupId>
 	<artifactId>batch-jobs</artifactId>
 	<name>batch-jobs</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>performance-consolidation</module>
+		<module>performance-batch</module>
 		<module>housekeeping-batch</module>
-		<!--        <module>housekeeping-data</module>-->
-		<!--        <module>mysql-synchronization</module>-->
-		<!--        <module>db2-synchronization</module>-->
 	</modules>
 
 </project>

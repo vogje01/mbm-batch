@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.monthly;
+package com.hlag.fis.batch.jobs.performancebatch.steps.yearly;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
@@ -11,12 +11,12 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 @Component
-public class MonthlyProcessor implements ItemProcessor<Object[], BatchPerformance> {
+public class YearlyProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    private BatchPerformanceRepository batchPerformanceRepository;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
     @Autowired
-    public MonthlyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
+    public YearlyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
         this.batchPerformanceRepository = batchPerformanceRepository;
     }
 
@@ -28,7 +28,7 @@ public class MonthlyProcessor implements ItemProcessor<Object[], BatchPerformanc
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        batchPerformance.setType(BatchPerformanceType.MONTHLY);
+        batchPerformance.setType(BatchPerformanceType.YEARLY);
         batchPerformance.setQualifier((String) tuple[0]);
         batchPerformance.setMetric((String) tuple[1]);
         batchPerformance.setValue((Double) tuple[2]);

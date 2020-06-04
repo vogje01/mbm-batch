@@ -80,8 +80,7 @@ public class PerformanceConsolidationConfiguration {
     public JobRepository jobRepository() {
         MapJobRepositoryFactoryBean factoryBean = new MapJobRepositoryFactoryBean(new ResourcelessTransactionManager());
         try {
-            JobRepository jobRepository = factoryBean.getObject();
-            return jobRepository;
+            return factoryBean.getObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

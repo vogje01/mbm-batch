@@ -1,4 +1,4 @@
-package com.hlag.fis.batch.jobs.performancebatch.steps.yearly;
+package com.hlag.fis.batch.jobs.performancebatch.steps.weekly;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
@@ -11,24 +11,27 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 @Component
-public class YearlyProcessor implements ItemProcessor<Object[], BatchPerformance> {
+public class WeeklyProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    private BatchPerformanceRepository batchPerformanceRepository;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
     @Autowired
-    public YearlyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
+    public WeeklyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
         this.batchPerformanceRepository = batchPerformanceRepository;
     }
 
     @Override
     public BatchPerformance process(Object[] tuple) {
 
+        // Get metric
+        String metric = tuple[1] + ".weekly";
+
         // Check old record
         Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3]);
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        batchPerformance.setType(BatchPerformanceType.YEARLY);
+        batchPerformance.setType(BatchPerformanceType.WEEKLY);
         batchPerformance.setQualifier((String) tuple[0]);
         batchPerformance.setMetric((String) tuple[1]);
         batchPerformance.setValue((Double) tuple[2]);

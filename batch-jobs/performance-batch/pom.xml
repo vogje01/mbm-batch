@@ -12,10 +12,10 @@
         <relativePath/>
     </parent>
     <groupId>com.hlag.fis.batch.jobs</groupId>
-    <artifactId>performance-consolidation</artifactId>
-    <name>performance-consolidation</name>
+    <artifactId>performance-batch</artifactId>
+    <name>performance-batch</name>
     <version>0.0.3</version>
-    <description>Consolidating of performance data.</description>
+    <description>Collection and consolidation of performance data.</description>
 
     <properties>
         <java.version>12</java.version>
