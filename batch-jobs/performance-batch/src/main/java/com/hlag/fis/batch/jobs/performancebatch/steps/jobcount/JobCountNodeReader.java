@@ -26,7 +26,6 @@ public class JobCountNodeReader {
     ItemStreamReader getReader() {
         String queryString = "select j.nodeName, count(j.nodeName), from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval) as timestamp "
                 + "from JobExecutionInfo j "
-                + "where j.nodeName is not null "
                 + "group by j.nodeName, from_unixtime(floor((unix_timestamp(j.startTime) / :interval)) * :interval)";
         Map<String, Long> parameters = new HashMap<>();
         parameters.put("interval", 300L);

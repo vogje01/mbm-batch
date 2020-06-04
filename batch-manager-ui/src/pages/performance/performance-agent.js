@@ -24,6 +24,7 @@ import {
 import SelectBox from 'devextreme-react/select-box';
 import {PerformanceDataSource} from "./performance-data-source";
 import {DateBox} from 'devextreme-react';
+import {Item, Toolbar} from "devextreme-react/toolbar";
 
 const sources = [
     {value: 'host.total.system.load', valueField: 'value', name: 'System Load', yAxisTitle: 'System Load [%]', scaleHidden: true},
@@ -84,6 +85,29 @@ class PerformanceChart extends React.Component {
         this.handleCustomRangeStart = this.handleCustomRangeStart.bind(this);
         this.handleCustomRangeEnd = this.handleCustomRangeEnd.bind(this);
         this.getSource = this.getSource.bind(this);
+        this.intervals = [
+            {interval: 0, text: 'None'},
+            {interval: 30000, text: '30 sec'},
+            {interval: 60000, text: '1 min'},
+            {interval: 300000, text: '5 min'},
+            {interval: 600000, text: '10 min'},
+            {interval: 1800000, text: '30 min'},
+            {interval: 3600000, text: '1 hour'}];
+        this.intervalSelectOptions = {
+            width: 140,
+            items: this.intervals,
+            valueExpr: "interval",
+            displayExpr: "text",
+            placeholder: "Update interval",
+            value: this.intervals[0].id,
+            onValueChanged: (args) => {
+                clearTimeout(this.state.timer);
+                if (args.value > 0) {
+                    this.state.timer = setInterval(() => this.setState({}), args.value);
+                    this.render();
+                }
+            }
+        }
     }
 
     componentDidMount() {
@@ -286,12 +310,27 @@ class PerformanceChart extends React.Component {
                             </div>
                             <div className="option" hidden={this.state.customRangeHidden}>
                                 <span>Custom range:</span>
-                                <DateBox defaultValue={this.now} type="datetime" onValueChanged={this.handleCustomRangeStart}/>
-                                <DateBox defaultValue={this.now} type="datetime" onValueChanged={this.handleCustomRangeEnd}/>
+                                <DateBox defaultValue={new Date()} type="datetime" onValueChanged={this.handleCustomRangeStart}/>
+                                <DateBox defaultValue={new Date()} type="datetime" onValueChanged={this.handleCustomRangeEnd}/>
                             </div>
                         </div>
                     </div>
-                    <div className={'dx-card responsive-paddings'} style={{background: '#282828'}}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }, hint: 'Refresh job execution list.'
+                                }}/>
+                            <Item
+                                location="after"
+                                widget="dxSelectBox"
+                                locateInMenu="auto"
+                                options={this.intervalSelectOptions}/>
+                        </Toolbar>
                         <Chart
                             id="chart"
                             palette="Office"
@@ -299,16 +338,16 @@ class PerformanceChart extends React.Component {
                             <CommonSeriesSettings argumentField="timestamp" type={'line'}/>
                             {sources.map(this.getSource)}
                             <ArgumentAxis argumentType="datetime" visualRange={{startValue: this.state.limitStart, endValue: this.state.limitEnd}}
-                                          discreteAxisDivisionMode="crossLabels" valueMarginsEnabled={true}>
+                                          discreteAxisDivisionMode="crossLabels" valueMarginsEnabled={true} label={{font: {color: '#000000'}}}>
                                 <Tick visible={true}/>
                                 <Grid visible={true}/>
                                 <TickInterval minutes={this.state.majorTickMinutes} hours={this.state.majorTickHours} days={this.state.majorTickDays}
                                               weeks={this.state.majorTickWeeks}/>
                             </ArgumentAxis>
-                            <ValueAxis title={this.state.yAxisTitle}/>
-                            <Legend verticalAlignment="bottom" horizontalAlignment="center" itemTextPosition="bottom"/>
+                            <ValueAxis title={this.state.yAxisTitle} label={{font: {color: '#000000'}}}/>
+                            <Legend verticalAlignment="bottom" horizontalAlignment="center" itemTextPosition="bottom" font={{color: '#000000'}}/>
                             <Export enabled={true}/>
-                            <Title text={this.state.title + ': ' + this.state.nodeName} horizontalAlignment={'center'}/>
+                            <Title text={this.state.title + ': ' + this.state.nodeName} horizontalAlignment={'center'} font={{color: '#000000'}}/>
                             <Point hoverMode={'allArgumentPoints'}/>
                             <Crosshair enabled={true} width={2}>
                                 <HorizontalLine dashStyle={'dot'} visible={true} width={2}>

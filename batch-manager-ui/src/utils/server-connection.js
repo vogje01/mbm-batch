@@ -56,10 +56,6 @@ const getItem = (url) => {
             }
             return response.json();
         })
-        .then((data) => {
-            console.log(data);
-            return data;
-        })
         .finally(() => {
             EndTimer();
         });

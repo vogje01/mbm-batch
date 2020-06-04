@@ -16,7 +16,7 @@ import {
 } from "devextreme-react/data-grid";
 import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
-import UpdateTimer from "../../utils/update-timer";
+import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
@@ -41,7 +41,7 @@ class JobExecutionList extends React.Component {
             {interval: 3600000, text: '1 hour'}];
         this.intervalSelectOptions = {
             width: 140,
-            items: this.intervals,
+            items: updateIntervals,
             valueExpr: "interval",
             displayExpr: "text",
             placeholder: "Update interval",
