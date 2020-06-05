@@ -74,6 +74,8 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     private JobInstanceDto jobInstanceDto;
 
+    private JobExecutionContextDto jobExecutionContextDto;
+
     private List<JobExecutionParamDto> jobExecutionParamDtoes = new ArrayList<>();
 
     public JobExecutionDto() {
@@ -254,6 +256,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     public void setJobInstanceDto(JobInstanceDto jobInstanceDto) {
         this.jobInstanceDto = jobInstanceDto;
+    }
+
+    public JobExecutionContextDto getJobExecutionContextDto() {
+        return jobExecutionContextDto;
+    }
+
+    public void setJobExecutionContextDto(JobExecutionContextDto jobExecutionContextDto) {
+        this.jobExecutionContextDto = jobExecutionContextDto;
     }
 
     public List<JobExecutionParamDto> getJobExecutionParamDtoes() {

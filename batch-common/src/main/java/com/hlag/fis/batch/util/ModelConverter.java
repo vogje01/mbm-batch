@@ -51,6 +51,7 @@ public class ModelConverter {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
         jobExecutionDto.setJobName(jobExecutionInfo.getJobExecutionInstance().getJobName());
         jobExecutionDto.setTotalSize(totalCount);
+        jobExecutionDto.setJobExecutionContextDto(convertJobExecutionContextToDto(jobExecutionInfo.getJobExecutionContext()));
         jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecutionInfo.getJobExecutionInstance()));
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
                 .stream()
@@ -152,6 +153,19 @@ public class ModelConverter {
         JobInstanceDto jobInstanceDto = modelMapper.map(jobInstance, JobInstanceDto.class);
         jobInstanceDto.setId(null);
         return jobInstanceDto;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Job context
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public JobExecutionContext convertJobExecutionContextToEntity(JobExecutionContextDto jobExecutionContextDto) {
+        return modelMapper.map(jobExecutionContextDto, JobExecutionContext.class);
+    }
+
+    public JobExecutionContextDto convertJobExecutionContextToDto(JobExecutionContext jobExecutionContext) {
+        JobExecutionContextDto jobExecutionContextDto = modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
+        jobExecutionContextDto.setId(null);
+        return jobExecutionContextDto;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
