@@ -2,7 +2,6 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobExecutionDto;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
-import com.hlag.fis.batch.logging.BatchJobLogger;
 import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
@@ -35,7 +34,6 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobNotificationListener implements JobExecutionListener {
 
-    @BatchJobLogger
     private static BatchLogger logger;
 
     private JobExecutionDto jobExecutionDto = new JobExecutionDto();
@@ -51,7 +49,8 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param statusProducer Kafka status message producer.
      */
     @Autowired
-    public JobNotificationListener(ModelConverter modelConverter, JobStatusProducer statusProducer) {
+    public JobNotificationListener(BatchLogger logger, ModelConverter modelConverter, JobStatusProducer statusProducer) {
+        this.logger = logger;
         this.modelConverter = modelConverter;
         this.statusProducer = statusProducer;
     }

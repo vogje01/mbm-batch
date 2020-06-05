@@ -34,6 +34,11 @@ public class HouseKeepingBatchConfiguration {
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("houseKeeping.yml")};
 
     @Bean
+    String jobName() {
+        return "Housekeeping Batch";
+    }
+
+    @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();

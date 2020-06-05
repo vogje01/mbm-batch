@@ -5,9 +5,7 @@ import com.hlag.fis.batch.domain.JobLogMessageLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import org.springframework.stereotype.Component;
 
-@Component
 public class BatchLogger implements Logger {
 
     private String jobName;
@@ -22,17 +20,18 @@ public class BatchLogger implements Logger {
 
     private Class<?> clazz;
 
-    private static Logger logger;
+    private Logger logger;
 
-    private JobExecutionLog jobExecutionLog = new JobExecutionLog();
+    private final JobExecutionLog jobExecutionLog = new JobExecutionLog();
 
-    private BatchLogProducer batchLogProducer;
+    private final BatchLogProducer batchLogProducer;
 
-    public BatchLogger(String hostName, String nodeName, BatchLogProducer batchLogProducer) {
+    public BatchLogger(String hostName, String nodeName, BatchLogProducer batchLogProducer, Class<?> clazz) {
         this.batchLogProducer = batchLogProducer;
         jobExecutionLog.setJobPid(ProcessHandle.current().pid());
         jobExecutionLog.setHostName(hostName);
         jobExecutionLog.setNodeName(nodeName);
+        logger = LoggerFactory.getLogger(clazz);
     }
 
     @Override

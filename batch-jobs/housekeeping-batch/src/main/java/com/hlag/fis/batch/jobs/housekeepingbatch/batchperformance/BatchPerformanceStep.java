@@ -3,11 +3,9 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,14 +19,13 @@ public class BatchPerformanceStep {
 
     private static final String STEP_NAME = "Housekeeping Batch Performance";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(BatchPerformanceStep.class);
-
     @Value("${houseKeeping.batch.batchPerformance.chunkSize}")
     private int chunkSize;
 
     @Value("${houseKeeping.batch.batchPerformance.houseKeepingDays}")
     private int houseKeepingDays;
+
+    private final BatchLogger logger;
 
     private final BatchPerformanceRepository batchPerformanceRepository;
 
@@ -42,11 +39,13 @@ public class BatchPerformanceStep {
 
     @Autowired
     public BatchPerformanceStep(
+            BatchLogger logger,
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             BatchPerformanceRepository batchPerformanceRepository,
             BatchPerformanceReader batchPerformanceReader,
             BatchPerformanceProcessor batchPerformanceProcessor,
             BatchPerformanceWriter batchPerformanceWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.batchPerformanceReader = batchPerformanceReader;

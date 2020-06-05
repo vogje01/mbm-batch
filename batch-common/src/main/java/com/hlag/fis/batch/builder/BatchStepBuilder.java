@@ -6,6 +6,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
 
     private int chunkSize = 1000;
 
-    private ItemStreamReader<I> reader;
+    private ItemReader<I> reader;
 
     private ItemProcessor<I, O> processor;
 
@@ -59,6 +60,11 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
     }
 
     public BatchStepBuilder<I, O> reader(ItemStreamReader<I> reader) {
+        this.reader = reader;
+        return this;
+    }
+
+    public BatchStepBuilder<I, O> reader(ItemReader<I> reader) {
         this.reader = reader;
         return this;
     }

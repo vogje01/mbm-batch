@@ -16,9 +16,9 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>performance-batch</module>
-		<module>housekeeping-batch</module>
-		<module>test-batch</module>
-	</modules>
+        <module>performance-batch</module>
+        <module>housekeeping-batch</module>
+        <module>test-batch-01</module>
+    </modules>
 
 </project>

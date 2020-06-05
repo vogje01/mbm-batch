@@ -1,10 +1,8 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,19 +18,19 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobExecutionInfoReader {
 
-    @BatchStepLogger(value = "Housekeeping JobExecutionInfo")
-    private static Logger logger = LoggerFactory.getLogger(JobExecutionInfoReader.class);
-
     @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")
     private int chunkSize;
 
     @Value("${houseKeeping.batch.jobExecutionInfo.houseKeepingDays}")
     private int houseKeepingDays;
 
+    private final BatchLogger logger;
+
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    JobExecutionInfoReader(EntityManagerFactory mysqlEmf) {
+    JobExecutionInfoReader(BatchLogger logger, EntityManagerFactory mysqlEmf) {
+        this.logger = logger;
         this.mysqlEmf = mysqlEmf;
     }
 

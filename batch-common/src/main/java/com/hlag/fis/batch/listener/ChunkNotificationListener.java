@@ -4,7 +4,6 @@ import com.hlag.fis.batch.domain.StepExecutionInfo;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
 import com.hlag.fis.batch.logging.BatchLogger;
-import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -19,8 +18,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class ChunkNotificationListener implements ChunkListener {
 
-    @BatchStepLogger
-    private static BatchLogger logger;
+    private BatchLogger logger;
 
     private ModelMapper modelMapper;
 
@@ -32,7 +30,8 @@ public class ChunkNotificationListener implements ChunkListener {
 
     private Long lastCall;
 
-    public ChunkNotificationListener(ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
+    public ChunkNotificationListener(BatchLogger logger, ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
+        this.logger = logger;
         this.modelMapper = modelMapper;
         this.jobStatusProducer = jobStatusProducer;
     }

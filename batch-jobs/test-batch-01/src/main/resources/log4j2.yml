@@ -25,3 +25,7 @@ Configuration:
         level: debug
         AppenderRef:
           - ref: File_Appender
+      - name: com.momentum.batch
+        level: debug
+        AppenderRef:
+          - ref: File_Appender

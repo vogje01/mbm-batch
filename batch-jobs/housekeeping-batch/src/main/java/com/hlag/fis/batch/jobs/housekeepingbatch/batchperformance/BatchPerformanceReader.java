@@ -1,11 +1,9 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
 import com.hlag.fis.batch.domain.BatchPerformanceType;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.reader.CursorReaderBuilder;
 import com.hlag.fis.batch.util.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,19 +19,19 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchPerformanceReader {
 
-    @BatchStepLogger(value = "Housekeeping Batch Performance")
-    private static Logger logger = LoggerFactory.getLogger(BatchPerformanceReader.class);
-
     @Value("${houseKeeping.batch.batchPerformance.chunkSize}")
     private int chunkSize;
 
     @Value("${houseKeeping.batch.batchPerformance.houseKeepingDays}")
     private int houseKeepingDays;
 
+    private final BatchLogger logger;
+
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    BatchPerformanceReader(EntityManagerFactory mysqlEmf) {
+    BatchPerformanceReader(BatchLogger logger, EntityManagerFactory mysqlEmf) {
+        this.logger = logger;
         this.mysqlEmf = mysqlEmf;
     }
 

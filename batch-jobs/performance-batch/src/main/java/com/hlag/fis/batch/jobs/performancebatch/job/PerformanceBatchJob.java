@@ -13,8 +13,7 @@ import com.hlag.fis.batch.jobs.performancebatch.steps.monthly.MonthlyStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.stepcount.StepCountStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.weekly.WeeklyStep;
 import com.hlag.fis.batch.jobs.performancebatch.steps.yearly.YearlyStep;
-import com.hlag.fis.batch.logging.BatchJobLogger;
-import org.slf4j.Logger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,10 +25,9 @@ import static java.text.MessageFormat.format;
 @Component
 public class PerformanceBatchJob {
 
-    private static final String JOB_NAME = "Performance Consolidation";
+    private final String jobName;
 
-    @BatchJobLogger(value = JOB_NAME)
-    private static Logger logger;
+    private final BatchLogger logger;
 
     private final BatchJobRunner batchJobRunner;
 
@@ -56,7 +54,9 @@ public class PerformanceBatchJob {
     private final YearlyStep yearlyStep;
 
     @Autowired
-    public PerformanceBatchJob(BatchJobBuilder batchJobBuilder,
+    public PerformanceBatchJob(String jobName,
+                               BatchLogger logger,
+                               BatchJobBuilder batchJobBuilder,
                                BatchJobRunner batchJobRunner,
                                AgentLoadDayStep agentLoadDayStep,
                                AgentLoadWeekStep agentLoadWeekStep,
@@ -68,6 +68,8 @@ public class PerformanceBatchJob {
                                WeeklyStep weeklyStep,
                                MonthlyStep monthlyStep,
                                YearlyStep yearlyStep) {
+        this.jobName = jobName;
+        this.logger = logger;
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
         this.agentLoadDayStep = agentLoadDayStep;
@@ -85,8 +87,8 @@ public class PerformanceBatchJob {
     @PostConstruct
     public void initialize() {
         Job job = houseKeepingJob();
-        logger.info(format("Running job - jobName: {0}", JOB_NAME));
-        batchJobRunner.jobName(JOB_NAME)
+        logger.info(format("Running job - jobName: {0}", jobName));
+        batchJobRunner.jobName(jobName)
                 .job(job)
                 .start();
     }
@@ -97,9 +99,9 @@ public class PerformanceBatchJob {
      * @return agent load day jobs.
      */
     public Job houseKeepingJob() {
-        logger.info(format("Initializing job - jobName: {0}", JOB_NAME));
+        logger.info(format("Initializing job - jobName: {0}", jobName));
         return batchJobBuilder
-                .name(JOB_NAME)
+                .name(jobName)
                 // Parallel steps
                 .startFlow(new BatchFlowBuilder<>("Agent Load")
                         .splitSteps(agentLoadDayStep.agentLoadProcessing(), agentLoadWeekStep.agentLoadProcessing())

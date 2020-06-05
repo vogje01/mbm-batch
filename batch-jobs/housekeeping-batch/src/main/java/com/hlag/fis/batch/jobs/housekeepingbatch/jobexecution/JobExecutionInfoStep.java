@@ -2,11 +2,9 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +12,10 @@ import org.springframework.stereotype.Component;
 
 import static java.text.MessageFormat.format;
 
-
 @Component
 public class JobExecutionInfoStep {
 
     private static final String STEP_NAME = "Housekeeping JobExecutionInfo";
-
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(JobExecutionInfoStep.class);
 
     @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")
     private int chunkSize;
@@ -29,23 +23,27 @@ public class JobExecutionInfoStep {
     @Value("${houseKeeping.batch.jobExecutionInfo.houseKeepingDays}")
     private int houseKeepingDays;
 
-    private JobExecutionInfoRepository jobExecutionInfoRepository;
+    private final BatchLogger logger;
 
-    private JobExecutionInfoReader jobExecutionInfoReader;
+    private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
-    private JobExecutionInfoProcessor jobExecutionInfoProcessor;
+    private final JobExecutionInfoReader jobExecutionInfoReader;
 
-    private JobExecutionInfoWriter jobExecutionInfoWriter;
+    private final JobExecutionInfoProcessor jobExecutionInfoProcessor;
 
-    private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
+    private final JobExecutionInfoWriter jobExecutionInfoWriter;
+
+    private final BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
     public JobExecutionInfoStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
             JobExecutionInfoRepository jobExecutionInfoRepository,
             JobExecutionInfoReader jobExecutionInfoReader,
             JobExecutionInfoProcessor jobExecutionInfoProcessor,
             JobExecutionInfoWriter jobExecutionInfoWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobExecutionInfoReader = jobExecutionInfoReader;

@@ -2,7 +2,6 @@ package com.hlag.fis.batch.listener;
 
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
-import com.hlag.fis.batch.logging.BatchJobLogger;
 import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
@@ -28,8 +27,7 @@ import static java.text.MessageFormat.format;
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
-    @BatchJobLogger
-    private static BatchLogger logger;
+    private BatchLogger logger;
 
     private ModelMapper modelMapper;
 
@@ -40,7 +38,8 @@ public class StepNotificationListener implements StepExecutionListener {
     private Map<String, Long> totalCounts = new HashMap<>();
 
     @Autowired
-    public StepNotificationListener(ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
+    public StepNotificationListener(BatchLogger logger, ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
+        this.logger = logger;
         this.modelMapper = modelMapper;
         this.jobStatusProducer = jobStatusProducer;
     }

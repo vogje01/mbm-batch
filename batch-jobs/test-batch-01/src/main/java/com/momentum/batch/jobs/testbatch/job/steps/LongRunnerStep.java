@@ -1,66 +1,84 @@
 package com.momentum.batch.jobs.testbatch.job.steps;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.domain.User;
 import com.hlag.fis.batch.repository.AgentRepository;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.text.MessageFormat.format;
 
-
-@Component
+@Configuration
 public class LongRunnerStep {
 
-    private static final String STEP_NAME = "Agent Load Day";
+    private static final String STEP_NAME = "Long running step";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(LongRunnerStep.class);
+    private static final int chunkSize = 5;
 
-    @Value("${consolidation.batch.agentLoad.chunkSize}")
-    private int chunkSize;
+    private Logger batchLogger;
 
-    private final AgentRepository agentRepository;
+    @Bean
+    public Step longRunner(BatchStepBuilder<User, User> stepBuilder,
+                           final Logger batchLogger1,
+                           AgentRepository agentRepository,
+                           ItemReader<User> reader,
+                           ItemProcessor<User, User> processor,
+                           ItemWriter<User> writer) {
+        this.batchLogger = batchLogger1;
 
-    private final LongRunnerReader longRunnerReader;
-
-    private final LongRunnerProcessor agentLoadProcessor;
-
-    private final LongRunnerWriter longRunnerWriter;
-
-    private final BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
-
-    @Autowired
-    public LongRunnerStep(
-            BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
-            AgentRepository agentRepository,
-            LongRunnerReader longRunnerReader,
-            LongRunnerProcessor agentLoadProcessor,
-            LongRunnerWriter longRunnerWriter) {
-        this.stepBuilder = stepBuilder;
-        this.agentRepository = agentRepository;
-        this.longRunnerReader = longRunnerReader;
-        this.agentLoadProcessor = agentLoadProcessor;
-        this.longRunnerWriter = longRunnerWriter;
-        logger.debug(format("Step initialized - name: {0}", STEP_NAME));
-    }
-
-    @SuppressWarnings("unchecked")
-    public Step agentLoadProcessing() {
         long totalCount = agentRepository.count();
-        logger.debug(format("Total count - count: {0}", totalCount));
+        batchLogger.debug(format("Total count - count: {0}", totalCount));
         return stepBuilder
                 .name(STEP_NAME)
                 .chunkSize(chunkSize)
-                .reader(longRunnerReader.reader())
-                .processor(agentLoadProcessor)
-                .writer(longRunnerWriter.getWriter())
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
                 .total(totalCount)
                 .build();
+    }
+
+    @Bean
+    public ItemReader<User> reader() {
+        final AtomicInteger count = new AtomicInteger(0);
+        return () -> {
+            if (count.incrementAndGet() > 12) {
+                return null;
+            }
+            batchLogger.debug("Step reading");
+            return new User();
+        };
+    }
+
+    @Bean
+    public ItemProcessor<User, User> processor() {
+        return user -> {
+            try {
+                Thread.sleep(1000);
+                return new User();
+            } catch (InterruptedException ex) {
+                batchLogger.error(format("Long runner interrupted - error: {0}", ex.getMessage()));
+            }
+            return null;
+        };
+    }
+
+    @Bean
+    public ItemWriter<User> getWriter() {
+        return list -> {
+            batchLogger.debug(format("List written"));
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                batchLogger.error(format("Long runner interrupted - error: {0}", ex.getMessage()));
+            }
+        };
     }
 }

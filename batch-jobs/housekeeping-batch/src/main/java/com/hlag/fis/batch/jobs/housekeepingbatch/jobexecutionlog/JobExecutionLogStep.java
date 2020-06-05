@@ -2,11 +2,9 @@ package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.JobExecutionLog;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.JobExecutionLogRepository;
 import com.hlag.fis.batch.util.DateTimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,14 +17,13 @@ public class JobExecutionLogStep {
 
     private static final String STEP_NAME = "Housekeeping JobExecutionLog";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(JobExecutionLogStep.class);
-
     @Value("${houseKeeping.batch.jobExecutionLog.chunkSize}")
     private int chunkSize;
 
     @Value("${houseKeeping.batch.jobExecutionLog.houseKeepingDays}")
     private int houseKeepingDays;
+
+    private final BatchLogger logger;
 
     private final JobExecutionLogRepository jobExecutionLogRepository;
 
@@ -40,11 +37,13 @@ public class JobExecutionLogStep {
 
     @Autowired
     public JobExecutionLogStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionLog, JobExecutionLog> batchStepBuilder,
             JobExecutionLogRepository jobExecutionLogRepository,
             JobExecutionLogReader jobExecutionLogReader,
             JobExecutionLogProcessor jobExecutionLogProcessor,
             JobExecutionLogWriter jobExecutionLogWriter) {
+        this.logger = logger;
         this.batchStepBuilder = batchStepBuilder;
         this.jobExecutionLogRepository = jobExecutionLogRepository;
         this.jobExecutionLogReader = jobExecutionLogReader;

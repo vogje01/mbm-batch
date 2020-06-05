@@ -1,6 +1,7 @@
 package com.momentum.batch.jobs.testbatch;
 
 import org.hibernate.SessionFactory;
+import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
@@ -33,7 +34,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = {"com.hlag.fis.batch.repository"})
 @EntityScan("com.hlag.fis.batch.domain")
 @EnableTransactionManagement
-public class TestBatchConfiguration {
+public class TestBatchConfiguration extends DefaultBatchConfigurer {
 
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("consolidation.yml")};
 

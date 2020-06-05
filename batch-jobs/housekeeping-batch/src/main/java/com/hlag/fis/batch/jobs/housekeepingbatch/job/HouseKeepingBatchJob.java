@@ -5,9 +5,7 @@ import com.hlag.fis.batch.builder.BatchJobRunner;
 import com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance.BatchPerformanceStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution.JobExecutionInfoStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog.JobExecutionLogStep;
-import com.hlag.fis.batch.logging.BatchJobLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hlag.fis.batch.logging.BatchLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,10 +17,9 @@ import static java.text.MessageFormat.format;
 @Component
 public class HouseKeepingBatchJob {
 
-    private static final String JOB_NAME = "Housekeeping Batch";
+    private final String jobName;
 
-    @BatchJobLogger(value = JOB_NAME)
-    private static Logger logger = LoggerFactory.getLogger(HouseKeepingBatchJob.class);
+    private final BatchLogger logger;
 
     private final BatchJobRunner batchJobRunner;
 
@@ -35,11 +32,15 @@ public class HouseKeepingBatchJob {
     private final BatchPerformanceStep batchPerformanceStep;
 
     @Autowired
-    public HouseKeepingBatchJob(JobExecutionInfoStep jobExecutionInfoStep,
+    public HouseKeepingBatchJob(String jobName,
+                                BatchLogger logger,
+                                JobExecutionInfoStep jobExecutionInfoStep,
                                 JobExecutionLogStep jobExecutionLogStep,
                                 BatchJobBuilder batchJobBuilder,
                                 BatchJobRunner batchJobRunner,
                                 BatchPerformanceStep batchPerformanceStep) {
+        this.jobName = jobName;
+        this.logger = logger;
         this.jobExecutionInfoStep = jobExecutionInfoStep;
         this.jobExecutionLogStep = jobExecutionLogStep;
         this.batchJobRunner = batchJobRunner;
@@ -51,8 +52,8 @@ public class HouseKeepingBatchJob {
     public void initialize() {
 
         Job job = houseKeepingJob();
-        logger.info(format("Running job - jobName: {0}", JOB_NAME));
-        batchJobRunner.jobName(JOB_NAME)
+        logger.info(format("Running job - jobName: {0}", jobName));
+        batchJobRunner.jobName(jobName)
                 .job(job)
                 .start();
     }
@@ -63,9 +64,9 @@ public class HouseKeepingBatchJob {
      * @return database synchronization jobs.
      */
     public Job houseKeepingJob() {
-        logger.info(format("Initializing job - jobName: {0}", JOB_NAME));
+        logger.info(format("Initializing job - jobName: {0}", jobName));
         return batchJobBuilder
-                .name(JOB_NAME)
+                .name(jobName)
                 .startStep(jobExecutionInfoStep.houseKeepingJobExecutionInfos())
                 .nextStep(jobExecutionLogStep.houseKeepingJobExecutionLogs())
                 .nextStep(batchPerformanceStep.houseKeepingBatchPerformances())

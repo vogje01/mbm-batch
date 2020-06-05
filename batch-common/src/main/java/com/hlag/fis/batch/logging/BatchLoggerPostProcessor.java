@@ -34,8 +34,8 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
         this.hostName = hostName;
         this.nodeName = nodeName;
         this.batchLogProducer = batchLogProducer;
-        jobLogger = new BatchLogger(hostName, nodeName, batchLogProducer);
-        stepLogger = new BatchLogger(hostName, nodeName, batchLogProducer);
+        //jobLogger = new BatchLoggerImpl(hostName, nodeName, batchLogProducer);
+        //stepLogger = new BatchLoggerImpl(hostName, nodeName, batchLogProducer);
     }
 
     /* (non-Javadoc)
@@ -46,7 +46,7 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
 
         Field[] fields = bean.getClass().getDeclaredFields();
 
-        for (Field field : fields) {
+        /*for (Field field : fields) {
             if (Logger.class.isAssignableFrom(field.getType()) && field.getAnnotation(BatchJobLogger.class) != null) {
 
                 if (logger.isTraceEnabled()) logger.trace("Attempting to inject a SLF4J logger on bean: " + bean.getClass());
@@ -78,7 +78,7 @@ public class BatchLoggerPostProcessor implements BeanPostProcessor {
                     logger.warn("Could not inject logger for class: " + bean.getClass(), e);
                 }
             }
-        }
+        }*/
 
         return bean;
     }
