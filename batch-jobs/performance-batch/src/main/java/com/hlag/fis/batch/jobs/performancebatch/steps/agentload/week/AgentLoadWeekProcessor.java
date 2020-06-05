@@ -1,10 +1,8 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
 import com.hlag.fis.batch.domain.Agent;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.AgentRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,13 +14,13 @@ import static java.text.MessageFormat.format;
 @Component
 public class AgentLoadWeekProcessor implements ItemProcessor<Object[], Agent> {
 
-    @BatchStepLogger(value = "Agent Load Week")
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadWeekProcessor.class);
+    private final BatchLogger logger;
 
     private final AgentRepository agentRepository;
 
     @Autowired
-    public AgentLoadWeekProcessor(AgentRepository agentRepository) {
+    public AgentLoadWeekProcessor(BatchLogger logger, AgentRepository agentRepository) {
+        this.logger = logger;
         this.agentRepository = agentRepository;
     }
 

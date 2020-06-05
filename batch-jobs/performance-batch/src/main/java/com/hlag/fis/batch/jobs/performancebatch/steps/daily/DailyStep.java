@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +18,10 @@ public class DailyStep {
 
     private static final String STEP_NAME = "Daily consolidation";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(DailyStep.class);
-
     @Value("${consolidation.batch.daily.chunkSize}")
     private int chunkSize;
+
+    private final BatchLogger logger;
 
     private final BatchPerformanceRepository batchPerformanceRepository;
 
@@ -38,11 +35,13 @@ public class DailyStep {
 
     @Autowired
     public DailyStep(
+            BatchLogger logger,
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             BatchPerformanceRepository batchPerformanceRepository,
             DailyReader dailyReader,
             DailyProcessor dailyProcessor,
             DailyWriter dailyWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.dailyReader = dailyReader;

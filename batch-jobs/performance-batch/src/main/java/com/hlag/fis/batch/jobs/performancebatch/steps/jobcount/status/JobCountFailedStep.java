@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,11 +24,10 @@ public class JobCountFailedStep {
 
     private static final String STEP_NAME = "Job failed count";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(JobCountFailedStep.class);
-
     @Value("${consolidation.batch.jobStatus.chunkSize}")
     private int chunkSize;
+
+    private final BatchLogger logger;
 
     private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
@@ -44,11 +41,13 @@ public class JobCountFailedStep {
 
     @Autowired
     public JobCountFailedStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
             JobExecutionInfoRepository jobExecutionInfoRepository,
             JobCountFailedReader jobCountFailedReader,
             JobCountFailedProcessor jobCountFailedProcessor,
             JobCountFailedWriter jobCountFailedWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobCountFailedReader = jobCountFailedReader;

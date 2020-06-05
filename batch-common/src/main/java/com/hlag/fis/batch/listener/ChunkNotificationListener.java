@@ -18,13 +18,13 @@ import static java.text.MessageFormat.format;
 @Component
 public class ChunkNotificationListener implements ChunkListener {
 
-    private BatchLogger logger;
+    private final BatchLogger logger;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     private TypeMap<StepExecutionInfo, StepExecutionDto> typeMap;
 
-    private JobStatusProducer jobStatusProducer;
+    private final JobStatusProducer jobStatusProducer;
 
     private StepExecutionDto stepExecutionDto = new StepExecutionDto();
 

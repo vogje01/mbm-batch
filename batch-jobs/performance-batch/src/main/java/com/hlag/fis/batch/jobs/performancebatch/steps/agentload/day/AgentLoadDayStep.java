@@ -2,10 +2,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.AgentRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +17,7 @@ public class AgentLoadDayStep {
 
     private static final String STEP_NAME = "Agent Load Day";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadDayStep.class);
+    private final BatchLogger logger;
 
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
@@ -37,11 +34,13 @@ public class AgentLoadDayStep {
 
     @Autowired
     public AgentLoadDayStep(
+            BatchLogger logger,
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             AgentRepository agentRepository,
             AgentLoadDayReader agentLoadDayReader,
             AgentLoadDayProcessor agentLoadProcessor,
             AgentLoadDayWriter agentLoadDayWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.agentRepository = agentRepository;
         this.agentLoadDayReader = agentLoadDayReader;

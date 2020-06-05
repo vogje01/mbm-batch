@@ -34,7 +34,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobNotificationListener implements JobExecutionListener {
 
-    private static BatchLogger logger;
+    private BatchLogger logger;
 
     private JobExecutionDto jobExecutionDto = new JobExecutionDto();
 
@@ -62,6 +62,7 @@ public class JobNotificationListener implements JobExecutionListener {
      */
     @Override
     public void beforeJob(@NotNull JobExecution jobExecution) {
+        logger.setJobName(getJobName(jobExecution));
         logger.setJobUuid(getJobId(jobExecution));
         logger.setJobVersion(getJobVersion(jobExecution));
         logger.info(format("Job starting - name: {0} pid: {1}", getJobName(jobExecution), getJobPid(jobExecution)));

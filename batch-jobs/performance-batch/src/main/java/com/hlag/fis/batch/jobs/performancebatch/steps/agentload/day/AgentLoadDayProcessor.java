@@ -1,10 +1,8 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.domain.Agent;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.AgentRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,13 +14,13 @@ import static java.text.MessageFormat.format;
 @Component
 public class AgentLoadDayProcessor implements ItemProcessor<Object[], Agent> {
 
-    @BatchStepLogger(value = "Agent Load Day")
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadDayProcessor.class);
+    private final BatchLogger logger;
 
     private final AgentRepository agentRepository;
 
     @Autowired
-    public AgentLoadDayProcessor(AgentRepository agentRepository) {
+    public AgentLoadDayProcessor(BatchLogger logger, AgentRepository agentRepository) {
+        this.logger = logger;
         this.agentRepository = agentRepository;
     }
 

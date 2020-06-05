@@ -27,15 +27,15 @@ import static java.text.MessageFormat.format;
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
-    private BatchLogger logger;
+    private final BatchLogger logger;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-    private JobStatusProducer jobStatusProducer;
+    private final JobStatusProducer jobStatusProducer;
 
     private StepExecutionDto stepExecutionDto = new StepExecutionDto();
 
-    private Map<String, Long> totalCounts = new HashMap<>();
+    private final Map<String, Long> totalCounts = new HashMap<>();
 
     @Autowired
     public StepNotificationListener(BatchLogger logger, ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
@@ -51,9 +51,16 @@ public class StepNotificationListener implements StepExecutionListener {
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
+        // Fill in context
         String stepUuid = UUID.randomUUID().toString();
-        logger.setStepUuid(stepUuid);
-        logger.setStepName(stepExecution.getStepName());
+        stepExecution.getExecutionContext().putString(STEP_UUID_NAME, stepUuid);
+        stepExecution.getExecutionContext().putLong(TOTAL_COUNT_NAME, totalCounts.get(stepExecution.getStepName()));
+
+        logger.setJobUuid(getJobUuid(stepExecution));
+        logger.setJobName(getJobName(stepExecution));
+        logger.setJobVersion(getJobVersion(stepExecution));
+        logger.setStepUuid(getStepUuid(stepExecution));
+        logger.setStepName(getStepName(stepExecution));
         logger.info(format("Step starting - name: {0} uuid: {1}", getStepName(stepExecution), stepUuid));
 
         // Fill in context

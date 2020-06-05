@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,13 +22,12 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobCountCompletedStep {
 
-    private static final String STEP_NAME = "Job completed count";
-
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(JobCountCompletedStep.class);
-
     @Value("${consolidation.batch.jobStatus.chunkSize}")
     private int chunkSize;
+
+    private static final String STEP_NAME = "Job completed count";
+
+    private final BatchLogger logger;
 
     private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
@@ -44,11 +41,13 @@ public class JobCountCompletedStep {
 
     @Autowired
     public JobCountCompletedStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionInfo, BatchPerformance> stepBuilder,
             JobExecutionInfoRepository jobExecutionInfoRepository,
             JobCountCompletedReader jobCountCompletedReader,
             JobCountCompletedProcessor jobCountCompletedProcessor,
             JobCountCompletedWriter jobCountCompletedWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobCountCompletedReader = jobCountCompletedReader;

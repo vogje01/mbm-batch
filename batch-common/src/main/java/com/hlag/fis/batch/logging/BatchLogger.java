@@ -8,19 +8,7 @@ import org.slf4j.Marker;
 
 public class BatchLogger implements Logger {
 
-    private String jobName;
-
-    private String jobUuid;
-
-    private String stepName;
-
-    private String stepUuid;
-
-    private String jobVersion;
-
-    private Class<?> clazz;
-
-    private Logger logger;
+    private final Logger logger;
 
     private final JobExecutionLog jobExecutionLog = new JobExecutionLog();
 
@@ -31,6 +19,7 @@ public class BatchLogger implements Logger {
         jobExecutionLog.setJobPid(ProcessHandle.current().pid());
         jobExecutionLog.setHostName(hostName);
         jobExecutionLog.setNodeName(nodeName);
+        jobExecutionLog.setLoggerName(clazz.getName());
         logger = LoggerFactory.getLogger(clazz);
     }
 
@@ -39,59 +28,24 @@ public class BatchLogger implements Logger {
         return logger.getName();
     }
 
-    public String getJobName() {
-        return jobName;
-    }
-
     public void setJobName(String jobName) {
-        this.jobName = jobName;
         jobExecutionLog.setJobName(jobName);
     }
 
-    public String getJobUuid() {
-        return jobUuid;
-    }
-
     public void setJobUuid(String jobUuid) {
-        this.jobUuid = jobUuid;
         jobExecutionLog.setJobUuid(jobUuid);
     }
 
-    public String getJobVersion() {
-        return jobVersion;
-    }
-
     public void setJobVersion(String jobVersion) {
-        this.jobVersion = jobVersion;
         jobExecutionLog.setJobVersion(jobVersion);
     }
 
-    public String getStepName() {
-        return stepName;
-    }
-
     public void setStepName(String stepName) {
-        this.stepName = stepName;
         jobExecutionLog.setStepName(stepName);
     }
 
-    public String getStepUuid() {
-        return stepUuid;
-    }
-
     public void setStepUuid(String stepUuid) {
-        this.stepUuid = stepUuid;
         jobExecutionLog.setStepUuid(stepUuid);
-    }
-
-    public Class<?> getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class<?> clazz) {
-        this.clazz = clazz;
-        logger = LoggerFactory.getLogger(clazz);
-        jobExecutionLog.setLoggerName(clazz.getName());
     }
 
     @Override

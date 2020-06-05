@@ -2,9 +2,7 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
-import com.hlag.fis.batch.logging.BatchStepLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hlag.fis.batch.logging.BatchLogger;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +12,11 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobCountNodeProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    @BatchStepLogger(value = "Job count")
-    private static Logger logger = LoggerFactory.getLogger(JobCountNodeProcessor.class);
+    private final BatchLogger logger;
 
     @Autowired
-    public JobCountNodeProcessor() {
+    public JobCountNodeProcessor(BatchLogger logger) {
+        this.logger = logger;
     }
 
     @Override

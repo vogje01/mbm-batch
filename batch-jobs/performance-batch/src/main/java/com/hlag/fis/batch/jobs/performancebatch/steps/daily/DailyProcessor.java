@@ -2,10 +2,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,13 +16,13 @@ import static java.text.MessageFormat.format;
 @Component
 public class DailyProcessor implements ItemProcessor<Object[], BatchPerformance> {
 
-    @BatchStepLogger(value = "Daily consolidation")
-    private static Logger logger = LoggerFactory.getLogger(DailyProcessor.class);
+    private final BatchLogger logger;
 
     private final BatchPerformanceRepository batchPerformanceRepository;
 
     @Autowired
-    public DailyProcessor(BatchPerformanceRepository batchPerformanceRepository) {
+    public DailyProcessor(BatchLogger logger, BatchPerformanceRepository batchPerformanceRepository) {
+        this.logger = logger;
         this.batchPerformanceRepository = batchPerformanceRepository;
     }
 

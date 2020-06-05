@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.stepcount;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
 import com.hlag.fis.batch.domain.StepExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.StepExecutionInfoRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +18,10 @@ public class StepCountStep {
 
     private static final String STEP_NAME = "Step count";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(StepCountStep.class);
-
     @Value("${consolidation.batch.stepCount.chunkSize}")
     private int chunkSize;
+
+    private final BatchLogger logger;
 
     private final StepExecutionInfoRepository stepExecutionInfoRepository;
 
@@ -37,12 +34,13 @@ public class StepCountStep {
     private final BatchStepBuilder<StepExecutionInfo, BatchPerformance> stepBuilder;
 
     @Autowired
-    public StepCountStep(
-            BatchStepBuilder<StepExecutionInfo, BatchPerformance> stepBuilder,
-            StepExecutionInfoRepository stepExecutionInfoRepository,
-            StepCountReader stepCountReader,
-            StepCountProcessor stepCountProcessor,
-            StepCountWriter stepCountWriter) {
+    public StepCountStep(BatchLogger logger,
+                         BatchStepBuilder<StepExecutionInfo, BatchPerformance> stepBuilder,
+                         StepExecutionInfoRepository stepExecutionInfoRepository,
+                         StepCountReader stepCountReader,
+                         StepCountProcessor stepCountProcessor,
+                         StepCountWriter stepCountWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.stepExecutionInfoRepository = stepExecutionInfoRepository;
         this.stepCountReader = stepCountReader;

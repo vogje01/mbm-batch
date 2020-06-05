@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.yearly;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +18,10 @@ public class YearlyStep {
 
     private static final String STEP_NAME = "Yearly Consolidation";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(YearlyStep.class);
-
     @Value("${consolidation.batch.yearly.chunkSize}")
     private int chunkSize;
+
+    private final BatchLogger logger;
 
     private final BatchPerformanceRepository batchPerformanceRepository;
 
@@ -38,11 +35,13 @@ public class YearlyStep {
 
     @Autowired
     public YearlyStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
             BatchPerformanceRepository batchPerformanceRepository,
             YearlyReader yearlyReader,
             YearlyProcessor yearlyProcessor,
             YearlyWriter yearlyWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.yearlyReader = yearlyReader;

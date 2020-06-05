@@ -3,10 +3,8 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.monthly;
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformanceType;
 import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.logging.BatchStepLogger;
+import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.repository.BatchPerformanceRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,29 +18,30 @@ public class MonthlyStep {
 
     private static final String STEP_NAME = "Monthly Consolidation";
 
-    @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(MonthlyStep.class);
-
     @Value("${consolidation.batch.monthly.chunkSize}")
     private int chunkSize;
 
-    private BatchPerformanceRepository batchPerformanceRepository;
+    private final BatchLogger logger;
 
-    private MonthlyReader monthlyReader;
+    private final BatchPerformanceRepository batchPerformanceRepository;
 
-    private MonthlyProcessor monthlyProcessor;
+    private final MonthlyReader monthlyReader;
 
-    private MonthlyWriter monthlyWriter;
+    private final MonthlyProcessor monthlyProcessor;
+
+    private final MonthlyWriter monthlyWriter;
 
     private BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder;
 
     @Autowired
     public MonthlyStep(
+            BatchLogger logger,
             BatchStepBuilder<JobExecutionInfo, JobExecutionInfo> stepBuilder,
             BatchPerformanceRepository batchPerformanceRepository,
             MonthlyReader monthlyReader,
             MonthlyProcessor monthlyProcessor,
             MonthlyWriter monthlyWriter) {
+        this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.monthlyReader = monthlyReader;

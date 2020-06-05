@@ -17,7 +17,7 @@ public class MonthlyReader {
     @Value("${consolidation.batch.monthly.chunkSize}")
     private int chunkSize;
 
-    private EntityManagerFactory mysqlEmf;
+    private final EntityManagerFactory mysqlEmf;
 
     @Autowired
     MonthlyReader(EntityManagerFactory mysqlEmf) {

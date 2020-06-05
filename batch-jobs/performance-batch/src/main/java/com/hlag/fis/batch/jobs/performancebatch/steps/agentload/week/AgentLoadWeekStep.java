@@ -2,7 +2,6 @@ package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
 import com.hlag.fis.batch.builder.BatchStepBuilder;
 import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.logging.BatchStepLogger;
 import com.hlag.fis.batch.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ public class AgentLoadWeekStep {
 
     private static final String STEP_NAME = "Agent Load Week";
 
-    @BatchStepLogger(value = STEP_NAME)
     private static Logger logger = LoggerFactory.getLogger(AgentLoadWeekStep.class);
 
     @Value("${consolidation.batch.agentLoad.chunkSize}")
