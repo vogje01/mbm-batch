@@ -15,38 +15,38 @@ import static java.text.MessageFormat.format;
 
 
 @Component
-public class AgentLoadDayStep {
+public class LongRunnerStep {
 
     private static final String STEP_NAME = "Agent Load Day";
 
     @BatchStepLogger(value = STEP_NAME)
-    private static Logger logger = LoggerFactory.getLogger(AgentLoadDayStep.class);
+    private static Logger logger = LoggerFactory.getLogger(LongRunnerStep.class);
 
     @Value("${consolidation.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
     private final AgentRepository agentRepository;
 
-    private final AgentLoadDayReader agentLoadDayReader;
+    private final LongRunnerReader longRunnerReader;
 
-    private final AgentLoadDayProcessor agentLoadProcessor;
+    private final LongRunnerProcessor agentLoadProcessor;
 
-    private final AgentLoadDayWriter agentLoadDayWriter;
+    private final LongRunnerWriter longRunnerWriter;
 
     private final BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
 
     @Autowired
-    public AgentLoadDayStep(
+    public LongRunnerStep(
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             AgentRepository agentRepository,
-            AgentLoadDayReader agentLoadDayReader,
-            AgentLoadDayProcessor agentLoadProcessor,
-            AgentLoadDayWriter agentLoadDayWriter) {
+            LongRunnerReader longRunnerReader,
+            LongRunnerProcessor agentLoadProcessor,
+            LongRunnerWriter longRunnerWriter) {
         this.stepBuilder = stepBuilder;
         this.agentRepository = agentRepository;
-        this.agentLoadDayReader = agentLoadDayReader;
+        this.longRunnerReader = longRunnerReader;
         this.agentLoadProcessor = agentLoadProcessor;
-        this.agentLoadDayWriter = agentLoadDayWriter;
+        this.longRunnerWriter = longRunnerWriter;
         logger.debug(format("Step initialized - name: {0}", STEP_NAME));
     }
 
@@ -57,9 +57,9 @@ public class AgentLoadDayStep {
         return stepBuilder
                 .name(STEP_NAME)
                 .chunkSize(chunkSize)
-                .reader(agentLoadDayReader.getReader())
+                .reader(longRunnerReader.reader())
                 .processor(agentLoadProcessor)
-                .writer(agentLoadDayWriter.getWriter())
+                .writer(longRunnerWriter.getWriter())
                 .total(totalCount)
                 .build();
     }

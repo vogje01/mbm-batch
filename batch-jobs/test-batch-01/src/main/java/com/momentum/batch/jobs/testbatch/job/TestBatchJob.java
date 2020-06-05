@@ -3,7 +3,7 @@ package com.momentum.batch.jobs.testbatch.job;
 import com.hlag.fis.batch.builder.BatchJobBuilder;
 import com.hlag.fis.batch.builder.BatchJobRunner;
 import com.hlag.fis.batch.logging.BatchJobLogger;
-import com.momentum.batch.jobs.testbatch.job.steps.AgentLoadDayStep;
+import com.momentum.batch.jobs.testbatch.job.steps.LongRunnerStep;
 import org.slf4j.Logger;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +25,15 @@ public class TestBatchJob {
 
     private final BatchJobBuilder batchJobBuilder;
 
-    private final AgentLoadDayStep agentLoadDayStep;
+    private final LongRunnerStep longRunnerStep;
 
     @Autowired
     public TestBatchJob(BatchJobBuilder batchJobBuilder,
                         BatchJobRunner batchJobRunner,
-                        AgentLoadDayStep agentLoadDayStep) {
+                        LongRunnerStep longRunnerStep) {
         this.batchJobRunner = batchJobRunner;
         this.batchJobBuilder = batchJobBuilder;
-        this.agentLoadDayStep = agentLoadDayStep;
+        this.longRunnerStep = longRunnerStep;
     }
 
     @PostConstruct
@@ -54,7 +54,7 @@ public class TestBatchJob {
         logger.info(format("Initializing job - jobName: {0}", JOB_NAME));
         return batchJobBuilder
                 .name(JOB_NAME)
-                .startStep(agentLoadDayStep.agentLoadProcessing())
+                .startStep(longRunnerStep.agentLoadProcessing())
                 .build();
     }
 }
