@@ -13,7 +13,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 public class BatchNullTasklet implements Tasklet {
 
     @Override
-    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) {
         return RepeatStatus.FINISHED;
     }
 }

@@ -335,7 +335,7 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
     }
 
     public String setJobNameConverted(JobExecutionInfo jobExecutionInfo) {
-        jobName = jobExecutionInfo.getJobInstanceInfo() != null ? jobExecutionInfo.getJobInstanceInfo().getJobName() : "JobName";
+        jobName = jobExecutionInfo.getJobExecutionInstance() != null ? jobExecutionInfo.getJobExecutionInstance().getJobName() : "JobName";
         return jobName;
     }
 

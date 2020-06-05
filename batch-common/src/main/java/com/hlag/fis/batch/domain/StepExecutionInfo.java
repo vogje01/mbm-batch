@@ -105,10 +105,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
     @Column(name = "WRITE_SKIP_COUNT")
     private long writeSkipCount;
     /**
-     * Terminate only (not used)
-     */
-    private transient boolean terminateOnly;
-    /**
      * Start time of the step
      */
     @Column(name = "START_TIME")
@@ -128,11 +124,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
      */
     @Column(name = "RUNNING_TIME")
     private Long runningTime;
-    /**
-     * Execution context
-     */
-    @Column(name = "DELETED")
-    private transient ExecutionContextInfo executionContext;
     /**
      * Exit code
      */
@@ -335,14 +326,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.runningTime = runningTime;
     }
 
-    public ExecutionContextInfo getExecutionContext() {
-        return executionContext;
-    }
-
-    public void setExecutionContext(ExecutionContextInfo executionContext) {
-        this.executionContext = executionContext;
-    }
-
     public String getExitCode() {
         return exitCode;
     }
@@ -357,14 +340,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
 
     public void setExitMessage(String exitMessage) {
         this.exitMessage = exitMessage;
-    }
-
-    public boolean isTerminateOnly() {
-        return terminateOnly;
-    }
-
-    public void setTerminateOnly(boolean terminateOnly) {
-        this.terminateOnly = terminateOnly;
     }
 
     public long getFilterCount() {
@@ -405,7 +380,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 readSkipCount == that.readSkipCount &&
                 processSkipCount == that.processSkipCount &&
                 writeSkipCount == that.writeSkipCount &&
-                terminateOnly == that.terminateOnly &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(stepName, that.stepName) &&
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
@@ -416,7 +390,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 Objects.equal(endTime, that.endTime) &&
                 Objects.equal(lastUpdated, that.lastUpdated) &&
                 Objects.equal(runningTime, that.runningTime) &&
-                Objects.equal(executionContext, that.executionContext) &&
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
                 Objects.equal(failureExceptions, that.failureExceptions) &&
@@ -425,7 +398,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, terminateOnly, startTime, endTime, lastUpdated, runningTime, executionContext, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
+        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
     }
 
     @Override
@@ -446,12 +419,10 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 .add("readSkipCount", readSkipCount)
                 .add("processSkipCount", processSkipCount)
                 .add("writeSkipCount", writeSkipCount)
-                .add("terminateOnly", terminateOnly)
                 .add("startTime", startTime)
                 .add("endTime", endTime)
                 .add("lastUpdated", lastUpdated)
                 .add("runningTime", runningTime)
-                .add("executionContext", executionContext)
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("failureExceptions", failureExceptions)

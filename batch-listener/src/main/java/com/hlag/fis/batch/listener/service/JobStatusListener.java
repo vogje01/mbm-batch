@@ -117,7 +117,7 @@ public class JobStatusListener {
             // Save job execution
             jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
-            jobExecutionInfo.setJobInstanceInfo(jobInstanceInfo);
+            jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);

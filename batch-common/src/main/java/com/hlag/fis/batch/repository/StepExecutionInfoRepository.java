@@ -21,7 +21,7 @@ public interface StepExecutionInfoRepository extends PagingAndSortingRepository<
     Long countByJobId(@Param("jobExecutionId") String jobExecutionId);
 
     @Query("select s from StepExecutionInfo s where" +
-            " s.jobExecutionInfo.jobInstanceInfo.jobName = :jobName and s.jobExecutionInfo.jobExecutionId = :jobExecutionId and" +
+            " s.jobExecutionInfo.jobExecutionInstance.jobName = :jobName and s.jobExecutionInfo.jobExecutionId = :jobExecutionId and" +
             " s.stepName = :stepName and s.stepExecutionId = :stepExecutionId and" +
             " s.startTime = :startTime")
     Optional<StepExecutionInfo> findByStepInfo(@Param("jobName") String jobName,

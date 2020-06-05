@@ -120,12 +120,19 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
      */
     private transient List<Throwable> failureExceptions;
     /**
-     * Job instance info from JSR-352
+     * Job execution instance info from JSR-352
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "JOB_EXECUTION_ID", referencedColumnName = "ID")
+    private JobExecutionContext jobExecutionContext;
+    /**
+     * Job execution context
      */
     @OneToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "JOB_INSTANCE_ID", referencedColumnName = "ID")
-    private JobInstanceInfo jobInstanceInfo;
+    private JobInstanceInfo jobExecutionInstance;
     /**
      * Job execution parameter from JSR-352
      */
@@ -161,7 +168,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.status = jobExecutionDto.getStatus();
         this.exitCode = jobExecutionDto.getExitCode();
         this.exitMessage = jobExecutionDto.getExitMessage();
-        this.jobInstanceInfo = new JobInstanceInfo(jobExecutionDto.getJobName(), this);
+        this.jobExecutionInstance = new JobInstanceInfo(jobExecutionDto.getJobName(), this);
         //jobExecutionDto.getJobParameters().forEach(p -> addJobParameterInfo(new JobExecutionParam(p.getKeyName(), java.util.Objects.requireNonNull(getJobParameter(p)), this)));
     }
 
@@ -181,12 +188,20 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.jobExecutionId = jobExecutionId;
     }
 
-    public JobInstanceInfo getJobInstanceInfo() {
-        return jobInstanceInfo;
+    public JobInstanceInfo getJobExecutionInstance() {
+        return jobExecutionInstance;
     }
 
-    public void setJobInstanceInfo(JobInstanceInfo jobInstanceInfo) {
-        this.jobInstanceInfo = jobInstanceInfo;
+    public void setJobExecutionInstance(JobInstanceInfo jobInstanceInfo) {
+        this.jobExecutionInstance = jobInstanceInfo;
+    }
+
+    public JobExecutionContext getJobExecutionContext() {
+        return jobExecutionContext;
+    }
+
+    public void setJobExecutionContext(JobExecutionContext jobExecutionContext) {
+        this.jobExecutionContext = jobExecutionContext;
     }
 
     public Long getJobPid() {
@@ -391,14 +406,14 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 Objects.equal(jobConfigurationLocation, that.jobConfigurationLocation) &&
                 Objects.equal(executionContext, that.executionContext) &&
                 Objects.equal(failureExceptions, that.failureExceptions) &&
-                Objects.equal(jobInstanceInfo, that.jobInstanceInfo) &&
+                Objects.equal(jobExecutionInstance, that.jobExecutionInstance) &&
                 Objects.equal(jobExecutionParams, that.jobExecutionParams) &&
                 Objects.equal(stepExecutionInfos, that.stepExecutionInfos);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startedBy, startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobInstanceInfo, jobExecutionParams, stepExecutionInfos);
+        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startedBy, startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobExecutionInstance, jobExecutionParams, stepExecutionInfos);
     }
 
     @Override
@@ -422,7 +437,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 .add("jobConfigurationLocation", jobConfigurationLocation)
                 .add("executionContext", executionContext)
                 .add("failureExceptions", failureExceptions)
-                .add("jobInstanceInfo", jobInstanceInfo)
+                .add("jobInstanceInfo", jobExecutionInstance)
                 .add("jobExecutionParams", jobExecutionParams)
                 .add("stepExecutionInfos", stepExecutionInfos)
                 .toString();

@@ -14,7 +14,7 @@ public class JobExecutionInfoBuilder {
     public JobExecutionInfoBuilder withName(String name) {
         JobInstanceInfo jobInstanceInfo = new JobInstanceInfo();
         jobInstanceInfo.setJobName(name);
-        jobExecutionInfo.setJobInstanceInfo(jobInstanceInfo);
+        jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
         return this;
     }
 
