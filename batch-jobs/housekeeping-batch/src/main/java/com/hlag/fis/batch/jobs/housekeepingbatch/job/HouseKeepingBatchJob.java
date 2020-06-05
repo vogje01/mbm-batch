@@ -17,6 +17,13 @@ import javax.annotation.PostConstruct;
 
 import static java.text.MessageFormat.format;
 
+/**
+ * House keeping batch job.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.3
+ * @since 0.0.3
+ */
 @Component
 public class HouseKeepingBatchJob {
 
@@ -74,9 +81,9 @@ public class HouseKeepingBatchJob {
     }
 
     /**
-     * Create the database synchronization jobs.
+     * Create house keeping batch job.
      *
-     * @return database synchronization jobs.
+     * @return house keeping batch job.
      */
     public Job houseKeepingJob() {
         logger.info(format("Initializing job - jobName: {0}", jobName));
