@@ -158,6 +158,11 @@ public class BatchFlowBuilder<T> {
         return this;
     }
 
+    public BatchFlowBuilder<T> conditionalFlow(String name, Step from, String exitCode, Step to) {
+        flowBuilder.next(new FlowBuilder<Flow>(name).from(from).on(exitCode).to(to).build());
+        return this;
+    }
+
     public Flow build() {
         return (Flow) flowBuilder.build();
     }

@@ -49,7 +49,7 @@ public class ChunkNotificationListener implements ChunkListener {
         stepExecutionDto = modelMapper.map(chunkContext.getStepContext().getStepExecution(), StepExecutionDto.class);
         addAdditionalProperties(chunkContext);
         jobStatusProducer.sendTopic(new JobStatusDto(CHUNK_FINISHED, stepExecutionDto));
-        writeInfoLog(chunkContext);
+        //writeInfoLog(chunkContext);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ChunkNotificationListener implements ChunkListener {
         stepExecutionDto.setJobExecutionId(getJobExecutionId(chunkContext));
         stepExecutionDto.setStepName(getStepName(chunkContext));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(chunkContext));
-        stepExecutionDto.setTotalCount(getStepExecutionTotalCount(chunkContext));
+        //stepExecutionDto.setTotalCount(getStepExecutionTotalCount(chunkContext));
         stepExecutionDto.setHostName(getHostName(chunkContext));
         stepExecutionDto.setNodeName(getHostName(chunkContext));
     }

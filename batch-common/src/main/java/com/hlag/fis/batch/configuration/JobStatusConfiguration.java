@@ -1,6 +1,5 @@
-package com.hlag.fis.batch.jobs.housekeepingbatch;
+package com.hlag.fis.batch.configuration;
 
-import com.hlag.fis.batch.configuration.AbstractKafkaConfiguration;
 import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import org.apache.kafka.clients.admin.NewTopic;

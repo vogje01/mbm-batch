@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import static java.text.MessageFormat.format;
 
-
 @Component
 public class YearlyStep {
 

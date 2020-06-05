@@ -34,6 +34,8 @@ public class BatchJobBuilder extends JobBuilderFactory {
 
     private Step startStep;
 
+    private Step fromStep;
+
     private Flow startFlow;
 
     private List<Flow> nextFlows = new ArrayList<>();
@@ -80,6 +82,11 @@ public class BatchJobBuilder extends JobBuilderFactory {
     }
 
     public BatchJobBuilder end() {
+        return this;
+    }
+
+    public BatchJobBuilder condition(String name, Step from, String exitCode, Step to) {
+        nextFlow(new BatchFlowBuilder<Step>(name).conditionalFlow(name, from, exitCode, to).build());
         return this;
     }
 

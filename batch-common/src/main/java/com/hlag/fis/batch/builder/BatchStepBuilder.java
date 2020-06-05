@@ -5,6 +5,8 @@ import com.hlag.fis.batch.listener.StepNotificationListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemStreamReader;
@@ -24,6 +26,8 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
     private String stepName;
 
     private int chunkSize = 1000;
+
+    private Tasklet tasklet;
 
     private ItemReader<I> reader;
 
@@ -51,6 +55,16 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
 
     public BatchStepBuilder<I, O> name(String name) {
         this.stepName = name;
+        return this;
+    }
+
+    public BatchStepBuilder<I, O> tasklet(Tasklet tasklet) {
+        this.tasklet = tasklet;
+        return this;
+    }
+
+    public BatchStepBuilder<I, O> nullTasklet() {
+        this.tasklet = new BatchNullTasklet();
         return this;
     }
 
@@ -91,14 +105,18 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
     }
 
     public Step build() {
-        return get(stepName)
-                .listener(stepNotificationListener)
-                .transactionManager(transactionManager)
-                .<I, O>chunk(chunkSize)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
-                .listener(chunkNotificationListener)
-                .build();
+
+        StepBuilder stepBuilder = get(stepName).listener(stepNotificationListener);
+        if (tasklet != null) {
+            return stepBuilder.tasklet(tasklet).build();
+        } else {
+            return stepBuilder.transactionManager(transactionManager)
+                    .<I, O>chunk(chunkSize)
+                    .reader(reader)
+                    .processor(processor)
+                    .writer(writer)
+                    .listener(chunkNotificationListener)
+                    .build();
+        }
     }
 }

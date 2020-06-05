@@ -48,24 +48,28 @@ public class StepNotificationListener implements StepExecutionListener {
         this.totalCounts.put(stepName, totalCount);
     }
 
+    public void saveTotalCount(StepExecution stepExecution) {
+        if (totalCounts.containsKey(stepExecution.getStepName())) {
+            stepExecution.getExecutionContext().putLong(TOTAL_COUNT_NAME, totalCounts.get(stepExecution.getStepName()));
+        }
+    }
+
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
         // Fill in context
-        String stepUuid = UUID.randomUUID().toString();
-        stepExecution.getExecutionContext().putString(STEP_UUID_NAME, stepUuid);
-        stepExecution.getExecutionContext().putLong(TOTAL_COUNT_NAME, totalCounts.get(stepExecution.getStepName()));
+        stepExecution.getExecutionContext().putString(STEP_UUID_NAME, UUID.randomUUID().toString());
+
+        saveTotalCount(stepExecution);
 
         logger.setJobUuid(getJobUuid(stepExecution));
         logger.setJobName(getJobName(stepExecution));
         logger.setJobVersion(getJobVersion(stepExecution));
         logger.setStepUuid(getStepUuid(stepExecution));
         logger.setStepName(getStepName(stepExecution));
-        logger.info(format("Step starting - name: {0} uuid: {1}", getStepName(stepExecution), stepUuid));
+        logger.info(format("Step starting - name: {0} uuid: {1}", getStepName(stepExecution), getStepUuid(stepExecution)));
 
-        // Fill in context
-        stepExecution.getExecutionContext().putString(STEP_UUID_NAME, stepUuid);
-        stepExecution.getExecutionContext().putLong(TOTAL_COUNT_NAME, totalCounts.get(stepExecution.getStepName()));
+        // Convert to DTO
         stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
         addAdditionalProperties(stepExecution);
 
@@ -94,8 +98,6 @@ public class StepNotificationListener implements StepExecutionListener {
         // Update step execution info
         stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
         addAdditionalProperties(stepExecution);
-        stepExecutionDto.setExitCode(stepExecution.getExitStatus().getExitCode());
-        stepExecutionDto.setExitMessage(stepExecution.getExitStatus().getExitDescription());
 
         // Send to Kafka
         jobStatusProducer.sendTopic(new JobStatusDto(STEP_FINISHED, stepExecutionDto));
@@ -103,6 +105,9 @@ public class StepNotificationListener implements StepExecutionListener {
         // Remove step logger informations
         logger.setStepName(null);
         logger.setStepUuid(null);
+
+        // Set exit code
+        setExitCode(stepExecution);
         return stepExecution.getExitStatus();
     }
 
@@ -122,5 +127,20 @@ public class StepNotificationListener implements StepExecutionListener {
         stepExecutionDto.setStepExecutionId(getStepExecutionId(stepExecution));
         stepExecutionDto.setTotalCount(totalCounts.get(stepExecution.getStepName()));
         stepExecutionDto.setRunningTime(DateTimeUtils.getRunningTime(stepExecution));
+    }
+
+    private void setExitCode(StepExecution stepExecution) {
+        if (stepExecution.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
+            String failedExitCode = stepExecution.getJobExecution().getJobParameters().getString("job.failed.exitCode");
+            String failedExitMessage = stepExecution.getJobExecution().getJobParameters().getString("job.failed.exitMessage");
+            stepExecutionDto.setExitCode(failedExitCode);
+            stepExecutionDto.setExitMessage(failedExitMessage);
+        }
+        if (stepExecution.getExitStatus().getExitCode().equals(ExitStatus.COMPLETED.getExitCode())) {
+            String failedExitCode = stepExecution.getJobExecution().getJobParameters().getString("job.completed.exitCode");
+            String failedExitMessage = stepExecution.getJobExecution().getJobParameters().getString("job.completed.exitMessage");
+            stepExecutionDto.setExitCode(failedExitCode);
+            stepExecutionDto.setExitMessage(failedExitMessage);
+        }
     }
 }
