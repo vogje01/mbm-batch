@@ -123,11 +123,17 @@ public class ModelConverter {
     // Job context
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public JobExecutionContext convertJobExecutionContextToEntity(JobExecutionContextDto jobExecutionContextDto) {
-        return modelMapper.map(jobExecutionContextDto, JobExecutionContext.class);
+        if (jobExecutionContextDto != null) {
+            return modelMapper.map(jobExecutionContextDto, JobExecutionContext.class);
+        }
+        return null;
     }
 
     public JobExecutionContextDto convertJobExecutionContextToDto(JobExecutionContext jobExecutionContext) {
-        return modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
+        if (jobExecutionContext != null) {
+            return modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
+        }
+        return null;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
