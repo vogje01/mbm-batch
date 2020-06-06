@@ -85,6 +85,10 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
      * Modified at
      */
     private Date modifiedAt;
+    /**
+     * Step execution context
+     */
+    private StepExecutionContextDto stepExecutionContextDto;
 
     private JobExecutionDto jobExecutionDto;
 
@@ -331,6 +335,14 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     public void setJobExecutionDto(JobExecutionDto jobExecutionDto) {
         this.jobExecutionDto = jobExecutionDto;
+    }
+
+    public StepExecutionContextDto getStepExecutionContextDto() {
+        return stepExecutionContextDto;
+    }
+
+    public void setStepExecutionContextDto(StepExecutionContextDto stepExecutionContextDto) {
+        this.stepExecutionContextDto = stepExecutionContextDto;
     }
 
     @Override

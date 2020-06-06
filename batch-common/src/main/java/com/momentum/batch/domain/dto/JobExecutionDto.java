@@ -114,9 +114,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
      * Job execution context
      */
     private JobExecutionContextDto jobExecutionContextDto;
-
+    /**
+     * Job execution parameters
+     */
     private List<JobExecutionParamDto> jobExecutionParamDtoes = new ArrayList<>();
 
+    /**
+     * Constructor
+     */
     public JobExecutionDto() {
         // Intentionally empty
     }

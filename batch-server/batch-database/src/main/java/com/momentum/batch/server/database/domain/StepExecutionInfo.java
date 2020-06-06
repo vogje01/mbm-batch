@@ -5,6 +5,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.domain.PrimaryKeyIdentifier;
 import com.momentum.batch.domain.dto.StepExecutionDto;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -138,6 +139,12 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
      */
     @JsonIgnore
     private transient List<Throwable> failureExceptions;
+    /**
+     * Job execution instance info from JSR-352
+     */
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @OneToOne(mappedBy = "stepExecutionInfo", fetch = FetchType.LAZY, optional = false)
+    private StepExecutionContext stepExecutionContext;
     /**
      * Link to the corresponding job execution info.
      */
