@@ -5,16 +5,21 @@ spring:
     web-application-type: none
   quartz:
     job-store-type: memory
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
 
 # Agent configuration
 # pingInterval: ping interval in ms.
 agent:
-  nodeName: batchmanager
+  nodeName: nodename
+  hostName: hostname
   pingInterval: 300000
   performanceInterval: 60000
   docker:
     network: docker_default
-    hostname:
+    hostname: hostname
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
@@ -45,3 +50,9 @@ kafka:
     group: batchmanager
     partitions: 1
     replicas: 1
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 1
+    replicas: 1
+    level: DEBUG

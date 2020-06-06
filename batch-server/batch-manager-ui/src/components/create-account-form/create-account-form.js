@@ -54,7 +54,7 @@ export default function (props) {
             <Label visible={false}/>
           </Item>
           <Item>
-            <div className='policy-info'>
+            <div className='com.momentum.batch.client.jobs.common.writer.policy-info'>
               By creating an account, you agree to the <Link>Terms of Service</Link> and <Link>Privacy Policy</Link>
             </div>
           </Item>

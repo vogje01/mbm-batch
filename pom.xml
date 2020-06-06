@@ -26,10 +26,10 @@
 	</properties>
 
     <modules>
-        <module>batch-common</module>
-        <module>batch-client</module>
-        <module>batch-server</module>
-    </modules>
+		<module>batch-common</module>
+		<module>batch-client</module>
+		<module>batch-server</module>
+	</modules>
 
 	<build>
 		<plugins>

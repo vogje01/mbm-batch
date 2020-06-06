@@ -27,7 +27,7 @@
 			<artifactId>spring-boot-starter-batch</artifactId>
 			<version>2.2.2.RELEASE</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>2.2.2.RELEASE</version>
@@ -46,7 +46,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 			<version>2.2.2.RELEASE</version>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -74,11 +74,6 @@
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 			<version>2.2.2.RELEASE</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
-			<version>2.2.2.RELEASE</version>
-		</dependency>
 
 		<!-- DTO object mapper -->
 		<dependency>
@@ -104,13 +99,6 @@
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
 			<version>2.2.8.RELEASE</version>
-		</dependency>
-
-		<!-- MySQL database driver -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.18</version>
 		</dependency>
 
 		<!-- Tools -->
@@ -168,19 +156,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>2.2.2.RELEASE</version>
-			</plugin>
-			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>5.2.4</version>
-				<configuration>
-					<user>root</user>
-					<password>Dilbert_01</password>
-					<url>jdbc:mysql://localhost:3306/fisbatch</url>
-					<schemas>
-						<schema>fisbatch</schema>
-					</schemas>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
