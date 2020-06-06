@@ -41,10 +41,10 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder jobName(String name) {
-		this.identity = name;
-		jobDataMap.put(JOB_NAME_NAME, name);
-		return this;
-	}
+        this.identity = name;
+        jobDataMap.put(JOB_NAME, name);
+        return this;
+    }
 
 	public JobDetailBuilder workingDirectory(String workingDirectory) {
 		jobDataMap.put(JOB_WORKING_DIRECTORY, workingDirectory);

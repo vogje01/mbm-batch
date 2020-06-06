@@ -18,10 +18,10 @@ public class JobExecutionLogListener {
 
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionLogListener.class);
 
-    @Value(value = "${kafka.logging.level}")
+    @Value(value = "${kafka.jobLogging.level}")
     private String level;
 
-    private JobExecutionLogRepository jobExecutionLogRepository;
+    private final JobExecutionLogRepository jobExecutionLogRepository;
 
     @Autowired
     public JobExecutionLogListener(JobExecutionLogRepository jobExecutionLogRepository) {

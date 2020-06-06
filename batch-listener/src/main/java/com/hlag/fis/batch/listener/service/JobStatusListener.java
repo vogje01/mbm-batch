@@ -106,7 +106,7 @@ public class JobStatusListener {
             logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
         } else {
             // Get job execution ID
-            long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()) + 1;
+            long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()).orElse(0L) + 1;
             logger.debug(format("Max job execution id - jobExecutionId: {0}", jobExecutionId));
 
             // Create job instance

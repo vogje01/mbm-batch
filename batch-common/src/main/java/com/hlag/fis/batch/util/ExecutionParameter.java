@@ -13,19 +13,19 @@ import org.springframework.batch.core.scope.context.ChunkContext;
  */
 public class ExecutionParameter {
 
-    public static final String JOB_UUID_NAME = "job.uuid";
+    public static final String HOST_NAME = "agent.hostName";
 
-    public static final String JOB_PID_NAME = "job.pid";
+    public static final String NODE_NAME = "agent.nodeName";
 
-    public static final String JOB_SHUTDOWN_NAME = "job.shutdown";
+    public static final String JOB_UUID = "job.uuid";
 
-    public static final String JOB_NODE_NAME = "job.nodeName";
+    public static final String JOB_NAME = "job.name";
+
+    public static final String JOB_PID = "job.pid";
 
     public static final String JOB_LAUNCH_TIME = "job.launchTime";
 
-    public static final String JOB_VERSION_NAME = "job.version";
-
-    public static final String JOB_NAME_NAME = "job.name";
+    public static final String JOB_VERSION = "job.version";
 
     public static final String JOB_DESCRIPTION = "job.description";
 
@@ -41,6 +41,8 @@ public class ExecutionParameter {
 
     public static final String JOB_ARGUMENTS = "job.arguments";
 
+    public static final String JOB_STARTED_BY = "job.user";
+
     public static final String JOB_FAILED_EXIT_CODE = "job.failed.exitCode";
 
     public static final String JOB_FAILED_EXIT_MESSAGE = "job.failed.exitMessage";
@@ -49,17 +51,11 @@ public class ExecutionParameter {
 
     public static final String JOB_COMPLETED_EXIT_MESSAGE = "job.completed.exitMessage";
 
-    public static final String STEP_UUID_NAME = "stepUuid";
+    public static final String STEP_UUID = "stepUuid";
 
-    public static final String STEP_NAME_NAME = "stepName";
+    public static final String STEP_NAME = "stepName";
 
-    public static final String TOTAL_COUNT_NAME = "totalCount";
-
-    public static final String HOST_NAME = "agent.hostName";
-
-    public static final String NODE_NAME = "agent.nodeName";
-
-    public static final String JOB_STARTED_BY = "user.name";
+    public static final String STEP_TOTAL_COUNT = "totalCount";
 
     public static String getHostName(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(HOST_NAME);
@@ -69,8 +65,8 @@ public class ExecutionParameter {
         return jobExecution.getJobParameters().getString(NODE_NAME);
     }
 
-    public static String getJobId(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(JOB_UUID_NAME);
+    public static String getJobUuid(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_UUID);
     }
 
     public static String getJobName(JobExecution jobExecution) {
@@ -78,11 +74,11 @@ public class ExecutionParameter {
     }
 
     public static long getJobPid(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getLong(JOB_PID_NAME);
+        return jobExecution.getJobParameters().getLong(JOB_PID);
     }
 
     public static String getJobVersion(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(JOB_VERSION_NAME);
+        return jobExecution.getJobParameters().getString(JOB_VERSION);
     }
 
     public static String getJobStartedBy(JobExecution jobExecution) {
@@ -110,15 +106,11 @@ public class ExecutionParameter {
     }
 
     public static String getJobUuid(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getJobParameters().getString(JOB_UUID_NAME);
+        return stepExecution.getJobExecution().getJobParameters().getString(JOB_UUID);
     }
 
     public static String getJobVersion(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getJobParameters().getString(JOB_VERSION_NAME);
-    }
-
-    public static String getJobId(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getJobParameters().getString(JOB_UUID_NAME);
+        return stepExecution.getJobExecution().getJobParameters().getString(JOB_VERSION);
     }
 
     public static String getStepName(StepExecution stepExecution) {
@@ -126,7 +118,7 @@ public class ExecutionParameter {
     }
 
     public static String getStepUuid(StepExecution stepExecution) {
-        return stepExecution.getExecutionContext().getString(STEP_UUID_NAME);
+        return stepExecution.getExecutionContext().getString(STEP_UUID);
     }
 
     public static long getJobExecutionId(StepExecution stepExecution) {
@@ -138,7 +130,7 @@ public class ExecutionParameter {
     }
 
     public static long getStepExecutionTotalCount(StepExecution stepExecution) {
-        return stepExecution.getExecutionContext().getLong(TOTAL_COUNT_NAME);
+        return stepExecution.getExecutionContext().getLong(STEP_TOTAL_COUNT);
     }
 
     public static String getHostName(StepExecution stepExecution) {
@@ -158,7 +150,7 @@ public class ExecutionParameter {
     }
 
     public static String getStepUuid(ChunkContext chunkContext) {
-        return (String) chunkContext.getStepContext().getStepExecutionContext().get(STEP_UUID_NAME);
+        return (String) chunkContext.getStepContext().getStepExecutionContext().get(STEP_UUID);
     }
 
     public static long getJobExecutionId(ChunkContext chunkContext) {
@@ -169,12 +161,12 @@ public class ExecutionParameter {
         return chunkContext.getStepContext().getStepExecution().getId();
     }
 
-    public static String getJobId(ChunkContext chunkContext) {
-        return chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_UUID_NAME);
+    public static String getJobUuid(ChunkContext chunkContext) {
+        return chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_UUID);
     }
 
     public static long getStepExecutionTotalCount(ChunkContext chunkContext) {
-        return (Long) chunkContext.getStepContext().getStepExecutionContext().get(TOTAL_COUNT_NAME);
+        return (Long) chunkContext.getStepContext().getStepExecutionContext().get(STEP_TOTAL_COUNT);
     }
 
     public static String getHostName(ChunkContext chunkContext) {

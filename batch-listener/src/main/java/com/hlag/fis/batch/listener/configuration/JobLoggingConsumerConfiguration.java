@@ -16,18 +16,18 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.Map;
 
 @Configuration
-public class JobExecutionLogConfiguration extends AbstractKafkaConfiguration {
+public class JobLoggingConsumerConfiguration extends AbstractKafkaConfiguration {
 
-    @Value(value = "${kafka.logging.offsetReset}")
+    @Value(value = "${kafka.jobLogging.offsetReset}")
     private String offsetReset;
 
-    @Value(value = "${kafka.logging.topic}")
+    @Value(value = "${kafka.jobLogging.topic}")
     private String loggingTopic;
 
-    @Value(value = "${kafka.logging.partitions}")
+    @Value(value = "${kafka.jobLogging.partitions}")
     private int loggingPartitions;
 
-    @Value(value = "${kafka.logging.replicas}")
+    @Value(value = "${kafka.jobLogging.replicas}")
     private short loggingReplicas;
 
     @Bean

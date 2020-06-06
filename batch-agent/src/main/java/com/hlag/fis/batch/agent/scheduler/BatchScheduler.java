@@ -223,7 +223,8 @@ public class BatchScheduler {
      * @return Quartz scheduler job details.
      */
     private JobDetail buildJobDetail(JobDefinition jobDefinition) {
-        return new JobDetailBuilder().jobName(jobDefinition.getName())
+        return new JobDetailBuilder()
+                .jobName(jobDefinition.getName())
                 .groupName(jobDefinition.getJobGroup().getName())
                 .description(jobDefinition.getDescription())
                 .jobType(jobDefinition.getType().name())
@@ -258,6 +259,9 @@ public class BatchScheduler {
         List<String> arguments = new ArrayList<>();
         arguments.add("-D" + HOST_NAME + "=" + hostName);
         arguments.add("-D" + NODE_NAME + "=" + nodeName);
+        arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
+        arguments.add("-D" + JOB_UUID + "=" + UUID.randomUUID().toString());
+        arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getVersion());
         arguments.add("-D" + JOB_FAILED_EXIT_CODE + "=" + jobDefinition.getFailedExitCode());
         arguments.add("-D" + JOB_FAILED_EXIT_MESSAGE + "=" + jobDefinition.getFailedExitMessage());
         arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());

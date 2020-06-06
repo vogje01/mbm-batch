@@ -10,17 +10,17 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.info.BuildProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 import static com.hlag.fis.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
  * Batch job runner.
+ * <p>
+ * This job runner adds several parameters to the job execution, which are needed be the MBM system.
+ * </p>
  *
  * @author Jens Vogt jensvogt47@gmail.com
  * @version 0.0.2
@@ -29,49 +29,41 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchJobRunner {
 
-    private final BatchLogger logger;
-
-    private JobLauncher jobLauncher;
-
+    @Value("${agent.nodeName}")
     private String nodeName;
 
+    @Value("${agent.hostName}")
+    private String hostName;
+
+    @Value("${job.name}")
     private String jobName;
 
-    private Long jobPid;
+    @Value("${job.uuid}")
+    private String jobUuid;
+
+    @Value("${job.version}")
+    private String jobVersion;
+
+    @Value("${job.launchTime}")
+    private Long jobLaunchTime;
+
+    private final BatchLogger logger;
+
+    private final JobLauncher jobLauncher;
+
+    private final Long jobPid;
 
     private Job job;
 
-    private String jobUuid;
-
-    private String jobVersion;
-
-    private long gracefulShutdown = 1L;
-
-    private ApplicationArguments applicationArguments;
-
     @Autowired
-    public BatchJobRunner(BatchLogger batchLogger, JobLauncher jobLauncher, ApplicationArguments applicationArguments, BuildProperties buildProperties, String nodeName) {
+    public BatchJobRunner(BatchLogger batchLogger, JobLauncher jobLauncher) {
         this.logger = batchLogger;
         this.jobLauncher = jobLauncher;
-        this.applicationArguments = applicationArguments;
-        this.jobUuid = UUID.randomUUID().toString();
         this.jobPid = ProcessHandle.current().pid();
-        this.jobVersion = buildProperties.getVersion();
-        this.nodeName = nodeName;
-    }
-
-    public BatchJobRunner jobName(String jobName) {
-        this.jobName = jobName;
-        return this;
     }
 
     public BatchJobRunner job(Job job) {
         this.job = job;
-        return this;
-    }
-
-    public BatchJobRunner gracefulShutdown(boolean gracefulShutdown) {
-        this.gracefulShutdown = gracefulShutdown ? 1L : 0L;
         return this;
     }
 
@@ -87,19 +79,24 @@ public class BatchJobRunner {
         }
     }
 
+    /**
+     * Adds additional parameters to the job execution parameters list, needed by the MPM system.
+     *
+     * @return job parameters map.
+     */
     private JobParameters getJobParameters() {
-        long currentTime = System.currentTimeMillis();
 
         // Add command line arguments
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder()
-                .addString(JOB_UUID_NAME, jobUuid)
-                .addLong(JOB_PID_NAME, jobPid)
-                .addLong(JOB_SHUTDOWN_NAME, gracefulShutdown)
-                .addLong(JOB_LAUNCH_TIME, currentTime)
-                .addString(JOB_NODE_NAME, nodeName)
-                .addString(JOB_VERSION_NAME, jobVersion);
+                .addString(JOB_NAME, jobName)
+                .addString(JOB_UUID, jobUuid)
+                .addString(JOB_VERSION, jobVersion)
+                .addString(HOST_NAME, hostName)
+                .addString(NODE_NAME, nodeName)
+                .addLong(JOB_PID, jobPid)
+                .addLong(JOB_LAUNCH_TIME, jobLaunchTime);
 
-        // Add command line arguments
+        // Add system environment
         System.getProperties().forEach((key, value) -> {
             if (((String) value).length() < 250) {
                 jobParametersBuilder.addString((String) key, (String) value);

@@ -5,6 +5,7 @@ import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
+import com.hlag.fis.batch.util.ExecutionParameter;
 import com.hlag.fis.batch.util.ModelConverter;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
@@ -34,13 +35,13 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobNotificationListener implements JobExecutionListener {
 
-    private BatchLogger logger;
+    private final BatchLogger logger;
+
+    private final JobStatusProducer statusProducer;
+
+    private final ModelConverter modelConverter;
 
     private JobExecutionDto jobExecutionDto = new JobExecutionDto();
-
-    private JobStatusProducer statusProducer;
-
-    private ModelConverter modelConverter;
 
     /**
      * Constructor.
@@ -62,13 +63,20 @@ public class JobNotificationListener implements JobExecutionListener {
      */
     @Override
     public void beforeJob(@NotNull JobExecution jobExecution) {
+
         logger.setJobName(getJobName(jobExecution));
-        logger.setJobUuid(getJobId(jobExecution));
+        logger.setJobUuid(ExecutionParameter.getJobUuid(jobExecution));
         logger.setJobVersion(getJobVersion(jobExecution));
+
         logger.info(format("Job starting - name: {0} pid: {1}", getJobName(jobExecution), getJobPid(jobExecution)));
+
+        // Create DTO
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
         addAdditionalProperties(jobExecution);
+
+        // Send status message
         statusProducer.sendTopic(new JobStatusDto(JOB_START, jobExecutionDto));
+        logger.info(format("Batch job started - name: {0}", getJobName(jobExecution)));
     }
 
     /**
@@ -96,7 +104,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param jobExecution job execution.
      */
     private void addAdditionalProperties(JobExecution jobExecution) {
-        jobExecutionDto.setId(getJobId(jobExecution));
+        jobExecutionDto.setId(ExecutionParameter.getJobUuid(jobExecution));
         jobExecutionDto.setJobName(getJobName(jobExecution));
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
         jobExecutionDto.setJobVersion(getJobVersion(jobExecution));

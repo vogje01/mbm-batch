@@ -5,6 +5,7 @@ import com.hlag.fis.batch.domain.dto.JobStatusDto;
 import com.hlag.fis.batch.domain.dto.StepExecutionDto;
 import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
+import com.hlag.fis.batch.util.ExecutionParameter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.batch.core.ChunkListener;
@@ -97,7 +98,7 @@ public class ChunkNotificationListener implements ChunkListener {
 
     private void addAdditionalProperties(ChunkContext chunkContext) {
         stepExecutionDto.setId(getStepUuid(chunkContext));
-        stepExecutionDto.setJobId(getJobId(chunkContext));
+        stepExecutionDto.setJobId(ExecutionParameter.getJobUuid(chunkContext));
         stepExecutionDto.setJobName(getJobName(chunkContext));
         stepExecutionDto.setJobExecutionId(getJobExecutionId(chunkContext));
         stepExecutionDto.setStepName(getStepName(chunkContext));

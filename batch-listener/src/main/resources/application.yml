@@ -27,7 +27,7 @@ kafka:
   retentionDays: 1
   deletionDays: 1
   active: true
-  logging:
+  jobLogging:
     offsetReset: latest
     topic: batchJobExecutionLog
     partitions: 1

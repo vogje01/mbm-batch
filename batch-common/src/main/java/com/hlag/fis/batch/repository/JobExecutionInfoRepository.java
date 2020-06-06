@@ -22,5 +22,5 @@ public interface JobExecutionInfoRepository extends PagingAndSortingRepository<J
     long countByLastUpdated(@Param("cutOff") Date cutOff);
 
     @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobExecutionInstance.jobName = :jobName")
-    long getLastExecutionId(@Param("jobName") String jobName);
+    Optional<Long> getLastExecutionId(@Param("jobName") String jobName);
 }

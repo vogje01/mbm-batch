@@ -163,9 +163,7 @@ public class ModelConverter {
     }
 
     public JobExecutionContextDto convertJobExecutionContextToDto(JobExecutionContext jobExecutionContext) {
-        JobExecutionContextDto jobExecutionContextDto = modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
-        jobExecutionContextDto.setId(null);
-        return jobExecutionContextDto;
+        return modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -365,10 +363,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // User
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public List<UserDto> convertUserToDto(List<User> userList) {
-        return userList.stream().map(this::convertUserToDto).collect(toList());
-    }
-
     public UserDto convertUserToDto(User user) {
         UserDto userDto = modelMapper.map(user, UserDto.class);
 

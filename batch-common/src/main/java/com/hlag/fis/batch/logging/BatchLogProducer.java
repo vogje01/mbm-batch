@@ -3,12 +3,8 @@ package com.hlag.fis.batch.logging;
 import com.hlag.fis.batch.domain.JobExecutionLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -19,19 +15,17 @@ import static java.text.MessageFormat.format;
  * @version 0.0.1
  * @since 0.0.1
  */
-@Component
 public class BatchLogProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchLogProducer.class);
 
-    @Value(value = "${kafka.jobLogging.topic}")
-    private String loggingTopic;
+    private String batchLogTopicName;
 
     private KafkaTemplate<String, JobExecutionLog> template;
 
-    @Autowired
-    public BatchLogProducer(KafkaTemplate<String, JobExecutionLog> template) {
+    public BatchLogProducer(KafkaTemplate<String, JobExecutionLog> template, String batchLogTopicName) {
         this.template = template;
+        this.batchLogTopicName = batchLogTopicName;
     }
 
     /**
@@ -43,10 +37,9 @@ public class BatchLogProducer {
      *
      * @param jobExecutionLog agent command info.
      */
-    @Transactional
     public void sendBatchLog(JobExecutionLog jobExecutionLog) {
 
-        ListenableFuture<SendResult<String, JobExecutionLog>> future = template.send(loggingTopic, jobExecutionLog);
+        ListenableFuture<SendResult<String, JobExecutionLog>> future = template.send(batchLogTopicName, jobExecutionLog);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override

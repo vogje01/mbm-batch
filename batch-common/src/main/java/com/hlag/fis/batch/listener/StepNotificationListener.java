@@ -5,6 +5,7 @@ import com.hlag.fis.batch.domain.dto.StepExecutionDto;
 import com.hlag.fis.batch.logging.BatchLogger;
 import com.hlag.fis.batch.producer.JobStatusProducer;
 import com.hlag.fis.batch.util.DateTimeUtils;
+import com.hlag.fis.batch.util.ExecutionParameter;
 import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
@@ -49,16 +50,14 @@ public class StepNotificationListener implements StepExecutionListener {
     }
 
     public void saveTotalCount(StepExecution stepExecution) {
-        if (totalCounts.containsKey(stepExecution.getStepName())) {
-            stepExecution.getExecutionContext().putLong(TOTAL_COUNT_NAME, totalCounts.get(stepExecution.getStepName()));
-        }
+        stepExecution.getExecutionContext().putLong(STEP_TOTAL_COUNT, totalCounts.getOrDefault(stepExecution.getStepName(), 0L));
     }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
         // Fill in context
-        stepExecution.getExecutionContext().putString(STEP_UUID_NAME, UUID.randomUUID().toString());
+        stepExecution.getExecutionContext().putString(STEP_UUID, UUID.randomUUID().toString());
 
         saveTotalCount(stepExecution);
 
@@ -118,7 +117,7 @@ public class StepNotificationListener implements StepExecutionListener {
      */
     private void addAdditionalProperties(StepExecution stepExecution) {
         stepExecutionDto.setId(getStepUuid(stepExecution));
-        stepExecutionDto.setJobId(getJobId(stepExecution));
+        stepExecutionDto.setJobId(ExecutionParameter.getJobUuid(stepExecution));
         stepExecutionDto.setJobName(getJobName(stepExecution));
         stepExecutionDto.setJobExecutionId(getJobExecutionId(stepExecution));
         stepExecutionDto.setHostName(getHostName(stepExecution));

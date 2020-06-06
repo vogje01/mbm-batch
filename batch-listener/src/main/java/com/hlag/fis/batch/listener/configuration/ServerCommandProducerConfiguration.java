@@ -22,7 +22,7 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class ServerCommandConfiguration extends AbstractKafkaConfiguration {
+public class ServerCommandProducerConfiguration extends AbstractKafkaConfiguration {
 
     @Value(value = "${kafka.active}")
     private boolean active;

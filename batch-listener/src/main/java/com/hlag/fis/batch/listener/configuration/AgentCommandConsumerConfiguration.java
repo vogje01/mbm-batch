@@ -16,7 +16,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.Map;
 
 @Configuration
-public class AgentCommandConfiguration extends AbstractKafkaConfiguration {
+public class AgentCommandConsumerConfiguration extends AbstractKafkaConfiguration {
 
     @Value(value = "${kafka.agentCommand.offsetReset}")
     private String offsetReset;

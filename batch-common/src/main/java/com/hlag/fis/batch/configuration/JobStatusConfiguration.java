@@ -26,8 +26,8 @@ public class JobStatusConfiguration extends AbstractKafkaConfiguration {
     private short replicas;
 
     @Bean
-    public JobStatusProducer jobStatusProducer() {
-        return new JobStatusProducer(jobStatusKafkaTemplate());
+    public ProducerFactory<String, JobStatusDto> jobStatusProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
     }
 
     @Bean
@@ -36,13 +36,13 @@ public class JobStatusConfiguration extends AbstractKafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, JobStatusDto> jobStatusProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
+    public KafkaTemplate<String, JobStatusDto> jobStatusKafkaTemplate() {
+        return new KafkaTemplate<>(jobStatusProducerFactory());
     }
 
     @Bean
-    public KafkaTemplate<String, JobStatusDto> jobStatusKafkaTemplate() {
-        return new KafkaTemplate<>(jobStatusProducerFactory());
+    public JobStatusProducer jobStatusProducer() {
+        return new JobStatusProducer(jobStatusKafkaTemplate());
     }
 
     @Bean

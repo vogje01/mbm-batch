@@ -42,3 +42,5 @@ kafka:
     topic: batchJobExecutionLog
     partitions: 1
     replicas: 1
+    level: DEBUG
+
