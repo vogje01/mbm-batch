@@ -1,6 +1,7 @@
 package com.momentum.batch.client.jobs.common.builder;
 
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
+import com.momentum.batch.util.ExecutionParameter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;

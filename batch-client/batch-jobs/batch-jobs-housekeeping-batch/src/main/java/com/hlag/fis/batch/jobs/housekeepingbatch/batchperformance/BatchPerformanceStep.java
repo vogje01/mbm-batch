@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.database.domain.BatchPerformance;
 import com.momentum.batch.database.repository.BatchPerformanceRepository;
 import com.momentum.batch.domain.BatchPerformanceType;

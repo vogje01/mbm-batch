@@ -1,5 +1,6 @@
 package com.momentum.batch.client.jobs.common.configuration;
 
+import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

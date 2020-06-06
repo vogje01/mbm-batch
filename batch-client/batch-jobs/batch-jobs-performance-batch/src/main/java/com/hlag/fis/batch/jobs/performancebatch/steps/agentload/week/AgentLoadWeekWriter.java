@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
-import com.momentum.batch.client.common.job.writer.writer.MysqlWriterBuilder;
+import com.momentum.batch.client.jobs.common.writer.MysqlWriterBuilder;
 import com.momentum.batch.database.domain.Agent;
 import com.momentum.batch.database.domain.BatchPerformance;
 import org.springframework.batch.item.ItemWriter;

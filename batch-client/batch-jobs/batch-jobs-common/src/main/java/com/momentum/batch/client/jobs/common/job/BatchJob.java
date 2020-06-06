@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.job;
 
-import com.momentum.batch.client.common.job.builder.BatchJobBuilder;
+import com.momentum.batch.client.jobs.common.builder.BatchJobBuilder;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

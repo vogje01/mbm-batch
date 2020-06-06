@@ -4,9 +4,9 @@ import com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance.BatchPerforman
 import com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance.BatchPerformanceStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution.JobExecutionInfoStep;
 import com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog.JobExecutionLogStep;
-import com.momentum.batch.client.common.job.builder.BatchJobBuilder;
-import com.momentum.batch.client.common.job.builder.BatchJobRunner;
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.builder.BatchJobBuilder;
+import com.momentum.batch.client.jobs.common.builder.BatchJobRunner;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -76,7 +76,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.momentum</groupId>
-			<artifactId>batch-client-common</artifactId>
+			<artifactId>batch-jobs-common</artifactId>
 			<version>0.0.3</version>
 		</dependency>
 		<dependency>

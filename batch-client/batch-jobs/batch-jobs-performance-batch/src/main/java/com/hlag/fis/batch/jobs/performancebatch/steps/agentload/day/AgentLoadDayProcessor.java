@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.database.domain.Agent;
 import com.momentum.batch.database.repository.AgentRepository;
 import org.springframework.batch.item.ItemProcessor;

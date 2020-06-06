@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.builder;
 
-import com.momentum.batch.client.common.listener.JobNotificationListener;
+import com.momentum.batch.client.jobs.common.listener.JobNotificationListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;

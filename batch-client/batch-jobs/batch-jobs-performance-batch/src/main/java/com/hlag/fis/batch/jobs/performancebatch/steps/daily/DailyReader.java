@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
-import com.momentum.batch.client.common.job.reader.CursorReaderBuilder;
+import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
 import com.momentum.batch.domain.BatchPerformanceType;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;

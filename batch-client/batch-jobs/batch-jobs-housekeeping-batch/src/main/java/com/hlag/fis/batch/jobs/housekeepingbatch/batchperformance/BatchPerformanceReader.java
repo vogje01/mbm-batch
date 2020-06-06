@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.momentum.batch.client.common.job.reader.CursorReaderBuilder;
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
 import com.momentum.batch.domain.BatchPerformanceType;
 import com.momentum.batch.util.DateTimeUtils;
 import org.springframework.batch.item.ItemStreamReader;

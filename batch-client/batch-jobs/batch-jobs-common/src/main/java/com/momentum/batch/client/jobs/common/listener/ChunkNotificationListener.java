@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.listener;
 
-import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.domain.dto.JobStatusDto;
 import com.momentum.batch.domain.dto.StepExecutionDto;
 import com.momentum.batch.util.ExecutionParameter;
