@@ -46,8 +46,6 @@ public class TestBatchJob {
 
         // Run job
         batchLogger.info(format("Job starting - jobName: {0}", JOB_NAME));
-        batchJobRunner.jobName(JOB_NAME)
-                .job(job)
-                .start();
+        batchJobRunner.job(job).start();
     }
 }
