@@ -2,8 +2,8 @@ package com.momentum.batch.client.jobs.housekeeping.jobexecutionlog;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.database.domain.JobExecutionLog;
-import com.momentum.batch.database.repository.JobExecutionLogRepository;
+import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import com.momentum.batch.util.DateTimeUtils;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;

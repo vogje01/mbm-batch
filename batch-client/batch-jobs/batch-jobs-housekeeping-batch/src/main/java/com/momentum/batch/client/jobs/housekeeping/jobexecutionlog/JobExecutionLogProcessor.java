@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.housekeeping.jobexecutionlog;
 
-import com.momentum.batch.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.domain.JobExecutionLog;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

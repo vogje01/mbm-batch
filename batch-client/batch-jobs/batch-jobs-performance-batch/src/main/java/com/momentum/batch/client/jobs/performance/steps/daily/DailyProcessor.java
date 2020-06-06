@@ -1,9 +1,9 @@
 package com.momentum.batch.client.jobs.performance.steps.daily;
 
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.database.domain.BatchPerformance;
-import com.momentum.batch.database.repository.BatchPerformanceRepository;
 import com.momentum.batch.domain.BatchPerformanceType;
+import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.repository.BatchPerformanceRepository;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

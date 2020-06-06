@@ -1,8 +1,8 @@
 package com.momentum.batch.client.jobs.performance.steps.agentload.week;
 
 import com.momentum.batch.client.jobs.common.writer.MysqlWriterBuilder;
-import com.momentum.batch.database.domain.Agent;
-import com.momentum.batch.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.BatchPerformance;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

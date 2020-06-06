@@ -1,8 +1,8 @@
 package com.momentum.batch.client.jobs.performance.steps.agentload.week;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
-import com.momentum.batch.database.domain.BatchPerformance;
-import com.momentum.batch.database.repository.AgentRepository;
+import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;

@@ -2,9 +2,9 @@ package com.momentum.batch.client.jobs.performance.steps.stepcount;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.database.domain.BatchPerformance;
-import com.momentum.batch.database.domain.StepExecutionInfo;
-import com.momentum.batch.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.domain.StepExecutionInfo;
+import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

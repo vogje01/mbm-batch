@@ -2,8 +2,8 @@ package com.momentum.batch.client.jobs.performance.steps.agentload.day;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.database.domain.BatchPerformance;
-import com.momentum.batch.database.repository.AgentRepository;
+import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.repository.AgentRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

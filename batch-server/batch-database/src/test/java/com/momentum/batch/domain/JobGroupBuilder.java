@@ -1,6 +1,6 @@
 package com.momentum.batch.domain;
 
-import com.momentum.batch.database.domain.JobGroup;
+import com.momentum.batch.server.database.domain.JobGroup;
 
 import java.util.UUID;
 

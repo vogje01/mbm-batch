@@ -1,8 +1,8 @@
 package com.momentum.batch.domain;
 
-import com.momentum.batch.database.domain.JobDefinition;
-import com.momentum.batch.database.domain.JobDefinitionParam;
-import com.momentum.batch.database.domain.JobGroup;
+import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobDefinitionParam;
+import com.momentum.batch.server.database.domain.JobGroup;
 
 import java.util.UUID;
 

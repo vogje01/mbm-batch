@@ -1,7 +1,7 @@
 package com.momentum.batch.client.jobs.housekeeping.jobexecution;
 
 import com.momentum.batch.client.jobs.common.writer.MysqlDeleteWriter;
-import com.momentum.batch.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import org.springframework.stereotype.Component;
 
 /**

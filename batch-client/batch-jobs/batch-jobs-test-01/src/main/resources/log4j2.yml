@@ -21,10 +21,6 @@ Configuration:
       AppenderRef:
         - ref: Console_Appender
     Logger:
-      - name: com.hlag.fis.batch
-        level: debug
-        AppenderRef:
-          - ref: File_Appender
       - name: com.momentum.batch.client
         level: debug
         AppenderRef:

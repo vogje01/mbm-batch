@@ -1,7 +1,7 @@
 package com.momentum.batch.domain;
 
-import com.momentum.batch.database.domain.JobExecutionInfo;
-import com.momentum.batch.database.domain.StepExecutionInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.StepExecutionInfo;
 
 import java.util.UUID;
 
