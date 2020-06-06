@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.hlag.fis</groupId>
-	<artifactId>batch</artifactId>
-	<name>batch</name>
-	<version>0.0.3</version>
-	<packaging>pom</packaging>
+    <groupId>com.momentum</groupId>
+    <artifactId>batch</artifactId>
+    <name>batch</name>
+    <version>0.0.3</version>
+    <packaging>pom</packaging>
 
-	<properties>
-		<java.version>14</java.version>
-		<maven.compiler.source>14</maven.compiler.source>
-		<maven.compiler.target>14</maven.compiler.target>
-		<maven.versions.plugin>2.7</maven.versions.plugin>
+    <properties>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+        <maven.versions.plugin>2.7</maven.versions.plugin>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>2.1.6.RELEASE</spring.version>
 		<jackson.version>2.9.9.3</jackson.version>
@@ -25,12 +25,10 @@
 		<flyway.version>5.2.4</flyway.version>
 	</properties>
 
-	<modules>
-		<module>batch-common</module>
-        <module>batch-jobs</module>
-        <module>batch-manager</module>
-        <module>batch-listener</module>
-        <module>batch-agent</module>
+    <modules>
+        <module>batch-common</module>
+        <module>batch-client</module>
+        <module>batch-server</module>
     </modules>
 
 	<build>

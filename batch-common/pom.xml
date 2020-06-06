@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.hlag.fis</groupId>
-		<artifactId>batch</artifactId>
-		<version>0.0.3</version>
-	</parent>
+        <groupId>com.momentum</groupId>
+        <artifactId>batch</artifactId>
+        <version>0.0.3</version>
+    </parent>
 	<artifactId>batch-common</artifactId>
 	<name>batch-common</name>
 	<version>0.0.3</version>

@@ -1,5 +1,0 @@
---
--- Insert client roles
---
-INSERT INTO client_role_ownership(ID, CLIENT, RELATIVE_NUMBER, OWNER_ID, DESCRIPTION, VALID_FROM, USER_ROLE_ID, CHANGED_BY, LAST_CHANGE, CHANGE_LOCATION)
-VALUES ('e651158f-12af-416f-bb9e-3d72adbfd278', 'T', 1, 'TESTUSER', 'Test description', CURRENT_DATE, 'adb11340-fc96-4918-b6e9-ac932dfaaea2', 'TESTUSER', 1, 'H');

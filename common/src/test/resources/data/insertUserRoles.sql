@@ -1,5 +1,0 @@
---
--- Insert user roles
---
-INSERT INTO user_role(ID, NAME, ENVIRONMENT, CHANGED_BY, LAST_CHANGE, IDENTIFIER)
-VALUES ('adb11340-fc96-4918-b6e9-ac932dfaaea2', 'TESTROLE', 'T', 'TESTUSER', 1, 1);
