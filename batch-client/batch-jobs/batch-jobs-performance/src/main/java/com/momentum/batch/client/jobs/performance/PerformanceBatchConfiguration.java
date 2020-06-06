@@ -28,7 +28,7 @@ import java.util.Properties;
 @Configuration
 @EnableConfigurationProperties
 @EnableBatchProcessing
-@EnableJpaRepositories(basePackages = {"com.momentum.batch.database.repository"})
+@EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 public class PerformanceBatchConfiguration {
 
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("consolidation.yml")};
@@ -60,7 +60,7 @@ public class PerformanceBatchConfiguration {
         em.setPersistenceUnitName("MysqlPU");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(hibernateProperties());
-        em.setPackagesToScan("com.momentum.batch.database.domain");
+        em.setPackagesToScan("com.momentum.batch.server.database.domain");
         return em;
     }
 

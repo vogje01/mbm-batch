@@ -1,5 +1,6 @@
 package com.momentum.batch.client.jobs.common.converter;
 
+import com.momentum.batch.domain.dto.JobExecutionContextDto;
 import com.momentum.batch.domain.dto.JobExecutionDto;
 import com.momentum.batch.domain.dto.JobExecutionParamDto;
 import com.momentum.batch.domain.dto.JobInstanceDto;
@@ -7,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.3
  * @since 0.0.1
  */
 @Component
@@ -26,9 +28,12 @@ public class ModelConverter {
 
     private final ModelMapper modelMapper;
 
+    private final ModelConverterHelper modelConverterHelper;
+
     @Autowired
-    public ModelConverter(ModelMapper modelMapper) {
+    public ModelConverter(ModelMapper modelMapper, ModelConverterHelper modelConverterHelper) {
         this.modelMapper = modelMapper;
+        this.modelConverterHelper = modelConverterHelper;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,6 +43,7 @@ public class ModelConverter {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecution, JobExecutionDto.class);
         jobExecutionDto.setJobName(jobExecution.getJobInstance().getJobName());
         jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecution.getJobInstance()));
+        jobExecutionDto.setJobExecutionContextDto(convertJobExecutionContextToDto(jobExecution.getExecutionContext()));
         List<JobExecutionParamDto> jobExecutionParamDtoes = jobExecution.getJobParameters()
                 .getParameters()
                 .entrySet()
@@ -57,7 +63,16 @@ public class ModelConverter {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Job executions
+    // Job execution context
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public JobExecutionContextDto convertJobExecutionContextToDto(ExecutionContext jobExecutionContext) {
+        JobExecutionContextDto jobExecutionContextDto = new JobExecutionContextDto();
+        jobExecutionContextDto.setSerializedContext(modelConverterHelper.jsonSerialize(jobExecutionContext));
+        return jobExecutionContextDto;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Job execution params
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public JobExecutionParamDto convertJobParameterToDto(Map.Entry<String, JobParameter> entry) {
         JobExecutionParamDto jobExecutionParamDto = modelMapper.map(entry.getValue(), JobExecutionParamDto.class);

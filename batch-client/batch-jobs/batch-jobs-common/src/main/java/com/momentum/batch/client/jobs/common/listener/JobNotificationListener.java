@@ -62,6 +62,8 @@ public class JobNotificationListener implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
 
+        jobExecution.getExecutionContext().put("Test", "Test");
+
         logger.setJobName(getJobName(jobExecution));
         logger.setJobUuid(ExecutionParameter.getJobUuid(jobExecution));
         logger.setJobVersion(getJobVersion(jobExecution));

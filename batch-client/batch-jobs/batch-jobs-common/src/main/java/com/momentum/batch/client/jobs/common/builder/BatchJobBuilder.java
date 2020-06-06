@@ -26,11 +26,13 @@ import java.util.List;
 @Component
 public class BatchJobBuilder extends JobBuilderFactory {
 
-    private String jobName;
+    private String completedExitCode;
 
-    private int failedExitCode;
+    private String completedExitMessage;
 
-    private int completeExitCode;
+    private String failedExitCode;
+
+    private String failedExitMessage;
 
     private Step startStep;
 
@@ -38,9 +40,9 @@ public class BatchJobBuilder extends JobBuilderFactory {
 
     private Flow startFlow;
 
-    private List<Flow> nextFlows = new ArrayList<>();
+    private final List<Flow> nextFlows = new ArrayList<>();
 
-    private JobNotificationListener jobNotificationListener;
+    private final JobNotificationListener jobNotificationListener;
 
     private JobBuilder jobBuilder;
 
@@ -51,8 +53,7 @@ public class BatchJobBuilder extends JobBuilderFactory {
     }
 
     public BatchJobBuilder name(String name) {
-        this.jobName = name;
-        jobBuilder = get(jobName);
+        jobBuilder = get(name);
         return this;
     }
 
@@ -76,8 +77,23 @@ public class BatchJobBuilder extends JobBuilderFactory {
         return this;
     }
 
-    public BatchJobBuilder withFailedExitCode(int failedExitCode) {
-        this.failedExitCode = failedExitCode;
+    public BatchJobBuilder withCompletedExitCode(String exitCode) {
+        this.completedExitCode = exitCode;
+        return this;
+    }
+
+    public BatchJobBuilder withCompletedExitMessage(String exitMessage) {
+        this.completedExitMessage = exitMessage;
+        return this;
+    }
+
+    public BatchJobBuilder withFailedExitCode(String exitCode) {
+        this.failedExitCode = exitCode;
+        return this;
+    }
+
+    public BatchJobBuilder withFailedExitMessage(String exitMessage) {
+        this.failedExitMessage = exitMessage;
         return this;
     }
 

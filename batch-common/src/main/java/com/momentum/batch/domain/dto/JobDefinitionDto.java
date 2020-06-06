@@ -41,7 +41,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
     /**
      * Job definition version
      */
-    private String version;
+    private String jobVersion;
     /**
      * Job description.
      */
@@ -141,12 +141,12 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.type = type;
     }
 
-    public String getVersion() {
-        return version;
+    public String getJobVersion() {
+        return jobVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setJobVersion(String jobVersion) {
+        this.jobVersion = jobVersion;
     }
 
     public JobGroupDto getJobGroupDto() {
@@ -302,7 +302,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(name, that.name) &&
                 Objects.equal(label, that.label) &&
                 Objects.equal(type, that.type) &&
-                Objects.equal(version, that.version) &&
+                Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(description, that.description) &&
                 Objects.equal(fileName, that.fileName) &&
                 Objects.equal(command, that.command) &&
@@ -323,7 +323,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, version, description, active, fileName, command, workingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, jobGroupDto, jobDefinitionParamDtos);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, jobGroupDto, jobDefinitionParamDtos);
     }
 
     @Override
@@ -333,7 +333,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("name", name)
                 .add("label", label)
                 .add("type", type)
-                .add("jobVersion", version)
+                .add("jobVersion", jobVersion)
                 .add("description", description)
                 .add("active", active)
                 .add("fileName", fileName)

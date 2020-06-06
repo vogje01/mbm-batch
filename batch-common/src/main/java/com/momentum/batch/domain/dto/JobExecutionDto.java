@@ -22,38 +22,73 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
+    /**
+     * Primary key
+     */
     private String id;
-
+    /**
+     * Job name
+     */
     private String jobName;
-
+    /**
+     * Job execution ID
+     */
     private Long jobExecutionId;
-
+    /**
+     * Job version
+     */
     private String jobVersion;
-
+    /**
+     * Job PID
+     */
     private Long jobPid;
-
+    /**
+     * Host name
+     */
     private String hostName;
-
+    /**
+     * Node name
+     */
     private String nodeName;
-
+    /**
+     * Job user
+     */
     private String startedBy;
-
+    /**
+     * Job status
+     */
     private String status;
-
+    /**
+     * Job create time
+     */
     private Date createTime;
-
+    /**
+     * Job start time
+     */
     private Date startTime;
-
+    /**
+     * Job end time
+     */
     private Date endTime;
-
+    /**
+     * Job last update
+     */
     private Date lastUpdated;
-
+    /**
+     * Job running time
+     */
     private Long runningTime;
-
+    /**
+     * Job exit code
+     */
     private String exitCode;
-
+    /**
+     * Job exit message
+     */
     private String exitMessage;
-
+    /**
+     * Job total number of item processed
+     */
     private Long totalSize;
     /**
      * Created by
@@ -71,9 +106,13 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
      * Modified at
      */
     private Date modifiedAt;
-
+    /**
+     * Job instance
+     */
     private JobInstanceDto jobInstanceDto;
-
+    /**
+     * Job execution context
+     */
     private JobExecutionContextDto jobExecutionContextDto;
 
     private List<JobExecutionParamDto> jobExecutionParamDtoes = new ArrayList<>();
