@@ -116,22 +116,22 @@ public class JobStatusListener {
             jobInstanceInfo = jobExecutionInstanceRepository.save(jobInstanceInfo);
             logger.debug(format("Job execution instance info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobInstanceInfo.getId()));
 
-            // Create job execution context
-            JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
-            jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
-            logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
-
             // Save job execution
             JobExecutionInfo jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
-            jobExecutionInfo.setJobExecutionContext(jobExecutionContext);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
             logger.debug(format("Job execution info created - nodeName: {0} jobName: {1} id: {2}", jobName, jobName, jobExecutionInfo.getId()));
 
-            // Save job execution parameter
+            // Create job execution context
+            JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
+            jobExecutionContext.setJobExecutionInfo(jobExecutionInfo);
+            jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
+            logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
+
+            // Create job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
             jobExecutionInfo.getJobExecutionParams().forEach(p -> {
                 p.setJobExecutionInfo(finalJobExecutionInfo);

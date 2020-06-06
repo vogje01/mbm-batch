@@ -66,6 +66,14 @@ public class JobExecutionContext {
         this.serializedContext = serializedContext;
     }
 
+    public JobExecutionInfo getJobExecutionInfo() {
+        return jobExecutionInfo;
+    }
+
+    public void setJobExecutionInfo(JobExecutionInfo jobExecutionInfo) {
+        this.jobExecutionInfo = jobExecutionInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
