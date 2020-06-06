@@ -4,13 +4,11 @@ import com.momentum.batch.domain.dto.JobExecutionDto;
 import com.momentum.batch.domain.dto.JobStatusDto;
 import com.momentum.batch.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
+import com.momentum.batch.server.database.domain.JobExecutionContext;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.JobInstanceInfo;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
-import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
-import com.momentum.batch.server.database.repository.JobExecutionParamRepository;
-import com.momentum.batch.server.database.repository.JobInstanceInfoRepository;
-import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.database.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,9 @@ public class JobStatusListener {
 
     private final JobExecutionParamRepository jobExecutionParamRepository;
 
-    private final JobInstanceInfoRepository jobInstanceInfoRepository;
+    private final JobExecutionContextRepository jobExecutionContextRepository;
+
+    private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
 
     private final StepExecutionInfoRepository stepExecutionInfoRepository;
 
@@ -47,12 +47,14 @@ public class JobStatusListener {
 
     @Autowired
     public JobStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
-                             JobInstanceInfoRepository jobInstanceInfoRepository,
+                             JobExecutionInstanceRepository jobExecutionInstanceRepository,
                              JobExecutionParamRepository jobExecutionParamRepository,
+                             JobExecutionContextRepository jobExecutionContextRepository,
                              StepExecutionInfoRepository stepExecutionInfoRepository,
                              ModelConverter modelConverter) {
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
-        this.jobInstanceInfoRepository = jobInstanceInfoRepository;
+        this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
+        this.jobExecutionContextRepository = jobExecutionContextRepository;
         this.jobExecutionParamRepository = jobExecutionParamRepository;
         this.stepExecutionInfoRepository = stepExecutionInfoRepository;
         this.modelConverter = modelConverter;
@@ -97,6 +99,7 @@ public class JobStatusListener {
         if (jobExecutionInfoOptional.isPresent()) {
             logger.debug(format("Job execution info found - jobName: {0}  status: {1}", jobName, jobStatus));
 
+
             // Update existing job execution info
             jobExecutionInfo = jobExecutionInfoOptional.get();
             jobExecutionInfo.update(jobExecutionDto);
@@ -107,17 +110,23 @@ public class JobStatusListener {
         } else {
             // Get job execution ID
             long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()).orElse(0L) + 1;
-            logger.debug(format("Max job execution id - jobExecutionId: {0}", jobExecutionId));
+            logger.debug(format("New job execution id - jobExecutionId: {0}", jobExecutionId));
 
             // Create job instance
             JobInstanceInfo jobInstanceInfo = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
-            jobInstanceInfo = jobInstanceInfoRepository.save(jobInstanceInfo);
-            logger.debug(format("Job instance info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobInstanceInfo.getId()));
+            jobInstanceInfo = jobExecutionInstanceRepository.save(jobInstanceInfo);
+            logger.debug(format("Job execution instance info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobInstanceInfo.getId()));
+
+            // Create job execution context
+            JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
+            jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
+            logger.debug(format("Job execution context info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobExecutionContext.getId()));
 
             // Save job execution
             jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
+            jobExecutionInfo.setJobExecutionContext(jobExecutionContext);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);

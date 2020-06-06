@@ -166,8 +166,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.status = jobExecutionDto.getStatus();
         this.exitCode = jobExecutionDto.getExitCode();
         this.exitMessage = jobExecutionDto.getExitMessage();
-        this.jobExecutionInstance = new JobInstanceInfo(jobExecutionDto.getJobName(), this);
-        //jobExecutionDto.getJobParameters().forEach(p -> addJobParameterInfo(new JobExecutionParam(p.getKeyName(), java.util.Objects.requireNonNull(getJobParameter(p)), this)));
+//        this.jobExecutionInstance = new JobInstanceInfo(jobExecutionDto.getJobName(), this);
     }
 
     public String getId() {

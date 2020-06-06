@@ -164,7 +164,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.status = stepExecutionDto.getStatus();
         this.hostName = stepExecutionDto.getHostName();
         this.nodeName = stepExecutionDto.getNodeName();
-        this.totalCount = stepExecutionDto.getTotalCount();
+        this.totalCount = stepExecutionDto.getTotalCount() != null ? stepExecutionDto.getTotalCount() : 0;
         this.readCount = stepExecutionDto.getReadCount();
         this.writeCount = stepExecutionDto.getWriteCount();
         this.commitCount = stepExecutionDto.getCommitCount();

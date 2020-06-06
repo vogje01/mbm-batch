@@ -42,7 +42,7 @@ public class JobInstanceInfo implements PrimaryKeyIdentifier<String> {
         // JSON constructor
     }
 
-    public JobInstanceInfo(String jobName, JobExecutionInfo jobExecutionInfo) {
+    public void update(String jobName, JobExecutionInfo jobExecutionInfo) {
         this.jobName = jobName;
         this.jobExecutionInfo = jobExecutionInfo;
     }
