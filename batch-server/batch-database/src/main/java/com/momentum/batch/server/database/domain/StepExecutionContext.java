@@ -1,4 +1,4 @@
-package com.momentum.batch.domain.dto;
+package com.momentum.batch.server.database.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -6,29 +6,41 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import org.springframework.hateoas.RepresentationModel;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import javax.persistence.*;
 
 /**
- * Job execution context DTO.
+ * Step execution context.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
- * @since 0.0.3
+ * @since 0.0.2
  */
-@JsonInclude(NON_NULL)
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "BATCH_STEP_EXECUTION_CONTEXT")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobExecutionContextDto extends RepresentationModel<JobExecutionContextDto> {
+public class StepExecutionContext {
 
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
 
+    @Column(name = "SHORT_CONTEXT")
     private String shortContext;
 
+    @Lob
+    @Column(name = "SERIALIZED_CONTEXT")
     private String serializedContext;
 
-    private JobExecutionDto jobExecutionDto;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "STEP_EXECUTION_ID", nullable = false)
+    private StepExecutionInfo stepExecutionInfo;
 
     public String getId() {
         return id;
@@ -54,11 +66,19 @@ public class JobExecutionContextDto extends RepresentationModel<JobExecutionCont
         this.serializedContext = serializedContext;
     }
 
+    public StepExecutionInfo getStepExecutionInfo() {
+        return stepExecutionInfo;
+    }
+
+    public void setStepExecutionInfo(StepExecutionInfo stepExecutionInfo) {
+        this.stepExecutionInfo = stepExecutionInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JobExecutionContextDto that = (JobExecutionContextDto) o;
+        StepExecutionContext that = (StepExecutionContext) o;
         return Objects.equal(id, that.id) &&
                 Objects.equal(shortContext, that.shortContext) &&
                 Objects.equal(serializedContext, that.serializedContext);

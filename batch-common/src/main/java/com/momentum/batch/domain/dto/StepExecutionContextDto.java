@@ -11,7 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 /**
- * Job execution context DTO.
+ * Step execution context DTO.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3
@@ -20,7 +20,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobExecutionContextDto extends RepresentationModel<JobExecutionContextDto> {
+public class StepExecutionContextDto extends RepresentationModel<StepExecutionContextDto> {
 
     private String id;
 
@@ -28,7 +28,7 @@ public class JobExecutionContextDto extends RepresentationModel<JobExecutionCont
 
     private String serializedContext;
 
-    private JobExecutionDto jobExecutionDto;
+    private StepExecutionDto stepExecutionDto;
 
     public String getId() {
         return id;
@@ -58,7 +58,7 @@ public class JobExecutionContextDto extends RepresentationModel<JobExecutionCont
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JobExecutionContextDto that = (JobExecutionContextDto) o;
+        StepExecutionContextDto that = (StepExecutionContextDto) o;
         return Objects.equal(id, that.id) &&
                 Objects.equal(shortContext, that.shortContext) &&
                 Objects.equal(serializedContext, that.serializedContext);
