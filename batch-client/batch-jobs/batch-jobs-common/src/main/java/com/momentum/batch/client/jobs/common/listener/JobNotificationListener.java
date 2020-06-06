@@ -12,7 +12,6 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 import static com.momentum.batch.domain.JobStatusType.JOB_FINISHED;
@@ -61,7 +60,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param jobExecution job execution.
      */
     @Override
-    public void beforeJob(@NotNull JobExecution jobExecution) {
+    public void beforeJob(JobExecution jobExecution) {
 
         logger.setJobName(getJobName(jobExecution));
         logger.setJobUuid(ExecutionParameter.getJobUuid(jobExecution));
@@ -88,7 +87,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param jobExecution job execution.
      */
     @Override
-    public void afterJob(@NotNull JobExecution jobExecution) {
+    public void afterJob(JobExecution jobExecution) {
         logger.info(format("Job finished - name: {0} pid: {1} status: {2} [{3}ms]",
                 getJobName(jobExecution), getJobPid(jobExecution), jobExecution.getStatus(), DateTimeUtils.getRunningTime(jobExecution)));
         jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
