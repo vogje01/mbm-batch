@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.day;
 
 import com.hlag.fis.batch.domain.Agent;
-import com.hlag.fis.batch.writer.MysqlWriterBuilder;
+import com.momentum.batch.client.common.job.writer.writer.MysqlWriterBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,8 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecutionlog;
 
-import com.hlag.fis.batch.logging.BatchLogger;
-import com.hlag.fis.batch.reader.CursorReaderBuilder;
-import com.hlag.fis.batch.util.DateTimeUtils;
+import com.momentum.batch.client.common.job.reader.CursorReaderBuilder;
+import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.util.DateTimeUtils;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

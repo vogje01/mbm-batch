@@ -1,6 +1,6 @@
 package com.momentum.batch.agent;
 
-import com.hlag.fis.batch.util.NetworkUtils;
+import com.momentum.batch.util.NetworkUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

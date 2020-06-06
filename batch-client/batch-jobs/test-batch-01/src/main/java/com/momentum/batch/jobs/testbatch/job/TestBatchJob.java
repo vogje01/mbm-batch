@@ -1,7 +1,7 @@
 package com.momentum.batch.jobs.testbatch.job;
 
-import com.hlag.fis.batch.builder.BatchJobRunner;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.momentum.batch.client.common.job.builder.BatchJobRunner;
+import com.momentum.batch.client.common.logging.BatchLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;

@@ -78,6 +78,13 @@
             <version>2.2.8.RELEASE</version>
         </dependency>
 
+        <!-- DTO object mapper -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>2.3.5</version>
+        </dependency>
+
         <!-- Batch -->
         <dependency>
             <groupId>com.momentum</groupId>

@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.hlag.fis.batch.builder.BatchStepBuilder;
-import com.hlag.fis.batch.logging.BatchLogger;
+import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
+import com.momentum.batch.client.common.logging.BatchLogger;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

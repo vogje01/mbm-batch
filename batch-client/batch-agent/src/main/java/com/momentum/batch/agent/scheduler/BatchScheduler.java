@@ -1,11 +1,7 @@
 package com.momentum.batch.agent.scheduler;
 
-import com.hlag.fis.batch.domain.JobDefinition;
-import com.hlag.fis.batch.domain.JobDefinitionParam;
-import com.hlag.fis.batch.domain.JobSchedule;
-import com.hlag.fis.batch.domain.dto.AgentCommandDto;
-import com.hlag.fis.batch.domain.dto.AgentCommandType;
 import com.momentum.batch.agent.AgentCommandProducer;
+import com.momentum.batch.domain.dto.*;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -19,7 +15,7 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.hlag.fis.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -77,9 +73,9 @@ public class BatchScheduler {
         startScheduler();
     }
 
-    public void startJob(JobSchedule jobSchedule) {
+    public void startJob(JobScheduleDto jobSchedule) {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
-        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
             addJob(jobSchedule, jobDefinition);
         }
@@ -97,18 +93,18 @@ public class BatchScheduler {
      *
      * @param jobSchedule job schedule to be removed from the scheduler.
      */
-    public void stopJob(JobSchedule jobSchedule) {
+    public void stopJob(JobScheduleDto jobSchedule) {
         logger.info(format("Stopping job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
-        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
-            if (job.getGroup().equals(jobDefinition.getJobGroup().getName()) && job.getName().equals(jobDefinition.getName())) {
+            if (job.getGroup().equals(jobDefinition.getJobGroupName()) && job.getName().equals(jobDefinition.getName())) {
                 try {
                     scheduler.deleteJob(job);
-                    logger.info(format("Job removed from scheduler - groupName: {0} jobName: {1}", jobDefinition.getJobGroup(), jobDefinition.getName()));
+                    logger.info(format("Job removed from scheduler - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
                 } catch (SchedulerException e) {
                     logger.error(format(
                             "Could not remove job - groupName: {0} jobName: {1} error: {2}",
-                            jobDefinition.getJobGroup(),
+                            jobDefinition.getJobGroupName(),
                             jobDefinition.getName(),
                             e.getMessage()), e);
                 }
@@ -121,11 +117,11 @@ public class BatchScheduler {
      *
      * @param jobSchedule job definition.
      */
-    public void rescheduleJob(JobSchedule jobSchedule) {
+    public void rescheduleJob(JobScheduleDto jobSchedule) {
         logger.info(format("Processing job schedule - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
-        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
-            if (job.getGroup().equals(jobDefinition.getJobGroup().getName()) && job.getName().equals(jobDefinition.getName())) {
+            if (job.getGroup().equals(jobDefinition.getJobGroupName()) && job.getName().equals(jobDefinition.getName())) {
                 try {
                     if (scheduler.checkExists(job)) {
                         Trigger trigger = scheduler.getTrigger(TriggerKey.triggerKey(job.getName(), job.getGroup()));
@@ -155,25 +151,25 @@ public class BatchScheduler {
      *
      * @param jobDefinition job definition to add to the scheduler.
      */
-    public void addJob(JobSchedule jobSchedule, JobDefinition jobDefinition) {
+    public void addJob(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         logger.info(format("Adding job to scheduler - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         try {
             // Check existence
             if (findJob(jobDefinition)) {
                 logger.warn(format("Job already register in scheduler - groupName: {0} jobName: {1}",
-                        jobDefinition.getJobGroup(), jobDefinition.getName()));
+                        jobDefinition.getJobGroupName(), jobDefinition.getName()));
                 return;
             }
         } catch (SchedulerException e) {
             logger.error(format("Could not check existence - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
+                    jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
             return;
         }
 
         // Get the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         if (trigger != null) {
-            logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroup().getName(), jobDefinition.getName()));
+            logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(jobDefinition);
@@ -181,13 +177,13 @@ public class BatchScheduler {
                 sendJobStart(jobSchedule);
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
-                        jobDefinition.getJobGroup().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
+                        jobDefinition.getJobGroupName(), jobDefinition.getName(), trigger.getNextFireTime()));
             } catch (SchedulerException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                        jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
+                        jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
             }
         } else {
-            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobGroup(), jobDefinition.getName()));
+            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
         }
     }
 
@@ -199,21 +195,21 @@ public class BatchScheduler {
      *
      * @param jobDefinition job definition to add to the scheduler.
      */
-    public void addOnDemandJob(JobDefinition jobDefinition) {
+    public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
         // Build the job details, needed for the scheduler
-        JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroup().getName());
+        JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroupName());
         JobDetail jobDetail = buildJobDetail(jobDefinition);
         try {
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
             logger.info(format("Next execution - groupName: {0} jobName: {1} nextExecution: {2}",
-                    jobDefinition.getJobGroup(), jobDefinition.getName(), LocalDateTime.now()));
+                    jobDefinition.getJobGroupName(), jobDefinition.getName(), LocalDateTime.now()));
         } catch (SchedulerException e) {
             logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinition.getJobGroup(), jobDefinition.getName(), e.getMessage()), e);
+                    jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
         }
-        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroup(), jobDefinition.getName()));
+        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
     }
 
     /**
@@ -222,12 +218,12 @@ public class BatchScheduler {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    private JobDetail buildJobDetail(JobDefinition jobDefinition) {
+    private JobDetail buildJobDetail(JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
                 .jobName(jobDefinition.getName())
-                .groupName(jobDefinition.getJobGroup().getName())
+                .groupName(jobDefinition.getJobGroupName())
                 .description(jobDefinition.getDescription())
-                .jobType(jobDefinition.getType().name())
+                .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(jobDefinition.getFileName())
@@ -253,7 +249,7 @@ public class BatchScheduler {
      * @param jobDefinition job definition to process.
      * @return command line.
      */
-    private List<String> buildArguments(JobDefinition jobDefinition) {
+    private List<String> buildArguments(JobDefinitionDto jobDefinition) {
 
         // Add default parameters
         List<String> arguments = new ArrayList<>();
@@ -267,7 +263,7 @@ public class BatchScheduler {
         arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());
         arguments.add("-D" + JOB_COMPLETED_EXIT_MESSAGE + "=" + jobDefinition.getCompletedExitMessage());
 
-        List<JobDefinitionParam> params = jobDefinition.getJobDefinitionParams();
+        List<JobDefinitionParamDto> params = jobDefinition.getJobDefinitionParamDtos();
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }
@@ -281,7 +277,7 @@ public class BatchScheduler {
      * @param param job definition parameter
      * @return parameter value as string.
      */
-    private String getParamValue(JobDefinitionParam param) {
+    private String getParamValue(JobDefinitionParamDto param) {
         if (param.getStringValue() != null && param.getStringValue().isEmpty()) {
             return param.getStringValue();
         } else if (param.getLongValue() != null) {
@@ -307,10 +303,10 @@ public class BatchScheduler {
         }
     }
 
-    private Trigger buildTrigger(JobSchedule jobSchedule, JobDefinition jobDefinition) {
+    private Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         if (jobSchedule.getSchedule() != null) {
             return TriggerBuilder.newTrigger()
-                    .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroup().getName())
+                    .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
                     .withSchedule(createSchedule(jobSchedule.getSchedule()))
                     .build();
         }
@@ -338,8 +334,8 @@ public class BatchScheduler {
     /**
      * Find a job by group name and name.
      */
-    private boolean findJob(JobDefinition jobDefinition) throws SchedulerException {
-        return scheduler.checkExists(new JobKey(jobDefinition.getName(), jobDefinition.getJobGroup().getName()));
+    private boolean findJob(JobDefinitionDto jobDefinition) throws SchedulerException {
+        return scheduler.checkExists(new JobKey(jobDefinition.getName(), jobDefinition.getJobGroupName()));
     }
 
     /**
@@ -358,20 +354,20 @@ public class BatchScheduler {
      *
      * @param jobSchedule job schedule.
      */
-    private void sendJobStart(JobSchedule jobSchedule) {
-        logger.info(format("Sending job status - name: {0}", jobSchedule.getJobDefinition().getName()));
+    private void sendJobStart(JobScheduleDto jobSchedule) {
+        logger.info(format("Sending job status - name: {0}", jobSchedule.getJobDefinitionDto().getName()));
         try {
             CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
             Date next = cronExpression.getNextValidTimeAfter(new Date());
 
             logger.info(format("Next execution - next: {0}", next));
 
-            JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+            JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
             AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
             agentCommandDto.setNodeName(nodeName);
             agentCommandDto.setHostName(hostName);
             agentCommandDto.setJobName(jobDefinition.getName());
-            agentCommandDto.setGroupName(jobDefinition.getJobGroup().getName());
+            agentCommandDto.setGroupName(jobDefinition.getJobGroupName());
             agentCommandDto.setNextFireTime(next);
             agentCommandProducer.sendAgentCommand(agentCommandDto);
         } catch (ParseException e) {

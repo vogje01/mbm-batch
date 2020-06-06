@@ -1,8 +1,8 @@
 package com.momentum.batch.agent;
 
-import com.hlag.fis.batch.configuration.AbstractKafkaConfiguration;
-import com.hlag.fis.batch.domain.dto.AgentCommandDto;
-import com.hlag.fis.batch.domain.dto.ServerCommandDto;
+import com.momentum.batch.configuration.AbstractKafkaConfiguration;
+import com.momentum.batch.domain.dto.AgentCommandDto;
+import com.momentum.batch.domain.dto.ServerCommandDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

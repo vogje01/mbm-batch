@@ -1,10 +1,10 @@
 package com.momentum.batch.agent.listener;
 
-import com.hlag.fis.batch.domain.JobSchedule;
-import com.hlag.fis.batch.domain.dto.ServerCommandDto;
-import com.hlag.fis.batch.util.ModelConverter;
 import com.momentum.batch.agent.scheduler.BatchScheduler;
 import com.momentum.batch.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.client.common.converter.ModelConverter;
+import com.momentum.batch.domain.dto.JobScheduleDto;
+import com.momentum.batch.domain.dto.ServerCommandDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +26,16 @@ public class ServerCommandListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerCommandListener.class);
 
-    private BatchScheduler batchScheduler;
+    private final BatchScheduler batchScheduler;
 
-    private ModelConverter modelConverter;
+    private final BatchSchedulerTask batchSchedulerTask;
 
-    private BatchSchedulerTask batchSchedulerTask;
-
-    private String nodeName;
+    private final String nodeName;
 
     @Autowired
     public ServerCommandListener(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask, ModelConverter modelConverter, String nodeName) {
         this.batchScheduler = batchScheduler;
         this.batchSchedulerTask = batchSchedulerTask;
-        this.modelConverter = modelConverter;
         this.nodeName = nodeName;
         logger.info(format("Server command listener initialized - nodeName: {0}", nodeName));
     }
@@ -57,23 +54,23 @@ public class ServerCommandListener {
         logger.info(format("Received server command info - type: {0}", serverCommandDto.getType()));
 
         // Convert to entity
-        JobSchedule jobSchedule = modelConverter.convertJobScheduleToEntity(serverCommandDto.getJobScheduleDto());
-        if (jobSchedule.getJobDefinition() == null) {
+        JobScheduleDto jobScheduleDto = serverCommandDto.getJobScheduleDto();
+        if (jobScheduleDto.getJobDefinitionDto() == null) {
             logger.error(format("Missing job definition"));
             return;
         }
         switch (serverCommandDto.getType()) {
             case RESCHEDULE_JOB:
-                batchScheduler.rescheduleJob(jobSchedule);
+                batchScheduler.rescheduleJob(jobScheduleDto);
                 break;
             case START_JOB:
-                batchScheduler.startJob(jobSchedule);
+                batchScheduler.startJob(jobScheduleDto);
                 break;
             case STOP_JOB:
-                batchScheduler.stopJob(jobSchedule);
+                batchScheduler.stopJob(jobScheduleDto);
                 break;
             case KILL_JOB:
-                batchSchedulerTask.killProcess(jobSchedule);
+                batchSchedulerTask.killProcess(jobScheduleDto);
                 break;
         }
     }

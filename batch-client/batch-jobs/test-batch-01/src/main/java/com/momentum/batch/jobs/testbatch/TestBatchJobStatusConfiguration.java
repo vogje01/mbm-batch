@@ -1,8 +1,8 @@
 package com.momentum.batch.jobs.testbatch;
 
-import com.hlag.fis.batch.configuration.AbstractKafkaConfiguration;
-import com.hlag.fis.batch.domain.dto.JobStatusDto;
-import com.hlag.fis.batch.producer.JobStatusProducer;
+import com.momentum.batch.client.common.configuration.JobStatusProducer;
+import com.momentum.batch.configuration.AbstractKafkaConfiguration;
+import com.momentum.batch.domain.dto.JobStatusDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;

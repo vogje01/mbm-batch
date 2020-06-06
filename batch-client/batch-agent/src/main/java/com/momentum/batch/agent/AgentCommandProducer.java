@@ -1,6 +1,6 @@
 package com.momentum.batch.agent;
 
-import com.hlag.fis.batch.domain.dto.AgentCommandDto;
+import com.momentum.batch.domain.dto.AgentCommandDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

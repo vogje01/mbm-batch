@@ -1,9 +1,9 @@
 package com.momentum.batch.agent.scheduler;
 
-import com.hlag.fis.batch.domain.JobSchedule;
-import com.hlag.fis.batch.domain.dto.AgentCommandDto;
-import com.hlag.fis.batch.domain.dto.AgentCommandType;
 import com.momentum.batch.agent.AgentCommandProducer;
+import com.momentum.batch.domain.dto.AgentCommandDto;
+import com.momentum.batch.domain.dto.AgentCommandType;
+import com.momentum.batch.domain.dto.JobScheduleDto;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static com.hlag.fis.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -188,8 +188,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
      *
      * @param jobSchedule job schedule.
      */
-    public void killProcess(JobSchedule jobSchedule) {
-        String jobName = jobSchedule.getJobDefinition().getName();
+    public void killProcess(JobScheduleDto jobSchedule) {
+        String jobName = jobSchedule.getJobDefinitionDto().getName();
         logger.info(format("Start killing job - jobName: {0}", jobName));
         if (processList.get(jobName) != null) {
             killProcess(jobName);
