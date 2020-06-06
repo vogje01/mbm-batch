@@ -17,8 +17,8 @@
 
 	<modules>
         <module>batch-jobs-common</module>
-        <module>batch-jobs-performance-batch</module>
-        <module>batch-jobs-housekeeping-batch</module>
+        <module>batch-jobs-performance</module>
+        <module>batch-jobs-housekeeping</module>
         <module>batch-jobs-test-01</module>
     </modules>
 
