@@ -87,27 +87,26 @@ public class JobStatusListener {
      */
     private void jobStatusChanged(JobExecutionDto jobExecutionDto) {
 
-        JobExecutionInfo jobExecutionInfo;
-        String jobName = jobExecutionDto.getJobName();
-        String jobUuid = jobExecutionDto.getId();
-        String jobStatus = jobExecutionDto.getStatus();
+        logger.debug(format("Received status info - nodeName: {0} jobName: {1}", jobExecutionDto.getNodeName(), jobExecutionDto.getJobName()));
 
-        logger.debug(format("Received status info - jobName: {0} jobUuid: {1}", jobName, jobUuid));
+        String nodeName = jobExecutionDto.getNodeName();
+        String jobName = jobExecutionDto.getJobName();
 
         // Get the current job execution info entity
-        Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(jobUuid);
+        Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(jobExecutionDto.getId());
         if (jobExecutionInfoOptional.isPresent()) {
-            logger.debug(format("Job execution info found - jobName: {0}  status: {1}", jobName, jobStatus));
-
+            logger.debug(format("Job execution info found - nodeName: {0}  jobName: {1}", nodeName, jobName));
 
             // Update existing job execution info
-            jobExecutionInfo = jobExecutionInfoOptional.get();
+            JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
             jobExecutionInfo.update(jobExecutionDto);
             jobExecutionInfo.setModifiedAt(new Date());
             jobExecutionInfo.setModifiedBy("admin");
             jobExecutionInfoRepository.save(jobExecutionInfo);
-            logger.debug(format("Job execution info updated - jobName: {0} status: {1}", jobName, jobStatus));
+            logger.debug(format("Job execution info updated - jobName: {0} jobName: {1}", nodeName, jobName));
+
         } else {
+
             // Get job execution ID
             long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()).orElse(0L) + 1;
             logger.debug(format("New job execution id - jobExecutionId: {0}", jobExecutionId));
@@ -115,22 +114,22 @@ public class JobStatusListener {
             // Create job instance
             JobInstanceInfo jobInstanceInfo = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
             jobInstanceInfo = jobExecutionInstanceRepository.save(jobInstanceInfo);
-            logger.debug(format("Job execution instance info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobInstanceInfo.getId()));
+            logger.debug(format("Job execution instance info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobInstanceInfo.getId()));
 
             // Create job execution context
             JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
             jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
-            logger.debug(format("Job execution context info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobExecutionContext.getId()));
+            logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
 
             // Save job execution
-            jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
+            JobExecutionInfo jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
             jobExecutionInfo.setJobExecutionContext(jobExecutionContext);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
-            logger.debug(format("Job execution info created - jobName: {0} status: {1} id: {2}", jobName, jobStatus, jobExecutionInfo.getId()));
+            logger.debug(format("Job execution info created - nodeName: {0} jobName: {1} id: {2}", jobName, jobName, jobExecutionInfo.getId()));
 
             // Save job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
@@ -138,8 +137,7 @@ public class JobStatusListener {
                 p.setJobExecutionInfo(finalJobExecutionInfo);
                 jobExecutionParamRepository.save(p);
             });
-            logger.debug(format("Job execution parameters created - jobName: {0} size: {1} id: {2}", jobName,
-                    jobExecutionInfo.getJobExecutionParams().size(), jobExecutionInfo.getId()));
+            logger.debug(format("Job execution parameters created - nodeName: {0} jobName: {1} size: {2}", nodeName, jobName, jobExecutionInfo.getJobExecutionParams().size()));
         }
     }
 
