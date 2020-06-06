@@ -34,7 +34,7 @@ public class PerformanceBatchConfiguration {
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("consolidation.yml")};
 
     @Bean
-    String jobName() {
+    public String jobName() {
         return "Performance Batch";
     }
 

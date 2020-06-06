@@ -88,9 +88,7 @@ public class PerformanceBatchJob {
     public void initialize() {
         Job job = houseKeepingJob();
         logger.info(format("Running job - jobName: {0}", jobName));
-        batchJobRunner.jobName(jobName)
-                .job(job)
-                .start();
+        batchJobRunner.job(job).start();
     }
 
     /**
