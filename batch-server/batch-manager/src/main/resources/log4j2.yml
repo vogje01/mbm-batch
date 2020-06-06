@@ -21,17 +21,7 @@ Configutation:
       AppenderRef:
         - ref: Console_Appender
     Logger:
-      - name: org.springframework
-        level: warn
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-      - name: org.springframework.transaction
-        level: error
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
-      - name: com.momentum.batch.server
+      - name: com.momentum.batch.server.manager
         level: debug
         additivity: false
         AppenderRef:
