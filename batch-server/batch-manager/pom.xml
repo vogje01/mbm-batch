@@ -9,7 +9,7 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>com.hlag.fis.batch</groupId>
+    <groupId>com.momentum.batch.server</groupId>
     <artifactId>batch-manager</artifactId>
     <name>batch-manager</name>
     <version>0.0.3</version>
@@ -88,8 +88,13 @@
 
         <!-- Batch -->
         <dependency>
-            <groupId>com.hlag.fis</groupId>
+            <groupId>com.momentum</groupId>
             <artifactId>batch-common</artifactId>
+            <version>0.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.momentum</groupId>
+            <artifactId>batch-database</artifactId>
             <version>0.0.3</version>
         </dependency>
 
@@ -130,8 +135,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.hlag.fis</groupId>
-            <artifactId>batch-common</artifactId>
+            <groupId>com.momentum</groupId>
+            <artifactId>batch-database</artifactId>
             <version>0.0.3</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -144,7 +149,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.hlag.fis.batch.manager.BatchManagerApplication</mainClass>
+                    <mainClass>com.momentum.batch.server.manager.BatchManagerApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

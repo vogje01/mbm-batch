@@ -31,7 +31,7 @@ Configutation:
         additivity: false
         AppenderRef:
           - ref: Console_Appender
-      - name: com.hlag.fis.batch
+      - name: com.momentum.batch.server
         level: debug
         additivity: false
         AppenderRef:
