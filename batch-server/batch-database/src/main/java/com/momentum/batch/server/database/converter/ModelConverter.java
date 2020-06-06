@@ -156,6 +156,23 @@ public class ModelConverter {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Step context
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public StepExecutionContext convertStepExecutionContextToEntity(StepExecutionContextDto stepExecutionContextDto) {
+        if (stepExecutionContextDto != null) {
+            return modelMapper.map(stepExecutionContextDto, StepExecutionContext.class);
+        }
+        return null;
+    }
+
+    public StepExecutionContextDto convertStepExecutionContextToDto(StepExecutionContext stepExecutionContext) {
+        if (stepExecutionContext != null) {
+            return modelMapper.map(stepExecutionContext, StepExecutionContextDto.class);
+        }
+        return null;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job schedules
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public JobScheduleDto convertJobScheduleToDto(JobSchedule jobSchedule) {

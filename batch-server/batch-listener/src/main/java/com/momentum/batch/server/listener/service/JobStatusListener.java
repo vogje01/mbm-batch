@@ -4,10 +4,7 @@ import com.momentum.batch.domain.dto.JobExecutionDto;
 import com.momentum.batch.domain.dto.JobStatusDto;
 import com.momentum.batch.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
-import com.momentum.batch.server.database.domain.JobExecutionContext;
-import com.momentum.batch.server.database.domain.JobExecutionInfo;
-import com.momentum.batch.server.database.domain.JobExecutionInstance;
-import com.momentum.batch.server.database.domain.StepExecutionInfo;
+import com.momentum.batch.server.database.domain.*;
 import com.momentum.batch.server.database.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +40,8 @@ public class JobStatusListener {
 
     private final StepExecutionInfoRepository stepExecutionInfoRepository;
 
+    private final StepExecutionContextRepository stepExecutionContextRepository;
+
     private final ModelConverter modelConverter;
 
     @Autowired
@@ -51,12 +50,14 @@ public class JobStatusListener {
                              JobExecutionParamRepository jobExecutionParamRepository,
                              JobExecutionContextRepository jobExecutionContextRepository,
                              StepExecutionInfoRepository stepExecutionInfoRepository,
+                             StepExecutionContextRepository stepExecutionContextRepository,
                              ModelConverter modelConverter) {
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.jobExecutionContextRepository = jobExecutionContextRepository;
         this.jobExecutionParamRepository = jobExecutionParamRepository;
         this.stepExecutionInfoRepository = stepExecutionInfoRepository;
+        this.stepExecutionContextRepository = stepExecutionContextRepository;
         this.modelConverter = modelConverter;
         logger.info(format("Job status listener initialized"));
     }
@@ -148,37 +149,41 @@ public class JobStatusListener {
      */
     private void stepStatusChanged(StepExecutionDto stepExecutionDto) {
 
-        StepExecutionInfo stepExecutionInfo;
+        String nodeName = stepExecutionDto.getNodeName();
         String jobName = stepExecutionDto.getJobName();
-        String jobUuid = stepExecutionDto.getJobId();
         String stepName = stepExecutionDto.getStepName();
-        String stepUuid = stepExecutionDto.getId();
-        String stepStatus = stepExecutionDto.getStatus();
 
-        logger.info(format("Received step execution info - stepName: {0} stepUuid: {1} status: {2}", stepName, stepUuid, stepStatus));
+        logger.info(format("Received step execution info - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
 
-        Optional<StepExecutionInfo> stepExecutionInfoOptional = stepExecutionInfoRepository.findById(stepUuid);
+        Optional<StepExecutionInfo> stepExecutionInfoOptional = stepExecutionInfoRepository.findById(stepExecutionDto.getId());
         if (stepExecutionInfoOptional.isPresent()) {
-            logger.debug(format("Step info found - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
-            stepExecutionInfo = stepExecutionInfoOptional.get();
+            logger.debug(format("Step info found - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
+            StepExecutionInfo stepExecutionInfo = stepExecutionInfoOptional.get();
             stepExecutionInfo.update(stepExecutionDto);
             stepExecutionInfo.setModifiedAt(new Date());
             stepExecutionInfo.setModifiedBy("admin");
             stepExecutionInfoRepository.save(stepExecutionInfo);
-            logger.debug(format("Step info updated - jobName: {0} stepName: {1} stepUuid: {2}", jobName, stepName, stepUuid));
+            logger.debug(format("Step info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
         } else {
-            logger.info(format("Step not found, creating new one - jobName: {0} stepName: {1} status: {2}", jobName, stepName, stepStatus));
-            stepExecutionInfo = new StepExecutionInfo();
-            Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(jobUuid);
+            logger.info(format("Step not found, creating new one - nodeName: {0} stepName: {1} stepName: {2}", nodeName, jobName, stepName));
+            StepExecutionInfo stepExecutionInfo = new StepExecutionInfo();
+            Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(stepExecutionDto.getJobId());
             if (jobExecutionInfoOptional.isPresent()) {
-                logger.debug(format("Job found - jobName: {0} jobUuid: {1}", jobName, stepUuid));
+                logger.debug(format("Job found - nodeName: {0} jobName: {1}", nodeName, jobName));
                 stepExecutionInfo.update(stepExecutionDto);
                 stepExecutionInfo.setJobExecutionInfo(jobExecutionInfoOptional.get());
                 stepExecutionInfo.setCreatedAt(new Date());
                 stepExecutionInfo.setCreatedBy("admin");
                 stepExecutionInfoRepository.save(stepExecutionInfo);
+
+                // Create step execution context
+                StepExecutionContext stepExecutionContext = modelConverter.convertStepExecutionContextToEntity(stepExecutionDto.getStepExecutionContextDto());
+                stepExecutionContext.setStepExecutionInfo(stepExecutionInfo);
+                stepExecutionContext = stepExecutionContextRepository.save(stepExecutionContext);
+                logger.debug(format("Step execution context info created - nodeName: {0} stepName: {1} id: {2}", nodeName, stepName, stepExecutionContext.getId()));
+
             } else {
-                logger.error(format("Job not found - jobName: {0} jobUuid: {1}", jobName, stepUuid));
+                logger.error(format("Job not found - nodeName: {0} jobName: {1}", jobName, jobName));
             }
         }
     }
