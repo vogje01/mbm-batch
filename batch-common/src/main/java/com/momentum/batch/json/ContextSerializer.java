@@ -18,11 +18,11 @@ public class ContextSerializer extends JsonSerializer<Map<String, Object>> {
     public void serialize(final Map<String, Object> value, final JsonGenerator jgen, final SerializerProvider provider) throws IOException {
 
         // Iterate the map entries and write them as fields
+        jgen.writeStartObject();
         for (Map.Entry<String, Object> entry : value.entrySet()) {
-            jgen.writeStartObject();
             jgen.writeObjectField(entry.getKey(), entry.getValue());
-            jgen.writeEndObject();
         }
+        jgen.writeEndObject();
     }
 }
 

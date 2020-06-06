@@ -27,7 +27,8 @@ public class ModelConverterHelper {
 
     public String jsonSerialize(ExecutionContext executionContext) {
         try {
-            return objectMapper.writer().writeValueAsString(new ExecutionContextDto(executionContext));
+            ExecutionContextDto executionContextDto = new ExecutionContextDto(executionContext);
+            return objectMapper.writer().writeValueAsString(executionContextDto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
