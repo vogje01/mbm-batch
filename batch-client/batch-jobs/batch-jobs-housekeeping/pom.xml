@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.momentum</groupId>
-    <artifactId>batch-jobs-housekeeping-batch</artifactId>
+    <artifactId>batch-jobs-housekeeping</artifactId>
     <version>0.0.3</version>
     <description>House keeping for the batch database schema</description>
 

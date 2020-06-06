@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
     <groupId>com.momentum</groupId>
-    <artifactId>batch-jobs-performance-batch</artifactId>
+    <artifactId>batch-jobs-performance</artifactId>
     <version>0.0.3</version>
     <description>Collection and consolidation of performance data.</description>
 
