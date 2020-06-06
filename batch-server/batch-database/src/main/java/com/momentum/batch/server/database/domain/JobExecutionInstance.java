@@ -16,7 +16,7 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobInstanceInfo implements PrimaryKeyIdentifier<String> {
+public class JobExecutionInstance implements PrimaryKeyIdentifier<String> {
 
     @Id
     @Column(name = "ID")
@@ -38,7 +38,7 @@ public class JobInstanceInfo implements PrimaryKeyIdentifier<String> {
     @JoinColumn(name = "JOB_EXECUTION_ID", nullable = false)
     private JobExecutionInfo jobExecutionInfo;
 
-    public JobInstanceInfo() {
+    public JobExecutionInstance() {
         // JSON constructor
     }
 
@@ -84,7 +84,7 @@ public class JobInstanceInfo implements PrimaryKeyIdentifier<String> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        JobInstanceInfo that = (JobInstanceInfo) o;
+        JobExecutionInstance that = (JobExecutionInstance) o;
         return Objects.equal(id, that.id) &&
                 Objects.equal(version, that.version) &&
                 Objects.equal(jobName, that.jobName) &&

@@ -1,7 +1,7 @@
 package com.momentum.batch.domain;
 
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
-import com.momentum.batch.server.database.domain.JobInstanceInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInstance;
 
 import java.util.UUID;
 
@@ -15,9 +15,9 @@ public class JobExecutionInfoBuilder {
     }
 
     public JobExecutionInfoBuilder withName(String name) {
-        JobInstanceInfo jobInstanceInfo = new JobInstanceInfo();
-        jobInstanceInfo.setJobName(name);
-        jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
+        JobExecutionInstance jobExecutionInstance = new JobExecutionInstance();
+        jobExecutionInstance.setJobName(name);
+        jobExecutionInfo.setJobExecutionInstance(jobExecutionInstance);
         return this;
     }
 

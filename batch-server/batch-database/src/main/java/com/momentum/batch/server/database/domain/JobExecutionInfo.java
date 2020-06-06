@@ -130,7 +130,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     @OneToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "JOB_INSTANCE_ID", referencedColumnName = "ID")
-    private JobInstanceInfo jobExecutionInstance;
+    private JobExecutionInstance jobExecutionInstance;
     /**
      * Job execution parameter from JSR-352
      */
@@ -185,12 +185,12 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.jobExecutionId = jobExecutionId;
     }
 
-    public JobInstanceInfo getJobExecutionInstance() {
+    public JobExecutionInstance getJobExecutionInstance() {
         return jobExecutionInstance;
     }
 
-    public void setJobExecutionInstance(JobInstanceInfo jobInstanceInfo) {
-        this.jobExecutionInstance = jobInstanceInfo;
+    public void setJobExecutionInstance(JobExecutionInstance jobExecutionInstance) {
+        this.jobExecutionInstance = jobExecutionInstance;
     }
 
     public JobExecutionContext getJobExecutionContext() {

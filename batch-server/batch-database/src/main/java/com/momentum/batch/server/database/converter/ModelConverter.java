@@ -109,14 +109,14 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job instance
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public JobInstanceDto convertJobInstanceToDto(JobInstanceInfo jobInstanceInfo) {
-        JobInstanceDto jobInstanceDto = modelMapper.map(jobInstanceInfo, JobInstanceDto.class);
+    public JobInstanceDto convertJobInstanceToDto(JobExecutionInstance jobExecutionInstance) {
+        JobInstanceDto jobInstanceDto = modelMapper.map(jobExecutionInstance, JobInstanceDto.class);
         jobInstanceDto.setId(null);
         return jobInstanceDto;
     }
 
-    public JobInstanceInfo convertJobInstanceToEntity(JobInstanceDto jobInstanceDto) {
-        return modelMapper.map(jobInstanceDto, JobInstanceInfo.class);
+    public JobExecutionInstance convertJobInstanceToEntity(JobInstanceDto jobInstanceDto) {
+        return modelMapper.map(jobInstanceDto, JobExecutionInstance.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

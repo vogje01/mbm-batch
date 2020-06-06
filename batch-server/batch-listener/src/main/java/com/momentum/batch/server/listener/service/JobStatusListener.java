@@ -6,7 +6,7 @@ import com.momentum.batch.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionContext;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
-import com.momentum.batch.server.database.domain.JobInstanceInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInstance;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
 import com.momentum.batch.server.database.repository.*;
 import org.slf4j.Logger;
@@ -112,14 +112,14 @@ public class JobStatusListener {
             logger.debug(format("New job execution id - jobExecutionId: {0}", jobExecutionId));
 
             // Create job instance
-            JobInstanceInfo jobInstanceInfo = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
-            jobInstanceInfo = jobExecutionInstanceRepository.save(jobInstanceInfo);
-            logger.debug(format("Job execution instance info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobInstanceInfo.getId()));
+            JobExecutionInstance jobExecutionInstance = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
+            jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
+            logger.debug(format("Job execution instance info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
 
             // Save job execution
             JobExecutionInfo jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
-            jobExecutionInfo.setJobExecutionInstance(jobInstanceInfo);
+            jobExecutionInfo.setJobExecutionInstance(jobExecutionInstance);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);

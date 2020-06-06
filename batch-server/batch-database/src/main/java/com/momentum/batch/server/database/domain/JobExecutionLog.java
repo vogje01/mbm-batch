@@ -11,7 +11,6 @@ import com.momentum.batch.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 /**
  * Job execution log messages.
@@ -95,9 +94,6 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
 
     @Column(name = "TIMESTAMP")
     private Long timestamp;
-
-    @Embedded
-    private JobExecutionInstant instant;
 
     @Embedded
     private JobExecutionThrown thrown;
@@ -230,21 +226,6 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
         this.timestamp = timestamp;
     }
 
-    public JobExecutionInstant getInstant() {
-        return instant;
-    }
-
-    public Instant getJavaInstant() {
-        if (instant != null) {
-            return Instant.ofEpochSecond(instant.getEpochSecond(), instant.getNanoOfSecond());
-        }
-        return null;
-    }
-
-    public void setInstant(JobExecutionInstant instant) {
-        this.instant = instant;
-    }
-
     public JobExecutionThrown getThrown() {
         return thrown;
     }
@@ -273,13 +254,12 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
                 Objects.equal(loggerName, that.loggerName) &&
                 Objects.equal(message, that.message) &&
                 level == that.level &&
-                Objects.equal(instant, that.instant) &&
                 Objects.equal(thrown, that.thrown);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, hostName, nodeName, jobPid, jobName, jobUuid, stepName, stepUuid, jobVersion, thread, threadId, threadPriority, loggerName, message, level, instant, thrown);
+        return Objects.hashCode(id, hostName, nodeName, jobPid, jobName, jobUuid, stepName, stepUuid, jobVersion, thread, threadId, threadPriority, loggerName, message, level, thrown);
     }
 
     @Override
@@ -300,7 +280,6 @@ public class JobExecutionLog implements PrimaryKeyIdentifier<String> {
                 .add("loggerName", loggerName)
                 .add("message", message)
                 .add("level", level)
-                .add("instant", instant)
                 .add("thrown", thrown)
                 .toString();
     }
