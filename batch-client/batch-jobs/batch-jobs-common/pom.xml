@@ -66,12 +66,6 @@
             <artifactId>batch-common</artifactId>
             <version>0.0.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.momentum</groupId>
-            <artifactId>batch-client-common</artifactId>
-            <version>0.0.3</version>
-            <scope>compile</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
