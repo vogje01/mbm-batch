@@ -1,6 +1,6 @@
 package com.momentum.batch.database.repository;
 
-import com.hlag.fis.batch.domain.JobExecutionParam;
+import com.momentum.batch.database.domain.JobExecutionParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

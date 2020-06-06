@@ -1,5 +1,9 @@
 package com.momentum.batch.domain;
 
+import com.momentum.batch.database.domain.JobDefinition;
+import com.momentum.batch.database.domain.JobDefinitionParam;
+import com.momentum.batch.database.domain.JobGroup;
+
 import java.util.UUID;
 
 public class JobDefinitionBuilder {

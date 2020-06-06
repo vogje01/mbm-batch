@@ -1,8 +1,8 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.daily;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.repository.BatchPerformanceRepository;
 import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.database.domain.BatchPerformance;
+import com.momentum.batch.database.repository.BatchPerformanceRepository;
 import com.momentum.batch.domain.BatchPerformanceType;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

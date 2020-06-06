@@ -1,9 +1,9 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
-import com.hlag.fis.batch.domain.JobExecutionInfo;
-import com.hlag.fis.batch.repository.JobExecutionInfoRepository;
 import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
 import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.database.domain.JobExecutionInfo;
+import com.momentum.batch.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.util.DateTimeUtils;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;

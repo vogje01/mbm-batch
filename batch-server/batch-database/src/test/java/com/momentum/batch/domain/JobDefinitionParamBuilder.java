@@ -1,5 +1,8 @@
 package com.momentum.batch.domain;
 
+import com.momentum.batch.database.domain.JobDefinition;
+import com.momentum.batch.database.domain.JobDefinitionParam;
+
 import java.time.LocalDate;
 import java.util.UUID;
 

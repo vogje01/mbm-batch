@@ -1,5 +1,7 @@
 package com.momentum.batch.domain;
 
+import com.momentum.batch.database.domain.BatchPerformance;
+
 import java.sql.Timestamp;
 import java.util.UUID;
 

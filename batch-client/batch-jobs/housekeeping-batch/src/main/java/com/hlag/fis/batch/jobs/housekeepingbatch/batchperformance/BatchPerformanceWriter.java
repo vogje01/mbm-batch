@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
 import com.momentum.batch.client.common.job.writer.writer.MysqlDeleteWriter;
+import com.momentum.batch.database.domain.BatchPerformance;
 import org.springframework.stereotype.Component;
 
 /**

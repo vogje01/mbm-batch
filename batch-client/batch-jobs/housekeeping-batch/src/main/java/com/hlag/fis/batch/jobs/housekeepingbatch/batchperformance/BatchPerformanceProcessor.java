@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.batchperformance;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
+import com.momentum.batch.database.domain.BatchPerformance;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 

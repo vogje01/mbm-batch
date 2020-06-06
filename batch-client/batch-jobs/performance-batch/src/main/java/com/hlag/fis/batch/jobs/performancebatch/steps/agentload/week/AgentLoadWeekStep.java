@@ -1,8 +1,8 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.agentload.week;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.repository.AgentRepository;
 import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
+import com.momentum.batch.database.domain.BatchPerformance;
+import com.momentum.batch.database.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Step;

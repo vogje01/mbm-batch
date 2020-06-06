@@ -82,6 +82,11 @@
             <artifactId>batch-client-common</artifactId>
             <version>0.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.momentum</groupId>
+            <artifactId>batch-database</artifactId>
+            <version>0.0.3</version>
+        </dependency>
 
         <!-- JSON/YAML support -->
         <dependency>

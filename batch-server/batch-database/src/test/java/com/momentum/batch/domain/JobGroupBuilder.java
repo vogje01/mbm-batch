@@ -1,5 +1,7 @@
 package com.momentum.batch.domain;
 
+import com.momentum.batch.database.domain.JobGroup;
+
 import java.util.UUID;
 
 public class JobGroupBuilder {

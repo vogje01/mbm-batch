@@ -1,6 +1,6 @@
 package com.momentum.batch.database.repository;
 
-import com.hlag.fis.batch.domain.JobSchedule;
+import com.momentum.batch.database.domain.JobSchedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

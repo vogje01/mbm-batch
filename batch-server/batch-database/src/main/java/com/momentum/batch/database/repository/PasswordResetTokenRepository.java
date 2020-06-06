@@ -1,6 +1,6 @@
 package com.momentum.batch.database.repository;
 
-import com.hlag.fis.batch.domain.PasswordResetToken;
+import com.momentum.batch.database.domain.PasswordResetToken;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

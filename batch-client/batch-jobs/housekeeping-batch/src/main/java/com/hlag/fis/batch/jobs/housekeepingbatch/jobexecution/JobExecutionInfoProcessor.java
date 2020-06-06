@@ -1,6 +1,6 @@
 package com.hlag.fis.batch.jobs.housekeepingbatch.jobexecution;
 
-import com.hlag.fis.batch.domain.JobExecutionInfo;
+import com.momentum.batch.database.domain.JobExecutionInfo;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

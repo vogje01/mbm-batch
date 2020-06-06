@@ -83,16 +83,16 @@ public class JobExecutionParam implements PrimaryKeyIdentifier<String> {
         this.jobExecutionInfo = jobExecutionInfo;
         this.keyName = keyName;
         switch (origin.getType()) {
-            case ParameterType.STRING:
+            case STRING:
                 this.stringVal = (String) origin.getValue();
                 break;
-            case ParameterType.DATE:
+            case DATE:
                 this.dateVal = (Date) origin.getValue();
                 break;
-            case ParameterType.LONG:
+            case LONG:
                 this.longVal = (Long) origin.getValue();
                 break;
-            case ParameterType.DOUBLE:
+            case DOUBLE:
                 this.doubleVal = (Double) origin.getValue();
                 break;
         }

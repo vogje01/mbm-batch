@@ -40,7 +40,7 @@ import java.time.Instant;
  */
 @Entity
 @Table(name = "BATCH_JOB_EXECUTION_LOG")
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobExecutionLog implements PrimaryKeyIdentifier<String> {

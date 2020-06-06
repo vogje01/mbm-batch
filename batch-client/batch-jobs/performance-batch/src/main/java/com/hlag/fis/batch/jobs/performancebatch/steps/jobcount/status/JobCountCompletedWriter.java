@@ -1,7 +1,7 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.jobcount.status;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
 import com.momentum.batch.client.common.job.writer.writer.MysqlWriterBuilder;
+import com.momentum.batch.database.domain.BatchPerformance;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

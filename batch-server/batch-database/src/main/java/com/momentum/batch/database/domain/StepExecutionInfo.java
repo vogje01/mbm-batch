@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_STEP_EXECUTION")
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {

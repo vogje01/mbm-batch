@@ -1,10 +1,10 @@
 package com.hlag.fis.batch.jobs.performancebatch.steps.stepcount;
 
-import com.hlag.fis.batch.domain.BatchPerformance;
-import com.hlag.fis.batch.domain.StepExecutionInfo;
-import com.hlag.fis.batch.repository.StepExecutionInfoRepository;
 import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
 import com.momentum.batch.client.common.logging.BatchLogger;
+import com.momentum.batch.database.domain.BatchPerformance;
+import com.momentum.batch.database.domain.StepExecutionInfo;
+import com.momentum.batch.database.repository.StepExecutionInfoRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
