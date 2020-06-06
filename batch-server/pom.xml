@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>batch</artifactId>
         <groupId>com.momentum</groupId>
+        <artifactId>batch</artifactId>
         <version>0.0.3</version>
     </parent>
     <packaging>pom</packaging>
