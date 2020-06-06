@@ -1,11 +1,11 @@
 package com.momentum.batch.client.jobs.common.listener;
 
+import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.domain.dto.JobStatusDto;
 import com.momentum.batch.domain.dto.StepExecutionDto;
 import com.momentum.batch.util.DateTimeUtils;
 import com.momentum.batch.util.ExecutionParameter;
-import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -23,13 +23,23 @@ import static com.momentum.batch.domain.JobStatusType.STEP_START;
 import static com.momentum.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
+/**
+ * Step Notification listener.
+ * <p>
+ * Will be called on startup, error and finish of a step execution. It sends a status message to the batch management server.
+ * </p>
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.3
+ * @since 0.0.1
+ */
 @Component
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
     private final BatchLogger logger;
 
-    private final ModelMapper modelMapper;
+    private final ModelConverter modelConverter;
 
     private final JobStatusProducer jobStatusProducer;
 
@@ -38,9 +48,9 @@ public class StepNotificationListener implements StepExecutionListener {
     private final Map<String, Long> totalCounts = new HashMap<>();
 
     @Autowired
-    public StepNotificationListener(BatchLogger logger, ModelMapper modelMapper, JobStatusProducer jobStatusProducer) {
+    public StepNotificationListener(BatchLogger logger, ModelConverter modelConverter, JobStatusProducer jobStatusProducer) {
         this.logger = logger;
-        this.modelMapper = modelMapper;
+        this.modelConverter = modelConverter;
         this.jobStatusProducer = jobStatusProducer;
     }
 
@@ -68,7 +78,7 @@ public class StepNotificationListener implements StepExecutionListener {
         logger.info(format("Step starting - name: {0} uuid: {1}", getStepName(stepExecution), getStepUuid(stepExecution)));
 
         // Convert to DTO
-        stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
+        stepExecutionDto = modelConverter.convertStepExecutionToDto(stepExecution);
         addAdditionalProperties(stepExecution);
 
         // Send to kafka queue
@@ -94,7 +104,7 @@ public class StepNotificationListener implements StepExecutionListener {
                 DateTimeUtils.getRunningTime(stepExecution)));
 
         // Update step execution info
-        stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
+        stepExecutionDto = modelConverter.convertStepExecutionToDto(stepExecution);
         addAdditionalProperties(stepExecution);
 
         // Send to Kafka
@@ -127,6 +137,11 @@ public class StepNotificationListener implements StepExecutionListener {
         stepExecutionDto.setRunningTime(DateTimeUtils.getRunningTime(stepExecution));
     }
 
+    /**
+     * Set step exit code / message.
+     *
+     * @param stepExecution step execution
+     */
     private void setExitCode(StepExecution stepExecution) {
         if (stepExecution.getExitStatus().getExitCode().equals(ExitStatus.FAILED.getExitCode())) {
             String failedExitCode = stepExecution.getJobExecution().getJobParameters().getString("job.failed.exitCode");

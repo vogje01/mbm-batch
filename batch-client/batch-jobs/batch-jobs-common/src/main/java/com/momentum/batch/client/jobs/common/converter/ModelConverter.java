@@ -1,13 +1,11 @@
 package com.momentum.batch.client.jobs.common.converter;
 
-import com.momentum.batch.domain.dto.JobExecutionContextDto;
-import com.momentum.batch.domain.dto.JobExecutionDto;
-import com.momentum.batch.domain.dto.JobExecutionParamDto;
-import com.momentum.batch.domain.dto.JobInstanceDto;
+import com.momentum.batch.domain.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -63,15 +61,6 @@ public class ModelConverter {
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Job execution context
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public JobExecutionContextDto convertJobExecutionContextToDto(ExecutionContext jobExecutionContext) {
-        JobExecutionContextDto jobExecutionContextDto = new JobExecutionContextDto();
-        jobExecutionContextDto.setSerializedContext(modelConverterHelper.jsonSerialize(jobExecutionContext));
-        return jobExecutionContextDto;
-    }
-
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job execution params
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public JobExecutionParamDto convertJobParameterToDto(Map.Entry<String, JobParameter> entry) {
@@ -86,5 +75,32 @@ public class ModelConverter {
             case DOUBLE -> jobExecutionParamDto.setDoubleVal((Double) entry.getValue().getValue());
         }
         return jobExecutionParamDto;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Job execution context
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public JobExecutionContextDto convertJobExecutionContextToDto(ExecutionContext jobExecutionContext) {
+        JobExecutionContextDto jobExecutionContextDto = new JobExecutionContextDto();
+        jobExecutionContextDto.setSerializedContext(modelConverterHelper.jsonSerialize(jobExecutionContext));
+        return jobExecutionContextDto;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Step executions
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public StepExecutionDto convertStepExecutionToDto(StepExecution stepExecution) {
+        StepExecutionDto stepExecutionDto = modelMapper.map(stepExecution, StepExecutionDto.class);
+        stepExecutionDto.setStepExecutionContextDto(convertStepExecutionContextToDto(stepExecution.getExecutionContext()));
+        return stepExecutionDto;
+    }
+
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Step execution context
+    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public StepExecutionContextDto convertStepExecutionContextToDto(ExecutionContext stepExecutionContext) {
+        StepExecutionContextDto stepExecutionContextDto = new StepExecutionContextDto();
+        stepExecutionContextDto.setSerializedContext(modelConverterHelper.jsonSerialize(stepExecutionContext));
+        return stepExecutionContextDto;
     }
 }
