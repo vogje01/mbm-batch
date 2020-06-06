@@ -1,8 +1,8 @@
 package com.momentum.batch.jobs.testbatch.job.steps;
 
-import com.hlag.fis.batch.domain.User;
-import com.hlag.fis.batch.repository.AgentRepository;
 import com.momentum.batch.client.common.job.builder.BatchStepBuilder;
+import com.momentum.batch.database.domain.User;
+import com.momentum.batch.database.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;

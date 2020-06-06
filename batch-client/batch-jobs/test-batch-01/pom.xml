@@ -85,6 +85,11 @@
             <version>0.0.3</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.momentum</groupId>
+            <artifactId>batch-database</artifactId>
+            <version>0.0.3</version>
+        </dependency>
 
     </dependencies>
 
