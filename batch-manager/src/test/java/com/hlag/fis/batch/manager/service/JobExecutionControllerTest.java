@@ -118,6 +118,6 @@ public class JobExecutionControllerTest {
                 //.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.jobInstanceInfo.jobName", is("Job1")));
+                .andExpect(jsonPath("$.jobExecutionInstance.jobName", is("Job1")));
     }
 }

@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
@@ -196,10 +197,10 @@ public class StepExecutionControllerTest {
         when(stepExecutionService.getStepExecutionDetail(any())).thenReturn(stepExecution1);
 
         this.mockMvc.perform(get("/api/stepexecutions/" + stepExecution1.getId()))
-            //.andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaTypes.HAL_JSON))
-            .andExpect(jsonPath("$.jobExecutionInfo.jobInstanceInfo.jobName", is("Job1")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.jobExecutionInfo.jobExecutionInstance.jobName", is("Job1")))
                 .andExpect(jsonPath("$.stepName", is("Step1")));
     }
 }
