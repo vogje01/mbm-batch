@@ -35,11 +35,6 @@ public class JobLoggingProducerConfiguration extends AbstractKafkaConfiguration 
     private short replicas;
 
     @Bean
-    public String batchLogTopicName() {
-        return topic;
-    }
-
-    @Bean
     public ProducerFactory<String, JobExecutionLogDto> batchLogProducerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
     }
@@ -56,13 +51,13 @@ public class JobLoggingProducerConfiguration extends AbstractKafkaConfiguration 
 
     @Bean
     public BatchLogProducer batchLogProducer() {
-        return new BatchLogProducer(batchLogKafkaTemplate(), batchLogTopicName());
+        return new BatchLogProducer(batchLogKafkaTemplate(), topic);
     }
 
     @Bean
     @Scope("prototype")
-    public BatchLogger batchLogger(final InjectionPoint ip, String hostName, String nodeName, BatchLogProducer batchLogProducer) {
-        return new BatchLogger(hostName, nodeName, batchLogProducer, Objects.requireNonNull(ip.getMethodParameter()).getDeclaringClass());
+    public BatchLogger batchLogger(final InjectionPoint ip, String hostName, String nodeName) {
+        return new BatchLogger(hostName, nodeName, batchLogProducer(), Objects.requireNonNull(ip.getMethodParameter()).getDeclaringClass());
     }
 
     @Bean

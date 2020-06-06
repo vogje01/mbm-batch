@@ -16,6 +16,12 @@
     <version>0.0.3</version>
     <description>Batch jobs testing area.</description>
 
+    <properties>
+        <java.version>14</java.version>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,7 +87,7 @@
         </dependency>
         <dependency>
             <groupId>com.momentum</groupId>
-            <artifactId>batch-client-common</artifactId>
+            <artifactId>batch-jobs-common</artifactId>
             <version>0.0.3</version>
             <scope>compile</scope>
         </dependency>

@@ -19,9 +19,9 @@ public class BatchLogProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchLogProducer.class);
 
-    private String batchLogTopicName;
+    private final String batchLogTopicName;
 
-    private KafkaTemplate<String, JobExecutionLogDto> template;
+    private final KafkaTemplate<String, JobExecutionLogDto> template;
 
     public BatchLogProducer(KafkaTemplate<String, JobExecutionLogDto> template, String batchLogTopicName) {
         this.template = template;
