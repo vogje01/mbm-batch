@@ -225,7 +225,7 @@ class PerformanceChart extends React.Component {
                 break;
             default:
                 this.setState({
-                    type: 'ALL',
+                    type: 'RAW',
                     timeRange: e.value,
                     startTime: moment().startOf('hour').unix(),
                     endTime: moment().endOf('hour').unix(),

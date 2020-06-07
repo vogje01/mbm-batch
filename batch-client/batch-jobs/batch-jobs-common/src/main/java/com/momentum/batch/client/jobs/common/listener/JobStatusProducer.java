@@ -20,12 +20,12 @@ import static java.text.MessageFormat.format;
  */
 public class JobStatusProducer {
 
-    private static Logger logger = LoggerFactory.getLogger(StepNotificationListener.class);
-
     @Value(value = "${kafka.jobStatus.topic}")
     private String topicName;
 
-    private KafkaTemplate<String, JobStatusDto> template;
+    private static final Logger logger = LoggerFactory.getLogger(StepNotificationListener.class);
+
+    private final KafkaTemplate<String, JobStatusDto> template;
 
     public JobStatusProducer(KafkaTemplate<String, JobStatusDto> template) {
         this.template = template;
