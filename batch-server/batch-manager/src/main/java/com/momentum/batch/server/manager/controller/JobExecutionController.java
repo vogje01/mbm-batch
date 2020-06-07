@@ -97,19 +97,15 @@ public class JobExecutionController {
     }
 
     @GetMapping(value = "/{jobExecutionId}/restart")
-    public ResponseEntity<JobExecutionDto> restart(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
+    public ResponseEntity<Void> restart(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
 
         t.restart();
 
         // Restart job execution
-        JobExecutionInfo jobExecution = jobExecutionService.restartJobExecutionInfo(jobExecutionId);
-        JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
+        jobExecutionService.restartJobExecutionInfo(jobExecutionId);
+        logger.debug(format("Finished restart job execution - jobExecutionId: {0} {2}", jobExecutionId, t.elapsedStr()));
 
-        // Add links
-        addLinks(jobExecutionDto);
-        logger.debug(format("Finished restart job execution - hostName: {0} nodeName: {1} {2}", jobExecutionDto.getHostName(), jobExecutionDto.getNodeName(), t.elapsedStr()));
-
-        return ResponseEntity.ok(jobExecutionDto);
+        return ResponseEntity.ok().build();
     }
 
     private void addLinks(JobExecutionDto jobExecutionDto) {

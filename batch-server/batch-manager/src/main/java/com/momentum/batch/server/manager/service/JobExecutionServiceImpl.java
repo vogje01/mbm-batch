@@ -1,7 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.domain.dto.JobExecutionDto;
 import com.momentum.batch.domain.dto.ServerCommandDto;
 import com.momentum.batch.domain.dto.ServerCommandType;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
@@ -32,14 +34,18 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final ServerCommandProducer serverCommandProducer;
 
+    private final ModelConverter modelConverter;
+
     @Autowired
     public JobExecutionServiceImpl(
             JobExecutionInfoRepository jobExecutionRepository,
             StepExecutionInfoRepository stepExecutionRepository,
-            ServerCommandProducer serverCommandProducer) {
+            ServerCommandProducer serverCommandProducer,
+            ModelConverter modelConverter) {
         this.jobExecutionRepository = jobExecutionRepository;
         this.stepExecutionRepository = stepExecutionRepository;
         this.serverCommandProducer = serverCommandProducer;
+        this.modelConverter = modelConverter;
     }
 
     @Override
@@ -72,13 +78,22 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     @CachePut(cacheNames = "JobExecution", key = "#jobExecutionId")
-    public JobExecutionInfo restartJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException {
-        Optional<JobExecutionInfo> jobExecutionInfo = jobExecutionRepository.findById(jobExecutionId);
-        if (jobExecutionInfo.isPresent()) {
+    public void restartJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException {
+        Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionRepository.findById(jobExecutionId);
+        if (jobExecutionInfoOptional.isPresent()) {
+
+            JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
+
+            // Convert to DTO
+            JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecutionInfo);
+
+            // Create server command
             ServerCommandDto serverCommandDto = new ServerCommandDto();
+            serverCommandDto.setHostName(jobExecutionInfo.getHostName());
+            serverCommandDto.setNodeName(jobExecutionInfo.getNodeName());
+            serverCommandDto.setJobExecutionDto(jobExecutionDto);
             serverCommandDto.setType(ServerCommandType.RESTART_JOB);
             serverCommandProducer.sendTopic(serverCommandDto);
-            return jobExecutionInfo.get();
         }
         throw new ResourceNotFoundException();
     }

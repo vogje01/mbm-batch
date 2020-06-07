@@ -25,9 +25,9 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionServiceImpl.class);
 
-    private JobDefinitionRepository jobDefinitionRepository;
+    private final JobDefinitionRepository jobDefinitionRepository;
 
-    private JobScheduleService jobScheduleService;
+    private final JobScheduleService jobScheduleService;
 
     @Autowired
     public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository,

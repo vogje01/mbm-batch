@@ -24,7 +24,7 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobGroupServiceImpl.class);
 
-    private JobGroupRepository jobGroupRepository;
+    private final JobGroupRepository jobGroupRepository;
 
     @Autowired
     public JobGroupServiceImpl(JobGroupRepository jobGroupRepository,

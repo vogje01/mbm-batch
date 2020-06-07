@@ -15,5 +15,5 @@ public interface JobExecutionService {
 
     void deleteJobExecutionInfo(final String id);
 
-    JobExecutionInfo restartJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException;
+    void restartJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException;
 }

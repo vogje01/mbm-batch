@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class JobExecutionParamServiceImpl implements JobExecutionParamService {
 
-    private JobExecutionParamRepository jobExecutionParamRepository;
+    private final JobExecutionParamRepository jobExecutionParamRepository;
 
     @Autowired
     public JobExecutionParamServiceImpl(JobExecutionParamRepository jobExecutionParamRepository) {
