@@ -2,6 +2,7 @@ package com.momentum.batch.server.manager.service;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.domain.dto.ServerCommandDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
@@ -56,8 +57,13 @@ public class JobExecutionControllerCacheTest {
         }
 
         @Bean
+        public ModelConverter modelConverter() {
+            return mockModelConverter;
+        }
+
+        @Bean
         public JobExecutionService jobExecutionServiceForTest() {
-            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), stepExecutionInfoRepository(), serverCommandProducer());
+            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), stepExecutionInfoRepository(), serverCommandProducer(), modelConverter());
         }
 
         @Bean
@@ -84,11 +90,13 @@ public class JobExecutionControllerCacheTest {
     private JobExecutionService service;
 
     // this is actual mock
-    private static JobExecutionInfoRepository mockJobExecutionRepository = mock(JobExecutionInfoRepository.class);
+    private static final JobExecutionInfoRepository mockJobExecutionRepository = mock(JobExecutionInfoRepository.class);
 
-    private static StepExecutionInfoRepository mockStepExecutionInfoRepository = mock(StepExecutionInfoRepository.class);
+    private static final StepExecutionInfoRepository mockStepExecutionInfoRepository = mock(StepExecutionInfoRepository.class);
 
-    private static ServerCommandProducer mockServerCommandProducer = mock(ServerCommandProducer.class);
+    private static final ServerCommandProducer mockServerCommandProducer = mock(ServerCommandProducer.class);
+
+    private static final ModelConverter mockModelConverter = mock(ModelConverter.class);
 
     @SuppressWarnings("unchecked")
     private static KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
