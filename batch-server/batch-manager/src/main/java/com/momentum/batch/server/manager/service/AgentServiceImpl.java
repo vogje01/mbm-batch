@@ -1,5 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.domain.AgentStatus;
+import com.momentum.batch.domain.dto.ServerCommandDto;
+import com.momentum.batch.domain.dto.ServerCommandType;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobSchedule;
@@ -7,6 +10,7 @@ import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
+import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,6 +44,8 @@ public class AgentServiceImpl implements AgentService {
 
     private final JobScheduleRepository jobScheduleRepository;
 
+    private final ServerCommandProducer serverCommandProducer;
+
     private final CacheManager cacheManager;
 
     /**
@@ -50,10 +56,12 @@ public class AgentServiceImpl implements AgentService {
      */
     @Autowired
     public AgentServiceImpl(AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
-                            JobScheduleRepository jobScheduleRepository, CacheManager cacheManager) {
+                            JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
+                            CacheManager cacheManager) {
         this.agentRepository = agentRepository;
         this.agentGroupRepository = agentGroupRepository;
         this.jobScheduleRepository = jobScheduleRepository;
+        this.serverCommandProducer = serverCommandProducer;
         this.cacheManager = cacheManager;
     }
 
@@ -212,6 +220,35 @@ public class AgentServiceImpl implements AgentService {
             JobSchedule jobSchedule = jobScheduleOptional.get();
             jobSchedule.removeAgent(agent);
             jobScheduleRepository.save(jobSchedule);
+            return agent;
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    /**
+     * Pause an agent.
+     *
+     * @param agentId agent ID.
+     * @return updated agent.
+     */
+    @Override
+    @CachePut(cacheNames = "Agent", key = "#agentId")
+    public Agent pauseAgent(String agentId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = findById(agentId);
+        if (agentOptional.isPresent()) {
+
+            // Update database
+            Agent agent = agentOptional.get();
+            agent.setStatus(AgentStatus.PAUSED);
+            agent = agentRepository.save(agent);
+
+            // Send command to agent
+            ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.PAUSE_AGENT);
+            serverCommandDto.setNodeName(agent.getNodeName());
+            // TODO:: Add host to server command
+            //serverCommandDto.setHostName(agent.getHostName());
+            serverCommandProducer.sendTopic(serverCommandDto);
+
             return agent;
         }
         throw new ResourceNotFoundException();

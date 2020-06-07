@@ -30,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 /**
  * Agent  REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -323,17 +323,46 @@ public class AgentController {
     }
 
     /**
-     * Add HATOAS links.
+     * Pauses and agent.
+     *
+     * @param agentId agent ID.
+     */
+    @GetMapping(value = "/{agentId}/pauseAgent")
+    public ResponseEntity<AgentDto> pauseAgent(@PathVariable String agentId) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Remove job schedule from agent
+        Agent agent = agentService.pauseAgent(agentId);
+        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
+
+        // Add link
+        addLinks(agentDto);
+        logger.debug(format("Finished pause agent request - hostName: {0} nodeName: {1} {2}", agent.getHostName(), agent.getNodeName(), t.elapsedStr()));
+
+        return ResponseEntity.ok(agentDto);
+    }
+
+    /**
+     * Add HATEOAS links.
      *
      * @param agentDto agent data transfer object.
      */
     private void addLinks(AgentDto agentDto) {
         try {
+            // Agent links
             agentDto.add(linkTo(methodOn(AgentController.class).findById(agentDto.getId())).withSelfRel());
             agentDto.add(linkTo(methodOn(AgentController.class).updateAgent(agentDto)).withRel("update"));
             agentDto.add(linkTo(methodOn(AgentController.class).deleteAgent(agentDto.getId())).withRel("delete"));
+
+            // Agent status links
+            agentDto.add(linkTo(methodOn(AgentController.class).pauseAgent(agentDto.getId())).withRel("pauseAgent"));
+
+            // Agent group links
             agentDto.add(linkTo(methodOn(AgentController.class).addAgentGroup(null, null)).withRel("addAgentGroup").expand(agentDto.getId(), ""));
             agentDto.add(linkTo(methodOn(AgentController.class).removeAgentGroup(null, null)).withRel("removeAgentGroup").expand(agentDto.getId(), ""));
+
+            // Scheduler links
             agentDto.add(linkTo(methodOn(AgentController.class).addSchedule(null, null)).withRel("addJobSchedule").expand(agentDto.getId(), ""));
             agentDto.add(linkTo(methodOn(AgentController.class).removeSchedule(null, null)).withRel("removeJobSchedule").expand(agentDto.getId(), ""));
         } catch (ResourceNotFoundException e) {

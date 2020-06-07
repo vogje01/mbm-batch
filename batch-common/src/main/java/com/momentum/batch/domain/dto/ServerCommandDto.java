@@ -19,6 +19,10 @@ public class ServerCommandDto {
     public ServerCommandDto() {
     }
 
+    public ServerCommandDto(ServerCommandType type) {
+        this.type = type;
+    }
+
     public ServerCommandDto(ServerCommandType type, JobScheduleDto jobScheduleDto) {
         this.type = type;
         this.jobScheduleDto = jobScheduleDto;

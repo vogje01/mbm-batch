@@ -2,6 +2,7 @@ package com.momentum.batch.client.agent.kafka;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.client.agent.service.AgentService;
 import com.momentum.batch.domain.dto.JobScheduleDto;
 import com.momentum.batch.domain.dto.ServerCommandDto;
 import org.slf4j.Logger;
@@ -31,11 +32,14 @@ public class ServerCommandConsumer {
 
     private final String nodeName;
 
+    private final AgentService agentService;
+
     @Autowired
-    public ServerCommandConsumer(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask, String nodeName) {
+    public ServerCommandConsumer(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask, String nodeName, AgentService agentService) {
         this.batchScheduler = batchScheduler;
         this.batchSchedulerTask = batchSchedulerTask;
         this.nodeName = nodeName;
+        this.agentService = agentService;
         logger.info(format("Server command listener initialized - nodeName: {0}", nodeName));
     }
 
@@ -52,10 +56,13 @@ public class ServerCommandConsumer {
         }
         logger.info(format("Received server command info - type: {0}", serverCommandDto.getType()));
 
+        // Handle agent commands
+        handleAgentCommands(serverCommandDto);
+
         // Convert to entity
         JobScheduleDto jobScheduleDto = serverCommandDto.getJobScheduleDto();
-        if (jobScheduleDto.getJobDefinitionDto() == null) {
-            logger.error(format("Missing job definition"));
+        if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null) {
+            logger.info(format("Missing job definition"));
             return;
         }
         switch (serverCommandDto.getType()) {
@@ -70,6 +77,17 @@ public class ServerCommandConsumer {
                 break;
             case KILL_JOB:
                 batchSchedulerTask.killProcess(jobScheduleDto);
+                break;
+        }
+    }
+
+    private void handleAgentCommands(ServerCommandDto serverCommandDto) {
+        switch (serverCommandDto.getType()) {
+            case PAUSE_AGENT:
+                agentService.pauseAgent();
+                break;
+            case STOP_AGENT:
+                agentService.shutdownAgent();
                 break;
         }
     }

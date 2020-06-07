@@ -35,15 +35,15 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobScheduleServiceImpl.class);
 
-    private JobScheduleRepository jobScheduleRepository;
+    private final JobScheduleRepository jobScheduleRepository;
 
-    private AgentRepository agentRepository;
+    private final AgentRepository agentRepository;
 
-    private AgentGroupRepository agentGroupRepository;
+    private final AgentGroupRepository agentGroupRepository;
 
-    private ServerCommandProducer serverCommandProducer;
+    private final ServerCommandProducer serverCommandProducer;
 
-    private ModelConverter modelConverter;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public JobScheduleServiceImpl(JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,

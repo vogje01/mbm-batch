@@ -1,4 +1,5 @@
 import React from 'react';
+import './agent-list.scss'
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, FormItem, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {AgentDataSource} from "./agent-data-source";
@@ -11,6 +12,7 @@ import {Toolbar} from "devextreme-react/toolbar";
 import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
 import {getFormattedNumber, numericCellTemplate} from "../../utils/counter-util";
 import AgentAgentgroupView from "./agent-agentgroup-list";
+import {getItem} from "../../utils/server-connection";
 
 class AgentView extends React.Component {
 
@@ -20,10 +22,25 @@ class AgentView extends React.Component {
             currentAgent: {}
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.pauseAgent = this.pauseAgent.bind(this);
+        this.stopAgent = this.stopAgent.bind(this);
     }
 
     selectionChanged(e) {
         this.setState({currentAgent: e.data});
+    }
+
+    pauseAgent(e) {
+        let agent = e.row.data;
+        getItem(agent._links.pauseAgent.href)
+            .then((data) => {
+                this.setState({currentAgent: data});
+            })
+    }
+
+    stopAgent(e) {
+        let agent = e.row.data;
+        this.setState({currentAgent: e.row.data});
     }
 
     render() {
@@ -114,23 +131,6 @@ class AgentView extends React.Component {
                                 </Form>
                             </Editing>
                             <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit agent.',
-                                        icon: 'material-icons-outlined ic-edit'
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete agent.',
-                                        icon: 'material-icons-outlined ic-delete'
-                                    }
-                                ]}/>
-                            <Column
                                 caption={'Node name'}
                                 dataField={'nodeName'}
                                 allowEditing={true}
@@ -163,7 +163,7 @@ class AgentView extends React.Component {
                             <Column
                                 cellTemplate={numericCellTemplate}
                                 caption={'Load'}
-                                dataField={'systemLoadDay'}
+                                dataField={'systemLoad'}
                                 allowEditing={false}
                                 allowSorting={true}
                                 allowReordering={true}
@@ -235,6 +235,35 @@ class AgentView extends React.Component {
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={100}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit agent.',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'pause',
+                                        hint: 'Pause agent.',
+                                        icon: 'material-icons-outlined ic-pause',
+                                        onClick: this.pauseAgent
+                                    },
+                                    {
+                                        name: 'stop',
+                                        hint: 'Stop agent.',
+                                        icon: 'material-icons-outlined ic-stop',
+                                        onClick: this.stopAgent
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete agent.',
+                                        icon: 'material-icons-outlined ic-delete'
+                                    }
+                                ]}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

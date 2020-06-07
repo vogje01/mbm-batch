@@ -40,4 +40,6 @@ public interface AgentService {
     Agent addSchedule(String id, String name) throws ResourceNotFoundException;
 
     Agent removeSchedule(String id, String scheduleId) throws ResourceNotFoundException;
+
+    Agent pauseAgent(String agentId) throws ResourceNotFoundException;
 }

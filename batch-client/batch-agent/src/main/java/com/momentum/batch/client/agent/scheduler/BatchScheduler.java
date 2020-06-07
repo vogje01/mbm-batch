@@ -304,6 +304,16 @@ public class BatchScheduler {
         }
     }
 
+    public void pauseScheduler() {
+        try {
+            scheduler.pauseAll();
+            ;
+            logger.info(format("Quartz scheduler paused"));
+        } catch (SchedulerException e) {
+            logger.error(format("Could not pause scheduler - error: {0}", e.getMessage()), e);
+        }
+    }
+
     private Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         if (jobSchedule.getSchedule() != null) {
             return TriggerBuilder.newTrigger()

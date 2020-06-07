@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
 import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.dto.AgentCommandDto;
@@ -39,7 +40,7 @@ import static java.text.MessageFormat.format;
  * </p>
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.1
  */
 @Service
@@ -51,9 +52,13 @@ public class AgentService {
 
     private final OperatingSystemMXBean osBean;
 
+    private final BatchScheduler scheduler;
+
     private final BatchSchedulerTask schedulerTask;
 
     private final AgentCommandProducer agentCommandProducer;
+
+    private AgentStatus currentAgentStatus = AgentStatus.UNKNOWN;
 
     /**
      * Constructor.
@@ -62,9 +67,12 @@ public class AgentService {
      * @param nodeName      node name.
      */
     @Autowired
-    public AgentService(BatchSchedulerTask schedulerTask, String nodeName, AgentCommandProducer agentCommandProducer) {
+    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String nodeName, AgentCommandProducer agentCommandProducer) {
+        this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
         this.agentCommandProducer = agentCommandProducer;
+
+        // Agent command
         this.agentCommandDto = new AgentCommandDto();
         this.agentCommandDto.setNodeName(nodeName);
         this.agentCommandDto.setHostName(NetworkUtils.getHostName());
@@ -89,42 +97,70 @@ public class AgentService {
      * Send register agent message to server.
      */
     private void registerAgent() {
-        agentCommandDto.setStatus(AgentStatus.STARTING.name());
+        setStatus(AgentStatus.STARTING);
+
         agentCommandDto.setType(AgentCommandType.REGISTER);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
-        agentCommandDto.setStatus(AgentStatus.RUNNING.name());
-        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-        agentCommandDto.setPid(ProcessHandle.current().pid());
-        agentCommandDto.setType(AgentCommandType.PING);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+        if (currentAgentStatus != AgentStatus.STOPPED) {
+            agentCommandDto.setSystemLoad(osBean.getCpuLoad());
+            agentCommandDto.setPid(ProcessHandle.current().pid());
+            agentCommandDto.setType(AgentCommandType.PING);
+            agentCommandProducer.sendAgentCommand(agentCommandDto);
+        }
     }
 
     @Scheduled(fixedRateString = "${agent.performanceInterval}")
     private void performance() {
-        agentCommandDto.setType(AgentCommandType.PERFORMANCE);
-        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-        agentCommandDto.setTotalRealMemory(osBean.getTotalMemorySize());
-        agentCommandDto.setFreeRealMemory(osBean.getFreeMemorySize());
-        agentCommandDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
 
-        agentCommandDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
-        agentCommandDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
-        agentCommandDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
+        if (currentAgentStatus != AgentStatus.STOPPED) {
 
-        agentCommandDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
-        agentCommandDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
-        agentCommandDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+            // Initialize
+            agentCommandDto.setType(AgentCommandType.PERFORMANCE);
+
+            // Set performance attributes
+            agentCommandDto.setSystemLoad(osBean.getCpuLoad());
+            agentCommandDto.setTotalRealMemory(osBean.getTotalMemorySize());
+            agentCommandDto.setFreeRealMemory(osBean.getFreeMemorySize());
+            agentCommandDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
+
+            agentCommandDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
+            agentCommandDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
+            agentCommandDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
+
+            agentCommandDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
+            agentCommandDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
+            agentCommandDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
+            agentCommandProducer.sendAgentCommand(agentCommandDto);
+        }
     }
 
     /**
      * Send shutdown message to server.
      */
-    private void shutdownAgent() {
+    public void pauseAgent() {
+
+        logger.info("Pausing batch agent");
+
+        // Pause Quartz scheduler
+        scheduler.pauseScheduler();
+
+        // Pause ping
+        currentAgentStatus = AgentStatus.PAUSED;
+
+        // Send shutdown message to server
+        setStatus(AgentStatus.PAUSED);
+
+        logger.info("Batch agent paused");
+    }
+
+    /**
+     * Send shutdown message to server.
+     */
+    public void shutdownAgent() {
 
         logger.info("Stopping batch agent");
 
@@ -132,11 +168,16 @@ public class AgentService {
         schedulerTask.killAllProcesses();
 
         // Send shutdown message to server
-        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-        agentCommandDto.setStatus(AgentStatus.STOPPED.name());
-        agentCommandDto.setType(AgentCommandType.SHUTDOWN);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+        setStatus(AgentStatus.STOPPED);
 
         logger.info("Batch agent stopped");
+    }
+
+    public void setStatus(AgentStatus agentStatus) {
+        currentAgentStatus = agentStatus;
+        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
+        agentCommandDto.setStatus(agentStatus.name());
+        agentCommandDto.setType(AgentCommandType.STATUS);
+        agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }
