@@ -276,6 +276,7 @@ CREATE TABLE BATCH_AGENT
     PID                  BIGINT,
     LAST_START           DATETIME,
     LAST_PING            DATETIME,
+    SYSTEM_LOAD          DOUBLE,
     AVG_SYSTEM_LOAD_DAY  DOUBLE,
     AVG_SYSTEM_LOAD_WEEK DOUBLE,
     ACTIVE               BIT,

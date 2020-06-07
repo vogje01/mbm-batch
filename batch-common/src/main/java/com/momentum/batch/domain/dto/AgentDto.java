@@ -51,6 +51,10 @@ public class AgentDto extends RepresentationModel<AgentDto> {
      */
     private Date lastPing;
     /**
+     * Current system load
+     */
+    private Double systemLoad;
+    /**
      * Average system load day
      */
     private Double avgSystemLoadDay;
@@ -142,6 +146,14 @@ public class AgentDto extends RepresentationModel<AgentDto> {
         this.lastPing = lastPing;
     }
 
+    public Double getSystemLoad() {
+        return systemLoad;
+    }
+
+    public void setSystemLoad(Double systemLoad) {
+        this.systemLoad = systemLoad;
+    }
+
     public Double getAvgSystemLoadDay() {
         return avgSystemLoadDay;
     }
@@ -215,27 +227,6 @@ public class AgentDto extends RepresentationModel<AgentDto> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("nodeName", nodeName)
-                .add("hostName", hostName)
-                .add("pid", pid)
-                .add("lastStart", lastStart)
-                .add("lastPing", lastPing)
-                .add("avgSystemLoadDay", avgSystemLoadDay)
-                .add("avgSystemLoadWeek", avgSystemLoadWeek)
-                .add("createdBy", createdBy)
-                .add("createdAt", createdAt)
-                .add("modifiedBy", modifiedBy)
-                .add("modifiedAt", modifiedAt)
-                .add("active", active)
-                .add("totalSize", totalSize)
-                .add("scheduleDtos", scheduleDtos)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -247,6 +238,7 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 Objects.equal(pid, agentDto.pid) &&
                 Objects.equal(lastStart, agentDto.lastStart) &&
                 Objects.equal(lastPing, agentDto.lastPing) &&
+                Objects.equal(systemLoad, agentDto.systemLoad) &&
                 Objects.equal(avgSystemLoadDay, agentDto.avgSystemLoadDay) &&
                 Objects.equal(avgSystemLoadWeek, agentDto.avgSystemLoadWeek) &&
                 Objects.equal(createdBy, agentDto.createdBy) &&
@@ -260,6 +252,28 @@ public class AgentDto extends RepresentationModel<AgentDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, avgSystemLoadDay, avgSystemLoadWeek, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("nodeName", nodeName)
+                .add("hostName", hostName)
+                .add("pid", pid)
+                .add("lastStart", lastStart)
+                .add("lastPing", lastPing)
+                .add("systemLoad", systemLoad)
+                .add("avgSystemLoadDay", avgSystemLoadDay)
+                .add("avgSystemLoadWeek", avgSystemLoadWeek)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .add("active", active)
+                .add("totalSize", totalSize)
+                .add("scheduleDtos", scheduleDtos)
+                .toString();
     }
 }

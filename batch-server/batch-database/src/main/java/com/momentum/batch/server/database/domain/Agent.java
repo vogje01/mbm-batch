@@ -12,10 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Class description.
+ * MBM agent entity.
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.2
+ * @version 0.0.3
  * @since 0.0.1
  */
 @Entity
@@ -56,6 +56,11 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
      */
     @Column(name = "LAST_PING")
     private Date lastPing;
+    /**
+     * Current system load
+     */
+    @Column(name = "SYSTEM_LOAD")
+    private Double systemLoad;
     /**
      * Average system load day
      */
@@ -143,6 +148,14 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
         this.lastPing = lastPing;
     }
 
+    public Double getSystemLoad() {
+        return systemLoad;
+    }
+
+    public void setSystemLoad(Double systemLoad) {
+        this.systemLoad = systemLoad;
+    }
+
     public Double getAvgSystemLoadDay() {
         return avgSystemLoadDay;
     }
@@ -222,15 +235,17 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 Objects.equal(pid, agent.pid) &&
                 Objects.equal(lastStart, agent.lastStart) &&
                 Objects.equal(lastPing, agent.lastPing) &&
+                Objects.equal(systemLoad, agent.systemLoad) &&
                 Objects.equal(avgSystemLoadDay, agent.avgSystemLoadDay) &&
                 Objects.equal(avgSystemLoadWeek, agent.avgSystemLoadWeek) &&
                 Objects.equal(active, agent.active) &&
+                Objects.equal(agentGroups, agent.agentGroups) &&
                 Objects.equal(schedules, agent.schedules);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, avgSystemLoadDay, avgSystemLoadWeek, active, schedules);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, active, agentGroups, schedules);
     }
 
     @Override
@@ -242,9 +257,11 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("pid", pid)
                 .add("lastStart", lastStart)
                 .add("lastPing", lastPing)
+                .add("systemLoad", systemLoad)
                 .add("avgSystemLoadDay", avgSystemLoadDay)
                 .add("avgSystemLoadWeek", avgSystemLoadWeek)
                 .add("active", active)
+                .add("agentGroups", agentGroups)
                 .add("schedules", schedules)
                 .toString();
     }

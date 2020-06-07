@@ -98,8 +98,7 @@ public class AgentCommandListener {
         agent.setLastStart(new Date());
         agent.setLastPing(new Date());
         agent.setActive(true);
-        // TODO: use current load
-        agent.setAvgSystemLoadDay(agentCommandDto.getSystemLoad());
+        agent.setSystemLoad(agentCommandDto.getSystemLoad());
         agent = agentRepository.save(agent);
         logger.info(format("Agent registered - nodeName: {0}", agentCommandDto.getNodeName()));
 
@@ -116,8 +115,7 @@ public class AgentCommandListener {
     private void receivedPing(AgentCommandDto agentCommandDto) {
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
-            // TODO: use current load
-            agent.setAvgSystemLoadDay(agentCommandDto.getSystemLoad());
+            agent.setSystemLoad(agentCommandDto.getSystemLoad());
             agent.setLastPing(new Date());
             agentRepository.save(agent);
         });

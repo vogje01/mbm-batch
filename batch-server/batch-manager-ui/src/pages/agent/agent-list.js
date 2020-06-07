@@ -84,6 +84,10 @@ class AgentView extends React.Component {
                                         <SimpleItem dataField="lastPing" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentAgent, 'lastPing'), readOnly: true}}/>
                                         <SimpleItem editorType="dxTextBox"
+                                                    editorOptions={{value: getFormattedNumber(this.state.currentAgent, 'systemLoadDay'), readOnly: true}}>
+                                            <Label location={'top'} alignment={'left'} text={'System Load (Current)'}/>
+                                        </SimpleItem>
+                                        <SimpleItem editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedNumber(this.state.currentAgent, 'avgSystemLoadDay'), readOnly: true}}>
                                             <Label location={'top'} alignment={'left'} text={'System Load (Day)'}/>
                                         </SimpleItem>
@@ -150,12 +154,16 @@ class AgentView extends React.Component {
                             <Column
                                 cellTemplate={numericCellTemplate}
                                 caption={'Load'}
-                                dataField={'avgSystemLoadDay'}
+                                dataField={'systemLoadDay'}
                                 allowEditing={false}
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
                                 width={80}/>
+                            <Column
+                                cellTemplate={numericCellTemplate}
+                                dataField={'avgSystemLoadDay'}
+                                visible={false}/>
                             <Column
                                 cellTemplate={numericCellTemplate}
                                 dataField={'avgSystemLoadWeek'}
