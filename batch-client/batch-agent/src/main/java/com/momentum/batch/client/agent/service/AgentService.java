@@ -98,7 +98,6 @@ public class AgentService {
      */
     private void registerAgent() {
         setStatus(AgentStatus.STARTING);
-
         agentCommandDto.setType(AgentCommandType.REGISTER);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
@@ -177,7 +176,7 @@ public class AgentService {
         currentAgentStatus = agentStatus;
         agentCommandDto.setSystemLoad(osBean.getCpuLoad());
         agentCommandDto.setStatus(agentStatus.name());
-        agentCommandDto.setType(AgentCommandType.STATUS);
+        agentCommandDto.setType(AgentCommandType.AGENT_STATUS);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }

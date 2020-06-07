@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.dto.*;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
@@ -298,6 +299,7 @@ public class BatchScheduler {
     private void startScheduler() {
         try {
             scheduler.start();
+            sendAgentStarted();
             logger.info(format("Quartz scheduler started"));
         } catch (SchedulerException e) {
             logger.error(format("Could not start scheduler - error: {0}", e.getMessage()), e);
@@ -307,7 +309,6 @@ public class BatchScheduler {
     public void pauseScheduler() {
         try {
             scheduler.pauseAll();
-            ;
             logger.info(format("Quartz scheduler paused"));
         } catch (SchedulerException e) {
             logger.error(format("Could not pause scheduler - error: {0}", e.getMessage()), e);
@@ -384,5 +385,15 @@ public class BatchScheduler {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sends a agent started command to the server.
+     */
+    private void sendAgentStarted() {
+        logger.info("Sending agent started status");
+        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
+        agentCommandDto.setStatus(AgentStatus.STARTED.name());
+        agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }

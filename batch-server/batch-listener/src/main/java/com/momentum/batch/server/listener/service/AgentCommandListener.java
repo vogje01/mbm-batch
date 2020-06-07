@@ -80,6 +80,9 @@ public class AgentCommandListener {
             case STATUS:
                 receivedStatus(agentCommandDto);
                 break;
+            case AGENT_STATUS:
+                receivedAgentStatus(agentCommandDto);
+                break;
         }
     }
 
@@ -151,6 +154,20 @@ public class AgentCommandListener {
         batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
 
         receivedPing(agentCommandDto);
+    }
+
+    /**
+     * Process agent status command
+     *
+     * @param agentCommandDto agent command info.
+     */
+    private void receivedAgentStatus(AgentCommandDto agentCommandDto) {
+        logger.debug(format("Agent status received - hostName: {0} nodeName: {1}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
+        Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
+        agentOptional.ifPresent(agent -> {
+            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
+            agentRepository.save(agent);
+        });
     }
 
     /**

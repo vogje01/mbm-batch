@@ -21,5 +21,6 @@ public enum AgentCommandType {
     PERFORMANCE,
     STATUS,
     SHUTDOWN,
-    STOP
+    STOP,
+    AGENT_STATUS
 }
