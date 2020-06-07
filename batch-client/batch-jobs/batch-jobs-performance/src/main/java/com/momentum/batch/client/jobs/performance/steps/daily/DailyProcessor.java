@@ -28,10 +28,10 @@ public class DailyProcessor implements ItemProcessor<Object[], BatchPerformance>
 
     @Override
     public BatchPerformance process(Object[] tuple) {
-        logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2}", tuple[0], tuple[1], tuple[2]));
+        logger.trace(format("Processing item - tuple[0]: {0} tuple[1]: {1} tuple[2]: {2} tuple[3] {3}", tuple[0], tuple[1], tuple[2], tuple[3]));
 
         // Check old record
-        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3]);
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findExisting((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3], BatchPerformanceType.DAILY);
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data

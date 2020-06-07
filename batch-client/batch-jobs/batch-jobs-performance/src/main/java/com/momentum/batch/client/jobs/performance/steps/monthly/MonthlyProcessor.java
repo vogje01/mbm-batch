@@ -24,7 +24,7 @@ public class MonthlyProcessor implements ItemProcessor<Object[], BatchPerformanc
     public BatchPerformance process(Object[] tuple) {
 
         // Check old record
-        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findByQualifierAndMetricAndTimestamp((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3]);
+        Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findExisting((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3], BatchPerformanceType.MONTHLY);
         BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
