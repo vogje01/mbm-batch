@@ -2,6 +2,7 @@ package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.dto.AgentCommandDto;
 import com.momentum.batch.domain.dto.AgentCommandType;
 import com.momentum.batch.util.NetworkUtils;
@@ -88,12 +89,14 @@ public class AgentService {
      * Send register agent message to server.
      */
     private void registerAgent() {
+        agentCommandDto.setStatus(AgentStatus.STARTING.name());
         agentCommandDto.setType(AgentCommandType.REGISTER);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
+        agentCommandDto.setStatus(AgentStatus.RUNNING.name());
         agentCommandDto.setSystemLoad(osBean.getCpuLoad());
         agentCommandDto.setPid(ProcessHandle.current().pid());
         agentCommandDto.setType(AgentCommandType.PING);
@@ -129,6 +132,8 @@ public class AgentService {
         schedulerTask.killAllProcesses();
 
         // Send shutdown message to server
+        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
+        agentCommandDto.setStatus(AgentStatus.STOPPED.name());
         agentCommandDto.setType(AgentCommandType.SHUTDOWN);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
 

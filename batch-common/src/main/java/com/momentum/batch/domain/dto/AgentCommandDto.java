@@ -6,8 +6,10 @@ import com.google.common.base.Objects;
 import java.util.Date;
 
 /**
+ * Agent command DTO.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.3
  * @since 0.0.1
  */
 public class AgentCommandDto {
@@ -17,6 +19,8 @@ public class AgentCommandDto {
     private String nodeName;
 
     private String hostName;
+
+    private String status;
 
     private long pid;
 
@@ -78,6 +82,14 @@ public class AgentCommandDto {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public long getPid() {
@@ -201,30 +213,6 @@ public class AgentCommandDto {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("type", type)
-                .add("nodeName", nodeName)
-                .add("hostName", hostName)
-                .add("pid", pid)
-                .add("systemLoad", systemLoad)
-                .add("totalRealMemory", totalRealMemory)
-                .add("freeRealMemory", freeRealMemory)
-                .add("usedRealMemory", usedRealMemory)
-                .add("totalVirtMemory", totalVirtMemory)
-                .add("freeVirtMemory", freeVirtMemory)
-                .add("usedVirtMemory", usedVirtMemory)
-                .add("totalSwap", totalSwap)
-                .add("freeSwap", freeSwap)
-                .add("usedSwap", usedSwap)
-                .add("previousFireTime", previousFireTime)
-                .add("nextFireTime", nextFireTime)
-                .add("jobName", jobName)
-                .add("groupName", groupName)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -243,6 +231,7 @@ public class AgentCommandDto {
                 type == that.type &&
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(hostName, that.hostName) &&
+                Objects.equal(status, that.status) &&
                 Objects.equal(previousFireTime, that.previousFireTime) &&
                 Objects.equal(nextFireTime, that.nextFireTime) &&
                 Objects.equal(jobName, that.jobName) &&
@@ -251,6 +240,31 @@ public class AgentCommandDto {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, hostName, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
+        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("type", type)
+                .add("nodeName", nodeName)
+                .add("hostName", hostName)
+                .add("status", status)
+                .add("pid", pid)
+                .add("systemLoad", systemLoad)
+                .add("totalRealMemory", totalRealMemory)
+                .add("freeRealMemory", freeRealMemory)
+                .add("usedRealMemory", usedRealMemory)
+                .add("totalVirtMemory", totalVirtMemory)
+                .add("freeVirtMemory", freeVirtMemory)
+                .add("usedVirtMemory", usedVirtMemory)
+                .add("totalSwap", totalSwap)
+                .add("freeSwap", freeSwap)
+                .add("usedSwap", usedSwap)
+                .add("previousFireTime", previousFireTime)
+                .add("nextFireTime", nextFireTime)
+                .add("jobName", jobName)
+                .add("groupName", groupName)
+                .toString();
     }
 }

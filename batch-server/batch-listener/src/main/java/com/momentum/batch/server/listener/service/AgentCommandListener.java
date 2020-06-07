@@ -88,13 +88,13 @@ public class AgentCommandListener {
      * @param agentCommandDto agent command info.
      */
     private void registerAgent(AgentCommandDto agentCommandDto) {
-        logger.info(format("Register agent - nodeName: {0}", agentCommandDto.getNodeName()));
-        Agent agent;
+        logger.info(format("Register agent - hostName: {0} nodeName: {0}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        agent = agentOptional.orElseGet(Agent::new);
+        Agent agent = agentOptional.orElseGet(Agent::new);
         agent.setPid(agentCommandDto.getPid());
         agent.setHostName(agentCommandDto.getHostName());
         agent.setNodeName(agentCommandDto.getNodeName());
+        agent.setStatus(agentCommandDto.getStatus());
         agent.setLastStart(new Date());
         agent.setLastPing(new Date());
         agent.setActive(true);
@@ -115,6 +115,7 @@ public class AgentCommandListener {
     private void receivedPing(AgentCommandDto agentCommandDto) {
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
+            agent.setStatus(agentCommandDto.getStatus());
             agent.setSystemLoad(agentCommandDto.getSystemLoad());
             agent.setLastPing(new Date());
             agentRepository.save(agent);
@@ -178,6 +179,8 @@ public class AgentCommandListener {
         logger.info(format("Agent shutdown received - nodeName: {0}", agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
+            agent.setSystemLoad(agentCommandDto.getSystemLoad());
+            agent.setStatus(agent.getStatus());
             agent.setLastPing(new Date());
             agent.setActive(false);
             agentRepository.save(agent);
