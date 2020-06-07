@@ -1,5 +1,6 @@
 package com.momentum.batch.client.agent.configuration;
 
+import com.momentum.batch.domain.AgentStatus;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -17,6 +18,8 @@ import java.util.Objects;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
+    private static AgentStatus agentStatus = AgentStatus.UNKNOWN;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
@@ -24,5 +27,10 @@ public class BatchAgentConfiguration {
         yaml.setResources(new ClassPathResource("application.yml"));
         configurer.setProperties(Objects.requireNonNull(yaml.getObject()));
         return configurer;
+    }
+
+    @Bean
+    public AgentStatus agentStatus() {
+        return agentStatus;
     }
 }

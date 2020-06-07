@@ -30,13 +30,15 @@ public class BatchScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 
+    private final String nodeName;
+
+    private final String hostName;
+
     private final Scheduler scheduler;
 
     private final AgentCommandProducer agentCommandProducer;
 
-    private final String nodeName;
-
-    private final String hostName;
+    private AgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -47,11 +49,12 @@ public class BatchScheduler {
      * @param scheduler quartz scheduler.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String hostName, String nodeName) {
+    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String hostName, String nodeName, AgentStatus agentStatus) {
         this.scheduler = scheduler;
         this.agentCommandProducer = agentCommandProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
+        this.agentStatus = agentStatus;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
@@ -392,8 +395,11 @@ public class BatchScheduler {
      */
     private void sendAgentStarted() {
         logger.info("Sending agent started status");
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
-        agentCommandDto.setStatus(AgentStatus.STARTED.name());
+        agentStatus = AgentStatus.STARTED;
+        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.AGENT_STATUS);
+        agentCommandDto.setStatus(agentStatus.name());
+        agentCommandDto.setNodeName(nodeName);
+        agentCommandDto.setHostName(hostName);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }

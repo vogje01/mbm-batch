@@ -58,7 +58,7 @@ public class AgentService {
 
     private final AgentCommandProducer agentCommandProducer;
 
-    private AgentStatus currentAgentStatus = AgentStatus.UNKNOWN;
+    private AgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -67,9 +67,10 @@ public class AgentService {
      * @param nodeName      node name.
      */
     @Autowired
-    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String nodeName, AgentCommandProducer agentCommandProducer) {
+    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String nodeName, AgentStatus agentStatus, AgentCommandProducer agentCommandProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
+        this.agentStatus = agentStatus;
         this.agentCommandProducer = agentCommandProducer;
 
         // Agent command
@@ -104,7 +105,9 @@ public class AgentService {
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
-        if (currentAgentStatus != AgentStatus.STOPPED) {
+        if (agentStatus != AgentStatus.STOPPED) {
+            agentStatus = AgentStatus.RUNNING;
+            agentCommandDto.setStatus(agentStatus.name());
             agentCommandDto.setSystemLoad(osBean.getCpuLoad());
             agentCommandDto.setPid(ProcessHandle.current().pid());
             agentCommandDto.setType(AgentCommandType.PING);
@@ -115,9 +118,11 @@ public class AgentService {
     @Scheduled(fixedRateString = "${agent.performanceInterval}")
     private void performance() {
 
-        if (currentAgentStatus != AgentStatus.STOPPED) {
+        if (agentStatus != AgentStatus.STOPPED) {
 
             // Initialize
+            agentStatus = AgentStatus.RUNNING;
+            agentCommandDto.setStatus(agentStatus.name());
             agentCommandDto.setType(AgentCommandType.PERFORMANCE);
 
             // Set performance attributes
@@ -148,7 +153,7 @@ public class AgentService {
         scheduler.pauseScheduler();
 
         // Pause ping
-        currentAgentStatus = AgentStatus.PAUSED;
+        agentStatus = AgentStatus.PAUSED;
 
         // Send shutdown message to server
         setStatus(AgentStatus.PAUSED);
@@ -173,7 +178,7 @@ public class AgentService {
     }
 
     public void setStatus(AgentStatus agentStatus) {
-        currentAgentStatus = agentStatus;
+        this.agentStatus = agentStatus;
         agentCommandDto.setSystemLoad(osBean.getCpuLoad());
         agentCommandDto.setStatus(agentStatus.name());
         agentCommandDto.setType(AgentCommandType.AGENT_STATUS);
