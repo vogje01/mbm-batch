@@ -268,6 +268,10 @@ public class UserController {
     /**
      * Return the avatar PNG file.
      *
+     * <p>
+     * If the avatar does not exist for the user, an empty ok result is returned.
+     * </p>
+     *
      * @param id ID of user.
      * @return avatar image as PNG file.
      */
@@ -279,6 +283,11 @@ public class UserController {
 
         Optional<User> userOptional = userService.findById(id);
         if (userOptional.isPresent()) {
+
+            User user = userOptional.get();
+            if (user.getAvatar() == null) {
+                return ResponseEntity.ok().build();
+            }
             HttpHeaders headers = new HttpHeaders();
             byte[] media = new byte[0];
             try {

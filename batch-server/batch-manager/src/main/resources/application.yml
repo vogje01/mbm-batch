@@ -8,7 +8,7 @@ spring:
     rest:
       base-path: /api
   datasource:
-    url: jdbc:mysql://batchmanager:3306/fisbatch
+    url: jdbc:mysql://batchmanager:3306/batch
     username: root
     password: Dilbert_01
     driver-class-name: com.mysql.cj.jdbc.Driver

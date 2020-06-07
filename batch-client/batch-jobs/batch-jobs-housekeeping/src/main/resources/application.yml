@@ -18,7 +18,7 @@ spring:
 
 mysql:
   datasource:
-    jdbc-url: jdbc:mysql://batchmanager:3306/fisbatch
+    jdbc-url: jdbc:mysql://batchmanager:3306/batch
     username: root
     password: Dilbert_01
     driverClassName: com.mysql.cj.jdbc.Driver
