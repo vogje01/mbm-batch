@@ -1,5 +1,6 @@
 package com.momentum.batch.server.listener.service;
 
+import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.BatchPerformanceType;
 import com.momentum.batch.domain.dto.AgentCommandDto;
 import com.momentum.batch.domain.dto.JobScheduleDto;
@@ -94,7 +95,7 @@ public class AgentCommandListener {
         agent.setPid(agentCommandDto.getPid());
         agent.setHostName(agentCommandDto.getHostName());
         agent.setNodeName(agentCommandDto.getNodeName());
-        agent.setStatus(agentCommandDto.getStatus());
+        agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
         agent.setLastStart(new Date());
         agent.setLastPing(new Date());
         agent.setActive(true);
@@ -115,7 +116,7 @@ public class AgentCommandListener {
     private void receivedPing(AgentCommandDto agentCommandDto) {
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
-            agent.setStatus(agentCommandDto.getStatus());
+            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
             agent.setSystemLoad(agentCommandDto.getSystemLoad());
             agent.setLastPing(new Date());
             agentRepository.save(agent);
@@ -180,7 +181,7 @@ public class AgentCommandListener {
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
             agent.setSystemLoad(agentCommandDto.getSystemLoad());
-            agent.setStatus(agent.getStatus());
+            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
             agent.setLastPing(new Date());
             agent.setActive(false);
             agentRepository.save(agent);

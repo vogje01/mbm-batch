@@ -2,6 +2,7 @@ package com.momentum.batch.server.database.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -51,7 +52,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
      */
     @Column(name = "STATUS")
     @Enumerated(EnumType.STRING)
-    private String status;
+    private AgentStatus status;
     /**
      * Last start time
      */
@@ -141,11 +142,11 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
         this.pid = pid;
     }
 
-    public String getStatus() {
+    public AgentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AgentStatus status) {
         this.status = status;
     }
 
