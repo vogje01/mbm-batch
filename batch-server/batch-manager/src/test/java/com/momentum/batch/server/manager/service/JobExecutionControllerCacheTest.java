@@ -5,6 +5,7 @@ import com.momentum.batch.domain.dto.ServerCommandDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
+import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.junit.Before;
@@ -47,6 +48,11 @@ public class JobExecutionControllerCacheTest {
         }
 
         @Bean
+        public JobExecutionInstanceRepository jobExecutionInstanceRepository() {
+            return mockJobExecutionInstanceRepository;
+        }
+
+        @Bean
         public StepExecutionInfoRepository stepExecutionInfoRepository() {
             return mockStepExecutionInfoRepository;
         }
@@ -63,7 +69,7 @@ public class JobExecutionControllerCacheTest {
 
         @Bean
         public JobExecutionService jobExecutionServiceForTest() {
-            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), stepExecutionInfoRepository(), serverCommandProducer(), modelConverter());
+            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobExecutionInstanceRepository(), stepExecutionInfoRepository(), serverCommandProducer(), modelConverter());
         }
 
         @Bean
@@ -89,8 +95,10 @@ public class JobExecutionControllerCacheTest {
     @Autowired
     private JobExecutionService service;
 
-    // this is actual mock
+    // This are the actual mocks
     private static final JobExecutionInfoRepository mockJobExecutionRepository = mock(JobExecutionInfoRepository.class);
+
+    private static final JobExecutionInstanceRepository mockJobExecutionInstanceRepository = mock(JobExecutionInstanceRepository.class);
 
     private static final StepExecutionInfoRepository mockStepExecutionInfoRepository = mock(StepExecutionInfoRepository.class);
 

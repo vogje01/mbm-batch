@@ -71,6 +71,13 @@
             <version>2.2.2.RELEASE</version>
         </dependency>
 
+        <!-- MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.18</version>
+        </dependency>
+
         <!-- Batch -->
         <dependency>
             <groupId>com.momentum</groupId>
@@ -98,6 +105,19 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.2.2.RELEASE</version>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>6.0.0</version>
+                <configuration>
+                    <user>root</user>
+                    <password>Dilbert_01</password>
+                    <url>jdbc:mysql://localhost:3306</url>
+                    <schemas>
+                        <schema>batch</schema>
+                    </schemas>
+                </configuration>
             </plugin>
         </plugins>
     </build>

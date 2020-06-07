@@ -6,6 +6,7 @@ import com.momentum.batch.domain.dto.ServerCommandType;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
+import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
@@ -30,6 +31,8 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final JobExecutionInfoRepository jobExecutionRepository;
 
+    private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
+
     private final StepExecutionInfoRepository stepExecutionRepository;
 
     private final ServerCommandProducer serverCommandProducer;
@@ -39,10 +42,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     @Autowired
     public JobExecutionServiceImpl(
             JobExecutionInfoRepository jobExecutionRepository,
+            JobExecutionInstanceRepository jobExecutionInstanceRepository,
             StepExecutionInfoRepository stepExecutionRepository,
             ServerCommandProducer serverCommandProducer,
             ModelConverter modelConverter) {
         this.jobExecutionRepository = jobExecutionRepository;
+        this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.stepExecutionRepository = stepExecutionRepository;
         this.serverCommandProducer = serverCommandProducer;
         this.modelConverter = modelConverter;
@@ -70,10 +75,18 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     public void deleteJobExecutionInfo(final String jobExecutionId) {
 		Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionRepository.findById(jobExecutionId);
         if (jobExecutionInfoOptional.isPresent()) {
-			JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
+
+            JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
+
+            // Delete job execution instance
+            jobExecutionInstanceRepository.delete(jobExecutionInfo.getJobExecutionInstance());
+
+            // Delete step executions
             jobExecutionInfo.getStepExecutionInfos().forEach(stepExecutionRepository::delete);
+
+            // Delete job execution
             jobExecutionRepository.delete(jobExecutionInfo);
-		}
+        }
     }
 
     @Override
