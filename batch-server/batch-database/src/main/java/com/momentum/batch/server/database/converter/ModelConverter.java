@@ -287,7 +287,10 @@ public class ModelConverter {
     }
 
     public JobGroup convertJobGroupToEntity(JobGroupDto jobGroupDto) {
-        return modelMapper.map(jobGroupDto, JobGroup.class);
+        if (jobGroupDto != null) {
+            return modelMapper.map(jobGroupDto, JobGroup.class);
+        }
+        return null;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

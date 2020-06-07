@@ -3,9 +3,9 @@ package com.momentum.batch.server.manager.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.domain.dto.ServerCommandDto;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
-import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,18 +46,18 @@ public class JobExecutionControllerCacheTest {
         }
 
         @Bean
-        public JobDefinitionRepository jobDefinitionRepository() {
-            return mockJobDefinitionRepository;
-        }
-
-        @Bean
         public StepExecutionInfoRepository stepExecutionInfoRepository() {
             return mockStepExecutionInfoRepository;
         }
 
         @Bean
+        public ServerCommandProducer serverCommandProducer() {
+            return mockServerCommandProducer;
+        }
+
+        @Bean
         public JobExecutionService jobExecutionServiceForTest() {
-            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobDefinitionRepository(), stepExecutionInfoRepository(), mockTemplate);
+            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), stepExecutionInfoRepository(), serverCommandProducer());
         }
 
         @Bean
@@ -86,16 +86,16 @@ public class JobExecutionControllerCacheTest {
     // this is actual mock
     private static JobExecutionInfoRepository mockJobExecutionRepository = mock(JobExecutionInfoRepository.class);
 
-    private static JobDefinitionRepository mockJobDefinitionRepository = mock(JobDefinitionRepository.class);
-
     private static StepExecutionInfoRepository mockStepExecutionInfoRepository = mock(StepExecutionInfoRepository.class);
+
+    private static ServerCommandProducer mockServerCommandProducer = mock(ServerCommandProducer.class);
 
     @SuppressWarnings("unchecked")
     private static KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
 
-	private JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
+    private JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
 
-	private JobExecutionInfo jobExecutionInfo2 = new JobExecutionInfo();
+    private JobExecutionInfo jobExecutionInfo2 = new JobExecutionInfo();
 
     @Before
     public void setup() {

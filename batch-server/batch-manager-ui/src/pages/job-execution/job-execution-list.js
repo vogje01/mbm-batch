@@ -22,6 +22,7 @@ import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
 import JobExecutionParamList from "./job-execution-param-list";
 import JobExecutionLogList from "./job-execution-log-list";
+import {getItem} from "../../utils/server-connection";
 
 class JobExecutionList extends React.Component {
 
@@ -31,6 +32,7 @@ class JobExecutionList extends React.Component {
             currentJobExecution: {},
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.restartJob = this.restartJob.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -58,6 +60,14 @@ class JobExecutionList extends React.Component {
 
     selectionChanged(e) {
         this.setState({currentJobExecution: e.data});
+    }
+
+    restartJob(e) {
+        let jobExecution = e.row.data;
+        getItem(jobExecution._links.restart.href)
+            .then((data) => {
+                this.setState({currentJobExecution: data});
+            });
     }
 
     render() {
@@ -147,23 +157,6 @@ class JobExecutionList extends React.Component {
                                     </GroupItem>
                                 </Form>
                             </Editing>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry',
-                                        icon: 'material-icons-outlined ic-edit md-18',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job execution entry',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
                             <Column
                                 caption={'ID'}
                                 dataField={'id'}
@@ -308,6 +301,29 @@ class JobExecutionList extends React.Component {
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
                             <MasterDetail enabled={true} component={StepExecutionListPage}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job execution entry.',
+                                        icon: 'material-icons-outlined ic-edit',
+                                    },
+                                    {
+                                        name: 'restart',
+                                        hint: 'Restart the job execution entry.',
+                                        icon: 'material-icons-outlined ic-restart',
+                                        onClick: this.restartJob
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job execution entry.',
+                                        icon: 'material-icons-outlined ic-delete'
+                                    }
+                                ]}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

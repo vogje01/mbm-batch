@@ -26,7 +26,8 @@ import {getFormattedTime} from "../../utils/date-time-util";
 const types = [
     {type: 'JAR', name: 'JAR'},
     {type: 'DOCKER', name: 'DOCKER'},
-    {type: 'SCRIPT', name: 'SCRIPT'}
+    {type: 'SCRIPT', name: 'SCRIPT'},
+    {type: 'INTERNAL', name: 'INTERNAL'}
 ];
 
 class JobDefinitionList extends React.Component {

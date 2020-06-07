@@ -8,7 +8,8 @@ package com.momentum.batch.domain;
 public enum JobDefinitionType {
     JAR("JAR"),
     DOCKER("DOCKER"),
-    SCRIPT("SCRIPT");
+    SCRIPT("SCRIPT"),
+    INTERNAL("INTERNAL");
 
     private String id;
 

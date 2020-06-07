@@ -35,7 +35,7 @@ class AgentView extends React.Component {
         getItem(agent._links.pauseAgent.href)
             .then((data) => {
                 this.setState({currentAgent: data});
-            })
+            });
     }
 
     stopAgent(e) {

@@ -2,6 +2,10 @@
   content: 'edit';
 }
 
+.ic-restart:before {
+  content: 'start';
+}
+
 .ic-delete:before {
   content: 'delete';
 }

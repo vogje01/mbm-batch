@@ -20,6 +20,7 @@
         <module>batch-jobs-performance</module>
         <module>batch-jobs-housekeeping</module>
         <module>batch-jobs-test-01</module>
+        <module>batch-jobs-test-02</module>
     </modules>
 
 </project>

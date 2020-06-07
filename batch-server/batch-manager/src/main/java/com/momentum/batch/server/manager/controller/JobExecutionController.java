@@ -96,17 +96,35 @@ public class JobExecutionController {
         return null;
     }
 
-    @GetMapping(value = "/{id}/start")
-    public ResponseEntity<Void> start(@PathVariable String id) {
-        jobExecutionService.startJobExecutionInfo(id);
-        return null;
+    @GetMapping(value = "/{jobExecutionId}/restart")
+    public ResponseEntity<JobExecutionDto> restart(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Restart job execution
+        JobExecutionInfo jobExecution = jobExecutionService.restartJobExecutionInfo(jobExecutionId);
+        JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
+
+        // Add links
+        addLinks(jobExecutionDto);
+        logger.debug(format("Finished restart job execution - hostName: {0} nodeName: {1} {2}", jobExecutionDto.getHostName(), jobExecutionDto.getNodeName(), t.elapsedStr()));
+
+        return ResponseEntity.ok(jobExecutionDto);
+    }
+
+    private void addLinks(JobExecutionDto jobExecutionDto) {
+        try {
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(jobExecutionDto.getId())).withSelfRel());
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).delete(jobExecutionDto.getId())).withRel("delete"));
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).restart(jobExecutionDto.getId())).withRel("restart"));
+        } catch (ResourceNotFoundException e) {
+            logger.error(format("Could not add links to job executions - error: {0}", e.getMessage()));
+        }
     }
 
     private void addLinks(JobExecutionDto jobExecutionDto, int page, int size, String sortBy, String sortDir) {
         try {
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(jobExecutionDto.getId())).withSelfRel());
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).delete(jobExecutionDto.getId())).withRel("delete"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).start(jobExecutionDto.getId())).withRel("start"));
+            addLinks(jobExecutionDto);
             jobExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findByJobId(jobExecutionDto.getId(), page, size, sortBy, sortDir)).withRel("byJobId"));
             jobExecutionDto.add(linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionDto.getId(), page, size, sortBy, sortDir)).withRel("params"));
             jobExecutionDto.add(linkTo(methodOn(JobExecutionLogController.class).findByJobId(jobExecutionDto.getId(), page, size, sortDir, sortDir)).withRel("logs"));
