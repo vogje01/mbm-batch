@@ -1,4 +1,4 @@
-package com.momentum.batch.client.agent.listener;
+package com.momentum.batch.client.agent.kafka;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
@@ -21,9 +21,9 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Service
-public class ServerCommandListener {
+public class ServerCommandConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerCommandListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServerCommandConsumer.class);
 
     private final BatchScheduler batchScheduler;
 
@@ -32,7 +32,7 @@ public class ServerCommandListener {
     private final String nodeName;
 
     @Autowired
-    public ServerCommandListener(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask, String nodeName) {
+    public ServerCommandConsumer(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask, String nodeName) {
         this.batchScheduler = batchScheduler;
         this.batchSchedulerTask = batchSchedulerTask;
         this.nodeName = nodeName;

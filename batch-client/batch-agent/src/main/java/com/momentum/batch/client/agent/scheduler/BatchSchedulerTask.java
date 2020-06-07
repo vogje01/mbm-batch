@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.service.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
 import com.momentum.batch.domain.dto.AgentCommandDto;
 import com.momentum.batch.domain.dto.AgentCommandType;
 import com.momentum.batch.domain.dto.JobScheduleDto;

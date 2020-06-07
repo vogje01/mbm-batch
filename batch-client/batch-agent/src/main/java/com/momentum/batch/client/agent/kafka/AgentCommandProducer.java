@@ -1,14 +1,11 @@
-package com.momentum.batch.client.agent.service;
+package com.momentum.batch.client.agent.kafka;
 
 import com.momentum.batch.domain.dto.AgentCommandDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -19,7 +16,6 @@ import static java.text.MessageFormat.format;
  * @version 0.0.1
  * @since 0.0.1
  */
-@Component
 public class AgentCommandProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentCommandProducer.class);
@@ -29,7 +25,6 @@ public class AgentCommandProducer {
 
     private KafkaTemplate<String, AgentCommandDto> template;
 
-    @Autowired
     public AgentCommandProducer(KafkaTemplate<String, AgentCommandDto> template) {
         this.template = template;
     }
@@ -43,7 +38,6 @@ public class AgentCommandProducer {
      *
      * @param agentCommandDto agent command info.
      */
-    @Transactional
     public void sendAgentCommand(AgentCommandDto agentCommandDto) {
 
         ListenableFuture<SendResult<String, AgentCommandDto>> future = template.send(agentCommandTopic, agentCommandDto);

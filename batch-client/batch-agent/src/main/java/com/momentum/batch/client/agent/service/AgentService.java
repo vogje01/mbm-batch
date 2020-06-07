@@ -1,5 +1,6 @@
 package com.momentum.batch.client.agent.service;
 
+import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
 import com.momentum.batch.domain.dto.AgentCommandDto;
 import com.momentum.batch.domain.dto.AgentCommandType;
@@ -93,6 +94,7 @@ public class AgentService {
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
+        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
         agentCommandDto.setPid(ProcessHandle.current().pid());
         agentCommandDto.setType(AgentCommandType.PING);
         agentCommandProducer.sendAgentCommand(agentCommandDto);

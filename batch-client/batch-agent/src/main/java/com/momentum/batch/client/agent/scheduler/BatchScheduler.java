@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.service.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
 import com.momentum.batch.domain.dto.*;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
