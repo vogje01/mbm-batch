@@ -274,6 +274,7 @@ CREATE TABLE BATCH_AGENT
     VERSION              BIGINT,
     NODE_NAME            VARCHAR(36) NOT NULL,
     PID                  BIGINT,
+    STATUS               ENUM ('UNKNOWN', 'STARTING', 'STARTED', 'RUNNING', 'PAUSED', 'STOPPED'),
     LAST_START           DATETIME,
     LAST_PING            DATETIME,
     SYSTEM_LOAD          DOUBLE,

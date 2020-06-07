@@ -47,6 +47,12 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "PID")
     private Long pid;
     /**
+     * Agent status
+     */
+    @Column(name = "STATUS")
+    @Enumerated(EnumType.STRING)
+    private String status;
+    /**
      * Last start time
      */
     @Column(name = "LAST_START")
@@ -96,7 +102,10 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
     }
 
     public void update(Agent agent) {
+        this.hostName = agent.hostName;
         this.nodeName = agent.nodeName;
+        this.status = agent.status;
+        this.systemLoad = agent.systemLoad;
         this.active = agent.active;
     }
 
@@ -130,6 +139,14 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getLastStart() {
@@ -233,6 +250,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 Objects.equal(nodeName, agent.nodeName) &&
                 Objects.equal(hostName, agent.hostName) &&
                 Objects.equal(pid, agent.pid) &&
+                Objects.equal(status, agent.status) &&
                 Objects.equal(lastStart, agent.lastStart) &&
                 Objects.equal(lastPing, agent.lastPing) &&
                 Objects.equal(systemLoad, agent.systemLoad) &&
@@ -245,7 +263,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, active, agentGroups, schedules);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, active, agentGroups, schedules);
     }
 
     @Override
@@ -255,6 +273,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("nodeName", nodeName)
                 .add("hostName", hostName)
                 .add("pid", pid)
+                .add("status", status)
                 .add("lastStart", lastStart)
                 .add("lastPing", lastPing)
                 .add("systemLoad", systemLoad)

@@ -77,6 +77,7 @@ class AgentView extends React.Component {
                                             <RequiredRule message="Host name is required"/>
                                             <StringLengthRule min={2} message="Host name must be at least 2 characters long."/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="status" readOnly={true}/>
                                         <SimpleItem dataField="pid" edtitorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                         <SimpleItem dataField="lastStart" editorType="dxTextBox"
@@ -143,6 +144,14 @@ class AgentView extends React.Component {
                                 allowFiltering={true}
                                 allowSorting={true}
                                 allowReordering={true}/>
+                            <Column
+                                dataField={'status'}
+                                caption={'Status'}
+                                dataType={'string'}
+                                allowSorting={true}
+                                allowReordering={true}
+                                allowFiltering={true}
+                                width={100}/>
                             <Column
                                 caption={'PID'}
                                 dataField={'pid'}

@@ -43,6 +43,10 @@ public class AgentDto extends RepresentationModel<AgentDto> {
      */
     private Long pid;
     /**
+     * Agent status
+     */
+    private String status;
+    /**
      * Last start time
      */
     private Date lastStart;
@@ -128,6 +132,14 @@ public class AgentDto extends RepresentationModel<AgentDto> {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getLastStart() {
@@ -236,6 +248,7 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 Objects.equal(nodeName, agentDto.nodeName) &&
                 Objects.equal(hostName, agentDto.hostName) &&
                 Objects.equal(pid, agentDto.pid) &&
+                Objects.equal(status, agentDto.status) &&
                 Objects.equal(lastStart, agentDto.lastStart) &&
                 Objects.equal(lastPing, agentDto.lastPing) &&
                 Objects.equal(systemLoad, agentDto.systemLoad) &&
@@ -252,7 +265,7 @@ public class AgentDto extends RepresentationModel<AgentDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
     }
 
     @Override
@@ -262,6 +275,7 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 .add("nodeName", nodeName)
                 .add("hostName", hostName)
                 .add("pid", pid)
+                .add("status", status)
                 .add("lastStart", lastStart)
                 .add("lastPing", lastPing)
                 .add("systemLoad", systemLoad)
