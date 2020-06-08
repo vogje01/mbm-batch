@@ -18,7 +18,7 @@ public class WeeklyStep {
 
     private static final String STEP_NAME = "Weekly Consolidation";
 
-    @Value("${consolidation.batch.weekly.chunkSize}")
+    @Value("${performance.batch.weekly.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

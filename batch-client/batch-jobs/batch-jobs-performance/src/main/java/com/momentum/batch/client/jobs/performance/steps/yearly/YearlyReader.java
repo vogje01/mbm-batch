@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class YearlyReader {
 
-    @Value("${consolidation.batch.yearly.chunkSize}")
+    @Value("${performance.batch.yearly.chunkSize}")
     private int chunkSize;
 
     private final EntityManagerFactory mysqlEmf;

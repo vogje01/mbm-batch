@@ -18,7 +18,7 @@ public class StepCountStep {
 
     private static final String STEP_NAME = "Step count";
 
-    @Value("${consolidation.batch.stepCount.chunkSize}")
+    @Value("${performance.batch.stepCount.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

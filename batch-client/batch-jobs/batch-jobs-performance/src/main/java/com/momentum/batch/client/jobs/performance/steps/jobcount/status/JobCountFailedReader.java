@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JobCountFailedReader {
 
-    @Value("${consolidation.batch.jobStatus.chunkSize}")
+    @Value("${performance.batch.jobStatus.chunkSize}")
     private int chunkSize;
 
     private final EntityManagerFactory mysqlEmf;

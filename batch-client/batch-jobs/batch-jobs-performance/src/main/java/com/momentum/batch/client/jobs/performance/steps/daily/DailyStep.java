@@ -17,7 +17,7 @@ public class DailyStep {
 
     private static final String STEP_NAME = "Daily consolidation";
 
-    @Value("${consolidation.batch.daily.chunkSize}")
+    @Value("${performance.batch.daily.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

@@ -31,7 +31,7 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 public class PerformanceBatchConfiguration {
 
-    private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("consolidation.yml")};
+    private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("performance.yml")};
 
     @Bean
     public String jobName() {

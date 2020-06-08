@@ -17,7 +17,7 @@ public class YearlyStep {
 
     private static final String STEP_NAME = "Yearly Consolidation";
 
-    @Value("${consolidation.batch.yearly.chunkSize}")
+    @Value("${performance.batch.yearly.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

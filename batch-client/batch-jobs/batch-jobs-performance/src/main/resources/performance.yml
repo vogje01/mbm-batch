@@ -1,5 +1,5 @@
 # Housekeeping for the batch tables
-consolidation:
+performance:
   batch:
     # Agent load
     agentLoad:

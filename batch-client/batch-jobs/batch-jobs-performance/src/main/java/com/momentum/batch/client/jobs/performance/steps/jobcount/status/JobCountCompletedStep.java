@@ -22,7 +22,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class JobCountCompletedStep {
 
-    @Value("${consolidation.batch.jobStatus.chunkSize}")
+    @Value("${performance.batch.jobStatus.chunkSize}")
     private int chunkSize;
 
     private static final String STEP_NAME = "Job completed count";

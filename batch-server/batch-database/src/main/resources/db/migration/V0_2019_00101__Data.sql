@@ -192,7 +192,38 @@ VALUES ('d8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58', 'performance-batch-windows', 'Pe
         '0.0.3', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe',
         'C:\\work\\batch\\lib\\batch-jobs-performance-0.0.3.jar',
         'C:\\work\\batch', 'C:\\work\\batch\\log');
-
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('0635e18a-4fab-4de6-b874-386818fe2775', 'performance.batch.jobStatus.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('0c051c47-789a-4dc7-a5a5-22e805acf29a', 'performance.batch.jobCount.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('155e35d3-d519-4237-8d63-7df0db5151e9', 'performance.batch.yearly.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('35be215f-aa36-4479-950b-9a31530b777d', 'performance.batch.agentLoad.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('43e6dd8a-3d53-4766-820a-164777e2d23a', 'performance.batch.weekly.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('73893c0b-167e-4eaf-87be-c8ecdd1a7ecd', 'performance.batch.daily.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('d33bbc54-a94a-402c-b1dd-6da49ba20e0b', 'performance.batch.monthly.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('d8a2ada1-4f47-4850-ab42-6ff9518a4aa4', 'performance.batch.stepCount.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, 'd8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58');
 INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, ACTIVE, VERSION)
 VALUES ('84c6f18a-b886-45ca-bfb8-b9cd71292b3d', '7b137226-178d-47ab-884f-8b1b37c75878', '0 0/15 * * * ?',
         'Performance Batch Windows', 1, 0);
@@ -209,7 +240,38 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', 'performance-batch-linux', 'Performance Batch Linux',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Linux.', 1, 'JAR',
         '0.0.3', 'java', '/opt/batch/lib/batch-jobs-performance-0.0.3.jar', '/opt/batch', '/opt/batch/log');
-
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('12b33b64-c3d5-491b-bbe0-ea3295d88dce', 'performance.batch.weekly.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('3a491491-166f-40e1-ad9e-313c0d500ab4', 'performance.batch.yearly.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('6f684f79-9ad8-4fa4-b196-d2ccb51d6197', 'performance.batch.jobCount.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('6f97e875-dd27-407e-87d0-3d688ea501c9', 'performance.batch.monthly.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('70efb539-620e-426f-b2b0-26a3759bb29b', 'performance.batch.daily.chunkSize', 0, 'LONG', NULL, NULL, NULL, 1000,
+        NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('97319b5e-ffbb-4b16-b908-40fe1b31e392', 'performance.batch.stepCount.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('b30b0514-9f38-40cc-8f16-33609a263565', 'performance.batch.jobStatus.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
+INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
+                                         BOOLEAN_VAL, JOB_DEFINITION_ID)
+VALUES ('fcfcea1b-95c3-4475-a1b7-040789897f0e', 'performance.batch.agentLoad.chunkSize', 0, 'LONG', NULL, NULL, NULL,
+        1000, NULL, NULL, '9e4f170d-8a59-4ea6-be80-149e73235c17');
 INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, ACTIVE, VERSION)
 VALUES ('f7d24791-98e1-4c13-b99f-88ea9e2b0143', '9e4f170d-8a59-4ea6-be80-149e73235c17', '0 5/15 * * * ?',
         'Performance Batch Linux', 1, 0);

@@ -17,7 +17,7 @@ public class JobCountNodeStep {
 
     private static final String STEP_NAME = "Job count";
 
-    @Value("${consolidation.batch.jobCount.chunkSize}")
+    @Value("${performance.batch.jobCount.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

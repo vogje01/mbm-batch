@@ -24,7 +24,7 @@ public class JobCountFailedStep {
 
     private static final String STEP_NAME = "Job failed count";
 
-    @Value("${consolidation.batch.jobStatus.chunkSize}")
+    @Value("${performance.batch.jobStatus.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

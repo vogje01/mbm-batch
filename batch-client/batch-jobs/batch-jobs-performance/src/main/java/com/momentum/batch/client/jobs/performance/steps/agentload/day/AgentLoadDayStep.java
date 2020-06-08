@@ -19,7 +19,7 @@ public class AgentLoadDayStep {
 
     private final BatchLogger logger;
 
-    @Value("${consolidation.batch.agentLoad.chunkSize}")
+    @Value("${performance.batch.agentLoad.chunkSize}")
     private int chunkSize;
 
     private final AgentRepository agentRepository;

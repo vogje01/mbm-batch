@@ -18,7 +18,7 @@ public class MonthlyStep {
 
     private static final String STEP_NAME = "Monthly Consolidation";
 
-    @Value("${consolidation.batch.monthly.chunkSize}")
+    @Value("${performance.batch.monthly.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class StepCountReader {
 
-    @Value("${consolidation.batch.stepCount.chunkSize}")
+    @Value("${performance.batch.stepCount.chunkSize}")
     private int chunkSize;
 
     private final EntityManagerFactory mysqlEmf;

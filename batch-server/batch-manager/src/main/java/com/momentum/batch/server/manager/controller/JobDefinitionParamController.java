@@ -128,7 +128,6 @@ public class JobDefinitionParamController {
         t.restart();
 
         long totalCount = jobDefinitionParamService.countByJobDefinitionId(jobDefinitionId);
-        RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
 
         // Get job definition parameters
         Page<JobDefinitionParam> jobDefinitionParams = jobDefinitionParamService.allJobDefinitionParamsByJobDefinition(jobDefinitionId, PagingUtil.getPageable(page, size, sortBy, sortDir));
@@ -183,7 +182,7 @@ public class JobDefinitionParamController {
     @PutMapping(value = "/{jobDefinitionParamId}/update")
     public ResponseEntity<JobDefinitionParamDto> updateJobDefinitionParam(@PathVariable("jobDefinitionParamId") String jobDefinitionParamId,
                                                                           @RequestBody JobDefinitionParamDto jobDefinitionParamDto) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobDefinitionParamService.findById(jobDefinitionParamId));
+        t.restart();
 
         // Convert to entity
         JobDefinitionParam jobDefinitionParam = modelConverter.convertJobDefinitionParamToEntity(jobDefinitionParamDto);
@@ -212,14 +211,13 @@ public class JobDefinitionParamController {
     }
 
     private void addLinks(JobDefinitionParamDto jobDefinitionParamDto) {
-        t.restart();
         try {
             jobDefinitionParamDto.add(linkTo(methodOn(JobDefinitionParamController.class).findById(jobDefinitionParamDto.getId())).withSelfRel());
             jobDefinitionParamDto.add(linkTo(methodOn(JobDefinitionParamController.class).addJobDefinitionParam(jobDefinitionParamDto.getId(), jobDefinitionParamDto)).withRel("add"));
             jobDefinitionParamDto.add(linkTo(methodOn(JobDefinitionParamController.class).updateJobDefinitionParam(jobDefinitionParamDto.getId(), jobDefinitionParamDto)).withRel("update"));
             jobDefinitionParamDto.add(linkTo(methodOn(JobDefinitionParamController.class).deleteJobDefinitionParam(jobDefinitionParamDto.getId())).withRel("delete"));
         } catch (ResourceNotFoundException e) {
-            logger.error(format("Resource not found - jobDefinitionParamId: {0} {1}", jobDefinitionParamDto.getId(), t.elapsedStr()));
+            logger.error(format("Resource not found - jobDefinitionParamId: {0}", jobDefinitionParamDto.getId()));
         }
     }
 }

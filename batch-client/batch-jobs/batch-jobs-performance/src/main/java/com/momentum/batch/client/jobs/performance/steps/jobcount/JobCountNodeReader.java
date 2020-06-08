@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class JobCountNodeReader {
 
-    @Value("${consolidation.batch.jobCount.chunkSize}")
+    @Value("${performance.batch.jobCount.chunkSize}")
     private int chunkSize;
 
     private final EntityManagerFactory mysqlEmf;

@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public class WeeklyReader {
 
-    @Value("${consolidation.batch.weekly.chunkSize}")
+    @Value("${performance.batch.weekly.chunkSize}")
     private int chunkSize;
 
     private final EntityManagerFactory mysqlEmf;
