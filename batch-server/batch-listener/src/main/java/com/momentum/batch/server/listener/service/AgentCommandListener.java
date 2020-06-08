@@ -229,7 +229,7 @@ public class AgentCommandListener {
         logger.info(format("Got active jobs for agent - nodeName: {0} size: {1}", agent.getNodeName(), jobSchedules.size()));
 
         if (jobSchedules.isEmpty()) {
-            logger.info(format("No active job schedules for agent - nodeName: {0}"));
+            logger.info(format("No active job schedules for agent - nodeName: {0}", agent.getNodeName()));
         } else {
 
             // Send start commands to agent
