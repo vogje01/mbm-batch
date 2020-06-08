@@ -10,7 +10,7 @@ export const AgentDataSource = () => {
 
             },
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'nodeName');
+                let params = getParams(loadOptions, 'nodeName', 'asc');
                 return listItems('agents' + params, 'agentDtoes');
             },
             update: function (agent, values) {
@@ -32,7 +32,7 @@ export const AgentScheduleDataSource = (agent) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('agents/' + agent.id + '/getSchedules' + params, 'jobScheduleDtoes');
             },
             insert: function (jobSchedule) {

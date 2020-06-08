@@ -16,7 +16,7 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobGroup implements PrimaryKeyIdentifier<String> {
+public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key
@@ -26,12 +26,6 @@ public class JobGroup implements PrimaryKeyIdentifier<String> {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-    /**
-     * Version
-     */
-    @Version
-    @Column(name = "VERSION")
-    private Integer version = 0;
     /**
      * Group name
      */
@@ -111,7 +105,6 @@ public class JobGroup implements PrimaryKeyIdentifier<String> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("name", name)
                 .add("label", label)
                 .add("description", description)
@@ -126,7 +119,6 @@ public class JobGroup implements PrimaryKeyIdentifier<String> {
         JobGroup jobGroup = (JobGroup) o;
         return active == jobGroup.active &&
                 Objects.equal(id, jobGroup.id) &&
-                Objects.equal(version, jobGroup.version) &&
                 Objects.equal(name, jobGroup.name) &&
                 Objects.equal(label, jobGroup.label) &&
                 Objects.equal(description, jobGroup.description);
@@ -134,6 +126,6 @@ public class JobGroup implements PrimaryKeyIdentifier<String> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, name, label, description, active);
+        return Objects.hashCode(id, name, label, description, active);
     }
 }

@@ -7,7 +7,7 @@ export const UserGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('usergroups' + params, 'userGroupDtoes');
             },
             insert: function (userGroup) {
@@ -34,7 +34,7 @@ export const UsergroupUserDataSource = (userGroup) => {
             load: function (loadOptions) {
                 if (!userGroup._links) return;
                 let url = userGroup._links.users.href;
-                url = mergeParams(loadOptions, url, 'userId');
+                url = mergeParams(loadOptions, url, 'userId', 'asc');
                 return getList(url, 'userDtoes');
             },
             insert: function (user) {

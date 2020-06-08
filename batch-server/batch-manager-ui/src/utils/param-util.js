@@ -1,4 +1,4 @@
-export const getParams = (loadOptions, defaultSorting) => {
+export const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
     let params = '?';
 
     if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
@@ -17,15 +17,12 @@ export const getParams = (loadOptions, defaultSorting) => {
             params += '&sortDir=asc';
         }
     } else {
-        if (defaultSorting === undefined) {
-            defaultSorting = 'startTime';
-        }
-        params += '&sortBy=' + defaultSorting + '&sortDir=desc';
+        params += '&sortBy=' + defaultSortBy + '&sortDir=' + defaultSortDir;
     }
     return params;
 };
 
-export const mergeParams = (loadOptions, url, defaultSorting) => {
+export const mergeParams = (loadOptions, url, defaultSortBy, defaultSortDir) => {
     let newUrl = new URL(url);
 
     if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
@@ -41,11 +38,8 @@ export const mergeParams = (loadOptions, url, defaultSorting) => {
             newUrl.searchParams.set('sortDir', 'asc');
         }
     } else {
-        if (defaultSorting === undefined) {
-            defaultSorting = 'startTime';
-        }
-        newUrl.searchParams.set('sortBy', defaultSorting);
-        newUrl.searchParams.set('sortDir', 'desc');
+        newUrl.searchParams.set('sortBy', defaultSortBy);
+        newUrl.searchParams.set('sortDir', defaultSortDir);
     }
     return newUrl.toString();
 };

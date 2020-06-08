@@ -7,7 +7,7 @@ export const AgentGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('agentgroups' + params, 'agentGroupDtoes');
             },
             insert: function (agentGroup) {
@@ -34,7 +34,7 @@ export const AgentAgentGroupDataSource = (agent) => {
             load: function (loadOptions) {
                 if (agent._links !== undefined) {
                     let url = agent._links.agentGroups.href;
-                    url = mergeParams(loadOptions, url, 'name');
+                    url = mergeParams(loadOptions, url, 'name', 'asc');
                     return getList(url, 'agentGroupDtoes');
                 }
             },
@@ -54,7 +54,7 @@ export const AgentGroupAgentDataSource = (agentGroup) => {
             load: function (loadOptions) {
                 if (!agentGroup._links) return;
                 let url = agentGroup._links.agents.href;
-                url = mergeParams(loadOptions, url, 'nodeName');
+                url = mergeParams(loadOptions, url, 'nodeName', 'asc');
                 return getList(url, 'agentDtoes');
             },
             insert: function (agent) {

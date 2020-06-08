@@ -38,9 +38,11 @@ VALUES ('ae5e26b0-7ab1-45b6-9533-60017d03b175', 'c13c9c93-3c47-4f12-8d56-dd98cac
 -- Job groups
 --
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
-VALUES ('64272f77-142f-478a-be2b-70fc5f4a8d7b', 1, 'Batch', 'Batch', 'Batch management internal housekeeping jobs.', 1);
+VALUES ('64272f77-142f-478a-be2b-70fc5f4a8d7b', 1, 'Performance', 'Performance',
+        'Batch management internal performance jobs.', 1);
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
-VALUES ('d4c132d5-c100-452b-b843-851849b1a01c', 1, 'Housekeeping', 'Housekeeping', 'Housekeeping jobs.', 1);
+VALUES ('d4c132d5-c100-452b-b843-851849b1a01c', 1, 'Housekeeping', 'Housekeeping',
+        'Batch management internal housekeeping jobs.', 1);
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
 VALUES ('5ca6b740-c03d-409b-9fc2-260a1bf184da', 1, 'Database', 'Database', 'Database synchronization jobs.', 1);
 

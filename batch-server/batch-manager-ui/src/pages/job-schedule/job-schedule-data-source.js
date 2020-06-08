@@ -7,7 +7,7 @@ export const JobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('jobschedules' + params, 'jobScheduleDtoes');
             },
             insert: function (jobSchedule) {
@@ -34,7 +34,7 @@ export const JobScheduleAgentDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
             },
             insert: function (agent) {
@@ -51,7 +51,7 @@ export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
             },
             insert: function (agentGroup) {

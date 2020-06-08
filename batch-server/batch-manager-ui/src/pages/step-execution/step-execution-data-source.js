@@ -11,7 +11,7 @@ export const StepExecutionDataSource = (jobExecutionInfo) => {
                 if (jobExecutionInfo !== undefined) {
                     url = jobExecutionInfo._links.byJobId.href;
                 }
-                url = mergeParams(loadOptions, url);
+                url = mergeParams(loadOptions, url, 'startTime', 'desc');
                 return getList(url, 'stepExecutionDtoes');
             },
             remove: function (key) {
@@ -26,7 +26,7 @@ export const StepExecutionLogDataSource = (stepExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp');
+                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp', 'desc');
                 return getList(url, 'jobExecutionLogDtoes')
             }
         })

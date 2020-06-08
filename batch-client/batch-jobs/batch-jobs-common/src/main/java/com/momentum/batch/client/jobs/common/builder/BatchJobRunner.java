@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.text.MessageFormat;
 import java.util.UUID;
 
 import static com.momentum.batch.util.ExecutionParameter.*;
@@ -41,16 +40,16 @@ public class BatchJobRunner {
     @Value("${job.name}")
     private String jobName;
 
-    @Value("${job.uuid:#{null}}")
-    private String jobUuid;
-
     @Value("${job.version}")
     private String jobVersion;
+
+    @Value("${job.uuid:#{null}}")
+    private String jobUuid;
 
     @Value("${job.context:#{null}}")
     private String jobContext;
 
-    @Value("${job.launchTime}")
+    @Value("${job.launchTime:#{null}}")
     private Long jobLaunchTime;
 
     private final BatchLogger logger;
@@ -69,6 +68,9 @@ public class BatchJobRunner {
         if (this.jobUuid == null) {
             this.jobUuid = UUID.randomUUID().toString();
         }
+        if (this.jobLaunchTime == null) {
+            this.jobLaunchTime = System.currentTimeMillis();
+        }
     }
 
     public BatchJobRunner job(Job job) {
@@ -84,7 +86,7 @@ public class BatchJobRunner {
         try {
             jobLauncher.run(job, getJobParameters());
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-            logger.error(MessageFormat.format("Could not launch job - error: {0}", e.getMessage()), e);
+            logger.error(format("Could not launch job - error: {0}", e.getMessage()), e);
         }
     }
 

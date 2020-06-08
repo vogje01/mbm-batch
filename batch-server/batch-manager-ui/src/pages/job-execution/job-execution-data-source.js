@@ -7,7 +7,7 @@ export function JobExecutionDataSource() {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions);
+                let params = getParams(loadOptions, 'startTime', 'desc');
                 return listItems('jobexecutions' + params, 'jobExecutionDtoes');
             },
             remove: function (key) {
@@ -22,7 +22,7 @@ export const JobExecutionLogDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, jobExecutionInfo._links.logs.href, 'timestamp');
+                let url = mergeParams(loadOptions, jobExecutionInfo._links.logs.href, 'timestamp', 'desc');
                 return getList(url, 'jobExecutionLogDtoes')
             }
         })

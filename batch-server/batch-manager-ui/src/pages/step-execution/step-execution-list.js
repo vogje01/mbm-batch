@@ -260,7 +260,7 @@ class StepExecutionList extends React.Component {
                                 allowReordering={true}
                                 width={140}/>
                             <Column
-                                cellTemplate={dateTimeCellTemplate}
+                                calculateCellValue={getRunningTime}
                                 dataField={'runningTime'}
                                 caption={'Running'}
                                 dataType={'datetime'}

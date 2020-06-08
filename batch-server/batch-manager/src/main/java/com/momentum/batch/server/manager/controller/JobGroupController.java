@@ -172,7 +172,6 @@ public class JobGroupController {
     public ResponseEntity<JobGroupDto> update(@PathVariable("jobGroupId") String jobGroupId,
                                               @RequestBody JobGroupDto jobGroupDto) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(jobGroupService.getJobGroup(jobGroupId));
 
         // Get job group
         JobGroup jobGroup = modelConverter.convertJobGroupToEntity(jobGroupDto);

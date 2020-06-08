@@ -22,7 +22,7 @@ export const JobDefinitionDataSource = () => {
                 return getItem(url);
             },
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name');
+                let params = getParams(loadOptions, 'name', 'asc');
                 return listItems('jobdefinitions' + params, 'jobDefinitionDtoes');
             },
             insert: function (jobDefinition) {
@@ -61,7 +61,7 @@ export const JobDefinitionParamDataSource = (jobDefinition) => {
                 if (!jobDefinition || !jobDefinition._links) {
                     return;
                 }
-                let url = mergeParams(loadOptions, jobDefinition._links.params.href, "name");
+                let url = mergeParams(loadOptions, jobDefinition._links.params.href, 'name', 'asc');
                 return getList(url, 'jobDefinitionParamDtoes');
             },
             insert: function (values) {

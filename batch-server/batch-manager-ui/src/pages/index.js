@@ -8,6 +8,7 @@ export {default as StepExecutionListPage} from './step-execution/step-execution-
 export {default as JobDefinitionListPage} from './job-definition/job-definition-list';
 export {default as JobDefinitionExport} from './job-definition/job-definition-export';
 export {default as JobDefinitionImport} from './job-definition/job-definition-import';
+export {default as JobGroupListPage} from './job-group/job-group-list';
 export {default as JobScheduleListPage} from './job-schedule/job-schedule-list';
 export {default as AgentListPage} from './agent/agent-list';
 export {default as AgentGroupListPage} from './agent/agent-group-list';

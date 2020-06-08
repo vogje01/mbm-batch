@@ -30,6 +30,11 @@ export const navigation = [
                 icon: 'material-icons-outlined ic-jobdefinition'
             },
             {
+                text: 'Job Groups',
+                path: '/jobgroups',
+                icon: 'material-icons-outlined ic-jobgroup'
+            },
+            {
                 text: 'Job Schedules',
                 path: '/jobschedules',
                 icon: 'material-icons-outlined ic-alarm'
