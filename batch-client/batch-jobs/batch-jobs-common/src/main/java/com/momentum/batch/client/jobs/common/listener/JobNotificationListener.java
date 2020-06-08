@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.UUID;
 
 import static com.momentum.batch.domain.JobStatusType.JOB_FINISHED;
 import static com.momentum.batch.domain.JobStatusType.JOB_START;
@@ -21,9 +20,9 @@ import static java.text.MessageFormat.format;
 
 /**
  * Job Notification listener.
+ *
  * <p>
  * Will be called on startup, error and finish of a job execution. It sends a status message to the batch management server.
- *
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -38,8 +37,6 @@ public class JobNotificationListener implements JobExecutionListener {
     private final JobStatusProducer statusProducer;
 
     private final ModelConverter modelConverter;
-
-    private JobExecutionDto jobExecutionDto = new JobExecutionDto();
 
     /**
      * Constructor.
@@ -62,8 +59,6 @@ public class JobNotificationListener implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
 
-        jobExecution.getExecutionContext().put(JOB_UUID, UUID.randomUUID().toString());
-
         jobExecution.getExecutionContext().put("String", "Test");
         jobExecution.getExecutionContext().put("Double", 1.0);
         jobExecution.getExecutionContext().put("Long", 1L);
@@ -76,8 +71,8 @@ public class JobNotificationListener implements JobExecutionListener {
         logger.info(format("Job starting - name: {0} pid: {1}", getJobName(jobExecution), getJobPid(jobExecution)));
 
         // Create DTO
-        jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
-        addAdditionalProperties(jobExecution);
+        JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
+        addAdditionalProperties(jobExecution, jobExecutionDto);
 
         // Send status message
         statusProducer.sendTopic(new JobStatusDto(JOB_START, jobExecutionDto));
@@ -97,9 +92,9 @@ public class JobNotificationListener implements JobExecutionListener {
     public void afterJob(JobExecution jobExecution) {
         logger.info(format("Job finished - name: {0} pid: {1} status: {2} [{3}ms]",
                 getJobName(jobExecution), getJobPid(jobExecution), jobExecution.getStatus(), DateTimeUtils.getRunningTime(jobExecution)));
-        jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
-        addAdditionalProperties(jobExecution);
-        setExitValues(jobExecution);
+        JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecution);
+        addAdditionalProperties(jobExecution, jobExecutionDto);
+        setExitValues(jobExecution, jobExecutionDto);
         statusProducer.sendTopic(new JobStatusDto(JOB_FINISHED, jobExecutionDto));
     }
 
@@ -108,7 +103,7 @@ public class JobNotificationListener implements JobExecutionListener {
      *
      * @param jobExecution job execution.
      */
-    private void addAdditionalProperties(JobExecution jobExecution) {
+    private void addAdditionalProperties(JobExecution jobExecution, JobExecutionDto jobExecutionDto) {
         jobExecutionDto.setId(getJobUuid(jobExecution));
         jobExecutionDto.setJobName(getJobName(jobExecution));
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
@@ -125,7 +120,7 @@ public class JobNotificationListener implements JobExecutionListener {
      *
      * @param jobExecution job execution.
      */
-    private void setExitValues(JobExecution jobExecution) {
+    private void setExitValues(JobExecution jobExecution, JobExecutionDto jobExecutionDto) {
         if (jobExecution.getStatus().equals(BatchStatus.FAILED)) {
             jobExecutionDto.setExitCode(getFailedExitCode(jobExecution));
             jobExecutionDto.setExitMessage(getFailedExitMessage(jobExecution));

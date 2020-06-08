@@ -1,7 +1,6 @@
 package com.momentum.batch.client.jobs.common.builder;
 
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.util.ExecutionParameter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -15,7 +14,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
+import static com.momentum.batch.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -40,11 +41,14 @@ public class BatchJobRunner {
     @Value("${job.name}")
     private String jobName;
 
-    @Value("${job.uuid}")
+    @Value("${job.uuid:#{null}}")
     private String jobUuid;
 
     @Value("${job.version}")
     private String jobVersion;
+
+    @Value("${job.context:#{null}}")
+    private String jobContext;
 
     @Value("${job.launchTime}")
     private Long jobLaunchTime;
@@ -62,6 +66,9 @@ public class BatchJobRunner {
         this.logger = batchLogger;
         this.jobLauncher = jobLauncher;
         this.jobPid = ProcessHandle.current().pid();
+        if (this.jobUuid == null) {
+            this.jobUuid = UUID.randomUUID().toString();
+        }
     }
 
     public BatchJobRunner job(Job job) {
@@ -90,13 +97,14 @@ public class BatchJobRunner {
 
         // Add command line arguments
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder()
-                .addString(ExecutionParameter.JOB_NAME, jobName)
-                .addString(ExecutionParameter.JOB_UUID, jobUuid)
-                .addString(ExecutionParameter.JOB_VERSION, jobVersion)
-                .addString(ExecutionParameter.HOST_NAME, hostName)
-                .addString(ExecutionParameter.NODE_NAME, nodeName)
-                .addLong(ExecutionParameter.JOB_PID, jobPid)
-                .addLong(ExecutionParameter.JOB_LAUNCH_TIME, jobLaunchTime);
+                .addString(HOST_NAME, hostName)
+                .addString(NODE_NAME, nodeName)
+                .addString(JOB_NAME, jobName)
+                .addString(JOB_UUID, jobUuid)
+                .addString(JOB_VERSION, jobVersion)
+                .addString(JOB_CONTEXT, jobContext)
+                .addLong(JOB_PID, jobPid)
+                .addLong(JOB_LAUNCH_TIME, jobLaunchTime);
 
         // Add system environment
         System.getProperties().forEach((key, value) -> {

@@ -21,11 +21,13 @@ public class ExecutionParameter {
 
     public static final String JOB_NAME = "job.name";
 
-    public static final String JOB_PID = "job.pid";
+    public static final String JOB_VERSION = "job.version";
 
     public static final String JOB_LAUNCH_TIME = "job.launchTime";
 
-    public static final String JOB_VERSION = "job.version";
+    public static final String JOB_CONTEXT = "job.context";
+
+    public static final String JOB_PID = "job.pid";
 
     public static final String JOB_DESCRIPTION = "job.description";
 
@@ -73,12 +75,16 @@ public class ExecutionParameter {
         return jobExecution.getJobInstance().getJobName();
     }
 
-    public static long getJobPid(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getLong(JOB_PID);
+    public static String getJobContext(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_CONTEXT);
     }
 
     public static String getJobVersion(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_VERSION);
+    }
+
+    public static long getJobPid(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getLong(JOB_PID);
     }
 
     public static String getJobStartedBy(JobExecution jobExecution) {
