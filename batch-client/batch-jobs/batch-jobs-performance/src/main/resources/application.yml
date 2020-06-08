@@ -32,12 +32,12 @@ kafka:
   jobStatus:
     offsetReset: latest
     topic: batchJobStatus
-    partitions: 1
+    partitions: 5
     replicas: 1
   jobLogging:
     offsetReset: latest
     topic: batchJobExecutionLog
-    partitions: 1
+    partitions: 5
     replicas: 1
     level: DEBUG
 

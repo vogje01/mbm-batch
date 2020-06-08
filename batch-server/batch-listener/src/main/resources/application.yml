@@ -1,4 +1,7 @@
 spring:
+  kafka:
+    listener:
+      concurrency: 5
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
@@ -30,21 +33,21 @@ kafka:
   jobLogging:
     offsetReset: latest
     topic: batchJobExecutionLog
-    partitions: 1
+    partitions: 5
     replicas: 1
     level: DEBUG
   jobStatus:
     offsetReset: latest
     topic: batchJobStatus
-    partitions: 1
+    partitions: 5
     replicas: 1
   agentCommand:
     offsetReset: latest
     topic: batchAgentCommand
-    partitions: 1
+    partitions: 5
     replicas: 1
   serverCommand:
     offsetReset: latest
     topic: batchServerCommand
-    partitions: 1
+    partitions: 5
     replicas: 1

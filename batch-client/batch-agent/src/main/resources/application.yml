@@ -36,23 +36,23 @@ kafka:
   agentCommand:
     offsetReset: latest
     topic: batchAgentCommand
-    partitions: 1
+    partitions: 5
     replicas: 1
   serverCommand:
     offsetReset: latest
     topic: batchServerCommand
     group: batchmanager
-    partitions: 1
+    partitions: 5
     replicas: 1
   jobStatus:
     offsetReset: latest
     topic: batchServerCommand
     group: batchmanager
-    partitions: 1
+    partitions: 5
     replicas: 1
   jobLogging:
     offsetReset: latest
     topic: batchJobExecutionLog
-    partitions: 1
+    partitions: 5
     replicas: 1
     level: DEBUG
