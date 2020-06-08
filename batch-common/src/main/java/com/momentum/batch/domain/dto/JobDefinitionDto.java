@@ -102,13 +102,22 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
      * Modified at
      */
     private Date modifiedAt;
-
+    /**
+     * Total size of available job definitions.
+     */
     private Long totalSize;
-
-    private JobGroupDto jobGroupDto;
-
+    /**
+     * Job groups
+     */
+    private List<JobGroupDto> jobGroupDtoes = new ArrayList<>();
+    /**
+     * Job definition parameters
+     */
     private List<JobDefinitionParamDto> jobDefinitionParamDtos = new ArrayList<>();
 
+    /**
+     * Constructor.
+     */
     public JobDefinitionDto() {
         // JSON constructor
     }
@@ -151,14 +160,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     public void setJobVersion(String jobVersion) {
         this.jobVersion = jobVersion;
-    }
-
-    public JobGroupDto getJobGroupDto() {
-        return jobGroupDto;
-    }
-
-    public void setJobGroupDto(JobGroupDto jobGroupDto) {
-        this.jobGroupDto = jobGroupDto;
     }
 
     public String getDescription() {
@@ -289,6 +290,14 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.totalSize = totalSize;
     }
 
+    public List<JobGroupDto> getJobGroupDtoes() {
+        return jobGroupDtoes;
+    }
+
+    public void setJobGroupDtoes(List<JobGroupDto> jobGroupDtoes) {
+        this.jobGroupDtoes = jobGroupDtoes;
+    }
+
     public List<JobDefinitionParamDto> getJobDefinitionParamDtos() {
         return jobDefinitionParamDtos;
     }
@@ -329,14 +338,12 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
                 Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(totalSize, that.totalSize) &&
-                Objects.equal(jobGroupDto, that.jobGroupDto) &&
-                Objects.equal(jobDefinitionParamDtos, that.jobDefinitionParamDtos);
+                Objects.equal(totalSize, that.totalSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, jobGroupDto, jobDefinitionParamDtos);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
     }
 
     @Override
@@ -363,9 +370,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
                 .add("totalSize", totalSize)
-                .add("jobGroupDto", jobGroupDto)
-                .add("jobDefinitionParamDtos", jobDefinitionParamDtos)
                 .toString();
     }
-
 }

@@ -213,10 +213,16 @@ public class ModelConverter {
 
         // Convert job definition
         JobDefinitionDto jobDefinitionDto = modelMapper.map(jobDefinition, JobDefinitionDto.class);
-        if (jobDefinition.getJobGroup() != null) {
+        jobDefinition.getJobGroups().forEach(g -> g.setJobDefinitions(null));
+        jobDefinitionDto.setJobGroupDtoes(jobDefinition.getJobGroups()
+                .stream()
+                .map(this::convertJobGroupToDto)
+                .collect(toList()));
+
+        /*if (jobDefinition.getJobGroup() != null) {
             jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
             jobDefinitionDto.setJobGroupName(jobDefinition.getJobGroup().getName());
-        }
+        }*/
 
         // Add parameter
         if (!jobDefinitionDto.getJobDefinitionParamDtos().isEmpty()) {
@@ -254,7 +260,7 @@ public class ModelConverter {
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
-        jobDefinition.setJobGroup(convertJobGroupToEntity(jobDefinitionDto.getJobGroupDto()));
+        jobDefinition.setJobGroups(convertJobGroupToEntity(jobDefinitionDto.getJobGroupDtoes()));
 
         if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
             jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
@@ -291,6 +297,10 @@ public class ModelConverter {
             return modelMapper.map(jobGroupDto, JobGroup.class);
         }
         return null;
+    }
+
+    public List<JobGroup> convertJobGroupToEntity(List<JobGroupDto> jobGroupDtoes) {
+        return jobGroupDtoes.stream().map(this::convertJobGroupToEntity).collect(toList());
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

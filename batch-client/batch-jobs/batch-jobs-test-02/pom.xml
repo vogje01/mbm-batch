@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
-        <relativePath/>
+        <groupId>com.momentum</groupId>
+        <artifactId>batch-jobs</artifactId>
+        <version>0.0.4</version>
     </parent>
 
-    <groupId>com.momentum</groupId>
     <artifactId>batch-jobs-test-02</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <description>Test batch jobs 02.</description>
 
     <properties>
@@ -82,6 +79,7 @@
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <version>2.5.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -89,19 +87,19 @@
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-jobs-common</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4</version>
         </dependency>
 
     </dependencies>

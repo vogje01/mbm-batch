@@ -10,7 +10,16 @@ import com.momentum.batch.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Job group entity.
+ *
+ * @author Jens Vogt (jens.vogt@ext.hlag.com)
+ * @version 0.0.4
+ * @since 0.0.4
+ */
 @Entity
 @Table(name = "BATCH_JOB_GROUP")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -46,6 +55,11 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
      */
     @Column(name = "ACTIVE")
     private boolean active = false;
+    /**
+     * Link to the corresponding job definition.
+     */
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "jobGroups")
+    private List<JobDefinition> jobDefinitions = new ArrayList<>();
 
     /**
      * Constructor
@@ -99,6 +113,24 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
 
     public void setActive(boolean deleted) {
         this.active = deleted;
+    }
+
+    public List<JobDefinition> getJobDefinitions() {
+        return jobDefinitions;
+    }
+
+    public void setJobDefinitions(List<JobDefinition> jobDefinitions) {
+        this.jobDefinitions = jobDefinitions;
+    }
+
+    public void addJobDefinition(JobDefinition jobDefinition) {
+        if (!jobDefinitions.contains(jobDefinition)) {
+            jobDefinitions.add(jobDefinition);
+        }
+    }
+
+    public void removeJobDefinition(JobDefinition jobDefinition) {
+        jobDefinitions.remove(jobDefinition);
     }
 
     @Override

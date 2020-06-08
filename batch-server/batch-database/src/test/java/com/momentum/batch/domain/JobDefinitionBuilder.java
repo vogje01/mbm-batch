@@ -4,6 +4,7 @@ import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
 import com.momentum.batch.server.database.domain.JobGroup;
 
+import java.util.List;
 import java.util.UUID;
 
 public class JobDefinitionBuilder {
@@ -25,8 +26,8 @@ public class JobDefinitionBuilder {
         return this;
     }
 
-    public JobDefinitionBuilder withJobGroup(JobGroup jobGroup) {
-        jobDefinition.setJobGroup(jobGroup);
+    public JobDefinitionBuilder withJobGroup(List<JobGroup> jobGroups) {
+        jobDefinition.setJobGroups(jobGroups);
         return this;
     }
 

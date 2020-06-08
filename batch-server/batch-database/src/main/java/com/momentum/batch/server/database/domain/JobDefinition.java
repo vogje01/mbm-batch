@@ -73,15 +73,25 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Column(name = "COMPLETED_EXIT_MESSAGE")
     private String completedExitMessage;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "JOB_GROUP_ID")
-    private JobGroup jobGroup;
-
+    /**
+     * Job definition, job group many to many relationship
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_JOB_DEFINITION_JOB_GROUP",
+            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
+    private List<JobGroup> jobGroups = new ArrayList<>();
+    /**
+     * Job definition, parameter one to many relationship
+     */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
 
+    /**
+     * Constructor
+     */
     public JobDefinition() {
         // JSON constructor
     }
@@ -89,7 +99,6 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     public void update(JobDefinition origin) {
         this.name = origin.name;
         this.label = origin.label;
-        this.jobGroup = origin.jobGroup;
         this.jobVersion = origin.jobVersion;
         this.type = origin.type;
         this.active = origin.active;
@@ -142,14 +151,6 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setJobVersion(String version) {
         this.jobVersion = version;
-    }
-
-    public JobGroup getJobGroup() {
-        return jobGroup;
-    }
-
-    public void setJobGroup(JobGroup jobGroup) {
-        this.jobGroup = jobGroup;
     }
 
     public String getDescription() {
@@ -236,6 +237,29 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.completedExitMessage = completedExitMessage;
     }
 
+    public List<JobGroup> getJobGroups() {
+        return jobGroups;
+    }
+
+    public void setJobGroups(List<JobGroup> jobGroups) {
+        this.jobGroups.clear();
+        if (jobGroups != null) {
+            jobGroups.forEach(this::addJobGroup);
+        }
+    }
+
+    public void addJobGroup(JobGroup jobGroup) {
+        if (!jobGroups.contains(jobGroup)) {
+            jobGroups.add(jobGroup);
+        }
+    }
+
+    public void removeJobGroup(JobGroup jobGroup) {
+        if (jobGroups.contains(jobGroup)) {
+            jobGroups.remove(jobGroup);
+        }
+    }
+
     public List<JobDefinitionParam> getJobDefinitionParams() {
         return jobDefinitionParams;
     }
@@ -279,14 +303,12 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 Objects.equal(failedExitCode, that.failedExitCode) &&
                 Objects.equal(failedExitMessage, that.failedExitMessage) &&
                 Objects.equal(completedExitCode, that.completedExitCode) &&
-                Objects.equal(completedExitMessage, that.completedExitMessage) &&
-                Objects.equal(jobGroup, that.jobGroup) &&
-                Objects.equal(jobDefinitionParams, that.jobDefinitionParams);
+                Objects.equal(completedExitMessage, that.completedExitMessage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, jobGroup, jobDefinitionParams);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override
@@ -307,8 +329,6 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("failedExitMessage", failedExitMessage)
                 .add("completedExitCode", completedExitCode)
                 .add("completedExitMessage", completedExitMessage)
-                .add("jobGroup", jobGroup)
-                .add("jobDefinitionParams", jobDefinitionParams)
                 .toString();
     }
 }
