@@ -9,7 +9,9 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-
+  kafka:
+    listener:
+      concurrency: 5
 # Agent configuration
 # pingInterval: ping interval in ms.
 agent:
