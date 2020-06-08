@@ -124,7 +124,7 @@ public class JobStatusListener {
             JobExecutionInstance jobExecutionInstance = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
             jobExecutionInstance.setJobExecutionInfo(jobExecutionInfo);
             jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
-            logger.debug(format("Job execution instance info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
+            logger.debug(format("Job execution instance created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
 
             // Create job execution context
             JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());

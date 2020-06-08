@@ -88,13 +88,12 @@ public class JobExecutionInstance implements PrimaryKeyIdentifier<String> {
         return Objects.equal(id, that.id) &&
                 Objects.equal(version, that.version) &&
                 Objects.equal(jobName, that.jobName) &&
-                Objects.equal(jobKey, that.jobKey) &&
-                Objects.equal(jobExecutionInfo, that.jobExecutionInfo);
+                Objects.equal(jobKey, that.jobKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, jobName, jobKey, jobExecutionInfo);
+        return Objects.hashCode(super.hashCode(), id, version, jobName, jobKey);
     }
 
     @Override
@@ -104,7 +103,6 @@ public class JobExecutionInstance implements PrimaryKeyIdentifier<String> {
                 .add("version", version)
                 .add("jobName", jobName)
                 .add("jobKey", jobKey)
-                .add("jobExecutionInfo", jobExecutionInfo)
                 .toString();
     }
 }
