@@ -46,7 +46,7 @@ public class AgentCommandConsumerConfiguration extends AbstractKafkaConfiguratio
     public ConcurrentKafkaListenerContainerFactory<String, AgentCommandDto> agentCommandListenerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, AgentCommandDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(agentCommandConsumerFactory());
-        factory.setConcurrency(agentCommandPartitions);
+        //factory.setConcurrency(agentCommandPartitions);
         return factory;
     }
 }

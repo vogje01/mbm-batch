@@ -108,7 +108,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         }
 
         // Send job start
-        sendJobStart(jobExecutionContext);
+        sendJobExecuted(jobExecutionContext);
 
         // Clean up process map
         cleanupProcessMap();
@@ -236,16 +236,30 @@ public class BatchSchedulerTask extends QuartzJobBean {
         logger.info(format("Finished process list cleanup - count: {0}", processList.size()));
     }
 
-    private void sendJobStart(JobExecutionContext jobExecutionContext) {
+    /**
+     * Job was just launched from the Quartz scheduler.
+     * <p>
+     * We need to inform the server about the new previous/next fire times.
+     * </p>
+     *
+     * @param jobExecutionContext Quartz job execution context.
+     */
+    private void sendJobExecuted(JobExecutionContext jobExecutionContext) {
+
+        // Get the trigger
         Trigger trigger = jobExecutionContext.getTrigger();
         logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), trigger.getPreviousFireTime(), trigger.getNextFireTime()));
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
+
+        // Build agent command
+        JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
+        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.JOB_EXECUTED);
         agentCommandDto.setHostName(hostName);
         agentCommandDto.setNodeName(nodeName);
-        agentCommandDto.setJobName(jobExecutionContext.getJobDetail().getKey().getName());
-        agentCommandDto.setGroupName(jobExecutionContext.getJobDetail().getKey().getGroup());
+        agentCommandDto.setJobScheduleUuid(jobDataMap.getString(JOB_SCHEDULE_UUID));
         agentCommandDto.setNextFireTime(trigger.getNextFireTime());
         agentCommandDto.setPreviousFireTime(trigger.getPreviousFireTime());
+
+        // And send it to the server
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }

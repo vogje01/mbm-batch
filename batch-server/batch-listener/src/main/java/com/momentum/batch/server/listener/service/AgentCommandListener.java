@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -59,27 +60,49 @@ public class AgentCommandListener {
         logger.info(format("Agent command listener initialized"));
     }
 
+    /**
+     * Listen for agent command, send from one the agents.
+     * <p>
+     * Supported agent commands are
+     *     <ul>
+     *         <li>AGENT_REGISTER: an agent want to register.</li>
+     *         <li>AGENT_STATUS: an agent sends status information.</li>
+     *         <li>AGENT_PING: a ping received from an agent.</li>
+     *         <li>AGENT_PERFORMANCE: performance data collected from an agent.</li>
+     *     </ul>
+     *     Supported agent commands are
+     *     <ul>
+     *         <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
+     *         <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
+     *         <li>JOB_SHUTDOWN: Job unregistered from the Quartz scheduler.</li>
+     *     </ul>
+     * </p>
+     *
+     * @param agentCommandDto agent command data transfer object.
+     */
+    @Transactional(value = Transactional.TxType.REQUIRED)
     @KafkaListener(topics = "${kafka.agentCommand.topic}", containerFactory = "agentCommandListenerFactory")
     public void listen(AgentCommandDto agentCommandDto) {
         logger.info(format("Received agent command - type: {0} nodeName: {1}", agentCommandDto.getType(), agentCommandDto.getNodeName()));
         switch (agentCommandDto.getType()) {
-            case REGISTER:
+            case AGENT_REGISTER:
                 registerAgent(agentCommandDto);
-                break;
-            case PING:
-                receivedPing(agentCommandDto);
-                break;
-            case SHUTDOWN:
-                receivedShutdown(agentCommandDto);
-                break;
-            case PERFORMANCE:
-                receivedPerformance(agentCommandDto);
-                break;
-            case STATUS:
-                receivedStatus(agentCommandDto);
                 break;
             case AGENT_STATUS:
                 receivedAgentStatus(agentCommandDto);
+                break;
+            case AGENT_PING:
+                receivedPing(agentCommandDto);
+                break;
+            case AGENT_PERFORMANCE:
+                receivedPerformance(agentCommandDto);
+                break;
+            case JOB_EXECUTED:
+            case JOB_SCHEDULED:
+                receivedJobStatus(agentCommandDto);
+                break;
+            case JOB_SHUTDOWN:
+                receivedShutdown(agentCommandDto);
                 break;
         }
     }
@@ -169,13 +192,16 @@ public class AgentCommandListener {
     }
 
     /**
-     * Process performance command
+     * Process performance command.
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedStatus(AgentCommandDto agentCommandDto) {
-        logger.debug(format("Job schedule update received - name: {0} group: {1}", agentCommandDto.getJobName(), agentCommandDto.getGroupName()));
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByGroupAndName(agentCommandDto.getGroupName(), agentCommandDto.getJobName());
+    private synchronized void receivedJobStatus(AgentCommandDto agentCommandDto) {
+        logger.debug(format("Job schedule update received - hostName: {0} nodeName: {1} schedule: {2}",
+                agentCommandDto.getHostName(), agentCommandDto.getNodeName(), agentCommandDto.getJobScheduleName()));
+
+        // Get the schedule
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentCommandDto.getJobScheduleUuid());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
             if (agentCommandDto.getNextFireTime() != null) {
                 jobSchedule.setNextExecution(agentCommandDto.getNextFireTime());
@@ -184,8 +210,8 @@ public class AgentCommandListener {
                 jobSchedule.setLastExecution(agentCommandDto.getPreviousFireTime());
             }
             jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - id: {0}", jobSchedule));
-        }, () -> logger.error(format("Job schedule not found")));
+            logger.debug(format("Job schedule updated - name: {0}", jobSchedule.getName()));
+        }, () -> logger.error(format("Job schedule not found - name: {0}", agentCommandDto.getJobScheduleName())));
     }
 
     /**
@@ -194,7 +220,7 @@ public class AgentCommandListener {
      * @param agentCommandDto agent command info.
      */
     private synchronized void receivedShutdown(AgentCommandDto agentCommandDto) {
-        logger.info(format("Agent shutdown received - nodeName: {0}", agentCommandDto.getNodeName()));
+        logger.info(format("Agent shutdown received - hostName: {0} nodeName: {1}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
             agent.setSystemLoad(agentCommandDto.getSystemLoad());
@@ -202,7 +228,7 @@ public class AgentCommandListener {
             agent.setLastPing(new Date());
             agent.setActive(false);
             agentRepository.save(agent);
-            logger.info(format("Agent shutdown processed - nodeName: {0}", agentCommandDto.getNodeName()));
+            logger.info(format("Agent shutdown processed - hostName: {0} nodeName: {1}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
         });
     }
 

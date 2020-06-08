@@ -1,7 +1,7 @@
 spring:
-  kafka:
-    listener:
-      concurrency: 5
+#  kafka:
+  #    listener:
+  #      concurrency: 5
   main:
     allow-bean-definition-overriding: true
     banner-mode: off

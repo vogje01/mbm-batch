@@ -5,9 +5,18 @@ package com.momentum.batch.domain.dto;
  * <p>
  * The following agent commands are supported:
  *     <ul>
- *         <li>NEW_NODE: a new container with an agent installed started</li>
- *         <li>SHOWDOWN_NODE: a container with an agent has been shutdown</li>
- *         <li>STOP_NODE: a container with an agent does not process any requests anymore</li>
+ *         <li>AGENT_REGISTER: an agent want to register with the server.</li>
+ *         <li>AGENT_PING: a ping from the agent send to the serer.</li>
+ *         <li>AGENT_PERFORMANCE: agent performance data send to the server.</li>
+ *         <li>AGENT_STATUS: agent status, like started, stopped, paused etc..</li>
+ *     </ul>
+ * </p>
+ * <p>
+ * The following job commands are supported:
+ *     <ul>
+ *         <li>JOB_SCHEDULED: a job is schedule in the Quartz scheduler.</li>
+ *         <li>JOB_EXECUTED: a job is executed by the Quartz scheduler.</li>
+ *         <li>JOB_SHUTDOWN: job removed from Quartz scheduler.</li>
  *     </ul>
  * </p>
  *
@@ -16,11 +25,14 @@ package com.momentum.batch.domain.dto;
  * @since 0.0.3
  */
 public enum AgentCommandType {
-    REGISTER,
-    PING,
-    PERFORMANCE,
-    STATUS,
-    SHUTDOWN,
-    STOP,
-    AGENT_STATUS
+    // Agent status
+    AGENT_REGISTER,
+    AGENT_PING,
+    AGENT_PERFORMANCE,
+    AGENT_STATUS,
+
+    // Job status
+    JOB_SCHEDULED,
+    JOB_EXECUTED,
+    JOB_SHUTDOWN;
 }

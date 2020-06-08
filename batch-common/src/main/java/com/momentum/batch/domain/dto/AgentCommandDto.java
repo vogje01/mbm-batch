@@ -43,14 +43,22 @@ public class AgentCommandDto {
     private long freeSwap;
 
     private long usedSwap;
-
+    /**
+     * Schedule Name
+     */
+    private String jobScheduleName;
+    /**
+     * Schedule UUID
+     */
+    private String jobScheduleUuid;
+    /**
+     * Previous
+     */
     private Date previousFireTime;
-
+    /**
+     * Next fire time
+     */
     private Date nextFireTime;
-
-    private String jobName;
-
-    private String groupName;
 
     public AgentCommandDto() {
         // Intentionally empty
@@ -196,20 +204,20 @@ public class AgentCommandDto {
         this.nextFireTime = nextFireTime;
     }
 
-    public String getJobName() {
-        return jobName;
+    public String getJobScheduleName() {
+        return jobScheduleName;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
+    public void setJobScheduleName(String jobScheduleName) {
+        this.jobScheduleName = jobScheduleName;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getJobScheduleUuid() {
+        return jobScheduleUuid;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setJobScheduleUuid(String jobScheduleUuid) {
+        this.jobScheduleUuid = jobScheduleUuid;
     }
 
     @Override
@@ -232,15 +240,16 @@ public class AgentCommandDto {
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(status, that.status) &&
+                Objects.equal(jobScheduleName, that.jobScheduleName) &&
+                Objects.equal(jobScheduleUuid, that.jobScheduleUuid) &&
                 Objects.equal(previousFireTime, that.previousFireTime) &&
-                Objects.equal(nextFireTime, that.nextFireTime) &&
-                Objects.equal(jobName, that.jobName) &&
-                Objects.equal(groupName, that.groupName);
+                Objects.equal(nextFireTime, that.nextFireTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
+        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory,
+                freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, jobScheduleName, jobScheduleUuid, previousFireTime, nextFireTime);
     }
 
     @Override
@@ -261,10 +270,10 @@ public class AgentCommandDto {
                 .add("totalSwap", totalSwap)
                 .add("freeSwap", freeSwap)
                 .add("usedSwap", usedSwap)
+                .add("jobScheduleName", jobScheduleName)
+                .add("jobScheduleUuid", jobScheduleUuid)
                 .add("previousFireTime", previousFireTime)
                 .add("nextFireTime", nextFireTime)
-                .add("jobName", jobName)
-                .add("groupName", groupName)
                 .toString();
     }
 }

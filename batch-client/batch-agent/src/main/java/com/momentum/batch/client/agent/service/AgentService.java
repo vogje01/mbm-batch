@@ -99,7 +99,7 @@ public class AgentService {
      */
     private void registerAgent() {
         setStatus(AgentStatus.STARTING);
-        agentCommandDto.setType(AgentCommandType.REGISTER);
+        agentCommandDto.setType(AgentCommandType.AGENT_REGISTER);
         agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 
@@ -110,7 +110,7 @@ public class AgentService {
             agentCommandDto.setStatus(agentStatus.name());
             agentCommandDto.setSystemLoad(osBean.getCpuLoad());
             agentCommandDto.setPid(ProcessHandle.current().pid());
-            agentCommandDto.setType(AgentCommandType.PING);
+            agentCommandDto.setType(AgentCommandType.AGENT_PING);
             agentCommandProducer.sendAgentCommand(agentCommandDto);
         }
     }
@@ -123,7 +123,7 @@ public class AgentService {
             // Initialize
             agentStatus = AgentStatus.RUNNING;
             agentCommandDto.setStatus(agentStatus.name());
-            agentCommandDto.setType(AgentCommandType.PERFORMANCE);
+            agentCommandDto.setType(AgentCommandType.AGENT_PERFORMANCE);
 
             // Set performance attributes
             agentCommandDto.setSystemLoad(osBean.getCpuLoad());
