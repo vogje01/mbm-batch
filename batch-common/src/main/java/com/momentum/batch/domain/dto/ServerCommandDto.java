@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
  * Data transfer object for the server commands, which are send from the server to the agents.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.1
  */
 public class ServerCommandDto {

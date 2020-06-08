@@ -25,7 +25,7 @@ import static java.text.MessageFormat.format;
  * </p>
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.2
+ * @version 0.0.4
  * @since 0.0.1
  */
 @Component

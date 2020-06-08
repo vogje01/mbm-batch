@@ -18,7 +18,7 @@ import java.util.function.Function;
  * Class description.
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.2
+ * @version 0.0.4
  * @since 0.0.1
  */
 @Component
