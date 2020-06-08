@@ -115,7 +115,7 @@
                     <password>Dilbert_01</password>
                     <url>jdbc:mysql://localhost:3306</url>
                     <schemas>
-                        <schema>batchtest</schema>
+                        <schema>batch</schema>
                     </schemas>
                 </configuration>
             </plugin>
