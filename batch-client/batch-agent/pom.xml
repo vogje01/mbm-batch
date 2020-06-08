@@ -76,12 +76,7 @@
             <artifactId>batch-common</artifactId>
             <version>0.0.4</version>
         </dependency>
-        <dependency>
-            <groupId>com.momentum</groupId>
-            <artifactId>batch-jobs-test-02</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
     </dependencies>
 
     <build>
