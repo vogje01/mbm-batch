@@ -52,6 +52,9 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @Column(name = "WORKING_DIRECTORY")
     private String workingDirectory;
 
+    @Column(name = "LOGGING_DIRECTORY")
+    private String loggingDirectory;
+
     @Column(name = "FAILED_EXIT_CODE")
     private String failedExitCode;
 
@@ -70,7 +73,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
-    private List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
+    private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
 
     public JobDefinition() {
         // JSON constructor
@@ -85,6 +88,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.active = origin.active;
         this.command = origin.command;
         this.workingDirectory = origin.workingDirectory;
+        this.loggingDirectory = origin.loggingDirectory;
         this.fileName = origin.fileName;
         this.description = origin.description;
         this.failedExitCode = origin.failedExitCode;
@@ -185,6 +189,14 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.workingDirectory = workingDirectory;
     }
 
+    public String getLoggingDirectory() {
+        return loggingDirectory;
+    }
+
+    public void setLoggingDirectory(String logDirectory) {
+        this.loggingDirectory = logDirectory;
+    }
+
     public String getFailedExitCode() {
         return failedExitCode;
     }
@@ -249,13 +261,14 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         return Objects.equal(id, that.id) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(label, that.label) &&
-                Objects.equal(type, that.type) &&
+                type == that.type &&
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(description, that.description) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(fileName, that.fileName) &&
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
+                Objects.equal(loggingDirectory, that.loggingDirectory) &&
                 Objects.equal(failedExitCode, that.failedExitCode) &&
                 Objects.equal(failedExitMessage, that.failedExitMessage) &&
                 Objects.equal(completedExitCode, that.completedExitCode) &&
@@ -266,7 +279,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, jobGroup, jobDefinitionParams);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, jobGroup, jobDefinitionParams);
     }
 
     @Override
@@ -282,9 +295,10 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("fileName", fileName)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
-                .add("failedExitStatus", failedExitCode)
+                .add("loggingDirectory", loggingDirectory)
+                .add("failedExitCode", failedExitCode)
                 .add("failedExitMessage", failedExitMessage)
-                .add("completedExitStatus", completedExitCode)
+                .add("completedExitCode", completedExitCode)
                 .add("completedExitMessage", completedExitMessage)
                 .add("jobGroup", jobGroup)
                 .add("jobDefinitionParams", jobDefinitionParams)

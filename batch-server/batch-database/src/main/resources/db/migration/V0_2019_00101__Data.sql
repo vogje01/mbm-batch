@@ -82,12 +82,12 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '9c61e8c8-8d53-4dd3-92e6-9d936e5
 -- Housekeeping batch Windows
 --
 INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
-                                 FILE_NAME, WORKING_DIRECTORY)
+                                 FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY)
 VALUES ('7b137226-178d-47ab-884f-8b1b37c75878', 'housekeeping-batch-windows', 'Housekeeping Batch Windows',
         'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Windows.', 1, 'JAR',
         '0.0.3', 'C:\\HLAG\\Apps\\FIDE\\jdk14\\bin\\java.exe',
-        'C:\\work\\batch\\lib\\batch-jobs-housekeeping-batch-0.0.3.jar',
-        'C:\\work\\batch');
+        'C:\\work\\batch\\lib\\batch-jobs-housekeeping-0.0.3.jar',
+        'C:\\work\\batch', 'C:\\work\\batch\\log');
 INSERT INTO BATCH_JOB_DEFINITION_PARAMS(ID, JOB_DEFINITION_ID, KEY_NAME, TYPE, STRING_VAL, DATE_VAL, LONG_VAL,
                                         DOUBLE_VAL, BOOLEAN_VAL, VERSION)
 VALUES ('921415b7-d629-41fd-b522-68327e248d7b', '7b137226-178d-47ab-884f-8b1b37c75878',
@@ -136,10 +136,10 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '98836bdf-147a-449e-9d27-6fce564
 -- House keeping batch linux
 --
 INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
-                                 FILE_NAME, WORKING_DIRECTORY, VERSION)
+                                 FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'housekeeping-batch-linux', 'Housekeeping Batch Linux',
         'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.3',
-        'java', '/opt/batch/lib/batch-jobs-housekeeping-batch-0.0.3.jar', '/opt/batch', 0);
+        'java', '/opt/batch/lib/batch-jobs-housekeeping-0.0.3.jar', '/opt/batch', '/opt/batch/log');
 INSERT INTO BATCH_JOB_DEFINITION_PARAMS(ID, JOB_DEFINITION_ID, KEY_NAME, TYPE, STRING_VAL, DATE_VAL, LONG_VAL,
                                         DOUBLE_VAL, BOOLEAN_VAL, VERSION)
 VALUES ('b5a9a442-a787-47c6-bf73-38d03ab16c3b', '11f864e7-bcc6-4f7f-9ef4-35d031ced4f2',
@@ -186,12 +186,12 @@ VALUES ('34a001bf-77a0-461b-90ed-d36e046c8941', '6d416e3e-2180-45e4-99fd-4a53999
 -- Performance batch Windows
 --
 INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
-                                 FILE_NAME, WORKING_DIRECTORY)
+                                 FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY)
 VALUES ('d8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58', 'performance-batch-windows', 'Performance Batch Windows',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Windows.', 1, 'JAR',
         '0.0.3', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe',
-        'C:\\work\\batch\\lib\\batch-jobs-performance-batch-0.0.3.jar',
-        'C:\\work\\batch');
+        'C:\\work\\batch\\lib\\batch-jobs-performance-0.0.3.jar',
+        'C:\\work\\batch', 'C:\\work\\batch\\log');
 
 INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, ACTIVE, VERSION)
 VALUES ('84c6f18a-b886-45ca-bfb8-b9cd71292b3d', '7b137226-178d-47ab-884f-8b1b37c75878', '0 0/15 * * * ?',
@@ -205,10 +205,10 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '84c6f18a-b886-45ca-bfb8-b9cd712
 -- Performance batch Linux
 --
 INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
-                                 FILE_NAME, WORKING_DIRECTORY)
+                                 FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', 'performance-batch-linux', 'Performance Batch Linux',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Linux.', 1, 'JAR',
-        '0.0.3', 'java', '/opt/batch/lib/batch-jobs-performance-batch-0.0.3.jar', '/opt/batch');
+        '0.0.3', 'java', '/opt/batch/lib/batch-jobs-performance-0.0.3.jar', '/opt/batch', '/opt/batch/log');
 
 INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, ACTIVE, VERSION)
 VALUES ('f7d24791-98e1-4c13-b99f-88ea9e2b0143', '9e4f170d-8a59-4ea6-be80-149e73235c17', '0 5/15 * * * ?',

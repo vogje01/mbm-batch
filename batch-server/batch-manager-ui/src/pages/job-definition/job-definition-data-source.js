@@ -38,12 +38,13 @@ export const JobDefinitionDataSource = () => {
                 jobDefinition.command = values.command !== undefined ? values.command : jobDefinition.command;
                 jobDefinition.active = values.active !== undefined ? values.active : jobDefinition.active;
                 jobDefinition.jobGroupName = values.jobGroupName !== undefined ? values.jobGroupName : jobDefinition.jobGroupName;
+                jobDefinition.workingDirectory = values.workingDirectory !== undefined ? values.workingDirectory : jobDefinition.workingDirectory;
+                jobDefinition.loggingDirectory = values.loggingDirectory !== undefined ? values.loggingDirectory : jobDefinition.loggingDirectory;
                 jobDefinition.description = values.description !== undefined ? values.description : jobDefinition.description;
                 jobDefinition.failedExitCode = values.failedExitCode !== undefined ? values.failedExitCode : jobDefinition.failedExitCode;
                 jobDefinition.failedExitMessage = values.failedExitMessage !== undefined ? values.failedExitMessage : jobDefinition.failedExitMessage;
                 jobDefinition.completedExitCode = values.completedExitCode !== undefined ? values.completedExitCode : jobDefinition.completedExitCode;
                 jobDefinition.completedExitMessage = values.completedExitMessage !== undefined ? values.completedExitMessage : jobDefinition.completedExitMessage;
-                jobDefinition.workingDirectory = values.workingDirectory !== undefined ? values.workingDirectory : jobDefinition.workingDirectory;
                 let url = jobDefinition._links.update.href;
                 return updateItem(url, jobDefinition, 'jobDefinitionDto');
             },

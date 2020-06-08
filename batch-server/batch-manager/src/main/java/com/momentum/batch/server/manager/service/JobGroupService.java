@@ -23,4 +23,8 @@ public interface JobGroupService {
 
     @CacheEvict
     void deleteJobGroup(final String id);
+
+    JobGroup addJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
+
+    JobGroup removeJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
 }

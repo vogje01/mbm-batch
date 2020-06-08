@@ -14,7 +14,7 @@ import DataGrid, {
     StringLengthRule
 } from "devextreme-react/data-grid";
 import UpdateTimer from "../../utils/update-timer";
-import {GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
+import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import Toolbar, {Item} from "devextreme-react/toolbar";
 import {JobDefinitionDataSource} from "./job-definition-data-source";
 import {JobGroupDataSource} from "../job-group/job-group-data-source";
@@ -160,6 +160,7 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
                                             <RequiredRule/>
                                         </SimpleItem>
+                                        <EmptyItem/>
                                         <SimpleItem dataField="command">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Command must be less than 256 characters."/>
@@ -171,6 +172,10 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="workingDirectory">
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Working directory must be less than 256 characters."/>
+                                        </SimpleItem>
+                                        <SimpleItem dataField="loggingDirectory">
+                                            <RequiredRule/>
+                                            <StringLengthRule max={256} message="Logging directory must be less than 256 characters."/>
                                         </SimpleItem>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
@@ -186,29 +191,6 @@ class JobDefinitionList extends React.Component {
                                     </GroupItem>
                                 </Form>
                             </Editing>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job definition.',
-                                        icon: 'material-icons-outlined ic-edit'
-                                    },
-                                    {
-                                        name: 'copy',
-                                        hint: 'Clone job definition.',
-                                        icon: 'material-icons-outlined ic-copy',
-                                        onClick: this.cloneJobDefinition
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job definition.',
-                                        icon: 'material-icons-outlined ic-delete'
-                                    }
-                                ]}/>
                             <Column
                                 caption={'Job Label'}
                                 dataField={'label'}
@@ -273,7 +255,10 @@ class JobDefinitionList extends React.Component {
                             <Column
                                 dataField={'workingDirectory'}
                                 caption={'Working Dir.'}
-                                dataType={'string'}
+                                visible={false}/>
+                            <Column
+                                dataField={'loggingDirectory'}
+                                caption={'Logging Dir.'}
                                 visible={false}/>
                             <Column
                                 dataField={'description'}
@@ -323,6 +308,29 @@ class JobDefinitionList extends React.Component {
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job definition.',
+                                        icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'copy',
+                                        hint: 'Clone job definition.',
+                                        icon: 'material-icons-outlined ic-copy',
+                                        onClick: this.cloneJobDefinition
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job definition.',
+                                        icon: 'material-icons-outlined ic-delete'
+                                    }
+                                ]}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

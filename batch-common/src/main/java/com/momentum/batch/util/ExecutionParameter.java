@@ -35,6 +35,8 @@ public class ExecutionParameter {
 
     public static final String JOB_WORKING_DIRECTORY = "job.workingDirectory";
 
+    public static final String JOB_LOGGING_DIRECTORY = "job.loggingDirectory";
+
     public static final String JOB_JAR_FILE = "job.jarFile";
 
     public static final String JOB_COMMAND = "job.command";

@@ -262,7 +262,8 @@ public class BatchScheduler {
         arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
         arguments.add("-D" + JOB_UUID + "=" + UUID.randomUUID().toString());
         arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getJobVersion());
-        arguments.add("-D" + JOB_LAUNCH_TIME + "=" + System.currentTimeMillis());
+        arguments.add("-D" + JOB_LOGGING_DIRECTORY + "=" + jobDefinition.getLoggingDirectory());
+        arguments.add("-D" + JOB_WORKING_DIRECTORY + "=" + jobDefinition.getWorkingDirectory());
         arguments.add("-D" + JOB_FAILED_EXIT_CODE + "=" + jobDefinition.getFailedExitCode());
         arguments.add("-D" + JOB_FAILED_EXIT_MESSAGE + "=" + jobDefinition.getFailedExitMessage());
         arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());

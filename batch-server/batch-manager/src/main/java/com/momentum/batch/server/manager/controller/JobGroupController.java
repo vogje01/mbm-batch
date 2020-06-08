@@ -202,11 +202,56 @@ public class JobGroupController {
         return null;
     }
 
+    /**
+     * Adds an jobDefinition to an jobDefinition group.
+     *
+     * @param jobGroupId jobDefinition group ID.
+     * @param id         jobDefinition ID.
+     */
+    @GetMapping("/{jobGroupId}/addJobDefinition/{id}")
+    public ResponseEntity<JobGroupDto> addJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Add job definition to job group
+        JobGroup jobGroup = jobGroupService.addJobDefinition(jobGroupId, id);
+        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
+
+        // Add link
+        addLinks(jobGroupDto);
+        logger.debug(format("Finished add job definition to job group request - jobGroupId: {0} id: {1} {2}", jobGroupId, id, t.elapsedStr()));
+
+        return ResponseEntity.ok(jobGroupDto);
+    }
+
+    /**
+     * Removes a jobDefinition from an jobDefinition group.
+     *
+     * @param jobGroupId jobDefinition group ID.
+     * @param id         jobDefinition ID.
+     */
+    @GetMapping("/{jobGroupId}/removeJobDefinition/{id}")
+    public ResponseEntity<JobGroupDto> removeJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {
+
+        t.restart();
+
+        JobGroup jobGroup = jobGroupService.removeJobDefinition(jobGroupId, id);
+        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
+
+        // Add link
+        addLinks(jobGroupDto);
+
+        logger.debug(format("Finished remove jobDefinition from jobDefinition group request - id: {0} jobDefinitionId: {1} {2}", jobGroupId, jobGroupId, t.elapsedStr()));
+        return ResponseEntity.ok(jobGroupDto);
+    }
+
     private void addLinks(JobGroupDto jobGroupDto) {
         try {
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).findById(jobGroupDto.getId())).withSelfRel());
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).update(jobGroupDto.getId(), jobGroupDto)).withRel("update"));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).delete(jobGroupDto.getId())).withRel("delete"));
+            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).addJobDefinition(null, null)).withRel("addJobDefinition").expand(jobGroupDto.getId(), ""));
+            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).removeJobDefinition(null, null)).withRel("removeJobDefinition").expand(jobGroupDto.getId(), ""));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", jobGroupDto.getId()), e);
         }
