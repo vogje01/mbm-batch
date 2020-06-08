@@ -25,9 +25,9 @@ import static java.text.MessageFormat.format;
  * @since 0.0.2
  */
 @Service
-public class JobStatusListener {
+public class JobExecutionStatusListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(JobStatusListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobExecutionStatusListener.class);
 
     private final JobExecutionInfoRepository jobExecutionInfoRepository;
 
@@ -43,14 +43,16 @@ public class JobStatusListener {
 
     private final ModelConverter modelConverter;
 
+    private final Object lock = new Object();
+
     @Autowired
-    public JobStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
-                             JobExecutionInstanceRepository jobExecutionInstanceRepository,
-                             JobExecutionParamRepository jobExecutionParamRepository,
-                             JobExecutionContextRepository jobExecutionContextRepository,
-                             StepExecutionInfoRepository stepExecutionInfoRepository,
-                             StepExecutionContextRepository stepExecutionContextRepository,
-                             ModelConverter modelConverter) {
+    public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
+                                      JobExecutionInstanceRepository jobExecutionInstanceRepository,
+                                      JobExecutionParamRepository jobExecutionParamRepository,
+                                      JobExecutionContextRepository jobExecutionContextRepository,
+                                      StepExecutionInfoRepository stepExecutionInfoRepository,
+                                      StepExecutionContextRepository stepExecutionContextRepository,
+                                      ModelConverter modelConverter) {
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.jobExecutionContextRepository = jobExecutionContextRepository;
@@ -61,7 +63,6 @@ public class JobStatusListener {
         logger.info(format("Job status listener initialized"));
     }
 
-    //@Transactional
     @KafkaListener(topics = "${kafka.jobStatus.topic}", containerFactory = "jobStatusListenerFactory")
     public void listen(JobStatusDto jobStatusDto) {
         logger.info(format("Received job status - type: {0}", jobStatusDto.getType()));
@@ -85,7 +86,7 @@ public class JobStatusListener {
      *
      * @param jobExecutionDto job execution data transfer object.
      */
-    private synchronized void jobStatusChanged(JobExecutionDto jobExecutionDto) {
+    private void jobStatusChanged(JobExecutionDto jobExecutionDto) {
 
         logger.debug(format("Received status info - nodeName: {0} jobName: {1}", jobExecutionDto.getNodeName(), jobExecutionDto.getJobName()));
 
@@ -102,7 +103,9 @@ public class JobStatusListener {
             jobExecutionInfo.update(jobExecutionDto);
             jobExecutionInfo.setModifiedAt(new Date());
             jobExecutionInfo.setModifiedBy("admin");
-            jobExecutionInfoRepository.save(jobExecutionInfo);
+            synchronized (lock) {
+                jobExecutionInfoRepository.save(jobExecutionInfo);
+            }
             logger.debug(format("Job execution info updated - jobName: {0} jobName: {1}", nodeName, jobName));
 
         } else {
@@ -116,26 +119,34 @@ public class JobStatusListener {
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
-            jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
+            synchronized (lock) {
+                jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
+            }
             logger.debug(format("Job execution info created - nodeName: {0} jobName: {1} id: {2}", jobName, jobName, jobExecutionInfo.getId()));
 
             // Create job instance
             JobExecutionInstance jobExecutionInstance = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
             jobExecutionInstance.setJobExecutionInfo(jobExecutionInfo);
-            jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
+            synchronized (lock) {
+                jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
+            }
             logger.debug(format("Job execution instance created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
 
             // Create job execution context
             JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
             jobExecutionContext.setJobExecutionInfo(jobExecutionInfo);
-            jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
+            synchronized (lock) {
+                jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
+            }
             logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
 
             // Create job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
             jobExecutionInfo.getJobExecutionParams().forEach(p -> {
                 p.setJobExecutionInfo(finalJobExecutionInfo);
-                jobExecutionParamRepository.save(p);
+                synchronized (lock) {
+                    jobExecutionParamRepository.save(p);
+                }
             });
             logger.debug(format("Job execution parameters created - nodeName: {0} jobName: {1} size: {2}", nodeName, jobName, jobExecutionInfo.getJobExecutionParams().size()));
         }
@@ -146,7 +157,7 @@ public class JobStatusListener {
      *
      * @param stepExecutionDto step execution data transfer object.
      */
-    private synchronized void stepStatusChanged(StepExecutionDto stepExecutionDto) {
+    private void stepStatusChanged(StepExecutionDto stepExecutionDto) {
 
         String nodeName = stepExecutionDto.getNodeName();
         String jobName = stepExecutionDto.getJobName();
@@ -161,7 +172,9 @@ public class JobStatusListener {
             stepExecutionInfo.update(stepExecutionDto);
             stepExecutionInfo.setModifiedAt(new Date());
             stepExecutionInfo.setModifiedBy("admin");
-            stepExecutionInfoRepository.save(stepExecutionInfo);
+            synchronized (lock) {
+                stepExecutionInfoRepository.save(stepExecutionInfo);
+            }
             logger.debug(format("Step info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
         } else {
             logger.info(format("Step not found, creating new one - nodeName: {0} stepName: {1} stepName: {2}", nodeName, jobName, stepName));
@@ -173,12 +186,15 @@ public class JobStatusListener {
                 stepExecutionInfo.setJobExecutionInfo(jobExecutionInfoOptional.get());
                 stepExecutionInfo.setCreatedAt(new Date());
                 stepExecutionInfo.setCreatedBy("admin");
-                stepExecutionInfoRepository.save(stepExecutionInfo);
-
+                synchronized (lock) {
+                    stepExecutionInfoRepository.save(stepExecutionInfo);
+                }
                 // Create step execution context
                 StepExecutionContext stepExecutionContext = modelConverter.convertStepExecutionContextToEntity(stepExecutionDto.getStepExecutionContextDto());
                 stepExecutionContext.setStepExecutionInfo(stepExecutionInfo);
-                stepExecutionContext = stepExecutionContextRepository.save(stepExecutionContext);
+                synchronized (lock) {
+                    stepExecutionContext = stepExecutionContextRepository.save(stepExecutionContext);
+                }
                 logger.debug(format("Step execution context info created - nodeName: {0} stepName: {1} id: {2}", nodeName, stepName, stepExecutionContext.getId()));
 
             } else {

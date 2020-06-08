@@ -27,7 +27,6 @@ public class JobExecutionLogListener {
         this.jobExecutionLogRepository = jobExecutionLogRepository;
     }
 
-   // @Transactional
     @KafkaListener(topics = "batchJobExecutionLog", containerFactory = "logKafkaListenerContainerFactory")
     public void listen(JobExecutionLog jobExecutionLog) {
         logger.debug(format("Received job log - message: {0}", jobExecutionLog));

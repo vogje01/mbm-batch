@@ -89,7 +89,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void registerAgent(AgentCommandDto agentCommandDto) {
+    private void registerAgent(AgentCommandDto agentCommandDto) {
         logger.info(format("Register agent - hostName: {0} nodeName: {0}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         Agent agent = agentOptional.orElseGet(Agent::new);
@@ -114,7 +114,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedPing(AgentCommandDto agentCommandDto) {
+    private void receivedPing(AgentCommandDto agentCommandDto) {
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
             agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
@@ -129,7 +129,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedPerformance(AgentCommandDto agentCommandDto) {
+    private void receivedPerformance(AgentCommandDto agentCommandDto) {
 
         batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", BatchPerformanceType.RAW, agentCommandDto.getSystemLoad()));
 
@@ -159,7 +159,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedAgentStatus(AgentCommandDto agentCommandDto) {
+    private void receivedAgentStatus(AgentCommandDto agentCommandDto) {
         logger.debug(format("Agent status received - hostName: {0} nodeName: {1}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
@@ -173,7 +173,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedStatus(AgentCommandDto agentCommandDto) {
+    private void receivedStatus(AgentCommandDto agentCommandDto) {
         logger.debug(format("Job schedule update received - name: {0} group: {1}", agentCommandDto.getJobName(), agentCommandDto.getGroupName()));
         Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByGroupAndName(agentCommandDto.getGroupName(), agentCommandDto.getJobName());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
@@ -193,7 +193,7 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedShutdown(AgentCommandDto agentCommandDto) {
+    private void receivedShutdown(AgentCommandDto agentCommandDto) {
         logger.info(format("Agent shutdown received - nodeName: {0}", agentCommandDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
         agentOptional.ifPresent(agent -> {
