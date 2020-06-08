@@ -86,9 +86,9 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('7b137226-178d-47ab-884f-8b1b37c75878', 'housekeeping-batch-windows', 'Housekeeping Batch Windows',
         'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Windows.', 1, 'JAR',
-        '0.0.3', 'C:\\HLAG\\Apps\\FIDE\\jdk14\\bin\\java.exe',
-        'C:\\work\\batch\\lib\\batch-jobs-housekeeping-0.0.3.jar',
-        'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Ccompleted', '-1', 'Failed');
+        '0.0.4', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe',
+        'C:\\work\\batch\\lib\\batch-jobs-housekeeping-0.0.4.jar',
+        'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('7b137226-178d-47ab-884f-8b1b37c75878', 'd4c132d5-c100-452b-b843-851849b1a01c');
 INSERT INTO BATCH_JOB_DEFINITION_PARAMS(ID, JOB_DEFINITION_ID, KEY_NAME, TYPE, STRING_VAL, DATE_VAL, LONG_VAL,
@@ -142,8 +142,8 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY, COMPLETED_EXIT_CODE,
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'housekeeping-batch-linux', 'Housekeeping Batch Linux',
-        'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.3',
-        'java', '/opt/batch/lib/batch-jobs-housekeeping-0.0.3.jar', '/opt/batch', '/opt/batch/log', '0', 'Ccompleted',
+        'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.4',
+        'java', '/opt/batch/lib/batch-jobs-housekeeping-0.0.4.jar', '/opt/batch', '/opt/batch/log', '0', 'Completed',
         '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'd4c132d5-c100-452b-b843-851849b1a01c');
@@ -197,9 +197,9 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('d8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58', 'performance-batch-windows', 'Performance Batch Windows',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Windows.', 1, 'JAR',
-        '0.0.3', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe',
-        'C:\\work\\batch\\lib\\batch-jobs-performance-0.0.3.jar',
-        'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Ccompleted', '-1', 'Failed');
+        '0.0.4', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe',
+        'C:\\work\\batch\\lib\\batch-jobs-performance-0.0.4.jar',
+        'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('d8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58', '64272f77-142f-478a-be2b-70fc5f4a8d7b');
 INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, VERSION, TYPE, VALUE, STRING_VAL, DATE_VAL, LONG_VAL, DOUBLE_VAL,
@@ -250,7 +250,7 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', 'performance-batch-linux', 'Performance Batch Linux',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Linux.', 1, 'JAR',
-        '0.0.3', 'java', '/opt/batch/lib/batch-jobs-performance-0.0.3.jar', '/opt/batch', '/opt/batch/log', '0',
+        '0.0.4', 'java', '/opt/batch/lib/batch-jobs-performance-0.0.4.jar', '/opt/batch', '/opt/batch/log', '0',
         'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', '64272f77-142f-478a-be2b-70fc5f4a8d7b');
