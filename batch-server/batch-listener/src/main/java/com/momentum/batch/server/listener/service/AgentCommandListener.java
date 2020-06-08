@@ -47,6 +47,8 @@ public class AgentCommandListener {
 
     private final ModelConverter modelConverter;
 
+    private final Object lock = new Object();
+
     @Autowired
     public AgentCommandListener(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
                                 JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
@@ -89,23 +91,25 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void registerAgent(AgentCommandDto agentCommandDto) {
+    private void registerAgent(AgentCommandDto agentCommandDto) {
         logger.info(format("Register agent - hostName: {0} nodeName: {0}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
-        Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        Agent agent = agentOptional.orElseGet(Agent::new);
-        agent.setPid(agentCommandDto.getPid());
-        agent.setHostName(agentCommandDto.getHostName());
-        agent.setNodeName(agentCommandDto.getNodeName());
-        agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
-        agent.setLastStart(new Date());
-        agent.setLastPing(new Date());
-        agent.setActive(true);
-        agent.setSystemLoad(agentCommandDto.getSystemLoad());
-        agent = agentRepository.save(agent);
-        logger.info(format("Agent registered - nodeName: {0}", agentCommandDto.getNodeName()));
+        synchronized (lock) {
+            Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
+            Agent agent = agentOptional.orElseGet(Agent::new);
+            agent.setPid(agentCommandDto.getPid());
+            agent.setHostName(agentCommandDto.getHostName());
+            agent.setNodeName(agentCommandDto.getNodeName());
+            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
+            agent.setLastStart(new Date());
+            agent.setLastPing(new Date());
+            agent.setActive(true);
+            agent.setSystemLoad(agentCommandDto.getSystemLoad());
+            agent = agentRepository.save(agent);
+            logger.info(format("Agent registered - nodeName: {0}", agentCommandDto.getNodeName()));
 
-        // Start jobs for that agent
-        startJobs(agent);
+            // Start jobs for that agent
+            startJobs(agent);
+        }
         logger.info(format("Jobs started - nodeName: {0}", agentCommandDto.getNodeName()));
     }
 
@@ -114,14 +118,16 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedPing(AgentCommandDto agentCommandDto) {
-        Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        agentOptional.ifPresent(agent -> {
-            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
-            agent.setSystemLoad(agentCommandDto.getSystemLoad());
-            agent.setLastPing(new Date());
-            agentRepository.save(agent);
-        });
+    private void receivedPing(AgentCommandDto agentCommandDto) {
+        synchronized (lock) {
+            Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
+            agentOptional.ifPresent(agent -> {
+                agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
+                agent.setSystemLoad(agentCommandDto.getSystemLoad());
+                agent.setLastPing(new Date());
+                agentRepository.save(agent);
+            });
+        }
     }
 
     /**
@@ -129,29 +135,30 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedPerformance(AgentCommandDto agentCommandDto) {
+    private void receivedPerformance(AgentCommandDto agentCommandDto) {
+        synchronized (lock) {
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", BatchPerformanceType.RAW, agentCommandDto.getSystemLoad()));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.total.system.load", BatchPerformanceType.RAW, agentCommandDto.getSystemLoad()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.total", BatchPerformanceType.RAW, agentCommandDto.getTotalRealMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free", BatchPerformanceType.RAW, agentCommandDto.getFreeRealMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used", BatchPerformanceType.RAW, agentCommandDto.getUsedRealMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.total", BatchPerformanceType.RAW, agentCommandDto.getTotalRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free", BatchPerformanceType.RAW, agentCommandDto.getFreeRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used", BatchPerformanceType.RAW, agentCommandDto.getUsedRealMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.real.memory.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedRealMemory() / (double) agentCommandDto.getTotalRealMemory() * 100.0));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.total", BatchPerformanceType.RAW, agentCommandDto.getTotalVirtMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free", BatchPerformanceType.RAW, agentCommandDto.getFreeVirtMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used", BatchPerformanceType.RAW, agentCommandDto.getUsedVirtMemory()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.total", BatchPerformanceType.RAW, agentCommandDto.getTotalVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free", BatchPerformanceType.RAW, agentCommandDto.getFreeVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used", BatchPerformanceType.RAW, agentCommandDto.getUsedVirtMemory()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.virt.memory.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedVirtMemory() / (double) agentCommandDto.getTotalVirtMemory() * 100.0));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.total", BatchPerformanceType.RAW, agentCommandDto.getTotalSwap()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free", BatchPerformanceType.RAW, agentCommandDto.getFreeSwap()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used", BatchPerformanceType.RAW, agentCommandDto.getUsedSwap()));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
+            batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
 
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.total", BatchPerformanceType.RAW, agentCommandDto.getTotalSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free", BatchPerformanceType.RAW, agentCommandDto.getFreeSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used", BatchPerformanceType.RAW, agentCommandDto.getUsedSwap()));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.free.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getFreeSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
-        batchPerformanceRepository.save(new BatchPerformance(agentCommandDto.getNodeName(), "host.swap.used.pct", BatchPerformanceType.RAW, (double) agentCommandDto.getUsedSwap() / (double) agentCommandDto.getTotalSwap() * 100.0));
-
-        receivedPing(agentCommandDto);
+            receivedPing(agentCommandDto);
+        }
     }
 
     /**
@@ -159,13 +166,15 @@ public class AgentCommandListener {
      *
      * @param agentCommandDto agent command info.
      */
-    private synchronized void receivedAgentStatus(AgentCommandDto agentCommandDto) {
+    private void receivedAgentStatus(AgentCommandDto agentCommandDto) {
         logger.debug(format("Agent status received - hostName: {0} nodeName: {1}", agentCommandDto.getHostName(), agentCommandDto.getNodeName()));
-        Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        agentOptional.ifPresent(agent -> {
-            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
-            agentRepository.save(agent);
-        });
+        synchronized (lock) {
+            Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
+            agentOptional.ifPresent(agent -> {
+                agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
+                agentRepository.save(agent);
+            });
+        }
     }
 
     /**
@@ -175,17 +184,19 @@ public class AgentCommandListener {
      */
     private synchronized void receivedStatus(AgentCommandDto agentCommandDto) {
         logger.debug(format("Job schedule update received - name: {0} group: {1}", agentCommandDto.getJobName(), agentCommandDto.getGroupName()));
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByGroupAndName(agentCommandDto.getGroupName(), agentCommandDto.getJobName());
-        jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            if (agentCommandDto.getNextFireTime() != null) {
-                jobSchedule.setNextExecution(agentCommandDto.getNextFireTime());
-            }
-            if (agentCommandDto.getPreviousFireTime() != null) {
-                jobSchedule.setLastExecution(agentCommandDto.getPreviousFireTime());
-            }
-            jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - id: {0}", jobSchedule));
-        }, () -> logger.error(format("Job schedule not found")));
+        synchronized (lock) {
+            Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findByGroupAndName(agentCommandDto.getGroupName(), agentCommandDto.getJobName());
+            jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
+                if (agentCommandDto.getNextFireTime() != null) {
+                    jobSchedule.setNextExecution(agentCommandDto.getNextFireTime());
+                }
+                if (agentCommandDto.getPreviousFireTime() != null) {
+                    jobSchedule.setLastExecution(agentCommandDto.getPreviousFireTime());
+                }
+                jobSchedule = jobScheduleRepository.save(jobSchedule);
+                logger.debug(format("Job schedule updated - id: {0}", jobSchedule));
+            }, () -> logger.error(format("Job schedule not found")));
+        }
     }
 
     /**
@@ -195,15 +206,17 @@ public class AgentCommandListener {
      */
     private synchronized void receivedShutdown(AgentCommandDto agentCommandDto) {
         logger.info(format("Agent shutdown received - nodeName: {0}", agentCommandDto.getNodeName()));
-        Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
-        agentOptional.ifPresent(agent -> {
-            agent.setSystemLoad(agentCommandDto.getSystemLoad());
-            agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
-            agent.setLastPing(new Date());
-            agent.setActive(false);
-            agentRepository.save(agent);
-            logger.info(format("Agent shutdown processed - nodeName: {0}", agentCommandDto.getNodeName()));
-        });
+        synchronized (lock) {
+            Optional<Agent> agentOptional = agentRepository.findByNodeName(agentCommandDto.getNodeName());
+            agentOptional.ifPresent(agent -> {
+                agent.setSystemLoad(agentCommandDto.getSystemLoad());
+                agent.setStatus(AgentStatus.valueOf(agentCommandDto.getStatus()));
+                agent.setLastPing(new Date());
+                agent.setActive(false);
+                agentRepository.save(agent);
+                logger.info(format("Agent shutdown processed - nodeName: {0}", agentCommandDto.getNodeName()));
+            });
+        }
     }
 
     /**
