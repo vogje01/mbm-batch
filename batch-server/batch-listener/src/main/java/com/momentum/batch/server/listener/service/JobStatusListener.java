@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -62,7 +61,7 @@ public class JobStatusListener {
         logger.info(format("Job status listener initialized"));
     }
 
-    @Transactional
+    //@Transactional
     @KafkaListener(topics = "${kafka.jobStatus.topic}", containerFactory = "jobStatusListenerFactory")
     public void listen(JobStatusDto jobStatusDto) {
         logger.info(format("Received job status - type: {0}", jobStatusDto.getType()));
@@ -86,7 +85,7 @@ public class JobStatusListener {
      *
      * @param jobExecutionDto job execution data transfer object.
      */
-    private void jobStatusChanged(JobExecutionDto jobExecutionDto) {
+    private synchronized void jobStatusChanged(JobExecutionDto jobExecutionDto) {
 
         logger.debug(format("Received status info - nodeName: {0} jobName: {1}", jobExecutionDto.getNodeName(), jobExecutionDto.getJobName()));
 
@@ -147,7 +146,7 @@ public class JobStatusListener {
      *
      * @param stepExecutionDto step execution data transfer object.
      */
-    private void stepStatusChanged(StepExecutionDto stepExecutionDto) {
+    private synchronized void stepStatusChanged(StepExecutionDto stepExecutionDto) {
 
         String nodeName = stepExecutionDto.getNodeName();
         String jobName = stepExecutionDto.getJobName();

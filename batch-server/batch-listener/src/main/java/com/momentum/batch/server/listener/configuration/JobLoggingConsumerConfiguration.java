@@ -50,6 +50,7 @@ public class JobLoggingConsumerConfiguration extends AbstractKafkaConfiguration 
     public ConcurrentKafkaListenerContainerFactory<String, JobExecutionLog> logKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, JobExecutionLog> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(logConsumerFactory());
+        factory.setConcurrency(loggingPartitions);
         return factory;
     }
 }

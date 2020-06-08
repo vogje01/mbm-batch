@@ -50,6 +50,7 @@ public class JobStatusConsumerConfiguration extends AbstractKafkaConfiguration {
     public ConcurrentKafkaListenerContainerFactory<String, JobStatusDto> jobStatusListenerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, JobStatusDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(jobStatusConsumerFactory());
+        factory.setConcurrency(jobStatusPartitions);
         return factory;
     }
 }

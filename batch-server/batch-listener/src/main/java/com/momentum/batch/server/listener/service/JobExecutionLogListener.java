@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static java.text.MessageFormat.format;
 
@@ -28,7 +27,7 @@ public class JobExecutionLogListener {
         this.jobExecutionLogRepository = jobExecutionLogRepository;
     }
 
-    @Transactional
+   // @Transactional
     @KafkaListener(topics = "batchJobExecutionLog", containerFactory = "logKafkaListenerContainerFactory")
     public void listen(JobExecutionLog jobExecutionLog) {
         logger.debug(format("Received job log - message: {0}", jobExecutionLog));
