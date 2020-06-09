@@ -73,25 +73,15 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Column(name = "COMPLETED_EXIT_MESSAGE")
     private String completedExitMessage;
-    /**
-     * Job definition, job group many to many relationship
-     */
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "BATCH_JOB_DEFINITION_JOB_GROUP",
-            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
-            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
-    private List<JobGroup> jobGroups = new ArrayList<>();
-    /**
-     * Job definition, parameter one to many relationship
-     */
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "JOB_GROUP_ID")
+    private JobGroup jobGroup;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
 
-    /**
-     * Constructor
-     */
     public JobDefinition() {
         // JSON constructor
     }
@@ -99,6 +89,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     public void update(JobDefinition origin) {
         this.name = origin.name;
         this.label = origin.label;
+        this.jobGroup = origin.jobGroup;
         this.jobVersion = origin.jobVersion;
         this.type = origin.type;
         this.active = origin.active;
@@ -151,6 +142,14 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setJobVersion(String version) {
         this.jobVersion = version;
+    }
+
+    public JobGroup getJobGroup() {
+        return jobGroup;
+    }
+
+    public void setJobGroup(JobGroup jobGroup) {
+        this.jobGroup = jobGroup;
     }
 
     public String getDescription() {
@@ -237,29 +236,6 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.completedExitMessage = completedExitMessage;
     }
 
-    public List<JobGroup> getJobGroups() {
-        return jobGroups;
-    }
-
-    public void setJobGroups(List<JobGroup> jobGroups) {
-        this.jobGroups.clear();
-        if (jobGroups != null) {
-            jobGroups.forEach(this::addJobGroup);
-        }
-    }
-
-    public void addJobGroup(JobGroup jobGroup) {
-        if (!jobGroups.contains(jobGroup)) {
-            jobGroups.add(jobGroup);
-        }
-    }
-
-    public void removeJobGroup(JobGroup jobGroup) {
-        if (jobGroups.contains(jobGroup)) {
-            jobGroups.remove(jobGroup);
-        }
-    }
-
     public List<JobDefinitionParam> getJobDefinitionParams() {
         return jobDefinitionParams;
     }
@@ -267,7 +243,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     public void setJobDefinitionParams(List<JobDefinitionParam> jobDefinitionParams) {
         this.jobDefinitionParams.clear();
         if (jobDefinitionParams != null) {
-            jobDefinitionParams.forEach(s -> addJobDefinitionParam(s));
+            jobDefinitionParams.forEach(this::addJobDefinitionParam);
         }
     }
 
@@ -278,9 +254,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     }
 
     public void removeJobDefinitionParam(JobDefinitionParam jobDefinitionParam) {
-        if (jobDefinitionParams.contains(jobDefinitionParam)) {
-            jobDefinitionParams.remove(jobDefinitionParam);
-        }
+        jobDefinitionParams.remove(jobDefinitionParam);
     }
 
     @Override
@@ -308,7 +282,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
+                failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override

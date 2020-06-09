@@ -1,12 +1,11 @@
 package com.momentum.batch.client.agent.service;
 
-import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentStatusMessageProducer;
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
 import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.domain.dto.AgentCommandDto;
-import com.momentum.batch.domain.dto.AgentCommandType;
-import com.momentum.batch.util.NetworkUtils;
+import com.momentum.batch.message.dto.AgentStatusMessageDto;
+import com.momentum.batch.message.dto.AgentStatusMessageType;
 import com.sun.management.OperatingSystemMXBean;
 import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
@@ -48,7 +47,9 @@ public class AgentService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentService.class);
 
-    private final AgentCommandDto agentCommandDto;
+    private final String hostName;
+
+    private final String nodeName;
 
     private final OperatingSystemMXBean osBean;
 
@@ -56,7 +57,9 @@ public class AgentService {
 
     private final BatchSchedulerTask schedulerTask;
 
-    private final AgentCommandProducer agentCommandProducer;
+    private final AgentStatusMessageDto agentStatusMessageDto;
+
+    private final AgentStatusMessageProducer agentStatusMessageProducer;
 
     private AgentStatus agentStatus;
 
@@ -67,17 +70,20 @@ public class AgentService {
      * @param nodeName      node name.
      */
     @Autowired
-    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String nodeName, AgentStatus agentStatus, AgentCommandProducer agentCommandProducer) {
+    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String hostName, String nodeName, AgentStatus agentStatus,
+                        AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
+        this.hostName = hostName;
+        this.nodeName = nodeName;
         this.agentStatus = agentStatus;
-        this.agentCommandProducer = agentCommandProducer;
+        this.agentStatusMessageProducer = agentStatusMessageProducer;
 
         // Agent command
-        this.agentCommandDto = new AgentCommandDto();
-        this.agentCommandDto.setNodeName(nodeName);
-        this.agentCommandDto.setHostName(NetworkUtils.getHostName());
-        this.agentCommandDto.setPid(ProcessHandle.current().pid());
+        this.agentStatusMessageDto = new AgentStatusMessageDto();
+        this.agentStatusMessageDto.setNodeName(nodeName);
+        this.agentStatusMessageDto.setHostName(hostName);
+        this.agentStatusMessageDto.setPid(ProcessHandle.current().pid());
         this.osBean = System.getProperty("os.name").startsWith("Windows") ?
                 ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class) :
                 ManagementFactory.getPlatformMXBean(UnixOperatingSystemMXBean.class);
@@ -99,19 +105,20 @@ public class AgentService {
      */
     private void registerAgent() {
         setStatus(AgentStatus.STARTING);
-        agentCommandDto.setType(AgentCommandType.REGISTER);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+        agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_REGISTER);
+        agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
+        logger.info(format("Agent registration message send - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
     @Scheduled(fixedRateString = "${agent.pingInterval}")
     private void ping() {
         if (agentStatus != AgentStatus.STOPPED) {
             agentStatus = AgentStatus.RUNNING;
-            agentCommandDto.setStatus(agentStatus.name());
-            agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-            agentCommandDto.setPid(ProcessHandle.current().pid());
-            agentCommandDto.setType(AgentCommandType.PING);
-            agentCommandProducer.sendAgentCommand(agentCommandDto);
+            agentStatusMessageDto.setStatus(agentStatus.name());
+            agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
+            agentStatusMessageDto.setPid(ProcessHandle.current().pid());
+            agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PING);
+            agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
         }
     }
 
@@ -122,23 +129,23 @@ public class AgentService {
 
             // Initialize
             agentStatus = AgentStatus.RUNNING;
-            agentCommandDto.setStatus(agentStatus.name());
-            agentCommandDto.setType(AgentCommandType.PERFORMANCE);
+            agentStatusMessageDto.setStatus(agentStatus.name());
+            agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PERFORMANCE);
 
             // Set performance attributes
-            agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-            agentCommandDto.setTotalRealMemory(osBean.getTotalMemorySize());
-            agentCommandDto.setFreeRealMemory(osBean.getFreeMemorySize());
-            agentCommandDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
+            agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
+            agentStatusMessageDto.setTotalRealMemory(osBean.getTotalMemorySize());
+            agentStatusMessageDto.setFreeRealMemory(osBean.getFreeMemorySize());
+            agentStatusMessageDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
 
-            agentCommandDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
-            agentCommandDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
-            agentCommandDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
+            agentStatusMessageDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
+            agentStatusMessageDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
+            agentStatusMessageDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
 
-            agentCommandDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
-            agentCommandDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
-            agentCommandDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
-            agentCommandProducer.sendAgentCommand(agentCommandDto);
+            agentStatusMessageDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
+            agentStatusMessageDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
+            agentStatusMessageDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
+            agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
         }
     }
 
@@ -179,9 +186,9 @@ public class AgentService {
 
     public void setStatus(AgentStatus agentStatus) {
         this.agentStatus = agentStatus;
-        agentCommandDto.setSystemLoad(osBean.getCpuLoad());
-        agentCommandDto.setStatus(agentStatus.name());
-        agentCommandDto.setType(AgentCommandType.AGENT_STATUS);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+        agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
+        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_STATUS);
+        agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
     }
 }

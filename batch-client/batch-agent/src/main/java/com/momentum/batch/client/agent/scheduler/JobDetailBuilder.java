@@ -32,7 +32,7 @@ public class JobDetailBuilder {
 	/**
 	 * Job data map
 	 */
-	private JobDataMap jobDataMap;
+	private final JobDataMap jobDataMap;
 
 	public JobDetailBuilder() {
 		jobDataMap = new JobDataMap();
@@ -41,10 +41,20 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder jobName(String name) {
-        this.identity = name;
-        jobDataMap.put(JOB_NAME, name);
-        return this;
-    }
+		this.identity = name;
+		jobDataMap.put(JOB_NAME, name);
+		return this;
+	}
+
+	public JobDetailBuilder jobScheduleUuid(String jobScheduleUuid) {
+		jobDataMap.put(JOB_SCHEDULE_UUID, jobScheduleUuid);
+		return this;
+	}
+
+	public JobDetailBuilder jobScheduleName(String jobScheduleName) {
+		jobDataMap.put(JOB_SCHEDULE_NAME, jobScheduleName);
+		return this;
+	}
 
 	public JobDetailBuilder workingDirectory(String workingDirectory) {
 		jobDataMap.put(JOB_WORKING_DIRECTORY, workingDirectory);
@@ -102,6 +112,11 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetail build() {
-		return JobBuilder.newJob(BatchSchedulerTask.class).withIdentity(identity, group).withDescription(description).usingJobData(jobDataMap).storeDurably().build();
+		return JobBuilder.newJob(BatchSchedulerTask.class)
+				.withIdentity(identity, group)
+				.withDescription(description)
+				.usingJobData(jobDataMap)
+				.storeDurably()
+				.build();
 	}
 }

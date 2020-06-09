@@ -1,9 +1,7 @@
-package com.momentum.batch.domain.dto;
+package com.momentum.batch.message.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import java.util.Date;
 
 /**
  * Agent command DTO.
@@ -12,9 +10,9 @@ import java.util.Date;
  * @version 0.0.4
  * @since 0.0.1
  */
-public class AgentCommandDto {
+public class AgentStatusMessageDto {
 
-    private AgentCommandType type;
+    private AgentStatusMessageType type;
 
     private String nodeName;
 
@@ -44,27 +42,19 @@ public class AgentCommandDto {
 
     private long usedSwap;
 
-    private Date previousFireTime;
-
-    private Date nextFireTime;
-
-    private String jobName;
-
-    private String groupName;
-
-    public AgentCommandDto() {
+    public AgentStatusMessageDto() {
         // Intentionally empty
     }
 
-    public AgentCommandDto(AgentCommandType type) {
+    public AgentStatusMessageDto(AgentStatusMessageType type) {
         this.type = type;
     }
 
-    public AgentCommandType getType() {
+    public AgentStatusMessageType getType() {
         return type;
     }
 
-    public void setType(AgentCommandType type) {
+    public void setType(AgentStatusMessageType type) {
         this.type = type;
     }
 
@@ -180,43 +170,11 @@ public class AgentCommandDto {
         this.usedSwap = usedSwap;
     }
 
-    public Date getPreviousFireTime() {
-        return previousFireTime;
-    }
-
-    public void setPreviousFireTime(Date previousFireTime) {
-        this.previousFireTime = previousFireTime;
-    }
-
-    public Date getNextFireTime() {
-        return nextFireTime;
-    }
-
-    public void setNextFireTime(Date nextFireTime) {
-        this.nextFireTime = nextFireTime;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AgentCommandDto that = (AgentCommandDto) o;
+        AgentStatusMessageDto that = (AgentStatusMessageDto) o;
         return pid == that.pid &&
                 Double.compare(that.systemLoad, systemLoad) == 0 &&
                 totalRealMemory == that.totalRealMemory &&
@@ -231,16 +189,13 @@ public class AgentCommandDto {
                 type == that.type &&
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(hostName, that.hostName) &&
-                Objects.equal(status, that.status) &&
-                Objects.equal(previousFireTime, that.previousFireTime) &&
-                Objects.equal(nextFireTime, that.nextFireTime) &&
-                Objects.equal(jobName, that.jobName) &&
-                Objects.equal(groupName, that.groupName);
+                Objects.equal(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, previousFireTime, nextFireTime, jobName, groupName);
+        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory,
+                freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap);
     }
 
     @Override
@@ -261,10 +216,6 @@ public class AgentCommandDto {
                 .add("totalSwap", totalSwap)
                 .add("freeSwap", freeSwap)
                 .add("usedSwap", usedSwap)
-                .add("previousFireTime", previousFireTime)
-                .add("nextFireTime", nextFireTime)
-                .add("jobName", jobName)
-                .add("groupName", groupName)
                 .toString();
     }
 }

@@ -47,6 +47,10 @@ public class ExecutionParameter {
 
     public static final String JOB_STARTED_BY = "job.user";
 
+    public static final String JOB_SCHEDULE_UUID = "job.jobScheduleUuid";
+
+    public static final String JOB_SCHEDULE_NAME = "job.jobScheduleName";
+
     public static final String JOB_FAILED_EXIT_CODE = "job.failed.exitCode";
 
     public static final String JOB_FAILED_EXIT_MESSAGE = "job.failed.exitMessage";

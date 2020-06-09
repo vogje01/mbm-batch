@@ -18,13 +18,17 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
     @Query("select count(ag) from JobSchedule j left join j.agentGroups ag where j.id = :scheduleId")
     long countAgentGroups(@Param("scheduleId") String scheduleId);
 
-    @Query("select j from JobSchedule j left join j.jobDefinition d left join d.jobGroups g where g.name = :groupName and d.name = :jobName")
+    @Query("select j from JobSchedule j left join j.jobDefinition d where j.active = :active")
+    Page<JobSchedule> findAllActive(@Param("active") boolean active, Pageable pageable);
+
+    @Query("select j from JobSchedule j join fetch j.jobDefinition d where d.jobGroup.name = :groupName and d.name = :jobName")
     Optional<JobSchedule> findByGroupAndName(@Param("groupName") String groupName, @Param("jobName") String jobName);
 
     @Query("select j from JobSchedule j left join j.jobDefinition d left join j.agents a where a.id = :agentId")
     List<JobSchedule> findByAgent(@Param("agentId") String agentId);
 
-    @Query("select j from JobSchedule j left join j.jobDefinition d left join j.agents a where a.id = :agentId and a.active = true and j.active = true")
+    // TODO: Remove job group?
+    @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroup left join j.agents a where a.id = :agentId and a.active = true and j.active = true")
     List<JobSchedule> findActiveByAgent(@Param("agentId") String agentId);
 
     @Query("select j from JobSchedule j left join j.jobDefinition d where d.id = :jobDefinitionId")

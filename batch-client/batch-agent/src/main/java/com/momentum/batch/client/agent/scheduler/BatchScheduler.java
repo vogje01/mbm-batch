@@ -1,8 +1,12 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
 import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.domain.dto.*;
+import com.momentum.batch.domain.dto.JobDefinitionDto;
+import com.momentum.batch.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.domain.dto.JobScheduleDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageType;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -13,7 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.momentum.batch.util.ExecutionParameter.*;
@@ -37,9 +40,7 @@ public class BatchScheduler {
 
     private final Scheduler scheduler;
 
-    private final AgentCommandProducer agentCommandProducer;
-
-    private AgentStatus agentStatus;
+    private final AgentScheduleMessageProducer agentScheduleMessageProducer;
 
     /**
      * Constructor.
@@ -50,15 +51,25 @@ public class BatchScheduler {
      * @param scheduler quartz scheduler.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String hostName, String nodeName, AgentStatus agentStatus) {
+    public BatchScheduler(Scheduler scheduler, AgentScheduleMessageProducer agentScheduleMessageProducer, String hostName, String nodeName, AgentStatus agentStatus) {
         this.scheduler = scheduler;
-        this.agentCommandProducer = agentCommandProducer;
+        this.agentScheduleMessageProducer = agentScheduleMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
-        this.agentStatus = agentStatus;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
+    /**
+     * Initialize scheduler.
+     */
+    @PostConstruct
+    public void initializeScheduler() {
+        startScheduler();
+    }
+
+    /**
+     * Shutdown scheduler
+     */
     @PreDestroy
     public void shutdown() {
         logger.info("Stopping batch scheduler");
@@ -71,13 +82,10 @@ public class BatchScheduler {
     }
 
     /**
-     * Initialize scheduler.
+     * Adds a job to the Quartz scheduler.
+     *
+     * @param jobSchedule job schedule containing the job definition.
      */
-    @PostConstruct
-    public void initializeScheduler() {
-        startScheduler();
-    }
-
     public void startJob(JobScheduleDto jobSchedule) {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
@@ -177,9 +185,9 @@ public class BatchScheduler {
             logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
-            JobDetail jobDetail = buildJobDetail(jobDefinition);
+            JobDetail jobDetail = buildJobDetail(jobSchedule, jobDefinition);
             try {
-                sendJobStart(jobSchedule);
+                sendJobScheduled(jobSchedule);
                 scheduler.scheduleJob(jobDetail, trigger);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
                         jobDefinition.getJobGroupName(), jobDefinition.getName(), trigger.getNextFireTime()));
@@ -200,7 +208,7 @@ public class BatchScheduler {
      *
      * @param jobDefinition job definition to add to the scheduler.
      */
-    public void addOnDemandJob(JobDefinitionDto jobDefinition) {
+    /*public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroupName());
@@ -215,7 +223,7 @@ public class BatchScheduler {
                     jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
         }
         logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
-    }
+    }*/
 
     /**
      * Convert the job definition to the corresponding Quartz job details structure.
@@ -223,9 +231,11 @@ public class BatchScheduler {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    private JobDetail buildJobDetail(JobDefinitionDto jobDefinition) {
+    private JobDetail buildJobDetail(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
                 .jobName(jobDefinition.getName())
+                .jobScheduleUuid(jobSchedule.getId())
+                .jobScheduleName(jobSchedule.getName())
                 .groupName(jobDefinition.getJobGroupName())
                 .description(jobDefinition.getDescription())
                 .jobType(jobDefinition.getType())
@@ -304,7 +314,7 @@ public class BatchScheduler {
     private void startScheduler() {
         try {
             scheduler.start();
-            sendAgentStarted();
+            //sendAgentStarted();
             logger.info(format("Quartz scheduler started"));
         } catch (SchedulerException e) {
             logger.error(format("Could not start scheduler - error: {0}", e.getMessage()), e);
@@ -367,41 +377,30 @@ public class BatchScheduler {
     }
 
     /**
-     * Sends a job start command to the server.
+     * Sends a job scheduled command to the server.
+     * <p>
+     * This message is send as soon as the job is registered with the Quartz scheduler. It reports the first
+     * next fire time to the server.
+     * </p>
      *
      * @param jobSchedule job schedule.
      */
-    private void sendJobStart(JobScheduleDto jobSchedule) {
-        logger.info(format("Sending job status - name: {0}", jobSchedule.getJobDefinitionDto().getName()));
+    private void sendJobScheduled(JobScheduleDto jobSchedule) {
+        logger.info(format("Sending job execution status - name: {0}", jobSchedule.getJobDefinitionDto().getName()));
         try {
             CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
             Date next = cronExpression.getNextValidTimeAfter(new Date());
 
             logger.info(format("Next execution - next: {0}", next));
 
-            JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
-            AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.STATUS);
-            agentCommandDto.setNodeName(nodeName);
-            agentCommandDto.setHostName(hostName);
-            agentCommandDto.setJobName(jobDefinition.getName());
-            agentCommandDto.setGroupName(jobDefinition.getJobGroupName());
-            agentCommandDto.setNextFireTime(next);
-            agentCommandProducer.sendAgentCommand(agentCommandDto);
+            AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_SCHEDULED);
+            agentScheduleMessageDto.setNodeName(nodeName);
+            agentScheduleMessageDto.setHostName(hostName);
+            agentScheduleMessageDto.setJobScheduleUuid(jobSchedule.getId());
+            agentScheduleMessageDto.setNextFireTime(next);
+            agentScheduleMessageProducer.sendMessage(agentScheduleMessageDto);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Sends a agent started command to the server.
-     */
-    private void sendAgentStarted() {
-        logger.info("Sending agent started status");
-        agentStatus = AgentStatus.STARTED;
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.AGENT_STATUS);
-        agentCommandDto.setStatus(agentStatus.name());
-        agentCommandDto.setNodeName(nodeName);
-        agentCommandDto.setHostName(hostName);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }
