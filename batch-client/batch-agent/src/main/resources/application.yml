@@ -23,7 +23,7 @@ agent:
     network: docker_default
     hostname: hostname
 server:
-  hostName: batchManager
+  hostName: batchmanager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
