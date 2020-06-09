@@ -1,4 +1,4 @@
-package com.momentum.batch.client.agent.kafka;
+package com.momentum.batch.common.producer;
 
 import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import org.slf4j.Logger;

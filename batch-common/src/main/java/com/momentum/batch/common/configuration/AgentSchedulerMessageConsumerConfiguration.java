@@ -1,6 +1,5 @@
-package com.momentum.batch.client.agent.configuration;
+package com.momentum.batch.common.configuration;
 
-import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

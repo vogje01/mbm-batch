@@ -1,7 +1,7 @@
 package com.momentum.batch.client.jobs.testbatch;
 
 import com.momentum.batch.client.jobs.common.listener.JobStatusProducer;
-import com.momentum.batch.configuration.AbstractKafkaConfiguration;
+import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.domain.dto.JobStatusDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;

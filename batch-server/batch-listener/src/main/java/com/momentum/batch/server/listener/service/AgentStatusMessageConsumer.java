@@ -1,5 +1,6 @@
 package com.momentum.batch.server.listener.service;
 
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.BatchPerformanceType;
 import com.momentum.batch.domain.dto.JobScheduleDto;
@@ -223,7 +224,7 @@ public class AgentStatusMessageConsumer {
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
 
                 // Send command
-                agentSchedulerMessageProducer.sendTopic(agentSchedulerMessageDto);
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
                 logger.info(format("Job start command send to agent - nodeName: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
             });
         }

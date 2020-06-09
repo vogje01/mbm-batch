@@ -1,6 +1,5 @@
-package com.momentum.batch.client.agent.configuration;
+package com.momentum.batch.common.configuration;
 
-import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -27,15 +26,19 @@ public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfig
     @Value(value = "${kafka.agentStatus.offsetReset}")
     private String serverCommandOffsetReset;
 
-    public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory(String nodeName) {
+    public JsonDeserializer<AgentStatusMessageDto> deserializer() {
         JsonDeserializer<AgentStatusMessageDto> deserializer = new JsonDeserializer<>(AgentStatusMessageDto.class);
         deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
+        deserializer.addTrustedPackages("com.momentum.batch");
         deserializer.setUseTypeMapperForKey(true);
+        return deserializer;
+    }
+
+    public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory(String nodeName) {
         Map<String, Object> properties = defaultConsumerConfiguration();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, nodeName);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, serverCommandOffsetReset);
-        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer());
     }
 
     @Bean

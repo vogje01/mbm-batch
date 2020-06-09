@@ -1,4 +1,4 @@
-package com.momentum.batch.configuration;
+package com.momentum.batch.common.configuration;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

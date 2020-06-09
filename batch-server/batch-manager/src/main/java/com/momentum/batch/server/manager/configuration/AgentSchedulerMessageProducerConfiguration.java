@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.configuration;
 
-import com.momentum.batch.configuration.AbstractKafkaConfiguration;
+import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import org.apache.kafka.clients.admin.NewTopic;

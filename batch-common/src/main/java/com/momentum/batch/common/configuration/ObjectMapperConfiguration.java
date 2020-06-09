@@ -1,4 +1,4 @@
-package com.momentum.batch.configuration;
+package com.momentum.batch.common.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

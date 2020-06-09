@@ -1,4 +1,4 @@
-package com.momentum.batch.json;
+package com.momentum.batch.util;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

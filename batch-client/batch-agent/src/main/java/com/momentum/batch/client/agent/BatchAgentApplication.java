@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.TimeZone;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.momentum.batch.common"})
 public class BatchAgentApplication {
 
     public static void main(String[] args) {
