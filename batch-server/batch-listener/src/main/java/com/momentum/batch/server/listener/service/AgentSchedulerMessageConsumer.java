@@ -1,10 +1,7 @@
 package com.momentum.batch.server.listener.service;
 
 import com.momentum.batch.message.dto.AgentScheduleMessageDto;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobSchedule;
-import com.momentum.batch.server.database.repository.AgentRepository;
-import com.momentum.batch.server.database.repository.BatchPerformanceRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +14,10 @@ import java.util.Optional;
 import static java.text.MessageFormat.format;
 
 /**
- * Listener for the step notification messages send to the Kafka batchStepExecution queue.
+ * Listener for the agent scheduler notification messages send to the Kafka batchAgentScheduler message queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
+ * @version 0.0.4
  * @since 0.0.2
  */
 @Service
@@ -27,26 +25,12 @@ public class AgentSchedulerMessageConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerMessageConsumer.class);
 
-    private final AgentRepository agentRepository;
-
-    private final BatchPerformanceRepository batchPerformanceRepository;
-
     private final JobScheduleRepository jobScheduleRepository;
 
-    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
-
-    private final ModelConverter modelConverter;
-
     @Autowired
-    public AgentSchedulerMessageConsumer(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
-                                         JobScheduleRepository jobScheduleRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
-                                         ModelConverter modelConverter) {
-        this.agentRepository = agentRepository;
-        this.batchPerformanceRepository = batchPerformanceRepository;
+    public AgentSchedulerMessageConsumer(JobScheduleRepository jobScheduleRepository) {
         this.jobScheduleRepository = jobScheduleRepository;
-        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
-        this.modelConverter = modelConverter;
-        logger.info(format("Agent command listener initialized"));
+        logger.info(format("Agent scheduler message listener initialized"));
     }
 
     /**
@@ -56,7 +40,6 @@ public class AgentSchedulerMessageConsumer {
      *     <ul>
      *         <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
      *         <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
-     *         <li>JOB_SHUTDOWN: Job unregistered from the Quartz scheduler.</li>
      *     </ul>
      * </p>
      *
@@ -66,23 +49,38 @@ public class AgentSchedulerMessageConsumer {
     public void listen(AgentScheduleMessageDto agentScheduleMessageDto) {
         logger.info(format("Received agent command - type: {0} nodeName: {1}", agentScheduleMessageDto.getType(), agentScheduleMessageDto.getNodeName()));
         switch (agentScheduleMessageDto.getType()) {
-            case JOB_EXECUTED:
-            case JOB_SCHEDULED:
-                receivedJobScheduled(agentScheduleMessageDto);
-                break;
-            case JOB_SHUTDOWN:
-                //receivedShutdown(agentScheduleMessageDto);
-                break;
+            case JOB_EXECUTED -> receivedJobExecuted(agentScheduleMessageDto);
+            case JOB_SCHEDULED -> receivedJobScheduled(agentScheduleMessageDto);
         }
     }
 
     /**
-     * Process performance command.
+     * Process job scheduled message.
      *
-     * @param agentScheduleMessageDto agent command info.
+     * @param agentScheduleMessageDto agent scheduler message.
      */
     private synchronized void receivedJobScheduled(AgentScheduleMessageDto agentScheduleMessageDto) {
-        logger.debug(format("Job schedule update received - hostName: {0} nodeName: {1} schedule: {2}",
+        logger.debug(format("Job scheduled message received - hostName: {0} nodeName: {1} schedule: {2}",
+                agentScheduleMessageDto.getHostName(), agentScheduleMessageDto.getNodeName(), agentScheduleMessageDto.getJobScheduleName()));
+
+        // Get the schedule
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentScheduleMessageDto.getJobScheduleUuid());
+        jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
+            if (agentScheduleMessageDto.getNextFireTime() != null) {
+                jobSchedule.setNextExecution(agentScheduleMessageDto.getNextFireTime());
+            }
+            jobSchedule = jobScheduleRepository.save(jobSchedule);
+            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentScheduleMessageDto.getNextFireTime()));
+        }, () -> logger.error(format("Job schedule not found - name: {0}", agentScheduleMessageDto.getJobScheduleName())));
+    }
+
+    /**
+     * Process job executed message.
+     *
+     * @param agentScheduleMessageDto agent scheduler message.
+     */
+    private synchronized void receivedJobExecuted(AgentScheduleMessageDto agentScheduleMessageDto) {
+        logger.debug(format("Job executed message received - hostName: {0} nodeName: {1} schedule: {2}",
                 agentScheduleMessageDto.getHostName(), agentScheduleMessageDto.getNodeName(), agentScheduleMessageDto.getJobScheduleName()));
 
         // Get the schedule

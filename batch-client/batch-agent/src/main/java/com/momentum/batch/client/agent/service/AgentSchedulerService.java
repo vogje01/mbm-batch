@@ -55,15 +55,9 @@ public class AgentSchedulerService {
             return;
         }
         switch (agentScheduleMessageDto.getType()) {
-            case JOB_SCHEDULE:
-                batchScheduler.scheduleJob(jobScheduleDto);
-                break;
-            case JOB_RESCHEDULE:
-                batchScheduler.rescheduleJob(jobScheduleDto);
-                break;
-            case JOB_REMOVE_SCHEDULE:
-                batchScheduler.removeScheduleJob(jobScheduleDto);
-                break;
+            case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
+            case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
+            case JOB_REMOVE_SCHEDULE -> batchScheduler.removeScheduleJob(jobScheduleDto);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.momentum.batch.server.listener.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.momentum.batch.util.NetworkUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
@@ -15,6 +17,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Configuration
 @EnableCaching
@@ -49,5 +53,16 @@ public class BatchListenerConfiguration {
                 .expireAfterAccess(60, TimeUnit.MINUTES)
                 .weakKeys()
                 .recordStats();
+    }
+
+    @Value("${listener.serverName:#{null}}")
+    private String serverName;
+
+    @Bean
+    public String serverName() {
+        if (isNullOrEmpty(this.serverName)) {
+            this.serverName = NetworkUtils.getHostName();
+        }
+        return serverName;
     }
 }

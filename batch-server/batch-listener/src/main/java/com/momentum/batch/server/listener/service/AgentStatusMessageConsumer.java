@@ -75,21 +75,13 @@ public class AgentStatusMessageConsumer {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        logger.info(format("Received agent command - hostName: {0} nodeName: {1} type: {2} ", agentStatusMessageDto.getHostName(),
+        logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2} ", agentStatusMessageDto.getHostName(),
                 agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
         switch (agentStatusMessageDto.getType()) {
-            case AGENT_REGISTER:
-                registerAgent(agentStatusMessageDto);
-                break;
-            case AGENT_STATUS:
-                receivedAgentStatus(agentStatusMessageDto);
-                break;
-            case AGENT_PING:
-                receivedPing(agentStatusMessageDto);
-                break;
-            case AGENT_PERFORMANCE:
-                receivedPerformance(agentStatusMessageDto);
-                break;
+            case AGENT_REGISTER -> registerAgent(agentStatusMessageDto);
+            case AGENT_STATUS -> receivedAgentStatus(agentStatusMessageDto);
+            case AGENT_PING -> receivedPing(agentStatusMessageDto);
+            case AGENT_PERFORMANCE -> receivedPerformance(agentStatusMessageDto);
         }
     }
 

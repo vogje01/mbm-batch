@@ -201,19 +201,14 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        if (agentStatusMessageDto.getSender() == null || agentStatusMessageDto.getSender().equals(nodeName)) {
-            return;
-        }
-        logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
-                agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
+        if (!agentStatusMessageDto.getSender().equals(nodeName)) {
+            logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
+                    agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
 
-        switch (agentStatusMessageDto.getType()) {
-            case AGENT_PAUSE:
-                pauseAgent();
-                break;
-            case AGENT_STOP:
-                shutdownAgent();
-                break;
+            switch (agentStatusMessageDto.getType()) {
+                case AGENT_PAUSE -> pauseAgent();
+                case AGENT_STOP -> shutdownAgent();
+            }
         }
     }
 }
