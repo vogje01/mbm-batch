@@ -26,6 +26,9 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
     @Value(value = "${kafka.agentScheduler.offsetReset}")
     private String agentSchedulerOffsetReset;
 
+    @Value(value = "${kafka.agentStatus.offsetReset}")
+    private String agentSchedulerMessageGroup;
+
     public ConsumerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageConsumerFactory(String nodeName) {
         // TODO: use standard deserializer
         JsonDeserializer<AgentSchedulerMessageDto> deserializer = new JsonDeserializer<>(AgentSchedulerMessageDto.class);
@@ -33,7 +36,7 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
         Map<String, Object> properties = defaultConsumerConfiguration();
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, nodeName);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, agentSchedulerMessageGroup);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, agentSchedulerOffsetReset);
         return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer);
     }
