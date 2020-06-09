@@ -192,13 +192,12 @@ public class JobDefinitionParam extends Auditing implements PrimaryKeyIdentifier
                 Objects.equals(dateValue, that.dateValue) &&
                 Objects.equals(longValue, that.longValue) &&
                 Objects.equals(doubleValue, that.doubleValue) &&
-                Objects.equals(booleanValue, that.booleanValue) &&
-                Objects.equals(jobDefinition, that.jobDefinition);
+                Objects.equals(booleanValue, that.booleanValue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue, jobDefinition);
+        return Objects.hash(id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue);
     }
 
     @Override

@@ -91,7 +91,7 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
             name = "BATCH_AGENT_AGENT_GROUP",
             joinColumns = @JoinColumn(name = "AGENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "AGENT_GROUP_ID"))
-    private List<AgentGroup> agentGroups = new ArrayList<>();
+    private final List<AgentGroup> agentGroups = new ArrayList<>();
     /**
      * Schedules
      */
@@ -257,14 +257,12 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 Objects.equal(systemLoad, agent.systemLoad) &&
                 Objects.equal(avgSystemLoadDay, agent.avgSystemLoadDay) &&
                 Objects.equal(avgSystemLoadWeek, agent.avgSystemLoadWeek) &&
-                Objects.equal(active, agent.active) &&
-                Objects.equal(agentGroups, agent.agentGroups) &&
-                Objects.equal(schedules, agent.schedules);
+                Objects.equal(active, agent.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, active, agentGroups, schedules);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, active);
     }
 
     @Override
@@ -281,8 +279,6 @@ public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("avgSystemLoadDay", avgSystemLoadDay)
                 .add("avgSystemLoadWeek", avgSystemLoadWeek)
                 .add("active", active)
-                .add("agentGroups", agentGroups)
-                .add("schedules", schedules)
                 .toString();
     }
 

@@ -243,7 +243,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     public void setJobDefinitionParams(List<JobDefinitionParam> jobDefinitionParams) {
         this.jobDefinitionParams.clear();
         if (jobDefinitionParams != null) {
-            jobDefinitionParams.forEach(s -> addJobDefinitionParam(s));
+            jobDefinitionParams.forEach(this::addJobDefinitionParam);
         }
     }
 
@@ -254,9 +254,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     }
 
     public void removeJobDefinitionParam(JobDefinitionParam jobDefinitionParam) {
-        if (jobDefinitionParams.contains(jobDefinitionParam)) {
-            jobDefinitionParams.remove(jobDefinitionParam);
-        }
+        jobDefinitionParams.remove(jobDefinitionParam);
     }
 
     @Override
@@ -279,14 +277,13 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 Objects.equal(failedExitCode, that.failedExitCode) &&
                 Objects.equal(failedExitMessage, that.failedExitMessage) &&
                 Objects.equal(completedExitCode, that.completedExitCode) &&
-                Objects.equal(completedExitMessage, that.completedExitMessage) &&
-                Objects.equal(jobGroup, that.jobGroup) &&
-                Objects.equal(jobDefinitionParams, that.jobDefinitionParams);
+                Objects.equal(completedExitMessage, that.completedExitMessage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, jobGroup, jobDefinitionParams);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
+                failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override
@@ -307,8 +304,6 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("failedExitMessage", failedExitMessage)
                 .add("completedExitCode", completedExitCode)
                 .add("completedExitMessage", completedExitMessage)
-                .add("jobGroup", jobGroup)
-                .add("jobDefinitionParams", jobDefinitionParams)
                 .toString();
     }
 }

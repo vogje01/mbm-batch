@@ -195,14 +195,12 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
                 Objects.equal(lastExecution, that.lastExecution) &&
                 Objects.equal(nextExecution, that.nextExecution) &&
                 Objects.equal(name, that.name) &&
-                Objects.equal(active, that.active) &&
-                Objects.equal(jobDefinition, that.jobDefinition) &&
-                Objects.equal(agents, that.agents);
+                Objects.equal(active, that.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, active, jobDefinition, agents);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, active);
     }
 
     @Override
