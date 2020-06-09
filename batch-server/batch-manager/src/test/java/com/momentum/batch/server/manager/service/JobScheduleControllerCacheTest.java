@@ -123,7 +123,7 @@ public class JobScheduleControllerCacheTest {
 
         @Bean
         public JobScheduleService jobScheduleService() {
-            return new JobScheduleServiceImpl(jobScheduleRepository(), agentRepository(), null, null, mockModelConverter);
+            return new JobScheduleServiceImpl("batchManager", jobScheduleRepository(), agentRepository(), null, null, mockModelConverter);
         }
 
         @Bean

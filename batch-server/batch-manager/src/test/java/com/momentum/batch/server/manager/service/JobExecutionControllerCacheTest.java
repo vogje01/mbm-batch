@@ -7,7 +7,7 @@ import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
-import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
+import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,8 +58,8 @@ public class JobExecutionControllerCacheTest {
         }
 
         @Bean
-        public ServerCommandProducer serverCommandProducer() {
-            return mockServerCommandProducer;
+        public AgentSchedulerMessageProducer serverCommandProducer() {
+            return mockAgentSchedulerMessageProducer;
         }
 
         @Bean
@@ -102,16 +102,16 @@ public class JobExecutionControllerCacheTest {
 
     private static final StepExecutionInfoRepository mockStepExecutionInfoRepository = mock(StepExecutionInfoRepository.class);
 
-    private static final ServerCommandProducer mockServerCommandProducer = mock(ServerCommandProducer.class);
+    private static final AgentSchedulerMessageProducer mockAgentSchedulerMessageProducer = mock(AgentSchedulerMessageProducer.class);
 
     private static final ModelConverter mockModelConverter = mock(ModelConverter.class);
 
     @SuppressWarnings("unchecked")
-    private static KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
+    private static final KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
 
-    private JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
+    private final JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
 
-    private JobExecutionInfo jobExecutionInfo2 = new JobExecutionInfo();
+    private final JobExecutionInfo jobExecutionInfo2 = new JobExecutionInfo();
 
     @Before
     public void setup() {

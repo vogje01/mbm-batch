@@ -37,6 +37,6 @@ kafka:
   active: true
   agentScheduler:
     offsetReset: latest
-    topic: batchServerCommand
-    partitions: 1
+    topic: batchAgentScheduler
+    partitions: 5
     replicas: 1

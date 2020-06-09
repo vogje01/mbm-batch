@@ -1,15 +1,13 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.domain.dto.JobExecutionDto;
-import com.momentum.batch.domain.dto.ServerCommandDto;
-import com.momentum.batch.domain.dto.ServerCommandType;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final StepExecutionInfoRepository stepExecutionRepository;
 
-    private final ServerCommandProducer serverCommandProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     private final ModelConverter modelConverter;
 
@@ -44,12 +42,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
             JobExecutionInfoRepository jobExecutionRepository,
             JobExecutionInstanceRepository jobExecutionInstanceRepository,
             StepExecutionInfoRepository stepExecutionRepository,
-            ServerCommandProducer serverCommandProducer,
+            AgentSchedulerMessageProducer agentSchedulerMessageProducer,
             ModelConverter modelConverter) {
         this.jobExecutionRepository = jobExecutionRepository;
         this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.stepExecutionRepository = stepExecutionRepository;
-        this.serverCommandProducer = serverCommandProducer;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
     }
 
@@ -101,12 +99,12 @@ public class JobExecutionServiceImpl implements JobExecutionService {
             JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecutionInfo);
 
             // Create server command
-            ServerCommandDto serverCommandDto = new ServerCommandDto();
+            /*ServerCommandDto serverCommandDto = new ServerCommandDto();
             serverCommandDto.setHostName(jobExecutionInfo.getHostName());
             serverCommandDto.setNodeName(jobExecutionInfo.getNodeName());
             serverCommandDto.setJobExecutionDto(jobExecutionDto);
             serverCommandDto.setType(ServerCommandType.RESTART_JOB);
-            serverCommandProducer.sendTopic(serverCommandDto);
+            serverCommandProducer.sendTopic(serverCommandDto);*/
         }
         throw new ResourceNotFoundException();
     }

@@ -1,16 +1,16 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.domain.dto.ServerCommandDto;
-import com.momentum.batch.domain.dto.ServerCommandType;
+import com.momentum.batch.message.dto.AgentStatusMessageDto;
+import com.momentum.batch.message.dto.AgentStatusMessageType;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
+import com.momentum.batch.server.manager.service.common.AgentStatusMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -38,13 +38,15 @@ import java.util.Optional;
 @Service
 public class AgentServiceImpl implements AgentService {
 
+    private final String serverName;
+
     private final AgentRepository agentRepository;
 
     private final AgentGroupRepository agentGroupRepository;
 
     private final JobScheduleRepository jobScheduleRepository;
 
-    private final ServerCommandProducer serverCommandProducer;
+    private final AgentStatusMessageProducer agentStatusMessageProducer;
 
     private final CacheManager cacheManager;
 
@@ -55,13 +57,14 @@ public class AgentServiceImpl implements AgentService {
      * @param cacheManager    cache manager.
      */
     @Autowired
-    public AgentServiceImpl(AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
-                            JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
+    public AgentServiceImpl(String serverName, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
+                            JobScheduleRepository jobScheduleRepository, AgentStatusMessageProducer agentStatusMessageProducer,
                             CacheManager cacheManager) {
+        this.serverName = serverName;
         this.agentRepository = agentRepository;
         this.agentGroupRepository = agentGroupRepository;
         this.jobScheduleRepository = jobScheduleRepository;
-        this.serverCommandProducer = serverCommandProducer;
+        this.agentStatusMessageProducer = agentStatusMessageProducer;
         this.cacheManager = cacheManager;
     }
 
@@ -243,11 +246,13 @@ public class AgentServiceImpl implements AgentService {
             agent = agentRepository.save(agent);
 
             // Send command to agent
-            ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.PAUSE_AGENT);
-            serverCommandDto.setNodeName(agent.getNodeName());
-            // TODO:: Add host to server command
-            //serverCommandDto.setHostName(agent.getHostName());
-            serverCommandProducer.sendTopic(serverCommandDto);
+            AgentStatusMessageDto agentStatusMessageDto = new AgentStatusMessageDto(AgentStatusMessageType.AGENT_PAUSE);
+            agentStatusMessageDto.setSender(serverName);
+            agentStatusMessageDto.setHostName(agent.getHostName());
+            agentStatusMessageDto.setNodeName(agent.getNodeName());
+
+            // Send message
+            agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
 
             return agent;
         }

@@ -21,6 +21,7 @@ jwt:
   secret: mU*mJxJ*&31p
 
 server:
+  host: localhost
   port: 8090
 
 ldap:
@@ -42,8 +43,13 @@ kafka:
   retentionDays: 1
   deletionDays: 1
   active: true
-  serverCommand:
+  agentStatus:
     offsetReset: latest
-    topic: batchServerCommand
-    partitions: 1
+    topic: batchAgentStatus
+    partitions: 5
+    replicas: 1
+  agentScheduler:
+    offsetReset: latest
+    topic: batchAgentScheduler
+    partitions: 5
     replicas: 1

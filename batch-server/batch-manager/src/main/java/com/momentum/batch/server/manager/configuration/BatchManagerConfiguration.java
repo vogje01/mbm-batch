@@ -41,7 +41,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EntityScan("com.momentum.batch.server.database.domain")
 public class BatchManagerConfiguration implements WebMvcConfigurer {
 
-    @Value("${listener.serverName:#{null}}")
+    @Value("${server.host}")
     private String serverName;
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecution", "JobExecutionLog", "JobExecutionParam",
