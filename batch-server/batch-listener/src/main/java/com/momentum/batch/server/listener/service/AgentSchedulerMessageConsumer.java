@@ -30,7 +30,7 @@ public class AgentSchedulerMessageConsumer {
     @Autowired
     public AgentSchedulerMessageConsumer(JobScheduleRepository jobScheduleRepository) {
         this.jobScheduleRepository = jobScheduleRepository;
-        logger.info(format("Agent scheduler message listener initialized"));
+        logger.info(format("Agent scheduler message consumer initialized"));
     }
 
     /**

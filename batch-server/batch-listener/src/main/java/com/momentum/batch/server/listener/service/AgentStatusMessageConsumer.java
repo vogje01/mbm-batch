@@ -57,7 +57,7 @@ public class AgentStatusMessageConsumer {
         this.jobScheduleRepository = jobScheduleRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
-        logger.info(format("Agent command listener initialized"));
+        logger.info(format("Agent status message consumer initialized"));
     }
 
     /**

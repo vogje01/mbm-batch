@@ -37,7 +37,7 @@ public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfig
         return deserializer;
     }
 
-    public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory(String nodeName) {
+    public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory() {
         Map<String, Object> properties = defaultConsumerConfiguration();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, agentStatusMessageGroup);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, agentStatusMessageOffsetReset);
@@ -45,9 +45,9 @@ public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfig
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AgentStatusMessageDto> agentStatusMessageListenerFactory(String nodeName) {
+    public ConcurrentKafkaListenerContainerFactory<String, AgentStatusMessageDto> agentStatusMessageListenerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, AgentStatusMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(agentStatusMessageConsumerFactory(nodeName));
+        factory.setConsumerFactory(agentStatusMessageConsumerFactory());
         return factory;
     }
 }

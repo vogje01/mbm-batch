@@ -1,7 +1,7 @@
 spring:
-#  kafka:
-  #    listener:
-  #      concurrency: 5
+  kafka:
+    listener:
+      concurrency: 5
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
@@ -47,12 +47,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchManager
+    group: batchmanager
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchManager
+    group: batchmanager
     partitions: 5
     replicas: 1
