@@ -26,15 +26,18 @@ public class AgentSchedulerService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerService.class);
 
-    private final BatchScheduler batchScheduler;
+    private final String serverName;
 
     private final String nodeName;
 
+    private final BatchScheduler batchScheduler;
+
     @Autowired
-    public AgentSchedulerService(BatchScheduler batchScheduler, String nodeName) {
+    public AgentSchedulerService(String serverName, BatchScheduler batchScheduler, String nodeName) {
+        this.serverName = serverName;
         this.batchScheduler = batchScheduler;
         this.nodeName = nodeName;
-        logger.info(format("Agent scheduler message listener initialized - nodeName: {0}", nodeName));
+        logger.info(format("Agent scheduler message listener initialized - nodeName: {0} serverName: {1}", nodeName, serverName));
     }
 
     /**
@@ -44,22 +47,21 @@ public class AgentSchedulerService {
      */
     @KafkaListener(topics = "${kafka.agentScheduler.topic}", containerFactory = "agentSchedulerMessageListenerFactory")
     public void listen(AgentSchedulerMessageDto agentSchedulerMessageDto) {
-        if (agentSchedulerMessageDto.getSender() == null || agentSchedulerMessageDto.getSender().equals(nodeName)) {
-            return;
-        }
-        logger.info(format("Received agent scheduler message - hostName: {0} nodeName: {1} type: {2}", agentSchedulerMessageDto.getHostName(),
-                agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getType()));
+        if (agentSchedulerMessageDto.getSender().equals(serverName)) {
+            logger.info(format("Received agent scheduler message - hostName: {0} nodeName: {1} type: {2}", agentSchedulerMessageDto.getHostName(),
+                    agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getType()));
 
-        // Get schedule
-        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
-        if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null) {
-            logger.info(format("Missing job schedule"));
-            return;
-        }
-        switch (agentSchedulerMessageDto.getType()) {
-            case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
-            case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
-            case JOB_REMOVE_SCHEDULE -> batchScheduler.removeScheduleJob(jobScheduleDto);
+            // Get schedule
+            JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
+            if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null) {
+                logger.info(format("Missing job schedule"));
+                return;
+            }
+            switch (agentSchedulerMessageDto.getType()) {
+                case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
+                case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
+                case JOB_REMOVE_SCHEDULE -> batchScheduler.removeScheduleJob(jobScheduleDto);
+            }
         }
     }
 }

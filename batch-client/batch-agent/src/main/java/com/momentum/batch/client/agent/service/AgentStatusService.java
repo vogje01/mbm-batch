@@ -94,7 +94,7 @@ public class AgentStatusService {
         this.osBean = System.getProperty("os.name").startsWith("Windows") ?
                 ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class) :
                 ManagementFactory.getPlatformMXBean(UnixOperatingSystemMXBean.class);
-        logger.info(format("Agent initialized - nodeName: {0} pid: {1}", nodeName, ProcessHandle.current().pid()));
+        logger.info(format("Agent status message listener initialized - nodeName: {0} serverName: {1} pid: {2}", nodeName, serverName, ProcessHandle.current().pid()));
     }
 
     @PostConstruct
