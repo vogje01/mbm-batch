@@ -16,16 +16,16 @@ import static java.text.MessageFormat.format;
  * @version 0.0.1
  * @since 0.0.1
  */
-public class AgentScheduleMessageProducer {
+public class AgentSchedulerMessageProducer {
 
-    private static final Logger logger = LoggerFactory.getLogger(AgentScheduleMessageProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerMessageProducer.class);
 
     @Value(value = "${kafka.agentScheduler.topic}")
     private String agentCommandTopic;
 
     private KafkaTemplate<String, AgentScheduleMessageDto> template;
 
-    public AgentScheduleMessageProducer(KafkaTemplate<String, AgentScheduleMessageDto> template) {
+    public AgentSchedulerMessageProducer(KafkaTemplate<String, AgentScheduleMessageDto> template) {
         this.template = template;
     }
 

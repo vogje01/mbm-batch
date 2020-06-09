@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
+import com.momentum.batch.client.agent.kafka.AgentSchedulerMessageProducer;
 import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.dto.JobDefinitionDto;
 import com.momentum.batch.domain.dto.JobDefinitionParamDto;
@@ -40,7 +40,7 @@ public class BatchScheduler {
 
     private final Scheduler scheduler;
 
-    private final AgentScheduleMessageProducer agentScheduleMessageProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     /**
      * Constructor.
@@ -51,9 +51,9 @@ public class BatchScheduler {
      * @param scheduler quartz scheduler.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentScheduleMessageProducer agentScheduleMessageProducer, String hostName, String nodeName, AgentStatus agentStatus) {
+    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName, AgentStatus agentStatus) {
         this.scheduler = scheduler;
-        this.agentScheduleMessageProducer = agentScheduleMessageProducer;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
@@ -398,7 +398,7 @@ public class BatchScheduler {
             agentScheduleMessageDto.setHostName(hostName);
             agentScheduleMessageDto.setJobScheduleUuid(jobSchedule.getId());
             agentScheduleMessageDto.setNextFireTime(next);
-            agentScheduleMessageProducer.sendMessage(agentScheduleMessageDto);
+            agentSchedulerMessageProducer.sendMessage(agentScheduleMessageDto);
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
+import com.momentum.batch.client.agent.kafka.AgentSchedulerMessageProducer;
 import com.momentum.batch.domain.dto.JobScheduleDto;
 import com.momentum.batch.message.dto.AgentScheduleMessageDto;
 import com.momentum.batch.message.dto.AgentScheduleMessageType;
@@ -52,7 +52,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Kafka producer for agent commands.
      */
-    private final AgentScheduleMessageProducer agentScheduleMessageProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
     /**
      * The actual process.
      */
@@ -80,8 +80,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param nodeName node name.
      */
     @Autowired
-    public BatchSchedulerTask(AgentScheduleMessageProducer agentScheduleMessageProducer, String hostName, String nodeName) {
-        this.agentScheduleMessageProducer = agentScheduleMessageProducer;
+    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
     }
@@ -260,6 +260,6 @@ public class BatchSchedulerTask extends QuartzJobBean {
         agentScheduleMessageDto.setPreviousFireTime(trigger.getPreviousFireTime());
 
         // And send it to the server
-        agentScheduleMessageProducer.sendMessage(agentScheduleMessageDto);
+        agentSchedulerMessageProducer.sendMessage(agentScheduleMessageDto);
     }
 }

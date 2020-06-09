@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.configuration;
 
-import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
+import com.momentum.batch.client.agent.kafka.AgentSchedulerMessageProducer;
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.message.dto.AgentScheduleMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -47,8 +47,8 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     }
 
     @Bean
-    public AgentScheduleMessageProducer agentSchedulerMessageProducer() {
-        return new AgentScheduleMessageProducer(agentSchedulerMessageKafkaTemplate());
+    public AgentSchedulerMessageProducer agentSchedulerMessageProducer() {
+        return new AgentSchedulerMessageProducer(agentSchedulerMessageKafkaTemplate());
     }
 
     @Bean

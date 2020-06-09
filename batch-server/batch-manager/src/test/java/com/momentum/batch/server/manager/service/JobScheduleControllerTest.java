@@ -63,17 +63,23 @@ public class JobScheduleControllerTest {
                 .withNodeName("Node1")
                 .build();
 
-        List<JobGroup> jobGroups = new ArrayList<>();
+        /*List<JobGroup> jobGroups = new ArrayList<>();
         jobGroups.add(new JobGroupBuilder()
                 .withJobGroup("Group1")
                 .withActive(true)
                 .withRandomId()
-                .build());
+                .build());*/
+
+        JobGroup jobGroup = new JobGroupBuilder()
+                .withJobGroup("Group1")
+                .withActive(true)
+                .withRandomId()
+                .build();
 
         JobDefinition jobDefinition1 = new JobDefinitionBuilder()
                 .withRandomId()
                 .withName("Job1")
-                .withJobGroup(jobGroups)
+                .withJobGroup(jobGroup)
                 .build();
 
         JobSchedule jobSchedule1 = new JobScheduleInfoBuilder()
@@ -87,7 +93,7 @@ public class JobScheduleControllerTest {
         JobDefinition jobDefinition2 = new JobDefinitionBuilder()
                 .withRandomId()
                 .withName("Job2")
-                .withJobGroup(jobGroups)
+                .withJobGroup(jobGroup)
                 .build();
 
         JobSchedule jobSchedule2 = new JobScheduleInfoBuilder()
@@ -107,16 +113,21 @@ public class JobScheduleControllerTest {
                 .withNodeName("Node1")
                 .build();
 
-        List<JobGroupDto> jobGroupDtos = new ArrayList<>();
+        /*List<JobGroupDto> jobGroupDtos = new ArrayList<>();
         jobGroupDtos.add(new JobGroupDtoBuilder()
                 .withRandomId()
                 .withName("Group1")
-                .build());
+                .build());*/
+
+        JobGroupDto jobGroupDto = new JobGroupDtoBuilder()
+                .withRandomId()
+                .withName("Group1")
+                .build();
 
         JobDefinitionDto jobDefinitionDto1 = new JobDefinitionDtoBuilder()
                 .withRandomId()
                 .withName("Job1")
-                .withJobGroupDtoes(jobGroupDtos)
+                .withJobGroupDto(jobGroupDto)
                 .build();
 
         JobScheduleDto jobScheduleDto1 = new JobScheduleDtoBuilder()
@@ -130,7 +141,7 @@ public class JobScheduleControllerTest {
         JobDefinitionDto jobDefinitionDto2 = new JobDefinitionDtoBuilder()
                 .withRandomId()
                 .withName("Job2")
-                .withJobGroupDtoes(jobGroupDtos)
+                .withJobGroupDto(jobGroupDto)
                 .build();
 
         JobScheduleDto jobScheduleDto2 = new JobScheduleDtoBuilder()

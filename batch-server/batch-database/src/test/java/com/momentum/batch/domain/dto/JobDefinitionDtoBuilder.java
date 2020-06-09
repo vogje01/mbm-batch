@@ -1,6 +1,5 @@
 package com.momentum.batch.domain.dto;
 
-import java.util.List;
 import java.util.UUID;
 
 public class JobDefinitionDtoBuilder {
@@ -22,10 +21,15 @@ public class JobDefinitionDtoBuilder {
         return this;
     }
 
-    public JobDefinitionDtoBuilder withJobGroupDtoes(List<JobGroupDto> jobGroupDtoes) {
-        jobDefinitionDto.setJobGroupDtoes(jobGroupDtoes);
+    public JobDefinitionDtoBuilder withJobGroupDto(JobGroupDto jobGroupDto) {
+        jobDefinitionDto.setJobGroupDto(jobGroupDto);
         return this;
     }
+
+/*    public JobDefinitionDtoBuilder withJobGroupDtoes(List<JobGroupDto> jobGroupDtoes) {
+        jobDefinitionDto.setJobGroupDtoes(jobGroupDtoes);
+        return this;
+    }*/
 
     public JobDefinitionDtoBuilder addParam(JobDefinitionParamDto parameterDto) {
         jobDefinitionDto.addJobDefinitionParam(parameterDto);
