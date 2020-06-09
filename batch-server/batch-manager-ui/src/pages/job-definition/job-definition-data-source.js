@@ -32,7 +32,7 @@ export const JobDefinitionDataSource = () => {
             update: function (jobDefinition, values) {
                 jobDefinition.label = values.label !== undefined ? values.label : jobDefinition.label;
                 jobDefinition.name = values.name !== undefined ? values.name : jobDefinition.name;
-                jobDefinition.version = values.version !== undefined ? values.version : jobDefinition.version;
+                jobDefinition.jobVersion = values.jobVersion !== undefined ? values.jobVersion : jobDefinition.jobVersion;
                 jobDefinition.type = values.type !== undefined ? values.type : jobDefinition.type;
                 jobDefinition.fileName = values.fileName !== undefined ? values.fileName : jobDefinition.fileName;
                 jobDefinition.command = values.command !== undefined ? values.command : jobDefinition.command;
