@@ -47,8 +47,8 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
     }
 
     @Bean
-    public AgentStatusMessageProducer agentStatusMessageProducer() {
-        return new AgentStatusMessageProducer(agentStatusMessageKafkaTemplate());
+    public AgentStatusMessageProducer agentStatusMessageProducer(String serverName) {
+        return new AgentStatusMessageProducer(serverName, agentStatusMessageKafkaTemplate());
     }
 
     @Bean

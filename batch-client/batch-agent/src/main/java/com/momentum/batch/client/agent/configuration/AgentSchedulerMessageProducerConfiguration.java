@@ -47,8 +47,8 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     }
 
     @Bean
-    public AgentSchedulerMessageProducer agentSchedulerMessageProducer() {
-        return new AgentSchedulerMessageProducer(agentSchedulerMessageKafkaTemplate());
+    public AgentSchedulerMessageProducer agentSchedulerMessageProducer(String serverName) {
+        return new AgentSchedulerMessageProducer(serverName, agentSchedulerMessageKafkaTemplate());
     }
 
     @Bean
