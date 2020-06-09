@@ -25,7 +25,10 @@ public class AgentStatusMessageProducer {
 
     private KafkaTemplate<String, AgentStatusMessageDto> template;
 
-    public AgentStatusMessageProducer(KafkaTemplate<String, AgentStatusMessageDto> template) {
+    private final String nodeName;
+
+    public AgentStatusMessageProducer(String nodeName, KafkaTemplate<String, AgentStatusMessageDto> template) {
+        this.nodeName = nodeName;
         this.template = template;
     }
 
@@ -36,21 +39,22 @@ public class AgentStatusMessageProducer {
      * A new transaction will be started for each job execution info.
      * </p>
      *
-     * @param AgentStatusMessageDto agent command info.
+     * @param agentStatusMessageDto agent command info.
      */
-    public void sendMessage(AgentStatusMessageDto AgentStatusMessageDto) {
+    public void sendMessage(AgentStatusMessageDto agentStatusMessageDto) {
 
-        ListenableFuture<SendResult<String, AgentStatusMessageDto>> future = template.send(agentCommandTopic, AgentStatusMessageDto);
+        agentStatusMessageDto.setSender(nodeName);
+        ListenableFuture<SendResult<String, AgentStatusMessageDto>> future = template.send(agentCommandTopic, agentStatusMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
             public void onSuccess(SendResult<String, AgentStatusMessageDto> result) {
-                logger.trace(format("Message send to kafka - msg: {0}", AgentStatusMessageDto));
+                logger.trace(format("Message send to kafka - msg: {0}", agentStatusMessageDto));
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                logger.error(format("Unable to send message - msg: {0}", AgentStatusMessageDto), ex);
+                logger.error(format("Unable to send message - msg: {0}", agentStatusMessageDto), ex);
             }
         });
     }
