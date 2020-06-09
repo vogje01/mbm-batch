@@ -131,8 +131,10 @@ public class BatchScheduler {
      * @param jobSchedule job definition.
      */
     public void rescheduleJob(JobScheduleDto jobSchedule) {
-        logger.info(format("Processing job schedule - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
+
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
+        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupDto().getName(), jobDefinition.getName()));
+
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
             if (job.getGroup().equals(jobDefinition.getJobGroupName()) && job.getName().equals(jobDefinition.getName())) {
                 try {
@@ -143,13 +145,15 @@ public class BatchScheduler {
                             jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                             jobSchedule.setNextExecution(trigger.getNextFireTime());
                             addJob(jobSchedule, jobDefinition);
+                            logger.info(format("Job rescheduled - jobGroup: {0} jobName: {1} next: {2}",
+                                    job.getGroup(), jobDefinition.getName(), trigger.getNextFireTime()));
                         }
-                        logger.info("Job rescheduled - group: " + job.getGroup() + " jobName: " + jobDefinition.getName());
                     } else {
-                        logger.warn("Job does not exist in scheduler - group: " + job.getGroup() + " jobName: " + jobDefinition.getName());
+                        logger.warn(format("Job does not exist in scheduler - jobGroup: {0} jobName: {1}", job.getGroup(), jobDefinition.getName()));
                     }
                 } catch (SchedulerException e) {
-                    logger.error("Could not reschedule job - jobName: " + jobDefinition.getName());
+                    logger.error(format("Could not reschedule job - jobGroup: {0} jobName: {1}",
+                            jobDefinition.getJobGroupDto().getName(), jobDefinition.getName()));
                 }
             }
         }));

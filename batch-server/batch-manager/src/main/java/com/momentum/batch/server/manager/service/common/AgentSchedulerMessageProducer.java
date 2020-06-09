@@ -21,7 +21,7 @@ public class AgentSchedulerMessageProducer {
     private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerMessageProducer.class);
 
     @Value(value = "${kafka.agentScheduler.topic}")
-    private String agentCommandTopic;
+    private String agentSchedulerTopic;
 
     private KafkaTemplate<String, AgentSchedulerMessageDto> template;
 
@@ -40,7 +40,7 @@ public class AgentSchedulerMessageProducer {
      */
     public void sendMessage(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
-        ListenableFuture<SendResult<String, AgentSchedulerMessageDto>> future = template.send(agentCommandTopic, agentSchedulerMessageDto);
+        ListenableFuture<SendResult<String, AgentSchedulerMessageDto>> future = template.send(agentSchedulerTopic, agentSchedulerMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
