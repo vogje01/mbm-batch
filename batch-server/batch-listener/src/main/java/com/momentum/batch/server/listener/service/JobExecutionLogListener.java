@@ -29,7 +29,7 @@ public class JobExecutionLogListener {
 
     @KafkaListener(topics = "batchJobExecutionLog", containerFactory = "logKafkaListenerContainerFactory")
     public void listen(JobExecutionLog jobExecutionLog) {
-        logger.debug(format("Received job log - message: {0}", jobExecutionLog));
+        logger.debug(format("Received job log - message: {0}", jobExecutionLog.getMessage()));
         if (jobExecutionLog.getLevel().ordinal() < Level.valueOf(level).intLevel()) {
             jobExecutionLogRepository.save(jobExecutionLog);
         }
