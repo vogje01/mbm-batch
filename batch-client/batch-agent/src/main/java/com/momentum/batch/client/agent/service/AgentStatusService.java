@@ -11,6 +11,7 @@ import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.1
  */
 @Service
+@Order
 public class AgentStatusService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusService.class);

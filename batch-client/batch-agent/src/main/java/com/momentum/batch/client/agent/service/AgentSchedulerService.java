@@ -6,6 +6,7 @@ import com.momentum.batch.message.dto.AgentScheduleMessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Service
+@Order(0)
 public class AgentSchedulerService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerService.class);
