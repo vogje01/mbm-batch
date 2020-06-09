@@ -50,8 +50,8 @@ public class AgentStatusMessageConsumer {
 
     @Autowired
     public AgentStatusMessageConsumer(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
-                                      JobScheduleRepository jobScheduleRepository,
-                                      AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
+                                      JobScheduleRepository jobScheduleRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
+                                      ModelConverter modelConverter) {
         this.agentRepository = agentRepository;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.jobScheduleRepository = jobScheduleRepository;

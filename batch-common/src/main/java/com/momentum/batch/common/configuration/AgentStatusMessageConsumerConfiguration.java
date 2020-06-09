@@ -26,7 +26,7 @@ public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfig
     @Value(value = "${kafka.agentStatus.offsetReset}")
     private String agentStatusMessageOffsetReset;
 
-    @Value(value = "${kafka.agentStatus.offsetReset}")
+    @Value(value = "${kafka.agentStatus.group}")
     private String agentStatusMessageGroup;
 
     public JsonDeserializer<AgentStatusMessageDto> deserializer() {
