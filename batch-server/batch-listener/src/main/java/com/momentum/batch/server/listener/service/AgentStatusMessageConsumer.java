@@ -75,7 +75,8 @@ public class AgentStatusMessageConsumer {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        logger.info(format("Received agent command - type: {0} nodeName: {1}", agentStatusMessageDto.getType(), agentStatusMessageDto.getNodeName()));
+        logger.info(format("Received agent command - hostName: {0} nodeName: {1} type: {2} ", agentStatusMessageDto.getHostName(),
+                agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
         switch (agentStatusMessageDto.getType()) {
             case AGENT_REGISTER:
                 registerAgent(agentStatusMessageDto);
@@ -98,7 +99,7 @@ public class AgentStatusMessageConsumer {
      * @param agentStatusMessageDto agent command info.
      */
     private synchronized void registerAgent(AgentStatusMessageDto agentStatusMessageDto) {
-        logger.info(format("Register agent - hostName: {0} nodeName: {0}", agentStatusMessageDto.getHostName(), agentStatusMessageDto.getNodeName()));
+        logger.info(format("Agent registration received - hostName: {0} nodeName: {0}", agentStatusMessageDto.getHostName(), agentStatusMessageDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentStatusMessageDto.getNodeName());
         Agent agent = agentOptional.orElseGet(Agent::new);
         agent.setPid(agentStatusMessageDto.getPid());
@@ -123,6 +124,7 @@ public class AgentStatusMessageConsumer {
      * @param agentStatusMessageDto agent command info.
      */
     private synchronized void receivedPing(AgentStatusMessageDto agentStatusMessageDto) {
+        logger.debug(format("Agent ping received - hostName: {0} nodeName: {1}", agentStatusMessageDto.getHostName(), agentStatusMessageDto.getNodeName()));
         Optional<Agent> agentOptional = agentRepository.findByNodeName(agentStatusMessageDto.getNodeName());
         agentOptional.ifPresent(agent -> {
             agent.setStatus(AgentStatus.valueOf(agentStatusMessageDto.getStatus()));
@@ -138,6 +140,8 @@ public class AgentStatusMessageConsumer {
      * @param agentStatusMessageDto agent command info.
      */
     private synchronized void receivedPerformance(AgentStatusMessageDto agentStatusMessageDto) {
+
+        logger.debug(format("Agent performance data received - hostName: {0} nodeName: {1}", agentStatusMessageDto.getHostName(), agentStatusMessageDto.getNodeName()));
 
         batchPerformanceRepository.save(new BatchPerformance(agentStatusMessageDto.getNodeName(), "host.total.system.load", BatchPerformanceType.RAW, agentStatusMessageDto.getSystemLoad()));
 
