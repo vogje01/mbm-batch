@@ -22,6 +22,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
+    @Value("${server.hostName}")
+    private String serverName;
+
     @Value("${agent.nodeName:#{null}}")
     private String nodeName;
 
@@ -45,11 +48,8 @@ public class BatchAgentConfiguration {
     }
 
     @Bean
-    public String nodeName() {
-        if (isNullOrEmpty(this.nodeName)) {
-            this.nodeName = NetworkUtils.getHostName();
-        }
-        return nodeName;
+    public String serverName() {
+        return serverName;
     }
 
     @Bean
@@ -58,5 +58,13 @@ public class BatchAgentConfiguration {
             this.hostName = NetworkUtils.getHostName();
         }
         return hostName;
+    }
+
+    @Bean
+    public String nodeName() {
+        if (isNullOrEmpty(this.nodeName)) {
+            this.nodeName = NetworkUtils.getHostName();
+        }
+        return nodeName;
     }
 }

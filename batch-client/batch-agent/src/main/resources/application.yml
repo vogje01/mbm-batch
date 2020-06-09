@@ -15,13 +15,15 @@ spring:
 # Agent configuration
 # pingInterval: ping interval in ms.
 agent:
-  nodeName: nodename
   hostName: hostname
+  nodeName: nodename
   pingInterval: 300000
   performanceInterval: 60000
   docker:
     network: docker_default
     hostname: hostname
+server:
+  hostName: batchManager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.

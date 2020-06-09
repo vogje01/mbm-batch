@@ -50,6 +50,8 @@ public class AgentStatusService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusService.class);
 
+    private final String serverName;
+
     private final String hostName;
 
     private final String nodeName;
@@ -73,10 +75,11 @@ public class AgentStatusService {
      * @param nodeName      node name.
      */
     @Autowired
-    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String hostName, String nodeName, AgentStatus agentStatus,
+    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String serverName, String hostName, String nodeName, AgentStatus agentStatus,
                               AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
+        this.serverName = serverName;
         this.hostName = hostName;
         this.nodeName = nodeName;
         this.agentStatus = agentStatus;
@@ -203,7 +206,7 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        if (!agentStatusMessageDto.getSender().equals(nodeName)) {
+        if (agentStatusMessageDto.getSender().equals(serverName)) {
             logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
                     agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
 
