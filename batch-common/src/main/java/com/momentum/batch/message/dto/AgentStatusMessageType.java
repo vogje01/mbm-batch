@@ -21,4 +21,6 @@ public enum AgentStatusMessageType {
     AGENT_PING,
     AGENT_PERFORMANCE,
     AGENT_STATUS,
+    AGENT_PAUSE,
+    AGENT_STOP;
 }

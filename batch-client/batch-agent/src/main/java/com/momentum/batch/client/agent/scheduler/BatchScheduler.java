@@ -86,7 +86,7 @@ public class BatchScheduler {
      *
      * @param jobSchedule job schedule containing the job definition.
      */
-    public void startJob(JobScheduleDto jobSchedule) {
+    public void scheduleJob(JobScheduleDto jobSchedule) {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
@@ -106,7 +106,7 @@ public class BatchScheduler {
      *
      * @param jobSchedule job schedule to be removed from the scheduler.
      */
-    public void stopJob(JobScheduleDto jobSchedule) {
+    public void removeScheduleJob(JobScheduleDto jobSchedule) {
         logger.info(format("Stopping job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
@@ -165,11 +165,11 @@ public class BatchScheduler {
      * @param jobDefinition job definition to add to the scheduler.
      */
     public void addJob(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
-        logger.info(format("Adding job to scheduler - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
+        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupDto().getName(), jobDefinition.getName()));
         try {
             // Check existence
             if (findJob(jobDefinition)) {
-                logger.warn(format("Job already register in scheduler - groupName: {0} jobName: {1}",
+                logger.warn(format("Job already register in scheduler - jobGroup: {0} jobName: {1}",
                         jobDefinition.getJobGroupName(), jobDefinition.getName()));
                 return;
             }
@@ -182,7 +182,7 @@ public class BatchScheduler {
         // Get the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         if (trigger != null) {
-            logger.info(format("Trigger - group: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
+            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(jobSchedule, jobDefinition);
@@ -233,11 +233,10 @@ public class BatchScheduler {
      */
     private JobDetail buildJobDetail(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
-                .jobName(jobDefinition.getName())
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
-                .groupName(jobDefinition.getJobGroupName())
-                .description(jobDefinition.getDescription())
+                .jobName(jobDefinition.getName())
+                .jobGroupName(jobDefinition.getJobGroupName())
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
@@ -247,6 +246,7 @@ public class BatchScheduler {
                 .failedExitMessage(jobDefinition.getFailedExitMessage())
                 .completedExitCode(jobDefinition.getCompletedExitCode())
                 .completedExitMessage(jobDefinition.getCompletedExitMessage())
+                .description(jobDefinition.getDescription())
                 .build();
     }
 

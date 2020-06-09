@@ -81,7 +81,7 @@ public class JobDetailBuilder {
 		return this;
 	}
 
-	public JobDetailBuilder groupName(String group) {
+	public JobDetailBuilder jobGroupName(String group) {
 		this.group = group;
 		return this;
 	}

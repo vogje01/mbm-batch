@@ -2,23 +2,39 @@ package com.momentum.batch.message.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.domain.dto.JobScheduleDto;
 
 import java.util.Date;
 
 /**
- * Agent command DTO.
+ * Agent scheduler message DTO.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.3
+ * @version 0.0.4
  * @since 0.0.1
  */
 public class AgentScheduleMessageDto {
 
+    /**
+     * Message type
+     */
     private AgentScheduleMessageType type;
-
-    private String nodeName;
-
+    /**
+     * Sender of the message
+     */
+    private String sender;
+    /**
+     * Host name
+     */
     private String hostName;
+    /**
+     * Node name
+     */
+    private String nodeName;
+    /**
+     * Schedule
+     */
+    private JobScheduleDto jobScheduleDto;
     /**
      * Schedule Name
      */
@@ -44,12 +60,33 @@ public class AgentScheduleMessageDto {
         this.type = type;
     }
 
+    public AgentScheduleMessageDto(AgentScheduleMessageType type, JobScheduleDto jobScheduleDto) {
+        this.type = type;
+        this.jobScheduleDto = jobScheduleDto;
+    }
+
     public AgentScheduleMessageType getType() {
         return type;
     }
 
     public void setType(AgentScheduleMessageType type) {
         this.type = type;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
     public String getNodeName() {
@@ -60,12 +97,12 @@ public class AgentScheduleMessageDto {
         this.nodeName = nodeName;
     }
 
-    public String getHostName() {
-        return hostName;
+    public JobScheduleDto getJobScheduleDto() {
+        return jobScheduleDto;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setJobScheduleDto(JobScheduleDto jobScheduleDto) {
+        this.jobScheduleDto = jobScheduleDto;
     }
 
     public Date getPreviousFireTime() {
@@ -106,8 +143,9 @@ public class AgentScheduleMessageDto {
         if (o == null || getClass() != o.getClass()) return false;
         AgentScheduleMessageDto that = (AgentScheduleMessageDto) o;
         return type == that.type &&
-                Objects.equal(nodeName, that.nodeName) &&
+                Objects.equal(sender, that.sender) &&
                 Objects.equal(hostName, that.hostName) &&
+                Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(jobScheduleName, that.jobScheduleName) &&
                 Objects.equal(jobScheduleUuid, that.jobScheduleUuid) &&
                 Objects.equal(previousFireTime, that.previousFireTime) &&
@@ -116,15 +154,16 @@ public class AgentScheduleMessageDto {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, hostName, jobScheduleName, jobScheduleUuid, previousFireTime, nextFireTime);
+        return Objects.hashCode(type, sender, hostName, nodeName, jobScheduleName, jobScheduleUuid, previousFireTime, nextFireTime);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("type", type)
-                .add("nodeName", nodeName)
+                .add("sender", sender)
                 .add("hostName", hostName)
+                .add("nodeName", nodeName)
                 .add("jobScheduleName", jobScheduleName)
                 .add("jobScheduleUuid", jobScheduleUuid)
                 .add("previousFireTime", previousFireTime)

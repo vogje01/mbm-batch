@@ -14,6 +14,8 @@ public class AgentStatusMessageDto {
 
     private AgentStatusMessageType type;
 
+    private String sender;
+
     private String nodeName;
 
     private String hostName;
@@ -56,6 +58,14 @@ public class AgentStatusMessageDto {
 
     public void setType(AgentStatusMessageType type) {
         this.type = type;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getNodeName() {
@@ -187,6 +197,7 @@ public class AgentStatusMessageDto {
                 freeSwap == that.freeSwap &&
                 usedSwap == that.usedSwap &&
                 type == that.type &&
+                Objects.equal(sender, that.sender) &&
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(status, that.status);
@@ -194,14 +205,14 @@ public class AgentStatusMessageDto {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory,
-                freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap);
+        return Objects.hashCode(type, sender, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory, freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("type", type)
+                .add("sender", sender)
                 .add("nodeName", nodeName)
                 .add("hostName", hostName)
                 .add("status", status)

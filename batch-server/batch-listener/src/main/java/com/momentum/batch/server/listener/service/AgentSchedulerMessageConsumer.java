@@ -33,33 +33,26 @@ public class AgentSchedulerMessageConsumer {
 
     private final JobScheduleRepository jobScheduleRepository;
 
-    private final ServerCommandProducer serverCommandProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     private final ModelConverter modelConverter;
 
     @Autowired
     public AgentSchedulerMessageConsumer(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
-                                         JobScheduleRepository jobScheduleRepository, ServerCommandProducer serverCommandProducer,
+                                         JobScheduleRepository jobScheduleRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
                                          ModelConverter modelConverter) {
         this.agentRepository = agentRepository;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.jobScheduleRepository = jobScheduleRepository;
-        this.serverCommandProducer = serverCommandProducer;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
         logger.info(format("Agent command listener initialized"));
     }
 
     /**
-     * Listen for agent command, send from one the agents.
+     * Listen for agent scheduler messages, send from one the agents.
      * <p>
-     * Supported agent commands are
-     *     <ul>
-     *         <li>AGENT_REGISTER: an agent want to register.</li>
-     *         <li>AGENT_STATUS: an agent sends status information.</li>
-     *         <li>AGENT_PING: a ping received from an agent.</li>
-     *         <li>AGENT_PERFORMANCE: performance data collected from an agent.</li>
-     *     </ul>
-     *     Supported agent commands are
+     * Supported agent scheduler messages are:
      *     <ul>
      *         <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
      *         <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
@@ -75,7 +68,7 @@ public class AgentSchedulerMessageConsumer {
         switch (agentScheduleMessageDto.getType()) {
             case JOB_EXECUTED:
             case JOB_SCHEDULED:
-                receivedJobStatus(agentScheduleMessageDto);
+                receivedJobScheduled(agentScheduleMessageDto);
                 break;
             case JOB_SHUTDOWN:
                 //receivedShutdown(agentScheduleMessageDto);
@@ -88,7 +81,7 @@ public class AgentSchedulerMessageConsumer {
      *
      * @param agentScheduleMessageDto agent command info.
      */
-    private synchronized void receivedJobStatus(AgentScheduleMessageDto agentScheduleMessageDto) {
+    private synchronized void receivedJobScheduled(AgentScheduleMessageDto agentScheduleMessageDto) {
         logger.debug(format("Job schedule update received - hostName: {0} nodeName: {1} schedule: {2}",
                 agentScheduleMessageDto.getHostName(), agentScheduleMessageDto.getNodeName(), agentScheduleMessageDto.getJobScheduleName()));
 

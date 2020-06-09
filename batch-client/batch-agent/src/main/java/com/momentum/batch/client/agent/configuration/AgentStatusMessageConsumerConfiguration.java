@@ -1,7 +1,7 @@
 package com.momentum.batch.client.agent.configuration;
 
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.domain.dto.ServerCommandDto;
+import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
@@ -17,8 +17,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.Map;
 
-import static java.text.MessageFormat.format;
-
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.4
@@ -26,32 +24,33 @@ import static java.text.MessageFormat.format;
  */
 @EnableKafka
 @Configuration
-public class ServerCommandConsumerConfiguration extends AbstractKafkaConfiguration {
+public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServerCommandConsumerConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(AgentStatusMessageConsumerConfiguration.class);
 
-    @Value(value = "${kafka.serverCommand.group}")
+    private static final String trustedPackages = "com.momentum.batch";
+
+    @Value(value = "${kafka.agentStatus.group}")
     private String serverCommandGroup;
 
-    @Value(value = "${kafka.serverCommand.offsetReset}")
+    @Value(value = "${kafka.agentStatus.offsetReset}")
     private String serverCommandOffsetReset;
 
-    public ConsumerFactory<String, ServerCommandDto> serverCommandConsumerFactory() {
-        JsonDeserializer<ServerCommandDto> deserializer = new JsonDeserializer<>(ServerCommandDto.class);
+    public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory(String nodeName) {
+        JsonDeserializer<AgentStatusMessageDto> deserializer = new JsonDeserializer<>(AgentStatusMessageDto.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
         Map<String, Object> properties = defaultConsumerConfiguration();
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, serverCommandGroup);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, nodeName);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, serverCommandOffsetReset);
         return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ServerCommandDto> serverCommandListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ServerCommandDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(serverCommandConsumerFactory());
-        logger.debug(format("Server command consumer configured - group: {0} reset: {1}", serverCommandGroup, serverCommandOffsetReset));
+    public ConcurrentKafkaListenerContainerFactory<String, AgentStatusMessageDto> agentStatusMessageListenerFactory(String nodeName) {
+        ConcurrentKafkaListenerContainerFactory<String, AgentStatusMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(agentStatusMessageConsumerFactory(nodeName));
         return factory;
     }
 }

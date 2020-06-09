@@ -11,6 +11,7 @@ import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +44,9 @@ import static java.text.MessageFormat.format;
  * @since 0.0.1
  */
 @Service
-public class AgentService {
+public class AgentStatusService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AgentService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AgentStatusService.class);
 
     private final String hostName;
 
@@ -70,8 +71,8 @@ public class AgentService {
      * @param nodeName      node name.
      */
     @Autowired
-    public AgentService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String hostName, String nodeName, AgentStatus agentStatus,
-                        AgentStatusMessageProducer agentStatusMessageProducer) {
+    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String hostName, String nodeName, AgentStatus agentStatus,
+                              AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
         this.hostName = hostName;
@@ -81,8 +82,9 @@ public class AgentService {
 
         // Agent command
         this.agentStatusMessageDto = new AgentStatusMessageDto();
-        this.agentStatusMessageDto.setNodeName(nodeName);
         this.agentStatusMessageDto.setHostName(hostName);
+        this.agentStatusMessageDto.setNodeName(nodeName);
+        this.agentStatusMessageDto.setSender(nodeName);
         this.agentStatusMessageDto.setPid(ProcessHandle.current().pid());
         this.osBean = System.getProperty("os.name").startsWith("Windows") ?
                 ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class) :
@@ -190,5 +192,28 @@ public class AgentService {
         agentStatusMessageDto.setStatus(agentStatus.name());
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_STATUS);
         agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
+    }
+
+    /**
+     * Listens for in incoming commands from the server and executes them.
+     *
+     * @param agentStatusMessageDto server command information.
+     */
+    @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
+    public void listen(AgentStatusMessageDto agentStatusMessageDto) {
+        if (agentStatusMessageDto.getSender() == null || agentStatusMessageDto.getSender().equals(nodeName)) {
+            return;
+        }
+        logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
+                agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
+
+        switch (agentStatusMessageDto.getType()) {
+            case AGENT_PAUSE:
+                pauseAgent();
+                break;
+            case AGENT_STOP:
+                shutdownAgent();
+                break;
+        }
     }
 }

@@ -3,8 +3,8 @@ package com.momentum.batch.server.listener.service;
 import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.BatchPerformanceType;
 import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.domain.dto.ServerCommandDto;
-import com.momentum.batch.domain.dto.ServerCommandType;
+import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageType;
 import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
@@ -43,18 +43,18 @@ public class AgentStatusMessageConsumer {
 
     private final JobScheduleRepository jobScheduleRepository;
 
-    private final ServerCommandProducer serverCommandProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     private final ModelConverter modelConverter;
 
     @Autowired
     public AgentStatusMessageConsumer(AgentRepository agentRepository, BatchPerformanceRepository batchPerformanceRepository,
                                       JobScheduleRepository jobScheduleRepository,
-                                      ServerCommandProducer serverCommandProducer, ModelConverter modelConverter) {
+                                      AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
         this.agentRepository = agentRepository;
         this.batchPerformanceRepository = batchPerformanceRepository;
         this.jobScheduleRepository = jobScheduleRepository;
-        this.serverCommandProducer = serverCommandProducer;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
         logger.info(format("Agent command listener initialized"));
     }
@@ -226,11 +226,12 @@ public class AgentStatusMessageConsumer {
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(s);
 
                 // Convert server command
-                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.START_JOB, jobScheduleDto);
-                serverCommandDto.setNodeName(agent.getNodeName());
+                AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_SCHEDULE, jobScheduleDto);
+                agentScheduleMessageDto.setHostName(agent.getHostName());
+                agentScheduleMessageDto.setNodeName(agent.getNodeName());
 
                 // Send command
-                serverCommandProducer.sendTopic(serverCommandDto);
+                agentSchedulerMessageProducer.sendTopic(agentScheduleMessageDto);
                 logger.info(format("Job start command send to agent - nodeName: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
             });
         }

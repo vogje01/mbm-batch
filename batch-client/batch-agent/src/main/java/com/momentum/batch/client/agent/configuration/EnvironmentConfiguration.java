@@ -1,6 +1,5 @@
 package com.momentum.batch.client.agent.configuration;
 
-import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.util.NetworkUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * @since 0.0.1
  */
 @Configuration
-public class EnvironmentConfiguration extends AbstractKafkaConfiguration {
+public class EnvironmentConfiguration {
 
     @Value("${agent.nodeName:#{null}}")
     private String nodeName;

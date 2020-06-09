@@ -4,6 +4,7 @@ import com.momentum.batch.domain.dto.JobDefinitionDto;
 import com.momentum.batch.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
 import com.momentum.batch.server.manager.service.JobGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -176,8 +177,10 @@ public class JobDefinitionController {
 
         // Get job definition
         JobDefinition jobDefinition = modelConverter.convertJobDefinitionToEntity(jobDefinitionDto);
-        //JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
-        //jobDefinition.setJobGroup(jobGroup);
+
+        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
+        jobDefinition.setJobGroup(jobGroup);
+
         jobDefinition = jobDefinitionService.updateJobDefinition(jobDefinitionId, jobDefinition);
         jobDefinitionDto = modelConverter.convertJobDefinitionToDto(jobDefinition);
 

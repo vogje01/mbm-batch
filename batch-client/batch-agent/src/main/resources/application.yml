@@ -38,11 +38,13 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
+    group: batchmanager
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
+    group: batchmanager
     partitions: 5
     replicas: 1
   serverCommand:
