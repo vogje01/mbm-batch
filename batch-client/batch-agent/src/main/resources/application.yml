@@ -12,6 +12,7 @@ spring:
   kafka:
     listener:
       concurrency: 5
+
 # Agent configuration
 # pingInterval: ping interval in ms.
 agent:
