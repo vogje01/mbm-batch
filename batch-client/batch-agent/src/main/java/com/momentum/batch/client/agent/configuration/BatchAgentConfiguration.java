@@ -22,9 +22,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
-    @Value("${server.hostName}")
-    private String serverName;
-
     @Value("${agent.nodeName:#{null}}")
     private String nodeName;
 
@@ -45,11 +42,6 @@ public class BatchAgentConfiguration {
     @Bean
     public AgentStatus agentStatus() {
         return agentStatus;
-    }
-
-    @Bean
-    public String serverName() {
-        return serverName;
     }
 
     @Bean
