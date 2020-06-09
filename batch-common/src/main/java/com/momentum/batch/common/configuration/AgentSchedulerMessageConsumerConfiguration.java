@@ -26,7 +26,7 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
     @Value(value = "${kafka.agentScheduler.offsetReset}")
     private String agentSchedulerOffsetReset;
 
-    @Value(value = "${kafka.agentStatus.offsetReset}")
+    @Value(value = "${kafka.agentStatus.group}")
     private String agentSchedulerMessageGroup;
 
     public ConsumerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageConsumerFactory(String nodeName) {

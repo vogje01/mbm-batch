@@ -47,7 +47,8 @@ public class AgentSchedulerMessageConsumer {
      */
     @KafkaListener(topics = "${kafka.agentScheduler.topic}", containerFactory = "agentSchedulerMessageListenerFactory")
     public void listen(AgentSchedulerMessageDto agentSchedulerMessageDto) {
-        logger.info(format("Received agent command - type: {0} nodeName: {1}", agentSchedulerMessageDto.getType(), agentSchedulerMessageDto.getNodeName()));
+        logger.info(format("Received agent scheduler message - hostName: {0} nodeName: {1} type: {2}",
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getType()));
         switch (agentSchedulerMessageDto.getType()) {
             case JOB_EXECUTED -> receivedJobExecuted(agentSchedulerMessageDto);
             case JOB_SCHEDULED -> receivedJobScheduled(agentSchedulerMessageDto);
