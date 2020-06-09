@@ -1,14 +1,14 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.domain.dto.UserDto;
+import com.momentum.batch.common.domain.dto.UserDto;
+import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.service.UserService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import com.momentum.batch.server.manager.service.util.PagingUtil;
-import com.momentum.batch.util.MethodTimer;
-import com.momentum.batch.util.PasswordHash;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

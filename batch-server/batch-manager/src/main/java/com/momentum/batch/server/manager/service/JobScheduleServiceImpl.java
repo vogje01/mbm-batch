@@ -1,8 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
@@ -11,7 +12,6 @@ import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
-import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

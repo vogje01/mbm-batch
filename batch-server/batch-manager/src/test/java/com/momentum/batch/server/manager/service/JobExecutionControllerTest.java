@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.JobExecutionInfoBuilder;
-import com.momentum.batch.domain.dto.JobExecutionDto;
-import com.momentum.batch.domain.dto.JobExecutionDtoBuilder;
+import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
+import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.common.domain.dto.JobExecutionDtoBuilder;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.manager.controller.JobExecutionController;

@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.writer;
 
-import com.momentum.batch.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;

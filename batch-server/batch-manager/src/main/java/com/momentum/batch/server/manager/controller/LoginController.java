@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.domain.dto.UserDto;
+import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;

@@ -1,8 +1,8 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.domain.dto.JobExecutionDto;
-import com.momentum.batch.domain.dto.JobStatusDto;
-import com.momentum.batch.domain.dto.StepExecutionDto;
+import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.common.domain.dto.JobStatusDto;
+import com.momentum.batch.common.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.*;
 import com.momentum.batch.server.database.repository.*;

@@ -1,6 +1,6 @@
 package com.momentum.batch.server.database.repository;
 
-import com.momentum.batch.domain.BatchPerformanceType;
+import com.momentum.batch.common.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.domain.BatchPerformance;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;

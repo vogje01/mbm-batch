@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.writer;
 
-import com.momentum.batch.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.builder.JsonFileItemWriterBuilder;

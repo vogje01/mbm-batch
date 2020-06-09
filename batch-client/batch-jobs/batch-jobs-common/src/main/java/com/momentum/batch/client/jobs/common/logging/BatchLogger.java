@@ -1,7 +1,7 @@
 package com.momentum.batch.client.jobs.common.logging;
 
-import com.momentum.batch.domain.JobLogMessageLevel;
-import com.momentum.batch.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.common.domain.JobLogMessageLevel;
+import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;

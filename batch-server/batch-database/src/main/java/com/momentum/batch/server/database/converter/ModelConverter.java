@@ -1,8 +1,8 @@
 package com.momentum.batch.server.database.converter;
 
-import com.momentum.batch.domain.DateTimeFormat;
-import com.momentum.batch.domain.NumberFormat;
-import com.momentum.batch.domain.dto.*;
+import com.momentum.batch.common.domain.DateTimeFormat;
+import com.momentum.batch.common.domain.NumberFormat;
+import com.momentum.batch.common.domain.dto.*;
 import com.momentum.batch.server.database.domain.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

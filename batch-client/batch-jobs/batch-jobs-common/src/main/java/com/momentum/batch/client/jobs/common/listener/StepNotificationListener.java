@@ -2,10 +2,10 @@ package com.momentum.batch.client.jobs.common.listener;
 
 import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.domain.dto.JobStatusDto;
-import com.momentum.batch.domain.dto.StepExecutionDto;
-import com.momentum.batch.util.DateTimeUtils;
-import com.momentum.batch.util.ExecutionParameter;
+import com.momentum.batch.common.domain.dto.JobStatusDto;
+import com.momentum.batch.common.domain.dto.StepExecutionDto;
+import com.momentum.batch.common.util.DateTimeUtils;
+import com.momentum.batch.common.util.ExecutionParameter;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.momentum.batch.domain.JobStatusType.STEP_FINISHED;
-import static com.momentum.batch.domain.JobStatusType.STEP_START;
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.domain.JobStatusType.STEP_FINISHED;
+import static com.momentum.batch.common.domain.JobStatusType.STEP_START;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

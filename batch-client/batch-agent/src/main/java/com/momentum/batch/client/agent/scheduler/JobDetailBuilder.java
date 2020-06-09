@@ -6,7 +6,7 @@ import org.quartz.JobDetail;
 
 import java.util.List;
 
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 
 /**
  * Converts the job definition into a job detail class, needed for the Quartz scheduler.

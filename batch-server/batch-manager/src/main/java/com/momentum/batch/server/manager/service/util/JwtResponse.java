@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.service.util;
 
-import com.momentum.batch.domain.dto.UserDto;
+import com.momentum.batch.common.domain.dto.UserDto;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;

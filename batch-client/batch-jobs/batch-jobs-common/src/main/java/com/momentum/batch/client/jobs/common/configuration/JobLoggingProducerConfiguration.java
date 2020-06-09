@@ -3,7 +3,7 @@ package com.momentum.batch.client.jobs.common.configuration;
 import com.momentum.batch.client.jobs.common.logging.BatchLogProducer;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.InjectionPoint;

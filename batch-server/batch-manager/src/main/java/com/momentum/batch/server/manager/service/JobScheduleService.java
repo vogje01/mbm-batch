@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobDefinition;

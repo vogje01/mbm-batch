@@ -1,6 +1,6 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;

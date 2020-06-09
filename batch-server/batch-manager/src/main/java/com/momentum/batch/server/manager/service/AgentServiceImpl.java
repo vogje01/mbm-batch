@@ -1,15 +1,15 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.message.dto.AgentStatusMessageDto;
-import com.momentum.batch.message.dto.AgentStatusMessageType;
+import com.momentum.batch.common.domain.AgentStatus;
+import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
+import com.momentum.batch.common.message.dto.AgentStatusMessageType;
+import com.momentum.batch.common.producer.AgentStatusMessageProducer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
-import com.momentum.batch.server.manager.service.common.AgentStatusMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;

@@ -1,7 +1,7 @@
 package com.momentum.batch.common.configuration;
 
+import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.common.producer.AgentStatusMessageProducer;
-import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;

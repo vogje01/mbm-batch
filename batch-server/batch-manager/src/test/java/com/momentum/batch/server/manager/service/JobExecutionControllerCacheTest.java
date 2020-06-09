@@ -1,13 +1,13 @@
 package com.momentum.batch.server.manager.service;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.domain.dto.ServerCommandDto;
+import com.momentum.batch.common.domain.dto.ServerCommandDto;
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
-import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

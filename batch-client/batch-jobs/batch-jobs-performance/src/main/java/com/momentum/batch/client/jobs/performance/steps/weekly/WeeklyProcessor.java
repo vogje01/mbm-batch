@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.performance.steps.weekly;
 
-import com.momentum.batch.domain.BatchPerformanceType;
+import com.momentum.batch.common.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.domain.BatchPerformance;
 import com.momentum.batch.server.database.repository.BatchPerformanceRepository;
 import org.springframework.batch.item.ItemProcessor;

@@ -1,6 +1,6 @@
 package com.momentum.batch.common.producer;
 
-import com.momentum.batch.message.dto.AgentStatusMessageDto;
+import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

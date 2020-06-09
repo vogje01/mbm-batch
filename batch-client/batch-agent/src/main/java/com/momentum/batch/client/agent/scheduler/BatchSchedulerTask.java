@@ -1,9 +1,9 @@
 package com.momentum.batch.client.agent.scheduler;
 
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageType;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

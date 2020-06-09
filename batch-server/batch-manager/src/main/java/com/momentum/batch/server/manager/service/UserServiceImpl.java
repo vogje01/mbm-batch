@@ -1,5 +1,6 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
@@ -7,7 +8,6 @@ import com.momentum.batch.server.database.repository.PasswordResetTokenRepositor
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.util.PasswordHash;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;

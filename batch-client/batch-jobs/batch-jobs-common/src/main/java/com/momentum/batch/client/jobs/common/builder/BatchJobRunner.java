@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

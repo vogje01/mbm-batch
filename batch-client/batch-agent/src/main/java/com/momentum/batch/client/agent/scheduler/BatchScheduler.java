@@ -1,12 +1,12 @@
 package com.momentum.batch.client.agent.scheduler;
 
+import com.momentum.batch.common.domain.AgentStatus;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.domain.dto.JobDefinitionDto;
-import com.momentum.batch.domain.dto.JobDefinitionParamDto;
-import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.message.dto.AgentSchedulerMessageType;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import javax.annotation.PreDestroy;
 import java.text.ParseException;
 import java.util.*;
 
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

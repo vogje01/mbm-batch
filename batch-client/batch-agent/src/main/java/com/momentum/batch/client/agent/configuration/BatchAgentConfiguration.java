@@ -1,7 +1,7 @@
 package com.momentum.batch.client.agent.configuration;
 
-import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.util.NetworkUtils;
+import com.momentum.batch.common.domain.AgentStatus;
+import com.momentum.batch.common.util.NetworkUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

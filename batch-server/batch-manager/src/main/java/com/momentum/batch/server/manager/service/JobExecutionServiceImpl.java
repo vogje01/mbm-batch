@@ -1,12 +1,12 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.dto.JobExecutionDto;
+import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
-import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

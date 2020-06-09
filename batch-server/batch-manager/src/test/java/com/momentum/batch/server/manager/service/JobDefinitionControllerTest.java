@@ -1,11 +1,11 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.JobDefinitionBuilder;
-import com.momentum.batch.domain.JobDefinitionParamBuilder;
-import com.momentum.batch.domain.dto.JobDefinitionDto;
-import com.momentum.batch.domain.dto.JobDefinitionDtoBuilder;
-import com.momentum.batch.domain.dto.JobDefinitionParamDto;
-import com.momentum.batch.domain.dto.JobDefinitionParamDtoBuilder;
+import com.momentum.batch.common.domain.JobDefinitionBuilder;
+import com.momentum.batch.common.domain.JobDefinitionParamBuilder;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionDtoBuilder;
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDtoBuilder;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;

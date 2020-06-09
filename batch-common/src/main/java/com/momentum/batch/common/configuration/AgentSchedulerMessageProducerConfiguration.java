@@ -1,7 +1,7 @@
 package com.momentum.batch.common.configuration;
 
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;

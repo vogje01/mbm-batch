@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
 import com.momentum.batch.server.manager.service.JobDefinitionParamService;
@@ -8,7 +9,6 @@ import com.momentum.batch.server.manager.service.JobDefinitionService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import com.momentum.batch.server.manager.service.util.PagingUtil;
-import com.momentum.batch.util.MethodTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

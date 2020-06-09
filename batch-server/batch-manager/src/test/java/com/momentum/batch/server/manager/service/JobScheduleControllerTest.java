@@ -1,10 +1,10 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.domain.AgentBuilder;
-import com.momentum.batch.domain.JobDefinitionBuilder;
-import com.momentum.batch.domain.JobGroupBuilder;
-import com.momentum.batch.domain.JobScheduleInfoBuilder;
-import com.momentum.batch.domain.dto.*;
+import com.momentum.batch.common.domain.AgentBuilder;
+import com.momentum.batch.common.domain.JobDefinitionBuilder;
+import com.momentum.batch.common.domain.JobGroupBuilder;
+import com.momentum.batch.common.domain.JobScheduleInfoBuilder;
+import com.momentum.batch.common.domain.dto.*;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;

@@ -2,9 +2,9 @@ package com.momentum.batch.client.jobs.common.listener;
 
 import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.domain.dto.JobExecutionDto;
-import com.momentum.batch.domain.dto.JobStatusDto;
-import com.momentum.batch.util.DateTimeUtils;
+import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.common.domain.dto.JobStatusDto;
+import com.momentum.batch.common.util.DateTimeUtils;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static com.momentum.batch.domain.JobStatusType.JOB_FINISHED;
-import static com.momentum.batch.domain.JobStatusType.JOB_START;
-import static com.momentum.batch.util.ExecutionParameter.*;
+import static com.momentum.batch.common.domain.JobStatusType.JOB_FINISHED;
+import static com.momentum.batch.common.domain.JobStatusType.JOB_START;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
