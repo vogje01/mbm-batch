@@ -24,7 +24,10 @@ import java.util.Map;
 public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfiguration {
 
     @Value(value = "${kafka.agentStatus.offsetReset}")
-    private String serverCommandOffsetReset;
+    private String agentStatusMessageOffsetReset;
+
+    @Value(value = "${kafka.agentStatus.offsetReset}")
+    private String agentStatusMessageGroup;
 
     public JsonDeserializer<AgentStatusMessageDto> deserializer() {
         JsonDeserializer<AgentStatusMessageDto> deserializer = new JsonDeserializer<>(AgentStatusMessageDto.class);
@@ -36,8 +39,8 @@ public class AgentStatusMessageConsumerConfiguration extends AbstractKafkaConfig
 
     public ConsumerFactory<String, AgentStatusMessageDto> agentStatusMessageConsumerFactory(String nodeName) {
         Map<String, Object> properties = defaultConsumerConfiguration();
-        properties.put(ConsumerConfig.GROUP_ID_CONFIG, nodeName);
-        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, serverCommandOffsetReset);
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, agentStatusMessageGroup);
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, agentStatusMessageOffsetReset);
         return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer());
     }
 
