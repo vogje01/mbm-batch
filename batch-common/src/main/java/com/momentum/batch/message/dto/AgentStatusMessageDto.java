@@ -1,9 +1,7 @@
-package com.momentum.batch.domain.dto;
+package com.momentum.batch.message.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-
-import java.util.Date;
 
 /**
  * Agent command DTO.
@@ -12,9 +10,9 @@ import java.util.Date;
  * @version 0.0.3
  * @since 0.0.1
  */
-public class AgentCommandDto {
+public class AgentStatusMessageDto {
 
-    private AgentCommandType type;
+    private AgentStatusMessageType type;
 
     private String nodeName;
 
@@ -43,36 +41,20 @@ public class AgentCommandDto {
     private long freeSwap;
 
     private long usedSwap;
-    /**
-     * Schedule Name
-     */
-    private String jobScheduleName;
-    /**
-     * Schedule UUID
-     */
-    private String jobScheduleUuid;
-    /**
-     * Previous
-     */
-    private Date previousFireTime;
-    /**
-     * Next fire time
-     */
-    private Date nextFireTime;
 
-    public AgentCommandDto() {
+    public AgentStatusMessageDto() {
         // Intentionally empty
     }
 
-    public AgentCommandDto(AgentCommandType type) {
+    public AgentStatusMessageDto(AgentStatusMessageType type) {
         this.type = type;
     }
 
-    public AgentCommandType getType() {
+    public AgentStatusMessageType getType() {
         return type;
     }
 
-    public void setType(AgentCommandType type) {
+    public void setType(AgentStatusMessageType type) {
         this.type = type;
     }
 
@@ -188,43 +170,11 @@ public class AgentCommandDto {
         this.usedSwap = usedSwap;
     }
 
-    public Date getPreviousFireTime() {
-        return previousFireTime;
-    }
-
-    public void setPreviousFireTime(Date previousFireTime) {
-        this.previousFireTime = previousFireTime;
-    }
-
-    public Date getNextFireTime() {
-        return nextFireTime;
-    }
-
-    public void setNextFireTime(Date nextFireTime) {
-        this.nextFireTime = nextFireTime;
-    }
-
-    public String getJobScheduleName() {
-        return jobScheduleName;
-    }
-
-    public void setJobScheduleName(String jobScheduleName) {
-        this.jobScheduleName = jobScheduleName;
-    }
-
-    public String getJobScheduleUuid() {
-        return jobScheduleUuid;
-    }
-
-    public void setJobScheduleUuid(String jobScheduleUuid) {
-        this.jobScheduleUuid = jobScheduleUuid;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AgentCommandDto that = (AgentCommandDto) o;
+        AgentStatusMessageDto that = (AgentStatusMessageDto) o;
         return pid == that.pid &&
                 Double.compare(that.systemLoad, systemLoad) == 0 &&
                 totalRealMemory == that.totalRealMemory &&
@@ -239,17 +189,13 @@ public class AgentCommandDto {
                 type == that.type &&
                 Objects.equal(nodeName, that.nodeName) &&
                 Objects.equal(hostName, that.hostName) &&
-                Objects.equal(status, that.status) &&
-                Objects.equal(jobScheduleName, that.jobScheduleName) &&
-                Objects.equal(jobScheduleUuid, that.jobScheduleUuid) &&
-                Objects.equal(previousFireTime, that.previousFireTime) &&
-                Objects.equal(nextFireTime, that.nextFireTime);
+                Objects.equal(status, that.status);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(type, nodeName, hostName, status, pid, systemLoad, totalRealMemory, freeRealMemory, usedRealMemory, totalVirtMemory,
-                freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap, jobScheduleName, jobScheduleUuid, previousFireTime, nextFireTime);
+                freeVirtMemory, usedVirtMemory, totalSwap, freeSwap, usedSwap);
     }
 
     @Override
@@ -270,10 +216,6 @@ public class AgentCommandDto {
                 .add("totalSwap", totalSwap)
                 .add("freeSwap", freeSwap)
                 .add("usedSwap", usedSwap)
-                .add("jobScheduleName", jobScheduleName)
-                .add("jobScheduleUuid", jobScheduleUuid)
-                .add("previousFireTime", previousFireTime)
-                .add("nextFireTime", nextFireTime)
                 .toString();
     }
 }

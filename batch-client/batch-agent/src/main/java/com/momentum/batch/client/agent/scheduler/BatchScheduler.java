@@ -1,8 +1,12 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
 import com.momentum.batch.domain.AgentStatus;
-import com.momentum.batch.domain.dto.*;
+import com.momentum.batch.domain.dto.JobDefinitionDto;
+import com.momentum.batch.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.domain.dto.JobScheduleDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageType;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -36,9 +40,7 @@ public class BatchScheduler {
 
     private final Scheduler scheduler;
 
-    private final AgentCommandProducer agentCommandProducer;
-
-    private AgentStatus agentStatus;
+    private final AgentScheduleMessageProducer agentScheduleMessageProducer;
 
     /**
      * Constructor.
@@ -49,12 +51,11 @@ public class BatchScheduler {
      * @param scheduler quartz scheduler.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentCommandProducer agentCommandProducer, String hostName, String nodeName, AgentStatus agentStatus) {
+    public BatchScheduler(Scheduler scheduler, AgentScheduleMessageProducer agentScheduleMessageProducer, String hostName, String nodeName, AgentStatus agentStatus) {
         this.scheduler = scheduler;
-        this.agentCommandProducer = agentCommandProducer;
+        this.agentScheduleMessageProducer = agentScheduleMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
-        this.agentStatus = agentStatus;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
@@ -313,7 +314,7 @@ public class BatchScheduler {
     private void startScheduler() {
         try {
             scheduler.start();
-            sendAgentStarted();
+            //sendAgentStarted();
             logger.info(format("Quartz scheduler started"));
         } catch (SchedulerException e) {
             logger.error(format("Could not start scheduler - error: {0}", e.getMessage()), e);
@@ -392,27 +393,14 @@ public class BatchScheduler {
 
             logger.info(format("Next execution - next: {0}", next));
 
-            AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.JOB_SCHEDULED);
-            agentCommandDto.setNodeName(nodeName);
-            agentCommandDto.setHostName(hostName);
-            agentCommandDto.setJobScheduleUuid(jobSchedule.getId());
-            agentCommandDto.setNextFireTime(next);
-            agentCommandProducer.sendAgentCommand(agentCommandDto);
+            AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_SCHEDULED);
+            agentScheduleMessageDto.setNodeName(nodeName);
+            agentScheduleMessageDto.setHostName(hostName);
+            agentScheduleMessageDto.setJobScheduleUuid(jobSchedule.getId());
+            agentScheduleMessageDto.setNextFireTime(next);
+            agentScheduleMessageProducer.sendMessage(agentScheduleMessageDto);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Sends a agent started command to the server.
-     */
-    private void sendAgentStarted() {
-        logger.info("Sending agent started status");
-        agentStatus = AgentStatus.STARTED;
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.AGENT_STATUS);
-        agentCommandDto.setStatus(agentStatus.name());
-        agentCommandDto.setNodeName(nodeName);
-        agentCommandDto.setHostName(hostName);
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
     }
 }

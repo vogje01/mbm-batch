@@ -1,9 +1,9 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
-import com.momentum.batch.domain.dto.AgentCommandDto;
-import com.momentum.batch.domain.dto.AgentCommandType;
+import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
 import com.momentum.batch.domain.dto.JobScheduleDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageType;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -52,7 +52,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Kafka producer for agent commands.
      */
-    private final AgentCommandProducer agentCommandProducer;
+    private final AgentScheduleMessageProducer agentScheduleMessageProducer;
     /**
      * The actual process.
      */
@@ -80,8 +80,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param nodeName node name.
      */
     @Autowired
-    public BatchSchedulerTask(AgentCommandProducer agentCommandProducer, String hostName, String nodeName) {
-        this.agentCommandProducer = agentCommandProducer;
+    public BatchSchedulerTask(AgentScheduleMessageProducer agentScheduleMessageProducer, String hostName, String nodeName) {
+        this.agentScheduleMessageProducer = agentScheduleMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
     }
@@ -252,14 +252,14 @@ public class BatchSchedulerTask extends QuartzJobBean {
 
         // Build agent command
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
-        AgentCommandDto agentCommandDto = new AgentCommandDto(AgentCommandType.JOB_EXECUTED);
-        agentCommandDto.setHostName(hostName);
-        agentCommandDto.setNodeName(nodeName);
-        agentCommandDto.setJobScheduleUuid(jobDataMap.getString(JOB_SCHEDULE_UUID));
-        agentCommandDto.setNextFireTime(trigger.getNextFireTime());
-        agentCommandDto.setPreviousFireTime(trigger.getPreviousFireTime());
+        AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_EXECUTED);
+        agentScheduleMessageDto.setHostName(hostName);
+        agentScheduleMessageDto.setNodeName(nodeName);
+        agentScheduleMessageDto.setJobScheduleUuid(jobDataMap.getString(JOB_SCHEDULE_UUID));
+        agentScheduleMessageDto.setNextFireTime(trigger.getNextFireTime());
+        agentScheduleMessageDto.setPreviousFireTime(trigger.getPreviousFireTime());
 
         // And send it to the server
-        agentCommandProducer.sendAgentCommand(agentCommandDto);
+        agentScheduleMessageProducer.sendMessage(agentScheduleMessageDto);
     }
 }

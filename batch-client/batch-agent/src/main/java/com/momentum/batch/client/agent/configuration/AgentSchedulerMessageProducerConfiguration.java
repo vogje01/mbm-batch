@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.configuration;
 
-import com.momentum.batch.client.agent.kafka.AgentCommandProducer;
+import com.momentum.batch.client.agent.kafka.AgentScheduleMessageProducer;
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.domain.dto.AgentCommandDto;
+import com.momentum.batch.message.dto.AgentScheduleMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,40 +20,39 @@ import org.springframework.kafka.core.ProducerFactory;
  */
 @EnableKafka
 @Configuration
-public class AgentCommandProducerConfiguration extends AbstractKafkaConfiguration {
+public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaConfiguration {
 
-    @Value(value = "${kafka.agentCommand.topic}")
+    @Value(value = "${kafka.agentScheduler.topic}")
     private String topic;
 
-    @Value(value = "${kafka.agentCommand.partitions}")
+    @Value(value = "${kafka.agentScheduler.partitions}")
     private int partitions;
 
-    @Value(value = "${kafka.agentCommand.replicas}")
+    @Value(value = "${kafka.agentScheduler.replicas}")
     private short replicas;
 
     @Bean
-    public ProducerFactory<String, AgentCommandDto> agentCommandProducerFactory() {
+    public ProducerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageProducerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
     }
 
     @Bean
-    public Producer<String, AgentCommandDto> agentCommandKafkaProducer() {
-        return agentCommandProducerFactory().createProducer();
+    public Producer<String, AgentScheduleMessageDto> agentSchedulerMessageKafkaProducer() {
+        return agentSchedulerMessageProducerFactory().createProducer();
     }
 
     @Bean
-    public KafkaTemplate<String, AgentCommandDto> agentCommandKafkaTemplate() {
-        return new KafkaTemplate<>(agentCommandProducerFactory());
+    public KafkaTemplate<String, AgentScheduleMessageDto> agentSchedulerMessageKafkaTemplate() {
+        return new KafkaTemplate<>(agentSchedulerMessageProducerFactory());
     }
 
     @Bean
-    public AgentCommandProducer agentCommandProducer() {
-        return new AgentCommandProducer(agentCommandKafkaTemplate());
+    public AgentScheduleMessageProducer agentSchedulerMessageProducer() {
+        return new AgentScheduleMessageProducer(agentSchedulerMessageKafkaTemplate());
     }
 
     @Bean
-    public NewTopic agentCommandTopic() {
+    public NewTopic agentSchedulerMessageTopic() {
         return new NewTopic(topic, partitions, replicas).configs(kafkaTopicConfiguration());
     }
-
 }
