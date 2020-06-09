@@ -1,4 +1,4 @@
-package com.momentum.batch.server.manager.config;
+package com.momentum.batch.server.manager.configuration;
 
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.domain.dto.ServerCommandDto;

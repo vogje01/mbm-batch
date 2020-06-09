@@ -27,6 +27,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
 public class BatchListenerConfiguration {
 
+    @Value("${listener.serverName:#{null}}")
+    private String serverName;
+
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecutionInfo",
             "JobExecutionLog", "StepExecutionInfo", "JobSchedule"};
 
@@ -54,9 +57,6 @@ public class BatchListenerConfiguration {
                 .weakKeys()
                 .recordStats();
     }
-
-    @Value("${listener.serverName:#{null}}")
-    private String serverName;
 
     @Bean
     public String serverName() {

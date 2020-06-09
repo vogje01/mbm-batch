@@ -1,8 +1,8 @@
-package com.momentum.batch.server.listener.configuration;
+package com.momentum.batch.server.manager.configuration;
 
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
 import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.server.listener.service.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,11 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+/**
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.1
+ * @since 0.0.1
+ */
 @EnableKafka
 @Configuration
 public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaConfiguration {
@@ -42,8 +47,8 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     }
 
     @Bean
-    public AgentSchedulerMessageProducer agentSchedulerMessageProducer(String serverName) {
-        return new AgentSchedulerMessageProducer(topic, agentSchedulerMessageKafkaTemplate(), serverName);
+    public AgentSchedulerMessageProducer agentSchedulerMessageProducer() {
+        return new AgentSchedulerMessageProducer(agentSchedulerMessageKafkaTemplate());
     }
 
     @Bean

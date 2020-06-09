@@ -2,7 +2,7 @@ package com.momentum.batch.client.agent.configuration;
 
 import com.momentum.batch.client.agent.kafka.AgentSchedulerMessageProducer;
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,17 +32,17 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     private short replicas;
 
     @Bean
-    public ProducerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageProducerFactory() {
+    public ProducerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageProducerFactory() {
         return new DefaultKafkaProducerFactory<>(kafkaProducerConfiguration());
     }
 
     @Bean
-    public Producer<String, AgentScheduleMessageDto> agentSchedulerMessageKafkaProducer() {
+    public Producer<String, AgentSchedulerMessageDto> agentSchedulerMessageKafkaProducer() {
         return agentSchedulerMessageProducerFactory().createProducer();
     }
 
     @Bean
-    public KafkaTemplate<String, AgentScheduleMessageDto> agentSchedulerMessageKafkaTemplate() {
+    public KafkaTemplate<String, AgentSchedulerMessageDto> agentSchedulerMessageKafkaTemplate() {
         return new KafkaTemplate<>(agentSchedulerMessageProducerFactory());
     }
 

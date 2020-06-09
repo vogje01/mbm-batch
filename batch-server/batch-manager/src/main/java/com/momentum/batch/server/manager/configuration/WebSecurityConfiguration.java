@@ -1,4 +1,4 @@
-package com.momentum.batch.server.manager.config;
+package com.momentum.batch.server.manager.configuration;
 
 import com.momentum.batch.server.manager.service.util.JwtAuthenticationEntryPoint;
 import com.momentum.batch.server.manager.service.util.JwtRequestFilter;

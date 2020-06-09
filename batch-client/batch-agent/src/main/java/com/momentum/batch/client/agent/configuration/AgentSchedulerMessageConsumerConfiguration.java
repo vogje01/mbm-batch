@@ -1,7 +1,7 @@
 package com.momentum.batch.client.agent.configuration;
 
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +30,9 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
     @Value(value = "${kafka.agentScheduler.offsetReset}")
     private String agentSchedulerOffsetReset;
 
-    public ConsumerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageConsumerFactory() {
+    public ConsumerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageConsumerFactory() {
         // TODO: use standard deserializer
-        JsonDeserializer<AgentScheduleMessageDto> deserializer = new JsonDeserializer<>(AgentScheduleMessageDto.class);
+        JsonDeserializer<AgentSchedulerMessageDto> deserializer = new JsonDeserializer<>(AgentSchedulerMessageDto.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
@@ -43,8 +43,8 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, AgentScheduleMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, AgentSchedulerMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(agentSchedulerMessageConsumerFactory());
         return factory;
     }

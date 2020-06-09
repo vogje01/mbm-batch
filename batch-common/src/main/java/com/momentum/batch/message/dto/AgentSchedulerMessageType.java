@@ -21,7 +21,7 @@ package com.momentum.batch.message.dto;
  * @version 0.0.3
  * @since 0.0.3
  */
-public enum AgentScheduleMessageType {
+public enum AgentSchedulerMessageType {
     JOB_SCHEDULE,
     JOB_REMOVE_SCHEDULE,
     JOB_RESCHEDULE,

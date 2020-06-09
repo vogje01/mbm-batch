@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.domain.dto.ServerCommandDto;
-import com.momentum.batch.domain.dto.ServerCommandType;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
@@ -11,8 +11,8 @@ import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
+import com.momentum.batch.server.manager.service.common.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.server.manager.service.common.ServerCommandProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,15 +41,18 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     private final AgentGroupRepository agentGroupRepository;
 
-    private final ServerCommandProducer serverCommandProducer;
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     private final ModelConverter modelConverter;
 
+    private final String serverName;
+
     @Autowired
-    public JobScheduleServiceImpl(JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
-                                  ServerCommandProducer serverCommandProducer, ModelConverter modelConverter) {
+    public JobScheduleServiceImpl(String serverName, JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
+                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
+        this.serverName = serverName;
         this.jobScheduleRepository = jobScheduleRepository;
-        this.serverCommandProducer = serverCommandProducer;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentRepository = agentRepository;
         this.agentGroupRepository = agentGroupRepository;
         this.modelConverter = modelConverter;
@@ -86,7 +89,6 @@ public class JobScheduleServiceImpl implements JobScheduleService {
         return jobScheduleRepository.findByGroupAndName(groupName, jobName);
     }
 
-
     @Override
     @Transactional
     @CachePut(cacheNames = "JobDefinition", key = "#jobSchedule.id")
@@ -111,11 +113,13 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
             // Send command to scheduler
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleNew);
-            ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.RESCHEDULE_JOB, jobScheduleDto);
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
 
-            jobScheduleNew.getAgents().forEach(a -> {
-                serverCommandDto.setNodeName(a.getNodeName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+            // Send message to agents
+            jobScheduleNew.getAgents().forEach(agent -> {
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
             });
 
             return jobScheduleNew;
@@ -143,12 +147,16 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
             // Create server command
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-            ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.RESCHEDULE_JOB, jobScheduleDto);
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
 
-            // Send command to agent
-            jobSchedule.getAgents().forEach(a -> {
-                serverCommandDto.setNodeName(a.getNodeName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+            // Send message to agents
+            jobSchedule.getAgents().forEach(agent -> {
+
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
             });
         });
     }
@@ -183,11 +191,13 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Create server command
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.START_JOB, jobScheduleDto);
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
 
                 // Send to agent
-                serverCommandDto.setNodeName(agent.getNodeName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
 
                 return jobScheduleDto;
             } else {
@@ -217,11 +227,13 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Create server command
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.REMOVE_JOB, jobScheduleDto);
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE, jobScheduleDto);
 
-                // Send to agent
-                serverCommandDto.setNodeName(agent.getNodeName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+                // Send message to agent
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
 
                 return jobScheduleDto;
             } else {
@@ -261,11 +273,15 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Create server command
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.START_JOB, jobScheduleDto);
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULE, jobScheduleDto);
 
-                // Send to agentGroup
-                serverCommandDto.setNodeName(agentGroup.getName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+                // Send message to agents
+                agentGroup.getAgents().forEach(agent -> {
+                    agentSchedulerMessageDto.setSender(serverName);
+                    agentSchedulerMessageDto.setHostName(agent.getHostName());
+                    agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                    agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                });
 
                 return jobScheduleDto;
             } else {
@@ -295,11 +311,16 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Create server command
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-                ServerCommandDto serverCommandDto = new ServerCommandDto(ServerCommandType.REMOVE_JOB, jobScheduleDto);
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE, jobScheduleDto);
 
-                // Send to agentGroup
-                serverCommandDto.setNodeName(agentGroup.getName());
-                serverCommandProducer.sendTopic(serverCommandDto);
+                // Send message to agents
+                agentGroup.getAgents().forEach(agent -> {
+                    agentSchedulerMessageDto.setSender(serverName);
+                    agentSchedulerMessageDto.setHostName(agent.getHostName());
+                    agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                    agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                });
+
 
                 return jobScheduleDto;
             } else {

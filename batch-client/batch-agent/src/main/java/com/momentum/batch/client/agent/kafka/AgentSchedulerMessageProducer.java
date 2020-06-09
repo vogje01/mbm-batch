@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.kafka;
 
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +23,9 @@ public class AgentSchedulerMessageProducer {
     @Value(value = "${kafka.agentScheduler.topic}")
     private String agentCommandTopic;
 
-    private KafkaTemplate<String, AgentScheduleMessageDto> template;
+    private KafkaTemplate<String, AgentSchedulerMessageDto> template;
 
-    public AgentSchedulerMessageProducer(KafkaTemplate<String, AgentScheduleMessageDto> template) {
+    public AgentSchedulerMessageProducer(KafkaTemplate<String, AgentSchedulerMessageDto> template) {
         this.template = template;
     }
 
@@ -36,21 +36,21 @@ public class AgentSchedulerMessageProducer {
      * A new transaction will be started for each job execution info.
      * </p>
      *
-     * @param agentScheduleMessageDto agent command info.
+     * @param agentSchedulerMessageDto agent command info.
      */
-    public void sendMessage(AgentScheduleMessageDto agentScheduleMessageDto) {
+    public void sendMessage(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
-        ListenableFuture<SendResult<String, AgentScheduleMessageDto>> future = template.send(agentCommandTopic, agentScheduleMessageDto);
+        ListenableFuture<SendResult<String, AgentSchedulerMessageDto>> future = template.send(agentCommandTopic, agentSchedulerMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
-            public void onSuccess(SendResult<String, AgentScheduleMessageDto> result) {
-                logger.trace(format("Message send to kafka - msg: {0}", agentScheduleMessageDto));
+            public void onSuccess(SendResult<String, AgentSchedulerMessageDto> result) {
+                logger.trace(format("Message send to kafka - msg: {0}", agentSchedulerMessageDto));
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                logger.error(format("Unable to send message - msg: {0}", agentScheduleMessageDto), ex);
+                logger.error(format("Unable to send message - msg: {0}", agentSchedulerMessageDto), ex);
             }
         });
     }

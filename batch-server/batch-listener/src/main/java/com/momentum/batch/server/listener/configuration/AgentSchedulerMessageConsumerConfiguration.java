@@ -1,7 +1,7 @@
 package com.momentum.batch.server.listener.configuration;
 
 import com.momentum.batch.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -35,16 +35,16 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
         return new NewTopic(agentSchedulerTopic, agentSchedulerPartitions, agentSchedulerReplicas);
     }
 
-    public ConsumerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageConsumerFactory() {
+    public ConsumerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageConsumerFactory() {
         Map<String, Object> properties = defaultConsumerConfiguration();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "AgentScheduler");
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
-        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), new JsonDeserializer<>(AgentScheduleMessageDto.class));
+        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), new JsonDeserializer<>(AgentSchedulerMessageDto.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AgentScheduleMessageDto> agentSchedulerMessageListenerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, AgentScheduleMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageListenerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, AgentSchedulerMessageDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(agentSchedulerMessageConsumerFactory());
         //factory.setConcurrency(agentCommandPartitions);
         return factory;

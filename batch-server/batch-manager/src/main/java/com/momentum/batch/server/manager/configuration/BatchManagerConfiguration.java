@@ -1,10 +1,12 @@
-package com.momentum.batch.server.manager.config;
+package com.momentum.batch.server.manager.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
+import com.momentum.batch.util.NetworkUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
@@ -27,6 +29,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 @Configuration
 @EnableWebMvc
 @EnableCaching
@@ -36,6 +40,9 @@ import java.util.concurrent.TimeUnit;
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan("com.momentum.batch.server.database.domain")
 public class BatchManagerConfiguration implements WebMvcConfigurer {
+
+    @Value("${listener.serverName:#{null}}")
+    private String serverName;
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecution", "JobExecutionLog", "JobExecutionParam",
             "StepExecution", "JobSchedule", "JobGroup", "Agent", "AgentGroup", "AgentPerformance", "BatchPerformance", "User", "UserGroup", "UserDetails"};
@@ -76,5 +83,13 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
     @Bean
     AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
+    }
+
+    @Bean
+    public String serverName() {
+        if (isNullOrEmpty(this.serverName)) {
+            this.serverName = NetworkUtils.getHostName();
+        }
+        return serverName;
     }
 }

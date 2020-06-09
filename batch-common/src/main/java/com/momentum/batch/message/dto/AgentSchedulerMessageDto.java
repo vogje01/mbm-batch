@@ -13,12 +13,12 @@ import java.util.Date;
  * @version 0.0.4
  * @since 0.0.1
  */
-public class AgentScheduleMessageDto {
+public class AgentSchedulerMessageDto {
 
     /**
      * Message type
      */
-    private AgentScheduleMessageType type;
+    private AgentSchedulerMessageType type;
     /**
      * Sender of the message
      */
@@ -52,24 +52,24 @@ public class AgentScheduleMessageDto {
      */
     private Date nextFireTime;
 
-    public AgentScheduleMessageDto() {
+    public AgentSchedulerMessageDto() {
         // Intentionally empty
     }
 
-    public AgentScheduleMessageDto(AgentScheduleMessageType type) {
+    public AgentSchedulerMessageDto(AgentSchedulerMessageType type) {
         this.type = type;
     }
 
-    public AgentScheduleMessageDto(AgentScheduleMessageType type, JobScheduleDto jobScheduleDto) {
+    public AgentSchedulerMessageDto(AgentSchedulerMessageType type, JobScheduleDto jobScheduleDto) {
         this.type = type;
         this.jobScheduleDto = jobScheduleDto;
     }
 
-    public AgentScheduleMessageType getType() {
+    public AgentSchedulerMessageType getType() {
         return type;
     }
 
-    public void setType(AgentScheduleMessageType type) {
+    public void setType(AgentSchedulerMessageType type) {
         this.type = type;
     }
 
@@ -141,7 +141,7 @@ public class AgentScheduleMessageDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AgentScheduleMessageDto that = (AgentScheduleMessageDto) o;
+        AgentSchedulerMessageDto that = (AgentSchedulerMessageDto) o;
         return type == that.type &&
                 Objects.equal(sender, that.sender) &&
                 Objects.equal(hostName, that.hostName) &&

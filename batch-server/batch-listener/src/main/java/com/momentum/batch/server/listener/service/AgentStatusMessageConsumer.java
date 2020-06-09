@@ -3,8 +3,8 @@ package com.momentum.batch.server.listener.service;
 import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.BatchPerformanceType;
 import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
-import com.momentum.batch.message.dto.AgentScheduleMessageType;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
@@ -218,12 +218,12 @@ public class AgentStatusMessageConsumer {
                 JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(s);
 
                 // Convert server command
-                AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_SCHEDULE, jobScheduleDto);
-                agentScheduleMessageDto.setHostName(agent.getHostName());
-                agentScheduleMessageDto.setNodeName(agent.getNodeName());
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULE, jobScheduleDto);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
 
                 // Send command
-                agentSchedulerMessageProducer.sendTopic(agentScheduleMessageDto);
+                agentSchedulerMessageProducer.sendTopic(agentSchedulerMessageDto);
                 logger.info(format("Job start command send to agent - nodeName: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
             });
         }

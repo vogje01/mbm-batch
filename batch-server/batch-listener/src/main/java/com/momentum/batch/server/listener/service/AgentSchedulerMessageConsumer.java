@@ -1,6 +1,6 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;
@@ -43,57 +43,57 @@ public class AgentSchedulerMessageConsumer {
      *     </ul>
      * </p>
      *
-     * @param agentScheduleMessageDto agent command data transfer object.
+     * @param agentSchedulerMessageDto agent command data transfer object.
      */
     @KafkaListener(topics = "${kafka.agentScheduler.topic}", containerFactory = "agentSchedulerMessageListenerFactory")
-    public void listen(AgentScheduleMessageDto agentScheduleMessageDto) {
-        logger.info(format("Received agent command - type: {0} nodeName: {1}", agentScheduleMessageDto.getType(), agentScheduleMessageDto.getNodeName()));
-        switch (agentScheduleMessageDto.getType()) {
-            case JOB_EXECUTED -> receivedJobExecuted(agentScheduleMessageDto);
-            case JOB_SCHEDULED -> receivedJobScheduled(agentScheduleMessageDto);
+    public void listen(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+        logger.info(format("Received agent command - type: {0} nodeName: {1}", agentSchedulerMessageDto.getType(), agentSchedulerMessageDto.getNodeName()));
+        switch (agentSchedulerMessageDto.getType()) {
+            case JOB_EXECUTED -> receivedJobExecuted(agentSchedulerMessageDto);
+            case JOB_SCHEDULED -> receivedJobScheduled(agentSchedulerMessageDto);
         }
     }
 
     /**
      * Process job scheduled message.
      *
-     * @param agentScheduleMessageDto agent scheduler message.
+     * @param agentSchedulerMessageDto agent scheduler message.
      */
-    private synchronized void receivedJobScheduled(AgentScheduleMessageDto agentScheduleMessageDto) {
+    private synchronized void receivedJobScheduled(AgentSchedulerMessageDto agentSchedulerMessageDto) {
         logger.debug(format("Job scheduled message received - hostName: {0} nodeName: {1} schedule: {2}",
-                agentScheduleMessageDto.getHostName(), agentScheduleMessageDto.getNodeName(), agentScheduleMessageDto.getJobScheduleName()));
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getJobScheduleName()));
 
         // Get the schedule
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentScheduleMessageDto.getJobScheduleUuid());
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleUuid());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            if (agentScheduleMessageDto.getNextFireTime() != null) {
-                jobSchedule.setNextExecution(agentScheduleMessageDto.getNextFireTime());
+            if (agentSchedulerMessageDto.getNextFireTime() != null) {
+                jobSchedule.setNextExecution(agentSchedulerMessageDto.getNextFireTime());
             }
             jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentScheduleMessageDto.getNextFireTime()));
-        }, () -> logger.error(format("Job schedule not found - name: {0}", agentScheduleMessageDto.getJobScheduleName())));
+            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentSchedulerMessageDto.getNextFireTime()));
+        }, () -> logger.error(format("Job schedule not found - name: {0}", agentSchedulerMessageDto.getJobScheduleName())));
     }
 
     /**
      * Process job executed message.
      *
-     * @param agentScheduleMessageDto agent scheduler message.
+     * @param agentSchedulerMessageDto agent scheduler message.
      */
-    private synchronized void receivedJobExecuted(AgentScheduleMessageDto agentScheduleMessageDto) {
+    private synchronized void receivedJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
         logger.debug(format("Job executed message received - hostName: {0} nodeName: {1} schedule: {2}",
-                agentScheduleMessageDto.getHostName(), agentScheduleMessageDto.getNodeName(), agentScheduleMessageDto.getJobScheduleName()));
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getJobScheduleName()));
 
         // Get the schedule
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentScheduleMessageDto.getJobScheduleUuid());
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleUuid());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            if (agentScheduleMessageDto.getNextFireTime() != null) {
-                jobSchedule.setNextExecution(agentScheduleMessageDto.getNextFireTime());
+            if (agentSchedulerMessageDto.getNextFireTime() != null) {
+                jobSchedule.setNextExecution(agentSchedulerMessageDto.getNextFireTime());
             }
-            if (agentScheduleMessageDto.getPreviousFireTime() != null) {
-                jobSchedule.setLastExecution(agentScheduleMessageDto.getPreviousFireTime());
+            if (agentSchedulerMessageDto.getPreviousFireTime() != null) {
+                jobSchedule.setLastExecution(agentSchedulerMessageDto.getPreviousFireTime());
             }
             jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentScheduleMessageDto.getNextFireTime()));
-        }, () -> logger.error(format("Job schedule not found - name: {0}", agentScheduleMessageDto.getJobScheduleName())));
+            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentSchedulerMessageDto.getNextFireTime()));
+        }, () -> logger.error(format("Job schedule not found - name: {0}", agentSchedulerMessageDto.getJobScheduleName())));
     }
 }

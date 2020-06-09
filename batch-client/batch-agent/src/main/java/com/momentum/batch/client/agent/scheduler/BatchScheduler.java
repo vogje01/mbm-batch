@@ -5,8 +5,8 @@ import com.momentum.batch.domain.AgentStatus;
 import com.momentum.batch.domain.dto.JobDefinitionDto;
 import com.momentum.batch.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.domain.dto.JobScheduleDto;
-import com.momentum.batch.message.dto.AgentScheduleMessageDto;
-import com.momentum.batch.message.dto.AgentScheduleMessageType;
+import com.momentum.batch.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.message.dto.AgentSchedulerMessageType;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -393,12 +393,12 @@ public class BatchScheduler {
 
             logger.info(format("Next execution - next: {0}", next));
 
-            AgentScheduleMessageDto agentScheduleMessageDto = new AgentScheduleMessageDto(AgentScheduleMessageType.JOB_SCHEDULED);
-            agentScheduleMessageDto.setNodeName(nodeName);
-            agentScheduleMessageDto.setHostName(hostName);
-            agentScheduleMessageDto.setJobScheduleUuid(jobSchedule.getId());
-            agentScheduleMessageDto.setNextFireTime(next);
-            agentSchedulerMessageProducer.sendMessage(agentScheduleMessageDto);
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
+            agentSchedulerMessageDto.setNodeName(nodeName);
+            agentSchedulerMessageDto.setHostName(hostName);
+            agentSchedulerMessageDto.setJobScheduleUuid(jobSchedule.getId());
+            agentSchedulerMessageDto.setNextFireTime(next);
+            agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
         } catch (ParseException e) {
             e.printStackTrace();
         }

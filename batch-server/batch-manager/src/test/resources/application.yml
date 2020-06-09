@@ -35,7 +35,7 @@ kafka:
   retentionDays: 1
   deletionDays: 1
   active: true
-  serverCommand:
+  agentScheduler:
     offsetReset: latest
     topic: batchServerCommand
     partitions: 1
