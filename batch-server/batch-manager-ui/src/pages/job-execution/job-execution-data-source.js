@@ -1,14 +1,23 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getList, listItems, listItems1} from "../../utils/server-connection";
+import {getParams} from "../../utils/param-util";
+import {deleteItem, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export function JobExecutionDataSource() {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'startTime', 'desc');
-                return listItems1('jobexecutions' + params, 'jobExecutionDtoes');
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'jobexecutions/' + getParams(loadOptions, 'startTime', 'desc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobExecutionDtoes')
+                    })
+                    .finally(() => EndTimer());
             },
             remove: function (key) {
                 let url = key._links.delete.href;
@@ -22,8 +31,16 @@ export const JobExecutionLogDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, jobExecutionInfo._links.logs.href, 'timestamp', 'desc');
-                return getList(url, 'jobExecutionLogDtoes')
+                StartTimer();
+                let url = jobExecutionInfo._links.logs.href + getParams(loadOptions, 'timestamp', 'desc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobExecutionLogDtoes')
+                    })
+                    .finally(() => EndTimer());
             }
         })
     });
@@ -33,8 +50,16 @@ export const JobExecutionParamDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'keyName');
-                return listItems('jobexecutionparams/byJobId/' + jobExecutionInfo.id + params, 'jobExecutionParamDtoes');
+                StartTimer();
+                let url = jobExecutionInfo._links.params.href + getParams(loadOptions, 'keyName', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobExecutionParamDtoes')
+                    })
+                    .finally(() => EndTimer());
             },
             remove: function (key) {
                 let url = key._links.delete.href;

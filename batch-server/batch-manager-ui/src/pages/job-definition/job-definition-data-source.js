@@ -1,7 +1,8 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {getParams} from "../../utils/param-util";
+import {deleteItem, getItem, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 const getAttributeValue = (jobDefinitionParam, values) => {
     jobDefinitionParam.keyName = values.keyName !== undefined ? values.keyName : jobDefinitionParam.keyName;
@@ -22,8 +23,16 @@ export const JobDefinitionDataSource = () => {
                 return getItem(url);
             },
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobdefinitions' + params, 'jobDefinitionDtoes');
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/' + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then((data) => {
+                        return handleData(data, 'jobDefinitionDtoes')
+                    })
+                    .finally(() => EndTimer());
             },
             insert: function (jobDefinition) {
                 let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
@@ -59,11 +68,18 @@ export const JobDefinitionParamDataSource = (jobDefinition) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (!jobDefinition || !jobDefinition._links) {
-                    return;
-                }
-                let url = mergeParams(loadOptions, jobDefinition._links.params.href, 'name', 'asc');
-                return getList(url, 'jobDefinitionParamDtoes');
+                StartTimer();
+                let url = jobDefinition._links.params.href + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response);
+                    })
+                    .then((data) => {
+                        return handleData(data, 'jobDefinitionParamDtoes');
+                    })
+                    .finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (values) {
                 let jobDefinitionParam = getAttributeValue(values, values);

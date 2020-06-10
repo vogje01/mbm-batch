@@ -1,7 +1,8 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../utils/param-util";
-import {deleteItem, getItem, listItems, listItems1, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, handleData, handleResponse, initGet, updateItem} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const AgentDataSource = () => {
     return new DataSource({
@@ -10,8 +11,17 @@ export const AgentDataSource = () => {
 
             },
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'nodeName', 'asc');
-                return listItems1('agents' + params, 'agentDtoes');
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'agents' + getParams(loadOptions, 'nodeName', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agents');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             update: function (agent, values) {
                 agent.nodeName = values.nodeName !== undefined ? values.nodeName : agent.nodeName;
@@ -32,8 +42,17 @@ export const AgentScheduleDataSource = (agent) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('agents/' + agent.id + '/getSchedules' + params, 'jobScheduleDtoes');
+                StartTimer();
+                let url = agent._links.schedules.href + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of schedules');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobScheduleDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (jobSchedule) {
                 return getItem(agent._links.addJobSchedule.href + jobSchedule.id);

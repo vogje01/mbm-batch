@@ -52,6 +52,7 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
             agentDto.add(linkTo(methodOn(AgentController.class).removeAgentGroup(null, null)).withRel("removeAgentGroup").expand(agentDto.getId(), ""));
 
             // Scheduler links
+            agentDto.add(linkTo(methodOn(AgentController.class).getSchedules(agentDto.getId(), Pageable.unpaged())).withRel("schedules"));
             agentDto.add(linkTo(methodOn(AgentController.class).addSchedule(null, null)).withRel("addJobSchedule").expand(agentDto.getId(), ""));
             agentDto.add(linkTo(methodOn(AgentController.class).removeSchedule(null, null)).withRel("removeJobSchedule").expand(agentDto.getId(), ""));
         } catch (ResourceNotFoundException e) {

@@ -78,7 +78,6 @@ class JobDefinitionParamList extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    id={'jobDefinitionParamsTable'}
                     dataSource={JobDefinitionParamDataSource(this.props.jobDefinition)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}

@@ -171,6 +171,7 @@ public class ModelConverter {
                 .map(this::convertJobGroupToDto)
                 .collect(toList()));*/
 
+        // Add job group
         if (jobDefinition.getJobGroup() != null) {
             jobDefinitionDto.setJobGroupDto(modelMapper.map(jobDefinition.getJobGroup(), JobGroupDto.class));
             jobDefinitionDto.setJobGroupName(jobDefinition.getJobGroup().getName());
@@ -187,7 +188,7 @@ public class ModelConverter {
     }
 
     public JobDefinitionParamDto convertJobDefinitionParamToDto(JobDefinitionParam jobDefinitionParam) {
-        return convertJobDefinitionParamToDto(jobDefinitionParam);
+        return modelMapper.map(jobDefinitionParam, JobDefinitionParamDto.class);
     }
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {

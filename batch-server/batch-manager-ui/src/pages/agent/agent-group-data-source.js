@@ -1,14 +1,24 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList1, insertItem, listItems1, updateItem} from "../../utils/server-connection";
+import {getParams} from "../../utils/param-util";
+import {deleteItem, getItem, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const AgentGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems1('agentgroups' + params, 'agentGroupDtoes');
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'agentgroups' + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agent groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (agentGroup) {
                 let url = process.env.REACT_APP_API_URL + 'agentgroups/insert';
@@ -32,11 +42,17 @@ export const AgentAgentGroupDataSource = (agent) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (agent._links !== undefined) {
-                    let url = agent._links.agentGroups.href;
-                    url = mergeParams(loadOptions, url, 'name', 'asc');
-                    return getList1(url, 'agentGroupDtoes');
-                }
+                StartTimer();
+                let url = agent._links.agentGroups.href + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agent groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (agentGroup) {
                 return getItem(agent._links.addAgentGroup.href + agentGroup.id);
@@ -52,10 +68,17 @@ export const AgentGroupAgentDataSource = (agentGroup) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (!agentGroup._links) return;
-                let url = agentGroup._links.agents.href;
-                url = mergeParams(loadOptions, url, 'nodeName', 'asc');
-                return getList1(url, 'agentDtoes');
+                StartTimer();
+                let url = agentGroup._links.agents.href + getParams(loadOptions, 'nodeName', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agents');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (agent) {
                 return getItem(agentGroup._links.addAgent.href + agent.id);

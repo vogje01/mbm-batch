@@ -25,13 +25,13 @@ const initUpdate = (body) => {
 export const handleResponse = (response, errMsg) => {
     if (response.status !== 200) {
         errorMessage(errMsg + " status: " + response.status + " message: " + response.statusText)
-        return null;
+        return undefined;
     }
     return response.json()
 }
 
 export const handleData = (data, attributes) => {
-    if (data !== undefined) {
+    if (data.page.totalElements > 0) {
         return {
             data: data._embedded[attributes],
             totalCount: data.page.totalElements
@@ -47,22 +47,10 @@ const getList = (url, attributes) => {
     StartTimer();
     return fetch(url, initGet())
         .then(response => {
-            if (response.status !== 200) {
-                throw new Error(response.statusText)
-            }
-            return response.json()
+            return handleResponse(response)
         })
-        .then((data) => {
-            if (data === undefined) {
-                return {
-                    data: [],
-                    totalCount: 0
-                }
-            }
-            return {
-                data: data._embedded ? data._embedded[attributes] : [],
-                totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0
-            };
+        .then(data => {
+            handleData(data)
         }).finally(() => {
             EndTimer();
         });
