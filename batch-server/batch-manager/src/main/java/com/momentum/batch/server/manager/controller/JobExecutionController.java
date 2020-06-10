@@ -18,8 +18,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -74,7 +72,7 @@ public class JobExecutionController {
         Page<JobExecutionInfo> allJobExecutionInfos = jobExecutionService.allJobExecutions(pageable);
         PagedModel<JobExecutionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobExecutionInfoModelAssembler);
         logger.debug(format("Job execution list request finished - count: {0}/{1} {2}",
-                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
         return ResponseEntity.ok(collectionModel);
     }
