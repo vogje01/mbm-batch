@@ -79,7 +79,7 @@ public class JobDefinitionController {
         t.restart();
 
         // Get all job definitions
-        Page<JobDefinition> allJobExecutionInfos = jobDefinitionService.allJobDefinitions(pageable);
+        Page<JobDefinition> allJobExecutionInfos = jobDefinitionService.findAll(pageable);
         PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobDefinitionModelAssembler);
         logger.debug(format("Job definition list request finished - count: {0}/{1} {2}",
                 collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
@@ -117,6 +117,23 @@ public class JobDefinitionController {
             return ResponseEntity.ok(jobDefinitionDto);
         }
         throw new ResourceNotFoundException();
+    }
+
+    /**
+     * Returns a single job definition by name.
+     *
+     * @param jobGroupId job group ID.
+     * @return job definition with given name or error.
+     */
+    @GetMapping(value = "/byJobGroup/{jobGroupId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobDefinitionDto>> findByJobGroup(@RequestParam String jobGroupId, Pageable pageable) {
+
+        t.restart();
+
+        Page<JobDefinition> jobDefinitions = jobDefinitionService.findByJobGroup(jobGroupId, pageable);
+        PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(jobDefinitions, jobDefinitionModelAssembler);
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**

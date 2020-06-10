@@ -113,7 +113,7 @@ public class JobDefinitionControllerTest {
         jobDefinitionDtoList.add(jobDefinition1Dto);
         jobDefinitionDtoList.add(jobDefinition2Dto);
 
-        when(jobDefinitionService.allJobDefinitions(any())).thenReturn(new PageImpl<>(jobDefinitionList));
+        when(jobDefinitionService.findAll(any())).thenReturn(new PageImpl<>(jobDefinitionList));
         when(modelConverter.convertJobDefinitionToDto(any())).thenReturn(jobDefinition1Dto);
         when(modelConverter.convertJobDefinitionToDto(any())).thenReturn(jobDefinition1Dto, jobDefinition2Dto);
 
@@ -130,7 +130,7 @@ public class JobDefinitionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobDefinitionService.allJobDefinitions(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobDefinitionService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobdefinitions?page=0&size=5")) //
                 //.andDo(print())

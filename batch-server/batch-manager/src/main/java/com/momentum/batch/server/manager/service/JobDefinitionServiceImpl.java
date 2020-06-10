@@ -30,15 +30,19 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     private final JobScheduleService jobScheduleService;
 
     @Autowired
-    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository,
-                                    JobScheduleService jobScheduleService) {
+    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobScheduleService = jobScheduleService;
     }
 
     @Override
-    public Page<JobDefinition> allJobDefinitions(Pageable pageable) {
+    public Page<JobDefinition> findAll(Pageable pageable) {
         return jobDefinitionRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<JobDefinition> findByJobGroup(String jobGroupId, Pageable pageable) {
+        return jobDefinitionRepository.findByJobGroup(jobGroupId, pageable);
     }
 
     @Override

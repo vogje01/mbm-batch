@@ -11,13 +11,15 @@ import java.util.Optional;
 
 public interface JobDefinitionService {
 
-    Page<JobDefinition> allJobDefinitions(Pageable pageable);
+    Page<JobDefinition> findAll(Pageable pageable);
 
     long countAll();
 
     JobDefinition getJobDefinition(final String id);
 
     Optional<JobDefinition> findByName(final String name);
+
+    Page<JobDefinition> findByJobGroup(final String jobGroupId, Pageable pageable);
 
     JobDefinition insertJobDefinition(JobDefinition jobDefinition);
 

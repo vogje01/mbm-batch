@@ -3,6 +3,7 @@ package com.momentum.batch.server.manager.converter;
 import com.momentum.batch.common.domain.dto.JobGroupDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.manager.controller.JobDefinitionController;
 import com.momentum.batch.server.manager.controller.JobGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,7 @@ public class JobGroupModelAssembler extends RepresentationModelAssemblerSupport<
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).findById(jobGroupDto.getId())).withSelfRel());
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).update(jobGroupDto.getId(), jobGroupDto)).withRel("update"));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).delete(jobGroupDto.getId())).withRel("delete"));
+            jobGroupDto.add(linkTo(methodOn(JobDefinitionController.class).findByJobGroup(jobGroupDto.getId(), Pageable.unpaged())).withRel("jobDefinitions"));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).addJobDefinition(null, null)).withRel("addJobDefinition").expand(jobGroupDto.getId(), ""));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).removeJobDefinition(null, null)).withRel("removeJobDefinition").expand(jobGroupDto.getId(), ""));
         } catch (ResourceNotFoundException e) {

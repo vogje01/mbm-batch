@@ -112,7 +112,7 @@ public class JobDefinitionControllerCacheTest {
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition2.getId())).isNotNull();
 
         // List invocation
-        Page<JobDefinition> listResult = service.allJobDefinitions(PageRequest.of(0, 10));
+        Page<JobDefinition> listResult = service.findAll(PageRequest.of(0, 10));
         verify(mockJobDefinitionRepository, times(1)).findAll(PageRequest.of(0, 10));
         assertThat(listResult.getTotalElements()).isEqualTo(2L);
         assertThat(listResult.getContent().get(0)).isEqualTo(jobDefinition1);
