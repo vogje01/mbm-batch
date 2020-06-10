@@ -19,7 +19,7 @@ export const navigation = [
                 icon: 'material-icons-outlined ic-step-executions'
             },
             {
-                text: 'Logs',
+                text: 'Execution Logs',
                 path: '/logs',
                 icon: 'material-icons-outlined ic-logs'
             }
