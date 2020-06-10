@@ -196,6 +196,7 @@ public abstract class BatchSchedulerHelper {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
         }
         logger.debug(format("Arguments build - size: {0}", arguments.size()));
+        arguments.forEach(a -> logger.debug(format("Argument list - arg: {0}", a)));
         return arguments;
     }
 

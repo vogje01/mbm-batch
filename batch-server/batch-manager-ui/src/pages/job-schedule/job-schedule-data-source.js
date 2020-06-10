@@ -1,14 +1,14 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../utils/param-util";
-import {deleteItem, getItem, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, insertItem, listItems1, updateItem} from "../../utils/server-connection";
 
 export const JobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules' + params, 'jobScheduleDtoes');
+                return listItems1('jobschedules' + params, 'jobScheduleDtoes');
             },
             insert: function (jobSchedule) {
                 let url = process.env.REACT_APP_API_URL + 'jobschedules/insert';
@@ -34,8 +34,8 @@ export const JobScheduleAgentDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
+                let params = getParams(loadOptions, 'nodeName', 'asc');
+                return listItems1('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
             },
             insert: function (agent) {
                 return getItem(jobSchedule._links.addAgent.href + agent.id);
@@ -52,7 +52,7 @@ export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
+                return listItems1('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
             },
             insert: function (agentGroup) {
                 return getItem(jobSchedule._links.addAgentGroup.href + agentGroup.id);

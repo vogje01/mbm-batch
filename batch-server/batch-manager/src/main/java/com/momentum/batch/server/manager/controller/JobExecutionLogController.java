@@ -2,12 +2,9 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
 import com.momentum.batch.server.manager.converter.JobExecutionLogModelAssembler;
 import com.momentum.batch.server.manager.service.JobExecutionLogService;
-import com.momentum.batch.server.manager.service.JobExecutionService;
-import com.momentum.batch.server.manager.service.StepExecutionService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
@@ -45,25 +42,15 @@ public class JobExecutionLogController {
 
     private final JobExecutionLogService jobExecutionLogService;
 
-    private final JobExecutionService jobExecutionService;
-
-    private final StepExecutionService stepExecutionService;
-
-    private final ModelConverter modelConverter;
-
     private final PagedResourcesAssembler<JobExecutionLog> pagedResourcesAssembler;
 
     private final JobExecutionLogModelAssembler jobExecutionLogModelAssembler;
 
     @Autowired
-    public JobExecutionLogController(JobExecutionService jobExecutionService, StepExecutionService stepExecutionService,
-                                     JobExecutionLogService jobExecutionLogService, ModelConverter modelConverter,
+    public JobExecutionLogController(JobExecutionLogService jobExecutionLogService,
                                      PagedResourcesAssembler<JobExecutionLog> pagedResourcesAssembler,
                                      JobExecutionLogModelAssembler jobExecutionLogModelAssembler) {
-        this.jobExecutionService = jobExecutionService;
-        this.stepExecutionService = stepExecutionService;
         this.jobExecutionLogService = jobExecutionLogService;
-        this.modelConverter = modelConverter;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.jobExecutionLogModelAssembler = jobExecutionLogModelAssembler;
     }
@@ -94,10 +81,11 @@ public class JobExecutionLogController {
      * @return one page of job execution logs.
      */
     @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobExecutionLogDto>> findByJobId(@PathVariable("jobId") String jobId, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<JobExecutionLogDto>> findByJobId(@PathVariable String jobId, Pageable pageable) {
         t.restart();
 
-        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.findAll(pageable);
+        // Get job execution logs
+        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byJobId(jobId, pageable);
         PagedModel<JobExecutionLogDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionLogs, jobExecutionLogModelAssembler);
         logger.debug(format("Job execution log list by job id request finished - count: {0}/{1} {2}",
                 Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));

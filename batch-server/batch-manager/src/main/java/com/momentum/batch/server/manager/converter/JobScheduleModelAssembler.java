@@ -1,12 +1,12 @@
 package com.momentum.batch.server.manager.converter;
 
+import com.momentum.batch.common.domain.dto.AgentDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.manager.controller.AgentController;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
-import com.momentum.batch.server.manager.controller.JobExecutionLogController;
-import com.momentum.batch.server.manager.controller.JobExecutionParamController;
-import com.momentum.batch.server.manager.controller.StepExecutionController;
+import com.momentum.batch.server.manager.controller.JobScheduleController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +40,20 @@ public class JobScheduleModelAssembler extends RepresentationModelAssemblerSuppo
         JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(entity);
 
         try {
-            jobScheduleDto.add(linkTo(methodOn(JobExecutionController.class).findById(entity.getId())).withSelfRel());
-            jobScheduleDto.add(linkTo(methodOn(JobExecutionController.class).delete(entity.getId())).withRel("delete"));
-            jobScheduleDto.add(linkTo(methodOn(JobExecutionController.class).restart(entity.getId())).withRel("restart"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).findById(jobScheduleDto.getId())).withSelfRel());
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).update(jobScheduleDto.getId(), jobScheduleDto)).withRel("update"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).delete(jobScheduleDto.getId())).withRel("delete"));
 
-            jobScheduleDto.add(linkTo(methodOn(StepExecutionController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("byJobId"));
-            jobScheduleDto.add(linkTo(methodOn(JobExecutionParamController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("params"));
-            jobScheduleDto.add(linkTo(methodOn(JobExecutionLogController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("logs"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgents(jobScheduleDto.getId(), Pageable.unpaged())).withRel("agents"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgent(null, null)).withRel("addAgent").expand(jobScheduleDto.getId(), ""));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgent(null, null)).withRel("removeAgent").expand(jobScheduleDto.getId(), ""));
+
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgentGroups(jobScheduleDto.getId(), Pageable.unpaged())).withRel("agentGroups"));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgentGroup(null, null)).withRel("addAgentGroup").expand(jobScheduleDto.getId(), ""));
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgentGroup(null, null)).withRel("removeAgentGroup").expand(jobScheduleDto.getId(), ""));
+
+            jobScheduleDto.add(linkTo(methodOn(AgentController.class).updateAgent(new AgentDto())).withRel("updateAgent"));
+
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
