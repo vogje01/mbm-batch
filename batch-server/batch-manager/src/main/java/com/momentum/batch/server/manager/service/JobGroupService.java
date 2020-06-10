@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface JobGroupService {
 
-    Page<JobGroup> allJobGroups(Pageable pageable);
+    Page<JobGroup> findAll(Pageable pageable);
 
     long countAll();
 
