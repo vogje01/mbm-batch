@@ -1,7 +1,6 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams} from "../../utils/param-util";
-import {deleteItem, getItem, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
 import {EndTimer} from "../../utils/method-timer";
 
 export const UserDataSource = () => {

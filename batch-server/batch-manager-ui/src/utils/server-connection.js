@@ -43,36 +43,23 @@ export const handleData = (data, attributes) => {
     }
 }
 
-const getList = (url, attributes) => {
-    StartTimer();
-    return fetch(url, initGet())
-        .then(response => {
-            return handleResponse(response)
-        })
-        .then(data => {
-            handleData(data)
-        }).finally(() => {
-            EndTimer();
-        });
-};
+export const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
+    let params = '?';
 
-export const getList1 = (url, attributes) => {
-    StartTimer();
-    return fetch(url, initGet())
-        .then(response => {
-            if (response.status !== 200) {
-                throw new Error(response.statusText)
-            }
-            return response.json()
-        })
-        .then((data) => {
-            return {
-                data: data._embedded[attributes],
-                totalCount: data.page.totalElements
-            };
-        }).finally(() => {
-            EndTimer();
-        });
+    if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
+        params += 'page=' + loadOptions.skip / loadOptions.take;
+        params += '&size=' + loadOptions.take;
+    } else {
+        params += 'page=0';
+        params += '&size=-1';
+    }
+
+    if (loadOptions.sort) {
+        params += '&sort=' + loadOptions.sort[0].selector + ',' + (loadOptions.sort[0].desc ? 'desc' : 'asc');
+    } else {
+        params += '&sort=' + defaultSortBy + ',' + defaultSortDir;
+    }
+    return params;
 };
 
 const getItem = (url) => {
@@ -85,51 +72,6 @@ const getItem = (url) => {
             return response.json();
         })
         .finally(() => {
-            EndTimer();
-        });
-};
-
-const listItems = (entity, attributes) => {
-    StartTimer();
-    return fetch(process.env.REACT_APP_API_URL + entity, initGet())
-        .then(response => {
-            if (response.status !== 200) {
-                errorMessage("Could not get list of items.")
-            }
-            return response.json()
-        })
-        .then((data) => {
-            if (data === undefined) {
-                return {
-                    data: [],
-                    totalCount: 0
-                }
-            }
-            return {
-                data: data._embedded ? data._embedded[attributes] : [],
-                totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0,
-                links: data._links ? data._links : []
-            };
-        }).finally(() => {
-            EndTimer();
-        });
-};
-
-const listItems1 = (entity, attributes) => {
-    StartTimer();
-    return fetch(process.env.REACT_APP_API_URL + entity, initGet())
-        .then(response => {
-            if (response.status !== 200) {
-                errorMessage("Could not get list of items.")
-            }
-            return response.json()
-        })
-        .then((data) => {
-            return {
-                data: data._embedded[attributes],
-                totalCount: data.page.totalElements,
-            };
-        }).finally(() => {
             EndTimer();
         });
 };
@@ -180,4 +122,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {getList, deleteItem, insertItem, updateItem, listItems, listItems1, getItem}
+export {deleteItem, insertItem, updateItem, getItem}

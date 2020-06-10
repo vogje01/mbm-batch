@@ -1,7 +1,6 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {deleteItem, getParams, handleData, handleResponse, initGet} from "../../utils/server-connection";
 import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const StepExecutionDataSource = (jobExecutionInfo) => {
@@ -33,7 +32,7 @@ export const StepExecutionLogDataSource = (stepExecutionInfo) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp', 'desc');
+                let url = stepExecutionInfo._links.logs.href + getParams(loadOptions, 'timestamp', 'desc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of step execution logs');
