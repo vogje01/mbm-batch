@@ -33,6 +33,7 @@ public class ModelConverter {
 
     public JobExecutionDto convertJobExecutionToDto(JobExecutionInfo jobExecutionInfo) {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
+        jobExecutionDto.setJobName(jobExecutionInfo.getJobExecutionInstance().getJobName());
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
                 .stream()
                 .map(this::convertJobExecutionParamToDto)
@@ -136,7 +137,7 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public StepExecutionDto convertStepExecutionToDto(StepExecutionInfo stepExecutionInfo) {
         StepExecutionDto stepExecutionDto = modelMapper.map(stepExecutionInfo, StepExecutionDto.class);
-        stepExecutionDto.setJobExecutionDto(convertJobExecutionToDto(stepExecutionInfo.getJobExecutionInfo()));
+        stepExecutionDto.setJobName(stepExecutionInfo.getJobExecutionInfo().getJobExecutionInstance().getJobName());
         return stepExecutionDto;
     }
 

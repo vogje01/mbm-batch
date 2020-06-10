@@ -114,7 +114,7 @@ public class ExecutionParameter {
     }
 
     public static String getJobName(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getJobInstance().getJobName();
+        return stepExecution.getJobExecution().getJobParameters().getString(JOB_NAME);
     }
 
     public static String getJobUuid(StepExecution stepExecution) {

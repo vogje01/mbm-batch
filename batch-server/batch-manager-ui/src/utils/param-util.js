@@ -10,14 +10,9 @@ export const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
     }
 
     if (loadOptions.sort) {
-        params += '&sortBy=' + loadOptions.sort[0].selector;
-        if (loadOptions.sort[0].desc) {
-            params += '&sortDir=desc';
-        } else {
-            params += '&sortDir=asc';
-        }
+        params += '&sort=' + loadOptions.sort[0].selector + ',' + (loadOptions.sort[0].desc ? 'desc' : 'asc');
     } else {
-        params += '&sortBy=' + defaultSortBy + '&sortDir=' + defaultSortDir;
+        params += '&sort=' + defaultSortBy + ',' + defaultSortDir;
     }
     return params;
 };
@@ -31,15 +26,9 @@ export const mergeParams = (loadOptions, url, defaultSortBy, defaultSortDir) => 
     }
 
     if (loadOptions.sort) {
-        newUrl.searchParams.set('sortBy', loadOptions.sort[0].selector);
-        if (loadOptions.sort[0].desc) {
-            newUrl.searchParams.set('sortDir', 'desc');
-        } else {
-            newUrl.searchParams.set('sortDir', 'asc');
-        }
+        newUrl.searchParams.set('sort', loadOptions.sort[0].selector + ',' + (loadOptions.sort[0].desc ? 'desc' : 'asc'));
     } else {
-        newUrl.searchParams.set('sortBy', defaultSortBy);
-        newUrl.searchParams.set('sortDir', defaultSortDir);
+        newUrl.searchParams.set('sort', defaultSortBy + ',' + defaultSortDir);
     }
     return newUrl.toString();
 };

@@ -66,6 +66,7 @@ public class JobExecutionController {
      */
     @GetMapping(produces = {"application/hal+json"})
     public ResponseEntity<PagedModel<JobExecutionDto>> findAll(Pageable pageable) {
+
         t.restart();
 
         // Get all job execution

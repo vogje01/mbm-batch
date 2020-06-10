@@ -51,9 +51,7 @@ public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerS
     @Override
     public @NotNull CollectionModel<JobExecutionLogDto> toCollectionModel(@NotNull Iterable<? extends JobExecutionLog> entities) {
         CollectionModel<JobExecutionLogDto> jobExecutionLogDtos = super.toCollectionModel(entities);
-
         jobExecutionLogDtos.add(linkTo(methodOn(JobExecutionLogController.class).findAll(null)).withSelfRel());
-
         return jobExecutionLogDtos;
     }
 }
