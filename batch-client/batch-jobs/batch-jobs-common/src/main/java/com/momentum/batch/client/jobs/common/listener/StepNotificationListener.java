@@ -14,8 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 import static com.momentum.batch.common.domain.JobStatusType.STEP_FINISHED;
 import static com.momentum.batch.common.domain.JobStatusType.STEP_START;
@@ -44,8 +43,6 @@ public class StepNotificationListener implements StepExecutionListener {
 
     private StepExecutionDto stepExecutionDto = new StepExecutionDto();
 
-    private final Map<String, Long> totalCounts = new HashMap<>();
-
     @Autowired
     public StepNotificationListener(BatchLogger logger, ModelConverter modelConverter, JobStatusProducer jobStatusProducer) {
         this.logger = logger;
@@ -54,17 +51,13 @@ public class StepNotificationListener implements StepExecutionListener {
     }
 
     public void setTotalCount(String stepName, long totalCount) {
-        this.totalCounts.put(stepName, totalCount);
-    }
-
-    public void saveTotalCount(StepExecution stepExecution) {
-        stepExecution.getExecutionContext().putLong(STEP_TOTAL_COUNT, totalCounts.getOrDefault(stepExecution.getStepName(), 0L));
+        stepExecutionDto.setTotalCount(totalCount);
     }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
-        saveTotalCount(stepExecution);
+        stepExecution.getExecutionContext().put(STEP_UUID, UUID.randomUUID().toString());
 
         logger.setJobUuid(getJobUuid(stepExecution));
         logger.setJobName(getJobName(stepExecution));
@@ -127,9 +120,9 @@ public class StepNotificationListener implements StepExecutionListener {
         stepExecutionDto.setJobExecutionId(getJobExecutionId(stepExecution));
         stepExecutionDto.setHostName(getHostName(stepExecution));
         stepExecutionDto.setNodeName(getNodeName(stepExecution));
+        stepExecutionDto.setId(getStepUuid(stepExecution));
         stepExecutionDto.setStepName(getStepName(stepExecution));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(stepExecution));
-        stepExecutionDto.setTotalCount(totalCounts.get(stepExecution.getStepName()));
         stepExecutionDto.setRunningTime(DateTimeUtils.getRunningTime(stepExecution));
     }
 
