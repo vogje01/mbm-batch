@@ -1,14 +1,14 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getList, getList1, insertItem, listItems1, updateItem} from "../../utils/server-connection";
 
 export const AgentGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('agentgroups' + params, 'agentGroupDtoes');
+                return listItems1('agentgroups' + params, 'agentGroupDtoes');
             },
             insert: function (agentGroup) {
                 let url = process.env.REACT_APP_API_URL + 'agentgroups/insert';
@@ -35,7 +35,7 @@ export const AgentAgentGroupDataSource = (agent) => {
                 if (agent._links !== undefined) {
                     let url = agent._links.agentGroups.href;
                     url = mergeParams(loadOptions, url, 'name', 'asc');
-                    return getList(url, 'agentGroupDtoes');
+                    return getList1(url, 'agentGroupDtoes');
                 }
             },
             insert: function (agentGroup) {

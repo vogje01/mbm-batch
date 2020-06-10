@@ -70,7 +70,7 @@ public class JobExecutionController {
     public ResponseEntity<PagedModel<JobExecutionDto>> findAll(Pageable pageable) {
         t.restart();
 
-        // Get logs
+        // Get all job execution
         Page<JobExecutionInfo> allJobExecutionInfos = jobExecutionService.allJobExecutions(pageable);
         PagedModel<JobExecutionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobExecutionInfoModelAssembler);
         logger.debug(format("Job execution list request finished - count: {0}/{1} {2}",

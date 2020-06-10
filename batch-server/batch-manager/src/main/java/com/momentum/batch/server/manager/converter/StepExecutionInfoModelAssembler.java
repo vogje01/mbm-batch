@@ -43,12 +43,26 @@ public class StepExecutionInfoModelAssembler extends RepresentationModelAssemble
         stepExecutionDto.setHostName(entity.getHostName());
         stepExecutionDto.setNodeName(entity.getNodeName());
         stepExecutionDto.setJobName(entity.getJobExecutionInfo().getJobExecutionInstance().getJobName());
+        stepExecutionDto.setStepName(entity.getStepName());
+        stepExecutionDto.setTotalCount(entity.getTotalCount());
         stepExecutionDto.setStatus(entity.getStatus());
         stepExecutionDto.setStepExecutionId(entity.getStepExecutionId());
         stepExecutionDto.setStartTime(entity.getStartTime());
         stepExecutionDto.setEndTime(entity.getEndTime());
         stepExecutionDto.setLastUpdated(entity.getLastUpdated());
         stepExecutionDto.setRunningTime(entity.getRunningTime());
+
+        stepExecutionDto.setReadCount(entity.getReadCount());
+        stepExecutionDto.setReadSkipCount(entity.getReadSkipCount());
+        stepExecutionDto.setWriteCount(entity.getWriteCount());
+        stepExecutionDto.setWriteSkipCount(entity.getWriteSkipCount());
+        stepExecutionDto.setFilterCount(entity.getFilterCount());
+        stepExecutionDto.setCommitCount(entity.getCommitCount());
+        stepExecutionDto.setRollbackCount(entity.getRollbackCount());
+        stepExecutionDto.setProcessSkipCount(entity.getProcessSkipCount());
+
+        stepExecutionDto.setExitCode(entity.getExitCode());
+        stepExecutionDto.setExitMessage(entity.getExitMessage());
 
         stepExecutionDto.setCreatedAt(entity.getCreatedAt());
         stepExecutionDto.setCreatedBy(entity.getCreatedBy());

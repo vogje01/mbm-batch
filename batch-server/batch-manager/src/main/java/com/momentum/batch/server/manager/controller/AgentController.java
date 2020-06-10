@@ -3,24 +3,27 @@ package com.momentum.batch.server.manager.controller;
 import com.momentum.batch.common.domain.dto.AgentDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.manager.converter.AgentModelAssembler;
+import com.momentum.batch.server.manager.converter.JobScheduleModelAssembler;
 import com.momentum.batch.server.manager.service.AgentService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -43,11 +46,17 @@ public class AgentController {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentController.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
-    private AgentService agentService;
+    private final AgentService agentService;
 
-    private ModelConverter modelConverter;
+    private final PagedResourcesAssembler<Agent> agentPagedResourcesAssembler;
+
+    private final AgentModelAssembler agentModelAssembler;
+
+    private final PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler;
+
+    private final JobScheduleModelAssembler jobScheduleModelAssembler;
 
     /**
      * Constructor.
@@ -55,9 +64,13 @@ public class AgentController {
      * @param agentService service implementation.
      */
     @Autowired
-    public AgentController(AgentService agentService, ModelConverter modelConverter) {
+    public AgentController(AgentService agentService, PagedResourcesAssembler<Agent> agentPagedResourcesAssembler, AgentModelAssembler agentModelAssembler,
+                           PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler, JobScheduleModelAssembler jobScheduleModelAssembler) {
         this.agentService = agentService;
-        this.modelConverter = modelConverter;
+        this.agentPagedResourcesAssembler = agentPagedResourcesAssembler;
+        this.agentModelAssembler = agentModelAssembler;
+        this.jobSchedulePagedResourcesAssembler = jobSchedulePagedResourcesAssembler;
+        this.jobScheduleModelAssembler = jobScheduleModelAssembler;
     }
 
     /**
@@ -66,26 +79,17 @@ public class AgentController {
      * @return on page of job definitions.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<AgentDto>> findAll(@RequestParam(value = "page") int page, @RequestParam("size") int size,
-                                                             @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                             @RequestParam(value = "sortDir", required = false) String sortDir) {
+    public ResponseEntity<PagedModel<AgentDto>> findAll(Pageable pageable) {
 
         t.restart();
 
-        // Get paging parameters
-        long totalCount = agentService.countAll();
-        Page<Agent> allAgents = agentService.findAll(PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all agents
+        Page<Agent> allAgents = agentService.findAll(pageable);
+        PagedModel<AgentDto> collectionModel = agentPagedResourcesAssembler.toModel(allAgents, agentModelAssembler);
+        logger.debug(format("Agent list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Convert to DTOs
-        List<AgentDto> agentDtoes = modelConverter.convertAgentToDto(allAgents.toList(), totalCount);
-
-        // Add links
-        agentDtoes.forEach(a -> addLinks(a, page, size, sortBy, sortDir));
-        Link self = linkTo(methodOn(AgentController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-
-        logger.debug(format("Finished find all agent request- count: {0} {1}", allAgents.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(agentDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -103,7 +107,7 @@ public class AgentController {
 
         // Convert to DTOs
         if (agentOptional.isPresent()) {
-            AgentDto agentDto = modelConverter.convertAgentToDto(agentOptional.get());
+            AgentDto agentDto = agentModelAssembler.toModel(agentOptional.get());
 
             // Add links
             addLinks(agentDto);
@@ -137,28 +141,17 @@ public class AgentController {
      * @return on page of agents.
      */
     @GetMapping(value = "/{id}/byAgentGroup", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<AgentDto>> findByAgentGroup(@PathVariable String id, @RequestParam(value = "page") int page,
-                                                                      @RequestParam("size") int size,
-                                                                      @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                      @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<AgentDto>> findByAgentGroup(@PathVariable String id, Pageable pageable) throws ResourceNotFoundException {
 
         t.restart();
 
-        // Get paging parameters
-        long totalCount = agentService.countByAgentGroup(id);
-        Page<Agent> agentGroupAgents = agentService.findByAgentGroup(id, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all agents  by agent group
+        Page<Agent> allAgents = agentService.findByAgentGroup(id, pageable);
+        PagedModel<AgentDto> collectionModel = agentPagedResourcesAssembler.toModel(allAgents, agentModelAssembler);
+        logger.debug(format("Agent list by agent group request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Convert to DTOs
-        List<AgentDto> agentAgentGroupDtoes = modelConverter.convertAgentToDto(agentGroupAgents.toList(), totalCount);
-
-        // Add links
-        agentAgentGroupDtoes.forEach(this::addLinks);
-
-        // Add self link
-        Link self = linkTo(methodOn(AgentGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Finished find by agent request- count: {0} {1}", agentGroupAgents.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(agentAgentGroupDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -171,16 +164,11 @@ public class AgentController {
     public ResponseEntity<AgentDto> updateAgent(@RequestBody AgentDto agentDto) throws ResourceNotFoundException {
 
         t.restart();
-        logger.debug(format("Starting agent update request - id: {0}", agentDto.getId()));
-        RestPreconditions.checkFound(agentService.findById(agentDto.getId()));
 
-        Agent agent = modelConverter.convertAgentToEntity(agentDto);
+        Agent agent = agentModelAssembler.toEntity(agentDto);
         agent = agentService.updateAgent(agent);
-        agentDto = modelConverter.convertAgentToDto(agent);
-
-        // Add self link
-        addLinks(agentDto);
-        logger.debug(format("Finished agent update request - id: {0} {1}", agent.getId(), t.elapsedStr()));
+        agentDto = agentModelAssembler.toModel(agent);
+        logger.debug(format("Finished agent update request - hostName: {0} nodeName: {1} {2}", agent.getHostName(), agent.getNodeName(), t.elapsedStr()));
 
         return ResponseEntity.ok(agentDto);
     }
@@ -194,8 +182,8 @@ public class AgentController {
     public ResponseEntity<Void> deleteAgent(@PathVariable String agentId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(agentService.findById(agentId));
 
+        RestPreconditions.checkFound(agentService.findById(agentId));
         agentService.deleteAgent(agentId);
 
         logger.debug(format("Finished delete agent request - id: {0} {1}", agentId, t.elapsedStr()));
@@ -212,14 +200,10 @@ public class AgentController {
     public ResponseEntity<AgentDto> addAgentGroup(@PathVariable String agentId, @PathVariable String agentGroupId) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(agentService.findById(agentId));
 
         // Add agent group to agent
         Agent agent = agentService.addAgentGroup(agentId, agentGroupId);
-        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
-
-        // Add link
-        addLinks(agentDto);
+        AgentDto agentDto = agentModelAssembler.toModel(agent);
         logger.debug(format("Finished add agent group to agent request - agentId: {0} agentGroupId: {1} {2}", agentId, agentGroupId, t.elapsedStr()));
 
         return ResponseEntity.ok(agentDto);
@@ -238,7 +222,7 @@ public class AgentController {
 
         // Remove agent group from agent
         Agent agent = agentService.removeAgentGroup(agentId, agentGroupId);
-        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
+        AgentDto agentDto = agentModelAssembler.toModel(agent);
 
         // Add link
         addLinks(agentDto);
@@ -255,27 +239,18 @@ public class AgentController {
      * @throws ResourceNotFoundException in case the job schedule is not existing.
      */
     @GetMapping(value = "/{agentId}/getSchedules", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobScheduleDto>> getSchedules(@PathVariable("agentId") String agentId,
-                                                                        @RequestParam(value = "page", required = false) int page,
-                                                                        @RequestParam(value = "size", required = false) int size,
-                                                                        @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                        @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+    public ResponseEntity<CollectionModel<JobScheduleDto>> getSchedules(@PathVariable("agentId") String agentId, Pageable pageable) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(agentService.findById(agentId));
 
-        long totalCount = agentService.countSchedules(agentId);
-        Page<JobSchedule> schedules = agentService.getSchedules(agentId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        Page<JobSchedule> schedules = agentService.getSchedules(agentId, pageable);
 
-        List<JobScheduleDto> jobScheduleDtoes = modelConverter.convertJobScheduleToDto(schedules.toList(), totalCount);
+        // TODO: do it!
+        PagedModel<JobScheduleDto> collectionModel = jobSchedulePagedResourcesAssembler.toModel(schedules, jobScheduleModelAssembler);
+        logger.debug(format("Job schedules by agent list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Add links
-        //jobScheduleDtoes.forEach(this::addAgentLinks);
-        logger.debug(format("Job schedule list request finished - count: {0} {1}", jobScheduleDtoes.size(), t.elapsedStr()));
-
-        // Add list link
-        Link self = linkTo(methodOn(AgentController.class).getSchedules(agentId, page, size, sortBy, sortDir)).withSelfRel();
-        return ResponseEntity.ok(new CollectionModel<>(jobScheduleDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -291,7 +266,7 @@ public class AgentController {
 
         // Add job schedule to agent.
         Agent agent = agentService.addSchedule(agentId, jobScheduleId);
-        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
+        AgentDto agentDto = agentModelAssembler.toModel(agent);
 
         // Add link
         addLinks(agentDto);
@@ -313,7 +288,7 @@ public class AgentController {
 
         // Remove job schedule from agent
         Agent agent = agentService.removeSchedule(agentId, jobScheduleId);
-        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
+        AgentDto agentDto = agentModelAssembler.toModel(agent);
 
         // Add link
         addLinks(agentDto);
@@ -334,7 +309,7 @@ public class AgentController {
 
         // Remove job schedule from agent
         Agent agent = agentService.pauseAgent(agentId);
-        AgentDto agentDto = modelConverter.convertAgentToDto(agent);
+        AgentDto agentDto = agentModelAssembler.toModel(agent);
 
         // Add link
         addLinks(agentDto);
@@ -365,24 +340,6 @@ public class AgentController {
             // Scheduler links
             agentDto.add(linkTo(methodOn(AgentController.class).addSchedule(null, null)).withRel("addJobSchedule").expand(agentDto.getId(), ""));
             agentDto.add(linkTo(methodOn(AgentController.class).removeSchedule(null, null)).withRel("removeJobSchedule").expand(agentDto.getId(), ""));
-        } catch (ResourceNotFoundException e) {
-            logger.error(format("Could not add links to DTO - id: {0}", agentDto.getId()), e);
-        }
-    }
-
-    /**
-     * Add HATOAS links.
-     *
-     * @param agentDto job definition data transfer object.
-     * @param page     page number.
-     * @param size     page size.
-     * @param sortBy   sort attribute.
-     * @param sortDir  sort direction.
-     */
-    private void addLinks(AgentDto agentDto, int page, int size, String sortBy, String sortDir) {
-        addLinks(agentDto);
-        try {
-            agentDto.add(linkTo(methodOn(AgentGroupController.class).findByAgent(agentDto.getId(), page, size, sortBy, sortDir)).withRel("agentGroups"));
         } catch (ResourceNotFoundException e) {
             logger.error(format("Could not add links to DTO - id: {0}", agentDto.getId()), e);
         }

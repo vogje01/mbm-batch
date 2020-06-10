@@ -47,6 +47,25 @@ const getList = (url, attributes) => {
         });
 };
 
+export const getList1 = (url, attributes) => {
+    StartTimer();
+    return fetch(url, initGet())
+        .then(response => {
+            if (response.status !== 200) {
+                throw new Error(response.statusText)
+            }
+            return response.json()
+        })
+        .then((data) => {
+            return {
+                data: data._embedded[attributes],
+                totalCount: data.page.totalElements
+            };
+        }).finally(() => {
+            EndTimer();
+        });
+};
+
 const getItem = (url) => {
     StartTimer();
     return fetch(url, initGet())

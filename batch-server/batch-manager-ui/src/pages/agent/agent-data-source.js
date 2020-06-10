@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams} from "../../utils/param-util";
-import {deleteItem, getItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, listItems, listItems1, updateItem} from "../../utils/server-connection";
 
 export const AgentDataSource = () => {
     return new DataSource({
@@ -11,7 +11,7 @@ export const AgentDataSource = () => {
             },
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'nodeName', 'asc');
-                return listItems('agents' + params, 'agentDtoes');
+                return listItems1('agents' + params, 'agentDtoes');
             },
             update: function (agent, values) {
                 agent.nodeName = values.nodeName !== undefined ? values.nodeName : agent.nodeName;
