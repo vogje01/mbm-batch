@@ -33,10 +33,9 @@ public abstract class BatchSchedulerHelper {
     }
 
     public JobKey findJob(JobDefinitionDto jobDefinitionDto) {
-        AtomicReference<JobKey> jobKey = null;
+        AtomicReference<JobKey> jobKey = new AtomicReference<>(null);
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
             if (job.getGroup().equals(jobDefinitionDto.getJobGroupName()) && job.getName().equals(jobDefinitionDto.getName())) {
-                assert jobKey != null;
                 jobKey.set(job);
             }
         }));
