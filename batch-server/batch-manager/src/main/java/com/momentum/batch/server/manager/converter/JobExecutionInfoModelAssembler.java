@@ -18,8 +18,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
- * @since 0.0.1
+ * @version 0.0.4
+ * @since 0.0.4
  */
 @Component
 public class JobExecutionInfoModelAssembler extends RepresentationModelAssemblerSupport<JobExecutionInfo, JobExecutionDto> {
@@ -31,18 +31,6 @@ public class JobExecutionInfoModelAssembler extends RepresentationModelAssembler
     @Override
     public @NotNull JobExecutionDto toModel(@NotNull JobExecutionInfo entity) {
         JobExecutionDto jobExecutionDto = instantiateModel(entity);
-
-        try {
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(entity.getId())).withSelfRel());
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).delete(entity.getId())).withRel("delete"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).restart(entity.getId())).withRel("restart"));
-
-            jobExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("byJobId"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionParamController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("params"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionLogController.class).findByJobId(entity.getId(), Pageable.unpaged())).withRel("logs"));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
 
         jobExecutionDto.setId(entity.getId());
         jobExecutionDto.setHostName(entity.getHostName());
@@ -66,15 +54,25 @@ public class JobExecutionInfoModelAssembler extends RepresentationModelAssembler
         jobExecutionDto.setModifiedAt(entity.getModifiedAt());
         jobExecutionDto.setModifiedBy(entity.getModifiedBy());
 
+        try {
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(jobExecutionDto.getId())).withSelfRel());
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).delete(jobExecutionDto.getId())).withRel("delete"));
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).restart(jobExecutionDto.getId())).withRel("restart"));
+
+            jobExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findByJobId(jobExecutionDto.getId(), Pageable.unpaged())).withRel("byJobId"));
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionDto.getId(), Pageable.unpaged())).withRel("params"));
+            jobExecutionDto.add(linkTo(methodOn(JobExecutionLogController.class).findByJobId(jobExecutionDto.getId(), Pageable.unpaged())).withRel("logs"));
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+
         return jobExecutionDto;
     }
 
     @Override
     public @NotNull CollectionModel<JobExecutionDto> toCollectionModel(@NotNull Iterable<? extends JobExecutionInfo> entities) {
         CollectionModel<JobExecutionDto> JobExecutionDtos = super.toCollectionModel(entities);
-
-        JobExecutionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null)).withSelfRel());
-
+        JobExecutionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(Pageable.unpaged())).withSelfRel());
         return JobExecutionDtos;
     }
 }

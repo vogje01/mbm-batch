@@ -16,8 +16,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
- * @since 0.0.1
+ * @version 0.0.4
+ * @since 0.0.4
  */
 @Component
 public class AgentGroupModelAssembler extends RepresentationModelAssemblerSupport<AgentGroup, AgentGroupDto> {
@@ -30,6 +30,17 @@ public class AgentGroupModelAssembler extends RepresentationModelAssemblerSuppor
     public @NotNull AgentGroupDto toModel(@NotNull AgentGroup entity) {
 
         AgentGroupDto agentGroupDto = instantiateModel(entity);
+
+        agentGroupDto.setId(entity.getId());
+        agentGroupDto.setName(entity.getName());
+        agentGroupDto.setDescription(entity.getDescription());
+        agentGroupDto.setActive(entity.isActive());
+
+        agentGroupDto.setCreatedAt(entity.getCreatedAt());
+        agentGroupDto.setCreatedBy(entity.getCreatedBy());
+        agentGroupDto.setModifiedAt(entity.getModifiedAt());
+        agentGroupDto.setModifiedBy(entity.getModifiedBy());
+
         try {
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).findById(agentGroupDto.getId())).withSelfRel());
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).update(agentGroupDto.getId(), agentGroupDto)).withRel("update"));
@@ -41,15 +52,6 @@ public class AgentGroupModelAssembler extends RepresentationModelAssemblerSuppor
             e.printStackTrace();
         }
 
-        agentGroupDto.setId(entity.getId());
-        agentGroupDto.setName(entity.getName());
-        agentGroupDto.setDescription(entity.getDescription());
-        agentGroupDto.setActive(entity.isActive());
-
-        agentGroupDto.setCreatedAt(entity.getCreatedAt());
-        agentGroupDto.setCreatedBy(entity.getCreatedBy());
-        agentGroupDto.setModifiedAt(entity.getModifiedAt());
-        agentGroupDto.setModifiedBy(entity.getModifiedBy());
         return agentGroupDto;
     }
 

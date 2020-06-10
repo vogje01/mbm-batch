@@ -17,8 +17,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
- * @since 0.0.1
+ * @version 0.0.4
+ * @since 0.0.4
  */
 @Component
 public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Agent, AgentDto> {
@@ -30,6 +30,20 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
     @Override
     public @NotNull AgentDto toModel(@NotNull Agent entity) {
         AgentDto agentDto = instantiateModel(entity);
+
+        agentDto.setId(entity.getId());
+        agentDto.setHostName(entity.getHostName());
+        agentDto.setNodeName(entity.getNodeName());
+        agentDto.setSystemLoad(entity.getSystemLoad());
+        agentDto.setAvgSystemLoadDay(entity.getAvgSystemLoadDay());
+        agentDto.setAvgSystemLoadWeek(entity.getAvgSystemLoadWeek());
+        agentDto.setActive(entity.getActive());
+        agentDto.setStatus(entity.getStatus().name());
+
+        agentDto.setCreatedAt(entity.getCreatedAt());
+        agentDto.setCreatedBy(entity.getCreatedBy());
+        agentDto.setModifiedAt(entity.getModifiedAt());
+        agentDto.setModifiedBy(entity.getModifiedBy());
 
         try {
             // Agent links
@@ -52,19 +66,6 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
             e.printStackTrace();
         }
 
-        agentDto.setId(entity.getId());
-        agentDto.setHostName(entity.getHostName());
-        agentDto.setNodeName(entity.getNodeName());
-        agentDto.setSystemLoad(entity.getSystemLoad());
-        agentDto.setAvgSystemLoadDay(entity.getAvgSystemLoadDay());
-        agentDto.setAvgSystemLoadWeek(entity.getAvgSystemLoadWeek());
-        agentDto.setActive(entity.getActive());
-        agentDto.setStatus(entity.getStatus().name());
-
-        agentDto.setCreatedAt(entity.getCreatedAt());
-        agentDto.setCreatedBy(entity.getCreatedBy());
-        agentDto.setModifiedAt(entity.getModifiedAt());
-        agentDto.setModifiedBy(entity.getModifiedBy());
         return agentDto;
     }
 

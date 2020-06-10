@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.AgentGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.manager.converter.AgentGroupModelAssembler;
 import com.momentum.batch.server.manager.service.AgentGroupService;
@@ -43,8 +42,6 @@ public class AgentGroupController {
 
     private final AgentGroupService agentGroupService;
 
-    private final ModelConverter modelConverter;
-
     private final PagedResourcesAssembler<AgentGroup> pagedResourcesAssembler;
 
     private final AgentGroupModelAssembler agentGroupModelAssembler;
@@ -56,11 +53,10 @@ public class AgentGroupController {
      */
     @Autowired
     public AgentGroupController(AgentGroupService agentGroupService, PagedResourcesAssembler<AgentGroup> pagedResourcesAssembler,
-                                AgentGroupModelAssembler agentGroupModelAssembler, ModelConverter modelConverter) {
+                                AgentGroupModelAssembler agentGroupModelAssembler) {
         this.agentGroupService = agentGroupService;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.agentGroupModelAssembler = agentGroupModelAssembler;
-        this.modelConverter = modelConverter;
     }
 
     /**
@@ -72,7 +68,7 @@ public class AgentGroupController {
      */
     @Cacheable(cacheNames = "AgentGroup")
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<AgentGroupDto>> findAll(Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<AgentGroupDto>> findAll(Pageable pageable) {
         t.restart();
 
         // Get all agent groups

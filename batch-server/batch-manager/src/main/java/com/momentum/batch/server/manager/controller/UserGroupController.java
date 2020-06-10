@@ -2,28 +2,27 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.manager.converter.UserGroupModelAssembler;
 import com.momentum.batch.server.manager.service.UserGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * UserGroup  REST controller.
@@ -45,77 +44,63 @@ public class UserGroupController {
 
     private final UserGroupService userGroupService;
 
-    private final ModelConverter modelConverter;
+    private final PagedResourcesAssembler<UserGroup> userGroupPagedResourcesAssembler;
+
+    private final UserGroupModelAssembler userGroupModelAssembler;
 
     /**
      * Constructor.
      *
-     * @param userGroupService user group service implementation.
-     * @param modelConverter   model converter.
+     * @param userGroupService                 user group service implementation.
+     * @param userGroupPagedResourcesAssembler paging resource assembler.
+     * @param userGroupModelAssembler          user group assembler.
      */
     @Autowired
-    public UserGroupController(UserGroupService userGroupService, ModelConverter modelConverter) {
+    public UserGroupController(UserGroupService userGroupService, PagedResourcesAssembler<UserGroup> userGroupPagedResourcesAssembler, UserGroupModelAssembler userGroupModelAssembler) {
         this.userGroupService = userGroupService;
-        this.modelConverter = modelConverter;
+        this.userGroupPagedResourcesAssembler = userGroupPagedResourcesAssembler;
+        this.userGroupModelAssembler = userGroupModelAssembler;
     }
 
     /**
      * Returns one page of job definitions.
      *
+     * @param pageable paging parameters.
      * @return on page of job definitions.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<UserGroupDto>> findAll(@RequestParam(value = "page") int page, @RequestParam("size") int size,
-                                                                 @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                 @RequestParam(value = "sortDir", required = false) String sortDir) {
+    public ResponseEntity<PagedModel<UserGroupDto>> findAll(Pageable pageable) {
 
         t.restart();
 
-        // Get paging parameters
-        long totalCount = userGroupService.countAll();
-        Page<UserGroup> allUserGroups = userGroupService.findAll(PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all user groups
+        Page<UserGroup> allUserGroups = userGroupService.findAll(pageable);
+        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(allUserGroups, userGroupModelAssembler);
+        logger.debug(format("User group list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Convert to DTOs
-        List<UserGroupDto> userGroupDtoes = modelConverter.convertUserGroupToDto(allUserGroups.toList(), totalCount);
-
-        // Add links
-        userGroupDtoes.forEach(u -> addLinks(u, page, size, sortBy, sortDir));
-
-        // Add self link
-        Link self = linkTo(methodOn(UserGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Finished find all userGroup request- count: {0} {1}", allUserGroups.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(userGroupDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
      * Returns one page of user groups.
      *
+     * @param userGroupId user group ID.
+     * @param pageable    paging parameters.
      * @return on page of user groups.
      */
     @GetMapping(value = "/{userGroupId}/byUser", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<UserGroupDto>> findByUser(@PathVariable String userGroupId,
-                                                                    @RequestParam(value = "page") int page, @RequestParam("size") int size,
-                                                                    @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                    @RequestParam(value = "sortDir", required = false) String sortDir) {
+    public ResponseEntity<CollectionModel<UserGroupDto>> findByUser(@PathVariable String userGroupId, Pageable pageable) {
 
         t.restart();
 
-        // Get paging parameters
-        long totalCount = userGroupService.countByUser(userGroupId);
-        Page<UserGroup> userUserGroups = userGroupService.findByUser(userGroupId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get user groups of user
+        Page<UserGroup> allUserGroups = userGroupService.findByUser(userGroupId, pageable);
+        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(allUserGroups, userGroupModelAssembler);
+        logger.debug(format("User group of user list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Convert to DTOs
-        List<UserGroupDto> userUserGroupDtoes = modelConverter.convertUserGroupToDto(userUserGroups.toList(), totalCount);
-
-        // Add links
-        userUserGroupDtoes.forEach(this::addLinks);
-
-        // Add self link
-        Link self = linkTo(methodOn(UserGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Finished find by user request- count: {0} {1}", userUserGroups.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(userUserGroupDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -128,18 +113,13 @@ public class UserGroupController {
 
         t.restart();
 
-        // Get paging parameters
+        // Get user group
         Optional<UserGroup> userGroupOptional = userGroupService.findById(userGroupId);
 
         // Convert to DTOs
         if (userGroupOptional.isPresent()) {
-            UserGroupDto userGroupDto = modelConverter.convertUserGroupToDto(userGroupOptional.get());
-
-            // Add links
-            addLinks(userGroupDto);
-
+            UserGroupDto userGroupDto = userGroupModelAssembler.toModel(userGroupOptional.get());
             logger.debug(format("Finished find all userGroup request - id: {0} {1}", userGroupId, t.elapsedStr()));
-
             return ResponseEntity.ok(userGroupDto);
         }
         throw new ResourceNotFoundException();
@@ -160,13 +140,9 @@ public class UserGroupController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userGroupDto.setVersion(0L);
-        UserGroup userGroup = modelConverter.convertUserGroupToEntity(userGroupDto);
+        UserGroup userGroup = userGroupModelAssembler.toEntity(userGroupDto);
         userGroup = userGroupService.insertUserGroup(userGroup);
-        userGroupDto = modelConverter.convertUserGroupToDto(userGroup);
-
-        // Add self link
-        addLinks(userGroupDto);
+        userGroupDto = userGroupModelAssembler.toModel(userGroup);
         logger.debug(format("Finished insert userGroup request - id: {0} {1}", userGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(userGroupDto);
@@ -182,14 +158,10 @@ public class UserGroupController {
     public ResponseEntity<UserGroupDto> updateUserGroup(@PathVariable String userGroupId, @RequestBody UserGroupDto userGroupDto) throws ResourceNotFoundException {
 
         t.restart();
-        RestPreconditions.checkFound(userGroupService.findById(userGroupId));
 
-        UserGroup userGroup = modelConverter.convertUserGroupToEntity(userGroupDto);
+        UserGroup userGroup = userGroupModelAssembler.toEntity(userGroupDto);
         userGroup = userGroupService.updateUserGroup(userGroup);
-        userGroupDto = modelConverter.convertUserGroupToDto(userGroup);
-
-        // Add self link
-        addLinks(userGroupDto);
+        userGroupDto = userGroupModelAssembler.toModel(userGroup);
         logger.debug(format("Finished update userGroup request - userGroupId: {0} {1}", userGroupId, t.elapsedStr()));
 
         return ResponseEntity.ok(userGroupDto);
@@ -204,11 +176,11 @@ public class UserGroupController {
     public ResponseEntity<Void> deleteUserGroup(@PathVariable String userGroupId) throws ResourceNotFoundException {
 
         t.restart();
+
         RestPreconditions.checkFound(userGroupService.findById(userGroupId));
-
         userGroupService.deleteUserGroup(userGroupId);
-
         logger.debug(format("Finished delete userGroup request - userGroupId: {0} {1}", userGroupId, t.elapsedStr()));
+
         return ResponseEntity.ok().build();
     }
 
@@ -225,10 +197,7 @@ public class UserGroupController {
 
         // Add user to user group
         UserGroup userGroup = userGroupService.addUser(userGroupId, id);
-        UserGroupDto userGroupDto = modelConverter.convertUserGroupToDto(userGroup);
-
-        // Add link
-        addLinks(userGroupDto);
+        UserGroupDto userGroupDto = userGroupModelAssembler.toModel(userGroup);
         logger.debug(format("Finished add user to user group request - userGroupId: {0} id: {1} {2}", userGroupId, id, t.elapsedStr()));
 
         return ResponseEntity.ok(userGroupDto);
@@ -246,30 +215,9 @@ public class UserGroupController {
         t.restart();
 
         UserGroup userGroup = userGroupService.removeUser(userGroupId, id);
-        UserGroupDto userGroupDto = modelConverter.convertUserGroupToDto(userGroup);
-
-        // Add link
-        addLinks(userGroupDto);
-
+        UserGroupDto userGroupDto = userGroupModelAssembler.toModel(userGroup);
         logger.debug(format("Finished remove user from user group request - id: {0} userId: {1} {2}", userGroupId, userGroupId, t.elapsedStr()));
+
         return ResponseEntity.ok(userGroupDto);
-    }
-
-    private void addLinks(UserGroupDto userGroupDto) {
-        try {
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).findById(userGroupDto.getId())).withSelfRel());
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).insertUserGroup(userGroupDto)).withRel("insert"));
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).updateUserGroup(userGroupDto.getId(), userGroupDto)).withRel("update"));
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).deleteUserGroup(userGroupDto.getId())).withRel("delete"));
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).addUser(null, null)).withRel("addUser").expand(userGroupDto.getId(), ""));
-            userGroupDto.add(linkTo(methodOn(UserGroupController.class).removeUser(null, null)).withRel("removeUser").expand(userGroupDto.getId(), ""));
-        } catch (ResourceNotFoundException e) {
-            logger.error(format("Could not add links to DTO - id: {0}", userGroupDto.getId()), e);
-        }
-    }
-
-    private void addLinks(UserGroupDto userGroupDto, int page, int size, String sortBy, String sortDir) {
-        addLinks(userGroupDto);
-        userGroupDto.add(linkTo(methodOn(UserController.class).findByUserGroup(userGroupDto.getId(), page, size, sortBy, sortDir)).withRel("users"));
     }
 }

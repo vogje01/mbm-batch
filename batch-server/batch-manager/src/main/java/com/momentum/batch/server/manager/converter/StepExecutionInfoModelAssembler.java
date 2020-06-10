@@ -16,8 +16,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
- * @since 0.0.1
+ * @version 0.0.4
+ * @since 0.0.4
  */
 @Component
 public class StepExecutionInfoModelAssembler extends RepresentationModelAssemblerSupport<StepExecutionInfo, StepExecutionDto> {

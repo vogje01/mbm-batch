@@ -14,8 +14,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
- * @since 0.0.1
+ * @version 0.0.4
+ * @since 0.0.4
  */
 @Component
 public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerSupport<JobExecutionLog, JobExecutionLogDto> {
@@ -28,12 +28,6 @@ public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerS
     public @NotNull JobExecutionLogDto toModel(@NotNull JobExecutionLog entity) {
         JobExecutionLogDto jobExecutionLogDto = instantiateModel(entity);
 
-        try {
-            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(entity.getId())).withSelfRel());
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
-
         jobExecutionLogDto.setId(entity.getId());
         jobExecutionLogDto.setHostName(entity.getHostName());
         jobExecutionLogDto.setNodeName(entity.getNodeName());
@@ -44,6 +38,13 @@ public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerS
         jobExecutionLogDto.setThread(entity.getThread());
         jobExecutionLogDto.setThreadId(entity.getThreadId());
         jobExecutionLogDto.setThreadPriority(entity.getThreadPriority());
+
+        try {
+            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(jobExecutionLogDto.getId())).withSelfRel());
+        } catch (ResourceNotFoundException e) {
+            e.printStackTrace();
+        }
+
         return jobExecutionLogDto;
     }
 
@@ -55,21 +56,4 @@ public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerS
 
         return jobExecutionLogDtos;
     }
-
-    /*private List<ActorModel> toActorModel(List<ActorEntity> actors) {
-        if (actors.isEmpty())
-            return Collections.emptyList();
-
-        return actors.stream()
-                .map(actor -> ActorModel.builder()
-                        .id(actor.getId())
-                        .firstName(actor.getFirstName())
-                        .lastName(actor.getLastName())
-                        .build()
-                        .add(linkTo(
-                                methodOn(JobExecutionLogController.class)
-                                        .getActorById(actor.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }*/
 }

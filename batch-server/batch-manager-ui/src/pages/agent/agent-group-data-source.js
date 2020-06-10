@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, getList1, insertItem, listItems1, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getList1, insertItem, listItems1, updateItem} from "../../utils/server-connection";
 
 export const AgentGroupDataSource = () => {
     return new DataSource({
@@ -55,7 +55,7 @@ export const AgentGroupAgentDataSource = (agentGroup) => {
                 if (!agentGroup._links) return;
                 let url = agentGroup._links.agents.href;
                 url = mergeParams(loadOptions, url, 'nodeName', 'asc');
-                return getList(url, 'agentDtoes');
+                return getList1(url, 'agentDtoes');
             },
             insert: function (agent) {
                 return getItem(agentGroup._links.addAgent.href + agent.id);
