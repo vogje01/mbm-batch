@@ -1,8 +1,5 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
-import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
@@ -21,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static java.text.MessageFormat.format;
+
 @Service
 @Qualifier("production")
 public class JobExecutionServiceImpl implements JobExecutionService {
@@ -33,22 +32,14 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final StepExecutionInfoRepository stepExecutionRepository;
 
-    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
-
-    private final ModelConverter modelConverter;
-
     @Autowired
     public JobExecutionServiceImpl(
             JobExecutionInfoRepository jobExecutionRepository,
             JobExecutionInstanceRepository jobExecutionInstanceRepository,
-            StepExecutionInfoRepository stepExecutionRepository,
-            AgentSchedulerMessageProducer agentSchedulerMessageProducer,
-            ModelConverter modelConverter) {
+            StepExecutionInfoRepository stepExecutionRepository) {
         this.jobExecutionRepository = jobExecutionRepository;
         this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.stepExecutionRepository = stepExecutionRepository;
-        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
-        this.modelConverter = modelConverter;
     }
 
     @Override
@@ -63,15 +54,18 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     @Override
     @Cacheable(cacheNames = "JobExecution", key = "#jobExecutionId")
-    public JobExecutionInfo getJobExecutionById(String jobExecutionId) {
-        Optional<JobExecutionInfo> jobExecution = jobExecutionRepository.findById(jobExecutionId);
-        return jobExecution.orElse(null);
+    public JobExecutionInfo getJobExecutionById(String jobExecutionId) throws ResourceNotFoundException {
+        Optional<JobExecutionInfo> jobExecutionOptional = jobExecutionRepository.findById(jobExecutionId);
+        if (jobExecutionOptional.isPresent()) {
+            return jobExecutionOptional.get();
+        }
+        throw new ResourceNotFoundException(format("Could not find job execution - id: {0}", jobExecutionId));
     }
 
     @Override
     @CacheEvict(cacheNames = "JobExecution", key = "#jobExecutionId")
-    public void deleteJobExecutionInfo(final String jobExecutionId) {
-		Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionRepository.findById(jobExecutionId);
+    public void deleteJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException {
+        Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionRepository.findById(jobExecutionId);
         if (jobExecutionInfoOptional.isPresent()) {
 
             JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
@@ -84,6 +78,8 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
             // Delete job execution
             jobExecutionRepository.delete(jobExecutionInfo);
+        } else {
+            throw new ResourceNotFoundException(format("Could not find job execution - id: {0}", jobExecutionId));
         }
     }
 
@@ -96,7 +92,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
             JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
 
             // Convert to DTO
-            JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecutionInfo);
+            //JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(jobExecutionInfo);
 
             // Create server command
             /*ServerCommandDto serverCommandDto = new ServerCommandDto();
@@ -106,6 +102,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
             serverCommandDto.setType(ServerCommandType.RESTART_JOB);
             serverCommandProducer.sendTopic(serverCommandDto);*/
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(format("Could not find job execution - id: {0}", jobExecutionId));
     }
 }

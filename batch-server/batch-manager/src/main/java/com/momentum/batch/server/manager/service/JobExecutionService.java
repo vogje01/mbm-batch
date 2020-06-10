@@ -11,9 +11,9 @@ public interface JobExecutionService {
 
     long countAll();
 
-    JobExecutionInfo getJobExecutionById(final String id);
+    JobExecutionInfo getJobExecutionById(final String id) throws ResourceNotFoundException;
 
-    void deleteJobExecutionInfo(final String id);
+    void deleteJobExecutionInfo(final String id) throws ResourceNotFoundException;
 
     void restartJobExecutionInfo(final String jobExecutionId) throws ResourceNotFoundException;
 }

@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Job execution log REST controller.
@@ -136,14 +134,5 @@ public class JobExecutionLogController {
         RestPreconditions.checkFound(jobExecutionLogService.byLogId(logId));
         jobExecutionLogService.deleteById(logId);
         return null;
-    }
-
-    private void addLinks(JobExecutionLogDto jobExecutionLogDto, int page, int size, String sortBy, String sortDir) {
-        try {
-            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(jobExecutionLogDto.getId())).withSelfRel());
-            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).delete(jobExecutionLogDto.getId())).withRel("delete"));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 }

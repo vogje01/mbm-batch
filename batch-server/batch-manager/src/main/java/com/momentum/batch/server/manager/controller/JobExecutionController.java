@@ -2,12 +2,10 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobExecutionDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.manager.converter.JobExecutionInfoModelAssembler;
 import com.momentum.batch.server.manager.service.JobExecutionService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Job execution REST controller.
@@ -42,18 +38,15 @@ public class JobExecutionController {
 
     private final JobExecutionService jobExecutionService;
 
-    private final ModelConverter modelConverter;
-
     private final PagedResourcesAssembler<JobExecutionInfo> pagedResourcesAssembler;
 
     private final JobExecutionInfoModelAssembler jobExecutionInfoModelAssembler;
 
     @Autowired
-    public JobExecutionController(JobExecutionService jobExecutionService, ModelConverter modelConverter,
+    public JobExecutionController(JobExecutionService jobExecutionService,
                                   PagedResourcesAssembler<JobExecutionInfo> pagedResourcesAssembler,
                                   JobExecutionInfoModelAssembler jobExecutionInfoModelAssembler) {
         this.jobExecutionService = jobExecutionService;
-        this.modelConverter = modelConverter;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.jobExecutionInfoModelAssembler = jobExecutionInfoModelAssembler;
     }
@@ -78,18 +71,35 @@ public class JobExecutionController {
         return ResponseEntity.ok(collectionModel);
     }
 
+    /**
+     * Returns a job execution by ID.
+     *
+     * @param jobExecutionId job execution ID.
+     * @return job execution with given ID.
+     * @throws ResourceNotFoundException if the job execution cannot be found.
+     */
     @GetMapping(value = "/{id}", produces = {"application/hal+json"})
-    public JobExecutionInfo findById(@PathVariable String id) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobExecutionService.getJobExecutionById(id));
-        return jobExecutionService.getJobExecutionById(id);
+    public JobExecutionInfo findById(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
+        return jobExecutionService.getJobExecutionById(jobExecutionId);
     }
 
+    /**
+     * Deletes a job execution by ID.
+     *
+     * @param id job execution ID.
+     * @throws ResourceNotFoundException if the job execution cannot be found.
+     */
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public void delete(@PathVariable String id) throws ResourceNotFoundException {
         jobExecutionService.deleteJobExecutionInfo(id);
-        return null;
     }
 
+    /**
+     * Restarts a job execution by ID.
+     *
+     * @param jobExecutionId job execution ID.
+     * @throws ResourceNotFoundException if the job execution cannot be found.
+     */
     @GetMapping(value = "/{jobExecutionId}/restart")
     public ResponseEntity<Void> restart(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
 
@@ -101,25 +111,4 @@ public class JobExecutionController {
 
         return ResponseEntity.ok().build();
     }
-
-    private void addLinks(JobExecutionDto jobExecutionDto) {
-        try {
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(jobExecutionDto.getId())).withSelfRel());
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).delete(jobExecutionDto.getId())).withRel("delete"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).restart(jobExecutionDto.getId())).withRel("restart"));
-        } catch (ResourceNotFoundException e) {
-            logger.error(format("Could not add links to job executions - error: {0}", e.getMessage()));
-        }
-    }
-
-    /*private void addLinks(JobExecutionDto jobExecutionDto, int page, int size, String sortBy, String sortDir) {
-        try {
-            addLinks(jobExecutionDto);
-            jobExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findByJobId(jobExecutionDto.getId(), page, size, sortBy, sortDir)).withRel("byJobId"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionDto.getId(), page, size, sortBy, sortDir)).withRel("params"));
-            jobExecutionDto.add(linkTo(methodOn(JobExecutionLogController.class).findByJobId(jobExecutionDto.getId(), page, size, sortDir, sortDir)).withRel("logs"));
-        } catch (ResourceNotFoundException e) {
-            logger.error(format("Could not add links to job executions - error: {0}", e.getMessage()));
-        }
-    }*/
 }

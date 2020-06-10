@@ -26,7 +26,7 @@ import static java.text.MessageFormat.format;
 /**
  * Agent group REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -64,7 +64,6 @@ public class AgentGroupController {
      *
      * @param pageable paging parameters.
      * @return on page of agent groups.
-     * @throws ResourceNotFoundException in case the agent group is not existing.
      */
     @Cacheable(cacheNames = "AgentGroup")
     @GetMapping(produces = {"application/hal+json"})
@@ -85,11 +84,10 @@ public class AgentGroupController {
      *
      * @param agentGroupId agent group UUID.
      * @return agent group with given ID or error.
-     * @throws ResourceNotFoundException in case the agent group is not existing.
      */
     @Cacheable(cacheNames = "AgentGroup")
     @GetMapping(value = "/{agentGroupId}", produces = {"application/hal+json"})
-    public ResponseEntity<AgentGroupDto> findById(@PathVariable("agentGroupId") String agentGroupId) throws ResourceNotFoundException {
+    public ResponseEntity<AgentGroupDto> findById(@PathVariable("agentGroupId") String agentGroupId) {
         t.restart();
 
         AgentGroup agentGroup = agentGroupService.findById(agentGroupId);
