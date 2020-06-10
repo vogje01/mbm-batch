@@ -9,6 +9,7 @@ import {
     JobExecutionListPage,
     JobGroupListPage,
     JobScheduleListPage,
+    LogListPage,
     PerformanceAgentPage,
     PerformanceJobPage,
     ProfilePage,
@@ -20,6 +21,7 @@ import {
 const routes = [
     {path: '/jobexecutions', component: JobExecutionListPage},
     {path: '/stepexecutions', component: StepExecutionListPage},
+    {path: '/logs', component: LogListPage},
     {path: '/jobdefinitions', component: JobDefinitionListPage},
     {path: '/jobgroups', component: JobGroupListPage},
     {path: '/jobdefinitionexport', component: JobDefinitionExport},

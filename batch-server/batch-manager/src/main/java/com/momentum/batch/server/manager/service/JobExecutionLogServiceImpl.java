@@ -22,9 +22,8 @@ public class JobExecutionLogServiceImpl implements JobExecutionLogService {
     }
 
     @Override
-    @Cacheable("JobExecutionLog")
-    public Page<JobExecutionLog> byJobId(String jobId, Pageable pageable) {
-        return jobExecutionLogRepository.findByJobId(jobId, pageable);
+    public long countAll() {
+        return jobExecutionLogRepository.count();
     }
 
     @Override
@@ -35,6 +34,18 @@ public class JobExecutionLogServiceImpl implements JobExecutionLogService {
     @Override
     public long countByStepId(String stepId) {
         return jobExecutionLogRepository.countByStepId(stepId);
+    }
+
+    @Override
+    @Cacheable("JobExecutionLog")
+    public Page<JobExecutionLog> findAll(Pageable pageable) {
+        return jobExecutionLogRepository.findAll(pageable);
+    }
+
+    @Override
+    @Cacheable("JobExecutionLog")
+    public Page<JobExecutionLog> byJobId(String jobId, Pageable pageable) {
+        return jobExecutionLogRepository.findByJobId(jobId, pageable);
     }
 
     @Override

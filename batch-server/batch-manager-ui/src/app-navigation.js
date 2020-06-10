@@ -17,6 +17,11 @@ export const navigation = [
                 text: 'Step Executions',
                 path: '/stepexecutions',
                 icon: 'material-icons-outlined ic-step-executions'
+            },
+            {
+                text: 'Logs',
+                path: '/logs',
+                icon: 'material-icons-outlined ic-logs'
             }
         ]
     },

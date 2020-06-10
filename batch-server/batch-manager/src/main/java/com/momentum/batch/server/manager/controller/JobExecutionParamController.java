@@ -7,11 +7,11 @@ import com.momentum.batch.server.database.domain.JobExecutionParam;
 import com.momentum.batch.server.manager.service.JobExecutionParamService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
@@ -55,23 +55,17 @@ public class JobExecutionParamController {
      * Returns one page of job execution params.
      *
      * @param jobExecutionId UUID of the job.
-     * @param page           page number.
-     * @param size           page size.
-     * @param sortBy         sorting column.
-     * @param sortDir        sorting direction.
+     * @param pageable       paging parameters.
      * @return one page of job execution params.
      */
     @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<JobExecutionParamDto>> findByJobId(@PathVariable("jobId") String jobExecutionId,
-                                                                             @RequestParam("page") int page,
-                                                                             @RequestParam("size") int size,
-                                                                             @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                             @RequestParam(value = "sortDir", required = false) String sortDir) {
+                                                                             Pageable pageable) {
         t.restart();
 
         // Get paging parameters
         long totalCount = service.countByJobExecutionId(jobExecutionId);
-        Page<JobExecutionParam> allJobExecutionParams = service.byJobId(jobExecutionId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        Page<JobExecutionParam> allJobExecutionParams = service.byJobId(jobExecutionId, pageable);
 
         List<JobExecutionParamDto> jobExecutionParamDtoes = modelConverter.convertJobExecutionParamToDto(allJobExecutionParams.toList(), totalCount);
 
@@ -84,7 +78,7 @@ public class JobExecutionParamController {
             }
         });
 
-        Link self = linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionId, page, size, sortBy, sortDir)).withSelfRel();
+        Link self = linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionId, pageable)).withSelfRel();
         logger.debug(format("Job execution param list request finished - count: {0} {1}", allJobExecutionParams.getSize(), t.elapsedStr()));
 
         return ResponseEntity.ok(new CollectionModel<>(jobExecutionParamDtoes, self));

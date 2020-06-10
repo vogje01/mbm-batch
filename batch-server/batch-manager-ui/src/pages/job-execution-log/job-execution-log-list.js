@@ -1,30 +1,15 @@
 import React from "react";
-import './job-execution-list.scss'
-import {
-    Column,
-    DataGrid,
-    Editing,
-    FilterRow,
-    Form,
-    HeaderFilter,
-    MasterDetail,
-    Pager,
-    Paging,
-    RemoteOperations,
-    Selection,
-    Sorting
-} from "devextreme-react/data-grid";
-import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
-import {JobExecutionDataSource} from "./job-execution-data-source";
+import './job-execution-log-list.scss'
+import {Column, DataGrid, FilterRow, HeaderFilter, MasterDetail, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {dateTimeCellTemplate, getRunningTime} from "../../utils/date-time-util";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
-import {GroupItem, SimpleItem} from "devextreme-react/form";
-import JobExecutionParamList from "./job-execution-param-list";
-import JobExecutionLogList from "./job-execution-log-list";
 import {getItem} from "../../utils/server-connection";
+import {AgentDataSource} from "../agent/agent-data-source";
+import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
 
-class JobExecutionList extends React.Component {
+class LogList extends React.Component {
 
     constructor(props) {
         super(props);
@@ -86,13 +71,17 @@ class JobExecutionList extends React.Component {
                                     }, hint: 'Refresh job execution list.'
                                 }}/>
                             <Item
+                                location="before"
+                                widget="dxSelectBox"
+                                options={{dataSource: AgentDataSource(), keyExpr: 'hostName', valueExpr: 'hostName', hint: 'Select host.'}}/>
+                            <Item
                                 location="after"
                                 widget="dxSelectBox"
                                 locateInMenu="auto"
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            dataSource={JobExecutionDataSource(this)}
+                            dataSource={JobExecutionLogDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}
@@ -108,7 +97,7 @@ class JobExecutionList extends React.Component {
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
                             <Sorting mode={'multiple'}/>
-                            <Editing
+                            {/*<Editing
                                 mode={'form'}
                                 useIcons={true}
                                 allowDeleting={true}
@@ -155,7 +144,7 @@ class JobExecutionList extends React.Component {
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'modifiedAt'), readOnly: true}}/>
                                     </GroupItem>
                                 </Form>
-                            </Editing>
+                            </Editing>*/}
                             <Column
                                 caption={'ID'}
                                 dataField={'id'}
@@ -332,4 +321,4 @@ class JobExecutionList extends React.Component {
     }
 }
 
-export default JobExecutionList;
+export default LogList;

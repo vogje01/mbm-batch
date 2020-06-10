@@ -1,14 +1,14 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getList, listItems} from "../../utils/server-connection";
+import {deleteItem, getList, listItems, listItems1} from "../../utils/server-connection";
 
 export function JobExecutionDataSource() {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
                 let params = getParams(loadOptions, 'startTime', 'desc');
-                return listItems('jobexecutions' + params, 'jobExecutionDtoes');
+                return listItems1('jobexecutions' + params, 'jobExecutionDtoes');
             },
             remove: function (key) {
                 let url = key._links.delete.href;

@@ -1,7 +1,7 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
 
-const initGet = () => {
+export const initGet = () => {
     return {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}, method: 'GET'
     }
@@ -87,6 +87,25 @@ const listItems = (entity, attributes) => {
         });
 };
 
+const listItems1 = (entity, attributes) => {
+    StartTimer();
+    return fetch(process.env.REACT_APP_API_URL + entity, initGet())
+        .then(response => {
+            if (response.status !== 200) {
+                errorMessage("Could not get list of items.")
+            }
+            return response.json()
+        })
+        .then((data) => {
+            return {
+                data: data._embedded[attributes],
+                totalCount: data.page.totalElements,
+            };
+        }).finally(() => {
+            EndTimer();
+        });
+};
+
 const insertItem = (url, item) => {
     StartTimer();
     return fetch(url, initInsert(item))
@@ -133,4 +152,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {getList, deleteItem, insertItem, updateItem, listItems, getItem}
+export {getList, deleteItem, insertItem, updateItem, listItems, listItems1, getItem}

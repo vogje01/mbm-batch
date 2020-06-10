@@ -93,22 +93,6 @@ public class AgentController {
      *
      * @return on page of job definitions.
      */
-    @GetMapping(value = "/agentNames", produces = "text/html; charset=UTF-8")
-    public ResponseEntity<List<String>> findAllAgentNames() {
-
-        t.restart();
-
-        List<String> allAgentNames = agentService.findAllAgentNames();
-        logger.debug(format("Finished find all agent names request- count: {0} {1}", allAgentNames.size(), t.elapsedStr()));
-
-        return ResponseEntity.ok(allAgentNames);
-    }
-
-    /**
-     * Returns one page of job definitions.
-     *
-     * @return on page of job definitions.
-     */
     @GetMapping(value = "/byId", produces = {"application/hal+json"})
     public ResponseEntity<AgentDto> findById(@PathParam("id") String id) throws ResourceNotFoundException {
 
@@ -129,6 +113,22 @@ public class AgentController {
             return ResponseEntity.ok(agentDto);
         }
         throw new ResourceNotFoundException();
+    }
+
+    /**
+     * Returns one page of job definitions.
+     *
+     * @return on page of job definitions.
+     */
+    @GetMapping(value = "/agentNames", produces = "text/html; charset=UTF-8")
+    public ResponseEntity<List<String>> findAllAgentNames() {
+
+        t.restart();
+
+        List<String> allAgentNames = agentService.findAllAgentNames();
+        logger.debug(format("Finished find all agent names request- count: {0} {1}", allAgentNames.size(), t.elapsedStr()));
+
+        return ResponseEntity.ok(allAgentNames);
     }
 
     /**
