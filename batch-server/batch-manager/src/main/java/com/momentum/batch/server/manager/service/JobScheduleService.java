@@ -1,6 +1,5 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobDefinition;
@@ -37,11 +36,11 @@ public interface JobScheduleService {
 
     Page<AgentGroup> getAgentGroups(final String jobScheduleId, Pageable pageable) throws ResourceNotFoundException;
 
-    JobScheduleDto addAgent(final String jobScheduleId, final String nodeName) throws ResourceNotFoundException;
+    JobSchedule addAgent(final String jobScheduleId, final String nodeName) throws ResourceNotFoundException;
 
-    JobScheduleDto removeAgent(final String jobScheduleId, final String agentId) throws ResourceNotFoundException;
+    JobSchedule removeAgent(final String jobScheduleId, final String agentId) throws ResourceNotFoundException;
 
-    JobScheduleDto addAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
+    JobSchedule addAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
 
-    JobScheduleDto removeAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
+    JobSchedule removeAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
 }

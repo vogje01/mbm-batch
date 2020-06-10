@@ -1,13 +1,13 @@
 package com.momentum.batch.server.manager.converter;
 
-import com.momentum.batch.common.domain.DateTimeFormat;
-import com.momentum.batch.common.domain.NumberFormat;
 import com.momentum.batch.common.domain.dto.UserDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.controller.UserController;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -24,29 +24,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class UserModelAssembler extends RepresentationModelAssemblerSupport<User, UserDto> {
 
-    public UserModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public UserModelAssembler(ModelConverter modelConverter) {
         super(UserController.class, UserDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull UserDto toModel(@NotNull User entity) {
-        UserDto userDto = instantiateModel(entity);
 
-        userDto.setId(entity.getId());
-        userDto.setUserId(entity.getUserId());
-        userDto.setFirstName(entity.getFirstName());
-        userDto.setLastName(entity.getLastName());
-        userDto.setEmail(entity.getEmail());
-        userDto.setPhone(entity.getPhone());
-        userDto.setDescription(entity.getDescription());
-        userDto.setDateTimeFormat(entity.getDateTimeFormat().name());
-        userDto.setNumberFormat(entity.getNumberFormat().name());
-        userDto.setActive(entity.getActive());
-
-        userDto.setCreatedAt(entity.getCreatedAt());
-        userDto.setCreatedBy(entity.getCreatedBy());
-        userDto.setModifiedAt(entity.getModifiedAt());
-        userDto.setModifiedBy(entity.getModifiedBy());
+        UserDto userDto = modelConverter.convertUserToDto(entity);
 
         try {
             userDto.add(linkTo(methodOn(UserController.class).findById(userDto.getId())).withSelfRel());
@@ -72,17 +61,6 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
     }
 
     public @NotNull User toEntity(UserDto userDto) {
-        User entity = new User();
-        entity.setId(userDto.getId());
-        entity.setUserId(userDto.getUserId());
-        entity.setFirstName(userDto.getFirstName());
-        entity.setLastName(userDto.getLastName());
-        entity.setEmail(userDto.getEmail());
-        entity.setPhone(userDto.getPhone());
-        entity.setDescription(userDto.getDescription());
-        entity.setDateTimeFormat(DateTimeFormat.valueOf(userDto.getDateTimeFormat()));
-        entity.setNumberFormat(NumberFormat.valueOf(userDto.getNumberFormat()));
-        entity.setActive(userDto.getActive());
-        return entity;
+        return modelConverter.convertUserToEntity(userDto);
     }
 }

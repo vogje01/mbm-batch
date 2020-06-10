@@ -1,11 +1,13 @@
 package com.momentum.batch.server.manager.converter;
 
 import com.momentum.batch.common.domain.dto.StepExecutionDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
 import com.momentum.batch.server.manager.controller.JobExecutionLogController;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -22,13 +24,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class StepExecutionInfoModelAssembler extends RepresentationModelAssemblerSupport<StepExecutionInfo, StepExecutionDto> {
 
-    public StepExecutionInfoModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public StepExecutionInfoModelAssembler(ModelConverter modelConverter) {
         super(StepExecutionController.class, StepExecutionDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull StepExecutionDto toModel(@NotNull StepExecutionInfo entity) {
-        StepExecutionDto stepExecutionDto = instantiateModel(entity);
+
+        StepExecutionDto stepExecutionDto = modelConverter.convertStepExecutionToDto(entity);
 
         try {
             stepExecutionDto.add(linkTo(methodOn(StepExecutionController.class).findById(stepExecutionDto.getId())).withSelfRel());
@@ -38,46 +45,17 @@ public class StepExecutionInfoModelAssembler extends RepresentationModelAssemble
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }
-
-        stepExecutionDto.setId(entity.getId());
-        stepExecutionDto.setHostName(entity.getHostName());
-        stepExecutionDto.setNodeName(entity.getNodeName());
-        stepExecutionDto.setJobName(entity.getJobExecutionInfo().getJobExecutionInstance().getJobName());
-        stepExecutionDto.setStepName(entity.getStepName());
-        stepExecutionDto.setTotalCount(entity.getTotalCount());
-        stepExecutionDto.setStatus(entity.getStatus());
-        stepExecutionDto.setStepExecutionId(entity.getStepExecutionId());
-        stepExecutionDto.setStartTime(entity.getStartTime());
-        stepExecutionDto.setEndTime(entity.getEndTime());
-        stepExecutionDto.setLastUpdated(entity.getLastUpdated());
-        stepExecutionDto.setRunningTime(entity.getRunningTime());
-
-        stepExecutionDto.setReadCount(entity.getReadCount());
-        stepExecutionDto.setReadSkipCount(entity.getReadSkipCount());
-        stepExecutionDto.setWriteCount(entity.getWriteCount());
-        stepExecutionDto.setWriteSkipCount(entity.getWriteSkipCount());
-        stepExecutionDto.setFilterCount(entity.getFilterCount());
-        stepExecutionDto.setCommitCount(entity.getCommitCount());
-        stepExecutionDto.setRollbackCount(entity.getRollbackCount());
-        stepExecutionDto.setProcessSkipCount(entity.getProcessSkipCount());
-
-        stepExecutionDto.setExitCode(entity.getExitCode());
-        stepExecutionDto.setExitMessage(entity.getExitMessage());
-
-        stepExecutionDto.setCreatedAt(entity.getCreatedAt());
-        stepExecutionDto.setCreatedBy(entity.getCreatedBy());
-        stepExecutionDto.setModifiedAt(entity.getModifiedAt());
-        stepExecutionDto.setModifiedBy(entity.getModifiedBy());
-
         return stepExecutionDto;
     }
 
     @Override
     public @NotNull CollectionModel<StepExecutionDto> toCollectionModel(@NotNull Iterable<? extends StepExecutionInfo> entities) {
         CollectionModel<StepExecutionDto> StepExecutionDtos = super.toCollectionModel(entities);
-
         StepExecutionDtos.add(linkTo(methodOn(StepExecutionController.class).findAll(null)).withSelfRel());
-
         return StepExecutionDtos;
+    }
+
+    public @NotNull StepExecutionInfo toEntity(StepExecutionDto stepExecutionDto) {
+        return modelConverter.convertStepExecutionToEntity(stepExecutionDto);
     }
 }

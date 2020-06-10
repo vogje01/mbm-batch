@@ -1,10 +1,12 @@
 package com.momentum.batch.server.manager.converter;
 
 import com.momentum.batch.common.domain.dto.UserGroupDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.UserGroup;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -21,24 +23,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class UserGroupModelAssembler extends RepresentationModelAssemblerSupport<UserGroup, UserGroupDto> {
 
-    public UserGroupModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public UserGroupModelAssembler(ModelConverter modelConverter) {
         super(UserGroupController.class, UserGroupDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull UserGroupDto toModel(@NotNull UserGroup entity) {
 
-        UserGroupDto userGroupDto = instantiateModel(entity);
-
-        userGroupDto.setId(entity.getId());
-        userGroupDto.setName(entity.getName());
-        userGroupDto.setDescription(entity.getDescription());
-        userGroupDto.setActive(entity.getActive());
-
-        userGroupDto.setCreatedAt(entity.getCreatedAt());
-        userGroupDto.setCreatedBy(entity.getCreatedBy());
-        userGroupDto.setModifiedAt(entity.getModifiedAt());
-        userGroupDto.setModifiedBy(entity.getModifiedBy());
+        UserGroupDto userGroupDto = modelConverter.convertUserGroupToDto(entity);
 
         try {
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).findById(userGroupDto.getId())).withSelfRel());
@@ -62,11 +58,6 @@ public class UserGroupModelAssembler extends RepresentationModelAssemblerSupport
     }
 
     public @NotNull UserGroup toEntity(UserGroupDto userGroupDto) {
-        UserGroup entity = new UserGroup();
-        entity.setId(userGroupDto.getId());
-        entity.setName(userGroupDto.getName());
-        entity.setDescription(userGroupDto.getDescription());
-        entity.setActive(userGroupDto.getActive());
-        return entity;
+        return modelConverter.convertUserGroupToEntity(userGroupDto);
     }
 }

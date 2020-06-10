@@ -96,18 +96,9 @@ public class ModelConverter {
 
     public JobExecutionLogDto convertJobExecutionLogToDto(JobExecutionLog jobExecutionLog, long totalCount) {
         JobExecutionLogDto jobExecutionLogDto = modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
-        //jobExecutionLogDto.setTotalSize(totalCount);
         if (jobExecutionLog.getTimestamp() != null)
             jobExecutionLogDto.setTimestamp(jobExecutionLog.getTimestamp());
         return jobExecutionLogDto;
-    }
-
-    public List<JobExecutionLogDto> convertJobExecutionLogToDto(List<JobExecutionLog> jobExecutionLogList, long totalCount) {
-        return jobExecutionLogList.stream().map(j -> convertJobExecutionLogToDto(j, totalCount)).collect(toList());
-    }
-
-    public JobExecutionLog convertJobExecutionLogToEntity(JobExecutionLogDto jobExecutionLogDto) {
-        return modelMapper.map(jobExecutionLogDto, JobExecutionLog.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -149,14 +140,8 @@ public class ModelConverter {
         return stepExecutionDto;
     }
 
-    public List<StepExecutionDto> convertStepExecutionToDto(List<StepExecutionInfo> stepExecutionList, long totalCount) {
-        return stepExecutionList.stream().map(s -> convertStepExecutionToDto(s, totalCount)).collect(toList());
-    }
-
-    public StepExecutionDto convertStepExecutionToDto(StepExecutionInfo stepExecutionInfo, long totalCount) {
-        StepExecutionDto stepExecutionDto = convertStepExecutionToDto(stepExecutionInfo);
-        stepExecutionDto.setTotalSize(totalCount);
-        return stepExecutionDto;
+    public StepExecutionInfo convertStepExecutionToEntity(StepExecutionDto stepExecutionDto) {
+        return modelMapper.map(stepExecutionDto, StepExecutionInfo.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -165,13 +150,6 @@ public class ModelConverter {
     public StepExecutionContext convertStepExecutionContextToEntity(StepExecutionContextDto stepExecutionContextDto) {
         if (stepExecutionContextDto != null) {
             return modelMapper.map(stepExecutionContextDto, StepExecutionContext.class);
-        }
-        return null;
-    }
-
-    public StepExecutionContextDto convertStepExecutionContextToDto(StepExecutionContext stepExecutionContext) {
-        if (stepExecutionContext != null) {
-            return modelMapper.map(stepExecutionContext, StepExecutionContextDto.class);
         }
         return null;
     }
@@ -312,19 +290,7 @@ public class ModelConverter {
     // Agent
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public AgentDto convertAgentToDto(Agent agent) {
-        AgentDto agentDto = modelMapper.map(agent, AgentDto.class);
-        agentDto.setScheduleDtos(agent.getSchedules().stream().map(this::convertJobScheduleToDto).collect(toList()));
-        return agentDto;
-    }
-
-    public List<AgentDto> convertAgentToDto(List<Agent> agentList, long totalCount) {
-        return agentList.stream().map(a -> convertAgentToDto(a, totalCount)).collect(toList());
-    }
-
-    public AgentDto convertAgentToDto(Agent agent, long totalCount) {
-        AgentDto agentDto = convertAgentToDto(agent);
-        //agentDto.setTotalSize(totalCount);
-        return agentDto;
+        return modelMapper.map(agent, AgentDto.class);
     }
 
     public Agent convertAgentToEntity(AgentDto agentDto) {
@@ -336,16 +302,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public AgentGroupDto convertAgentGroupToDto(AgentGroup agentGroup) {
         return modelMapper.map(agentGroup, AgentGroupDto.class);
-    }
-
-    public AgentGroupDto convertAgentGroupToDto(AgentGroup agentGroup, long totalCount) {
-        AgentGroupDto agentGroupDto = convertAgentGroupToDto(agentGroup);
-        //agentGroupDto.setTotalSize(totalCount);
-        return agentGroupDto;
-    }
-
-    public List<AgentGroupDto> convertAgentGroupToDto(List<AgentGroup> agentGroups, long totalCount) {
-        return agentGroups.stream().map(j -> convertAgentGroupToDto(j, totalCount)).collect(toList());
     }
 
     public AgentGroup convertAgentGroupToEntity(AgentGroupDto agentGroupDto) {

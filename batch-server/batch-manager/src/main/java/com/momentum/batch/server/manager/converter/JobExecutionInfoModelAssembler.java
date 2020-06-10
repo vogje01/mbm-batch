@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.converter;
 
 import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
 import com.momentum.batch.server.manager.controller.JobExecutionLogController;
@@ -8,6 +9,7 @@ import com.momentum.batch.server.manager.controller.JobExecutionParamController;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -24,35 +26,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class JobExecutionInfoModelAssembler extends RepresentationModelAssemblerSupport<JobExecutionInfo, JobExecutionDto> {
 
-    public JobExecutionInfoModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public JobExecutionInfoModelAssembler(ModelConverter modelConverter) {
         super(JobExecutionController.class, JobExecutionDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull JobExecutionDto toModel(@NotNull JobExecutionInfo entity) {
-        JobExecutionDto jobExecutionDto = instantiateModel(entity);
 
-        jobExecutionDto.setId(entity.getId());
-        jobExecutionDto.setHostName(entity.getHostName());
-        jobExecutionDto.setNodeName(entity.getNodeName());
-        jobExecutionDto.setJobName(entity.getJobExecutionInstance().getJobName());
-        jobExecutionDto.setStatus(entity.getStatus());
-        jobExecutionDto.setJobExecutionId(entity.getJobExecutionId());
-        jobExecutionDto.setJobPid(entity.getJobPid());
-        jobExecutionDto.setJobVersion(entity.getJobVersion());
-        jobExecutionDto.setCreateTime(entity.getCreateTime());
-        jobExecutionDto.setStartTime(entity.getStartTime());
-        jobExecutionDto.setEndTime(entity.getEndTime());
-        jobExecutionDto.setStartedBy(entity.getStartedBy());
-        jobExecutionDto.setLastUpdated(entity.getLastUpdated());
-        jobExecutionDto.setRunningTime(entity.getRunningTime());
-        jobExecutionDto.setExitCode(entity.getExitCode());
-        jobExecutionDto.setExitMessage(entity.getExitMessage());
-
-        jobExecutionDto.setCreatedAt(entity.getCreatedAt());
-        jobExecutionDto.setCreatedBy(entity.getCreatedBy());
-        jobExecutionDto.setModifiedAt(entity.getModifiedAt());
-        jobExecutionDto.setModifiedBy(entity.getModifiedBy());
+        JobExecutionDto jobExecutionDto = modelConverter.convertJobExecutionToDto(entity);
 
         try {
             jobExecutionDto.add(linkTo(methodOn(JobExecutionController.class).findById(jobExecutionDto.getId())).withSelfRel());
@@ -74,5 +59,9 @@ public class JobExecutionInfoModelAssembler extends RepresentationModelAssembler
         CollectionModel<JobExecutionDto> JobExecutionDtos = super.toCollectionModel(entities);
         JobExecutionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(Pageable.unpaged())).withSelfRel());
         return JobExecutionDtos;
+    }
+
+    public @NotNull JobExecutionInfo toEntity(JobExecutionDto jobExecutionDto) {
+        return modelConverter.convertJobExecutionToEntity(jobExecutionDto);
     }
 }

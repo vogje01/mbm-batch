@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -100,7 +100,7 @@ public class StepExecutionControllerTest {
         stepExecutionDtoList.add(stepExecutionDto2);
 
         when(stepExecutionService.allStepExecutions(any())).thenReturn(new PageImpl<>(stepExecutionList));
-        when(modelConverter.convertStepExecutionToDto(anyList(), anyLong())).thenReturn(stepExecutionDtoList);
+        when(modelConverter.convertStepExecutionToDto(any())).thenReturn(stepExecutionDto1);
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -171,7 +171,7 @@ public class StepExecutionControllerTest {
 
         when(jobExecutionService.getJobExecutionById(any())).thenReturn(jobExecution1);
         when(stepExecutionService.allStepExecutionsByJob(any(), any())).thenReturn(new PageImpl<>(stepExecutionList));
-        when(modelConverter.convertStepExecutionToDto(anyList(), anyLong())).thenReturn(stepExecutionDtoList);
+        when(modelConverter.convertStepExecutionToDto(any())).thenReturn(stepExecutionDto1);
 
         this.mockMvc.perform(get("/api/stepexecutions/byjob/" + jobExecution1.getId() + "?page=0&size=5")) //
                 //.andDo(print())
