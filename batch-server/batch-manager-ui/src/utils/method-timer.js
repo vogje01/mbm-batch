@@ -37,9 +37,10 @@ class MethodTimer extends Component {
             return null;
         }
         const elapsed = Math.trunc(this.state.endTimer - this.state.startTimer);
-        return (
-            <span>&nbsp;[{elapsed}ms]</span>
-        )
+        if (elapsed > 0) {
+            return (<span>&nbsp;[{elapsed}ms]</span>)
+        }
+        return null;
     }
 }
 
