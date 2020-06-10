@@ -29,27 +29,23 @@ public class BatchLogProducer {
     }
 
     /**
-     * Sends the job execution info to the Kafka cluster.
+     * Sends the job execution log to the Kafka cluster.
      *
-     * <p>
-     * A new transaction will be started for each job execution info.
-     * </p>
-     *
-     * @param jobExecutionLog agent command info.
+     * @param jobExecutionLogDto agent command info.
      */
-    public void sendBatchLog(JobExecutionLogDto jobExecutionLog) {
+    public void sendBatchLog(JobExecutionLogDto jobExecutionLogDto) {
 
-        ListenableFuture<SendResult<String, JobExecutionLogDto>> future = template.send(batchLogTopicName, jobExecutionLog);
+        ListenableFuture<SendResult<String, JobExecutionLogDto>> future = template.send(batchLogTopicName, jobExecutionLogDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override
             public void onSuccess(SendResult<String, JobExecutionLogDto> result) {
-                logger.trace(format("Message send to kafka - msg: {0}", jobExecutionLog));
+                logger.trace(format("Message send to kafka - msg: {0}", jobExecutionLogDto));
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                logger.error(format("Unable to send message - msg: {0}", jobExecutionLog), ex);
+                logger.error(format("Unable to send message - msg: {0}", jobExecutionLogDto), ex);
             }
         });
     }

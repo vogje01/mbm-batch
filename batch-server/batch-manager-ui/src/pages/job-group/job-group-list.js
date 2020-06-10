@@ -88,23 +88,6 @@ class JobGroupList extends React.Component {
                                 </Form>
                             </Editing>
                             <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit jobGroup group',
-                                        icon: 'material-icons-outlined ic-edit',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete jobGroup group',
-                                        icon: 'material-icons-outlined ic-delete',
-                                        visible: this.isDeleteVisible
-                                    }]}/>
-                            <Column
                                 caption={'Name'}
                                 dataField={'name'}
                                 allowEditing={true}
@@ -143,6 +126,23 @@ class JobGroupList extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit jobGroup group',
+                                        icon: 'material-icons-outlined ic-edit',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete jobGroup group',
+                                        icon: 'material-icons-outlined ic-delete',
+                                        visible: this.isDeleteVisible
+                                    }]}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>

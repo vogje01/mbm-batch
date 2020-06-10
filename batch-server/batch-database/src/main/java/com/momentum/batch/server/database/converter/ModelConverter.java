@@ -106,6 +106,10 @@ public class ModelConverter {
         return jobExecutionLogList.stream().map(j -> convertJobExecutionLogToDto(j, totalCount)).collect(toList());
     }
 
+    public JobExecutionLog convertJobExecutionLogToEntity(JobExecutionLogDto jobExecutionLogDto) {
+        return modelMapper.map(jobExecutionLogDto, JobExecutionLog.class);
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job instance
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -319,7 +323,7 @@ public class ModelConverter {
 
     public AgentDto convertAgentToDto(Agent agent, long totalCount) {
         AgentDto agentDto = convertAgentToDto(agent);
-        agentDto.setTotalSize(totalCount);
+        //agentDto.setTotalSize(totalCount);
         return agentDto;
     }
 
@@ -336,7 +340,7 @@ public class ModelConverter {
 
     public AgentGroupDto convertAgentGroupToDto(AgentGroup agentGroup, long totalCount) {
         AgentGroupDto agentGroupDto = convertAgentGroupToDto(agentGroup);
-        agentGroupDto.setTotalSize(totalCount);
+        //agentGroupDto.setTotalSize(totalCount);
         return agentGroupDto;
     }
 
@@ -380,7 +384,6 @@ public class ModelConverter {
 
     public UserDto convertUserToDto(User user, long totalCount) {
         UserDto userDto = convertUserToDto(user);
-        userDto.setTotalSize(totalCount);
         return userDto;
     }
 
@@ -412,7 +415,6 @@ public class ModelConverter {
 
     public UserGroupDto convertUserGroupToDto(UserGroup userGroup, long totalCount) {
         UserGroupDto userGroupDto = convertUserGroupToDto(userGroup);
-        userGroupDto.setTotalSize(totalCount);
         return userGroupDto;
     }
 

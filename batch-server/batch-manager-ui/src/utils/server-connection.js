@@ -22,6 +22,27 @@ const initUpdate = (body) => {
     }
 };
 
+export const handleResponse = (response, errMsg) => {
+    if (response.status !== 200) {
+        errorMessage(errMsg + " status: " + response.status + " message: " + response.statusText)
+        return null;
+    }
+    return response.json()
+}
+
+export const handleData = (data, attributes) => {
+    if (data !== undefined) {
+        return {
+            data: data._embedded[attributes],
+            totalCount: data.page.totalElements
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0
+    }
+}
+
 const getList = (url, attributes) => {
     StartTimer();
     return fetch(url, initGet())

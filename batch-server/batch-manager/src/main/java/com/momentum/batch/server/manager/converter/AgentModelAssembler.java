@@ -29,6 +29,7 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
 
     @Override
     public @NotNull AgentDto toModel(@NotNull Agent entity) {
+
         AgentDto agentDto = instantiateModel(entity);
 
         agentDto.setId(entity.getId());

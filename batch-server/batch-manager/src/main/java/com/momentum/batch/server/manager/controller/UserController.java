@@ -141,7 +141,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userDto.setVersion(0L);
         userDto.setPassword(PasswordHash.encryptPassword("password"));
         User user = userModelAssembler.toEntity(userDto);
         user = userService.insertUser(user);

@@ -5,7 +5,6 @@ import {dateTimeCellTemplate, getRunningTime} from "../../utils/date-time-util";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
-import {getItem} from "../../utils/server-connection";
 import {AgentDataSource} from "../agent/agent-data-source";
 import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
 
@@ -17,7 +16,6 @@ class LogList extends React.Component {
             currentJobExecution: {},
         };
         this.selectionChanged = this.selectionChanged.bind(this);
-        this.restartJob = this.restartJob.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -47,18 +45,10 @@ class LogList extends React.Component {
         this.setState({currentJobExecution: e.data});
     }
 
-    restartJob(e) {
-        let jobExecution = e.row.data;
-        getItem(jobExecution._links.restart.href)
-            .then((data) => {
-                this.setState({currentJobExecution: data});
-            });
-    }
-
     render() {
         return (
             <React.Fragment>
-                <h2 className={'content-block'}>Job Executions</h2>
+                <h2 className={'content-block'}>Job Execution Logs</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
                         <Toolbar>

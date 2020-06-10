@@ -1,8 +1,10 @@
 package com.momentum.batch.server.listener.service;
 
+import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
 import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import org.apache.logging.log4j.Level;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +24,19 @@ public class JobExecutionLogListener {
 
     private final JobExecutionLogRepository jobExecutionLogRepository;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public JobExecutionLogListener(JobExecutionLogRepository jobExecutionLogRepository) {
+    public JobExecutionLogListener(JobExecutionLogRepository jobExecutionLogRepository, ModelMapper modelMapper) {
         this.jobExecutionLogRepository = jobExecutionLogRepository;
+        this.modelMapper = modelMapper;
     }
 
     @KafkaListener(topics = "batchJobExecutionLog", containerFactory = "logKafkaListenerContainerFactory")
-    public void listen(JobExecutionLog jobExecutionLog) {
-        logger.debug(format("Received job log - message: {0}", jobExecutionLog.getMessage()));
-        if (jobExecutionLog.getLevel().ordinal() < Level.valueOf(level).intLevel()) {
+    public void listen(JobExecutionLogDto jobExecutionLogDto) {
+        logger.debug(format("Received job log - message: {0}", jobExecutionLogDto.getMessage()));
+        if (Level.valueOf(jobExecutionLogDto.getLevel()).intLevel() <= Level.valueOf(level).intLevel()) {
+            JobExecutionLog jobExecutionLog = modelMapper.map(jobExecutionLogDto, JobExecutionLog.class);
             jobExecutionLogRepository.save(jobExecutionLog);
         }
     }

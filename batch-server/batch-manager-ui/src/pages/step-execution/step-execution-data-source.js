@@ -1,9 +1,8 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {mergeParams} from "../../utils/param-util";
-import {deleteItem, getList, initGet} from "../../utils/server-connection";
+import {deleteItem, handleData, handleResponse, initGet} from "../../utils/server-connection";
 import {EndTimer, StartTimer} from "../../utils/method-timer";
-import {errorMessage} from "../../utils/message-util";
 
 export const StepExecutionDataSource = (jobExecutionInfo) => {
     return new DataSource({
@@ -17,16 +16,10 @@ export const StepExecutionDataSource = (jobExecutionInfo) => {
                 url = mergeParams(loadOptions, url, 'startTime', 'desc');
                 return fetch(url, initGet())
                     .then(response => {
-                        if (response.status !== 200) {
-                            errorMessage("Could not get list of step executions - error: " + response.statusText)
-                        }
-                        return response.json()
+                        return handleResponse(response, 'Could not get list of steps');
                     })
                     .then(data => {
-                        return {
-                            data: data._embedded['stepExecutionDtoes'],
-                            totalCount: data.page.totalElements,
-                        };
+                        return handleData(data, 'stepExecutionDtoes')
                     }).finally(() => {
                         EndTimer();
                     });
@@ -43,8 +36,17 @@ export const StepExecutionLogDataSource = (stepExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
+                StartTimer();
                 let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp', 'desc');
-                return getList(url, 'jobExecutionLogDtoes')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of step execution logs');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobExecutionLogDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             }
         })
     });
