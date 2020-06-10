@@ -8,10 +8,12 @@ import com.momentum.batch.common.util.DateTimeUtils;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.JobParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static com.momentum.batch.common.domain.JobStatusType.JOB_FINISHED;
 import static com.momentum.batch.common.domain.JobStatusType.JOB_START;
@@ -59,11 +61,10 @@ public class JobNotificationListener implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
 
-        jobExecution.getExecutionContext().put("String", "Test");
-        jobExecution.getExecutionContext().put("Double", 1.0);
-        jobExecution.getExecutionContext().put("Long", 1L);
-        jobExecution.getExecutionContext().put("Integer", 1);
+        // Generate job UUID
+        jobExecution.getJobParameters().getParameters().put(JOB_UUID, new JobParameter(UUID.randomUUID().toString()));
 
+        // Set logger attributes
         logger.setJobName(getJobName(jobExecution));
         logger.setJobUuid(getJobUuid(jobExecution));
         logger.setJobVersion(getJobVersion(jobExecution));

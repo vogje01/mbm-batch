@@ -275,7 +275,6 @@ public class BatchScheduler {
         arguments.add("-D" + HOST_NAME + "=" + hostName);
         arguments.add("-D" + NODE_NAME + "=" + nodeName);
         arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
-        arguments.add("-D" + JOB_UUID + "=" + UUID.randomUUID().toString());
         arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getJobVersion());
         arguments.add("-D" + JOB_LOGGING_DIRECTORY + "=" + jobDefinition.getLoggingDirectory());
         arguments.add("-D" + JOB_WORKING_DIRECTORY + "=" + jobDefinition.getWorkingDirectory());

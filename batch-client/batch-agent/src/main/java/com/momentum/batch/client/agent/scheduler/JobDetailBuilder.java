@@ -18,9 +18,9 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
 public class JobDetailBuilder {
 
 	/**
-	 * Identity
+	 * Name
 	 */
-	private String identity;
+	private String name;
 	/**
 	 * Job group
 	 */
@@ -41,7 +41,7 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder jobName(String name) {
-		this.identity = name;
+		this.name = name;
 		jobDataMap.put(JOB_NAME, name);
 		return this;
 	}
@@ -113,7 +113,7 @@ public class JobDetailBuilder {
 
 	public JobDetail build() {
 		return JobBuilder.newJob(BatchSchedulerTask.class)
-				.withIdentity(identity, group)
+				.withIdentity(name, group)
 				.withDescription(description)
 				.usingJobData(jobDataMap)
 				.storeDurably()

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.momentum.batch.common.domain.JobStatusType.STEP_FINISHED;
 import static com.momentum.batch.common.domain.JobStatusType.STEP_START;
@@ -64,13 +63,6 @@ public class StepNotificationListener implements StepExecutionListener {
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-
-        // Fill in context
-        stepExecution.getExecutionContext().putString(STEP_UUID, UUID.randomUUID().toString());
-        stepExecution.getExecutionContext().put("String", "Test");
-        stepExecution.getExecutionContext().put("Double", 1.0);
-        stepExecution.getExecutionContext().put("Long", 1L);
-        stepExecution.getExecutionContext().put("Integer", 1);
 
         saveTotalCount(stepExecution);
 
