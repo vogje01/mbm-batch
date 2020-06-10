@@ -1,11 +1,13 @@
 package com.momentum.batch.server.manager.converter;
 
 import com.momentum.batch.common.domain.dto.AgentGroupDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.manager.controller.AgentController;
 import com.momentum.batch.server.manager.controller.AgentGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -22,24 +24,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class AgentGroupModelAssembler extends RepresentationModelAssemblerSupport<AgentGroup, AgentGroupDto> {
 
-    public AgentGroupModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public AgentGroupModelAssembler(ModelConverter modelConverter) {
         super(AgentGroupController.class, AgentGroupDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull AgentGroupDto toModel(@NotNull AgentGroup entity) {
 
-        AgentGroupDto agentGroupDto = instantiateModel(entity);
-
-        agentGroupDto.setId(entity.getId());
-        agentGroupDto.setName(entity.getName());
-        agentGroupDto.setDescription(entity.getDescription());
-        agentGroupDto.setActive(entity.isActive());
-
-        agentGroupDto.setCreatedAt(entity.getCreatedAt());
-        agentGroupDto.setCreatedBy(entity.getCreatedBy());
-        agentGroupDto.setModifiedAt(entity.getModifiedAt());
-        agentGroupDto.setModifiedBy(entity.getModifiedBy());
+        AgentGroupDto agentGroupDto = modelConverter.convertAgentGroupToDto(entity);
 
         try {
             agentGroupDto.add(linkTo(methodOn(AgentGroupController.class).findById(agentGroupDto.getId())).withSelfRel());
@@ -68,11 +64,6 @@ public class AgentGroupModelAssembler extends RepresentationModelAssemblerSuppor
     }
 
     public @NotNull AgentGroup toEntity(AgentGroupDto agentGroupDto) {
-        AgentGroup entity = new AgentGroup();
-        entity.setId(agentGroupDto.getId());
-        entity.setName(agentGroupDto.getName());
-        entity.setDescription(agentGroupDto.getDescription());
-        entity.setActive(agentGroupDto.isActive());
-        return entity;
+        return modelConverter.convertAgentGroupToEntity(agentGroupDto);
     }
 }

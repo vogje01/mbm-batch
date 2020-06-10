@@ -1,12 +1,13 @@
 package com.momentum.batch.server.manager.converter;
 
-import com.momentum.batch.common.domain.AgentStatus;
 import com.momentum.batch.common.domain.dto.AgentDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.manager.controller.AgentController;
 import com.momentum.batch.server.manager.controller.AgentGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -23,30 +24,18 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Agent, AgentDto> {
 
-    public AgentModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public AgentModelAssembler(ModelConverter modelConverter) {
         super(AgentController.class, AgentDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull AgentDto toModel(@NotNull Agent entity) {
 
-        AgentDto agentDto = instantiateModel(entity);
-
-        agentDto.setId(entity.getId());
-        agentDto.setHostName(entity.getHostName());
-        agentDto.setNodeName(entity.getNodeName());
-        agentDto.setSystemLoad(entity.getSystemLoad());
-        agentDto.setAvgSystemLoadDay(entity.getAvgSystemLoadDay());
-        agentDto.setAvgSystemLoadWeek(entity.getAvgSystemLoadWeek());
-        agentDto.setActive(entity.getActive());
-        agentDto.setStatus(entity.getStatus().name());
-        agentDto.setLastPing(entity.getLastPing());
-        agentDto.setLastStart(entity.getLastStart());
-
-        agentDto.setCreatedAt(entity.getCreatedAt());
-        agentDto.setCreatedBy(entity.getCreatedBy());
-        agentDto.setModifiedAt(entity.getModifiedAt());
-        agentDto.setModifiedBy(entity.getModifiedBy());
+        AgentDto agentDto = modelConverter.convertAgentToDto(entity);
 
         try {
             // Agent links
@@ -80,17 +69,6 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
     }
 
     public @NotNull Agent toEntity(AgentDto agentDto) {
-        Agent entity = new Agent();
-        entity.setId(agentDto.getId());
-        entity.setHostName(agentDto.getHostName());
-        entity.setNodeName(agentDto.getNodeName());
-        entity.setSystemLoad(agentDto.getSystemLoad());
-        entity.setAvgSystemLoadDay(agentDto.getAvgSystemLoadDay());
-        entity.setAvgSystemLoadWeek(agentDto.getAvgSystemLoadWeek());
-        entity.setStatus(AgentStatus.valueOf(agentDto.getStatus()));
-        entity.setLastPing(agentDto.getLastPing());
-        entity.setLastStart(agentDto.getLastStart());
-        entity.setActive(agentDto.getActive());
-        return entity;
+        return modelConverter.convertAgentToEntity(agentDto);
     }
 }
