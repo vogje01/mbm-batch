@@ -85,6 +85,10 @@ public class ModelConverter {
         return jobExecutionInfo;
     }
 
+    public JobExecutionLogDto convertJobExecutionLogToDto(JobExecutionLog jobExecutionLog) {
+        return modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
+    }
+
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job instance
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

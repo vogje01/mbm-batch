@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.converter;
 
 import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
 import com.momentum.batch.server.manager.controller.JobExecutionLogController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -20,24 +21,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class JobExecutionLogModelAssembler extends RepresentationModelAssemblerSupport<JobExecutionLog, JobExecutionLogDto> {
 
-    public JobExecutionLogModelAssembler() {
+    private final ModelConverter modelConverter;
+
+    public JobExecutionLogModelAssembler(ModelConverter modelConverter) {
         super(JobExecutionLogController.class, JobExecutionLogDto.class);
+        this.modelConverter = modelConverter;
     }
 
     @Override
     public @NotNull JobExecutionLogDto toModel(@NotNull JobExecutionLog entity) {
-        JobExecutionLogDto jobExecutionLogDto = instantiateModel(entity);
 
-        jobExecutionLogDto.setId(entity.getId());
-        jobExecutionLogDto.setHostName(entity.getHostName());
-        jobExecutionLogDto.setNodeName(entity.getNodeName());
-        jobExecutionLogDto.setJobName(entity.getJobName());
-        jobExecutionLogDto.setStepName(entity.getStepName());
-        jobExecutionLogDto.setLevel(entity.getLevel().name());
-        jobExecutionLogDto.setTimestamp(entity.getTimestamp());
-        jobExecutionLogDto.setThread(entity.getThread());
-        jobExecutionLogDto.setThreadId(entity.getThreadId());
-        jobExecutionLogDto.setThreadPriority(entity.getThreadPriority());
+        JobExecutionLogDto jobExecutionLogDto = modelConverter.convertJobExecutionLogToDto(entity);
 
         try {
             jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(jobExecutionLogDto.getId())).withSelfRel());

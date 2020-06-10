@@ -78,7 +78,7 @@ public class JobExecutionController {
      * @return job execution with given ID.
      * @throws ResourceNotFoundException if the job execution cannot be found.
      */
-    @GetMapping(value = "/{id}", produces = {"application/hal+json"})
+    @GetMapping(value = "/{jobExecutionId}", produces = {"application/hal+json"})
     public JobExecutionInfo findById(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
         return jobExecutionService.getJobExecutionById(jobExecutionId);
     }
@@ -86,12 +86,13 @@ public class JobExecutionController {
     /**
      * Deletes a job execution by ID.
      *
-     * @param id job execution ID.
+     * @param jobExecutionId job execution ID.
      * @throws ResourceNotFoundException if the job execution cannot be found.
      */
-    @DeleteMapping(value = "/{id}/delete")
-    public void delete(@PathVariable String id) throws ResourceNotFoundException {
-        jobExecutionService.deleteJobExecutionInfo(id);
+    @DeleteMapping(value = "/{jobExecutionId}/delete")
+    public ResponseEntity<Void> delete(@PathVariable String jobExecutionId) throws ResourceNotFoundException {
+        jobExecutionService.deleteJobExecutionInfo(jobExecutionId);
+        return null;
     }
 
     /**

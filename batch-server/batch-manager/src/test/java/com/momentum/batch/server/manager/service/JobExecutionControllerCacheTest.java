@@ -7,6 +7,7 @@ import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +68,8 @@ public class JobExecutionControllerCacheTest {
 
         @Bean
         public JobExecutionService jobExecutionServiceForTest() {
-            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobExecutionInstanceRepository(), stepExecutionInfoRepository(), serverCommandProducer(), modelConverter());
+            //return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobExecutionInstanceRepository(), stepExecutionInfoRepository(), serverCommandProducer());
+            return null;
         }
 
         @Bean
@@ -121,7 +123,7 @@ public class JobExecutionControllerCacheTest {
     }
 
     @Test
-    public void whenFindByJobExecutionId_thenCachedValueIsReturned() {
+    public void whenFindByJobExecutionId_thenCachedValueIsReturned() throws ResourceNotFoundException {
 
         // First invocation should put entity into cache
         service.getJobExecutionById(jobExecutionInfo1.getId());
@@ -153,7 +155,7 @@ public class JobExecutionControllerCacheTest {
     }
 
     @Test
-    public void whenDeleteJobExecution_thenCachedValueShouldBeEvicted() {
+    public void whenDeleteJobExecution_thenCachedValueShouldBeEvicted() throws ResourceNotFoundException {
 
         // Delete job execution and check cache.
         service.deleteJobExecutionInfo(jobExecutionInfo1.getId());
