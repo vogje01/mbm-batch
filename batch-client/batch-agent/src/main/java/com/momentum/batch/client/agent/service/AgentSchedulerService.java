@@ -60,7 +60,7 @@ public class AgentSchedulerService {
             switch (agentSchedulerMessageDto.getType()) {
                 case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
                 case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
-                case JOB_REMOVE_SCHEDULE -> batchScheduler.removeScheduleJob(jobScheduleDto);
+                case JOB_REMOVE_SCHEDULE -> batchScheduler.removeJobFromScheduler(jobScheduleDto);
             }
         }
     }
