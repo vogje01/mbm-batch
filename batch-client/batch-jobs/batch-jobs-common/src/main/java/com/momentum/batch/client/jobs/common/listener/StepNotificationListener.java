@@ -41,6 +41,8 @@ public class StepNotificationListener implements StepExecutionListener {
 
     private final JobStatusProducer jobStatusProducer;
 
+    private StepExecution stepExecution;
+
     private StepExecutionDto stepExecutionDto = new StepExecutionDto();
 
     @Autowired
@@ -51,13 +53,14 @@ public class StepNotificationListener implements StepExecutionListener {
     }
 
     public void setTotalCount(String stepName, long totalCount) {
-        stepExecutionDto.setTotalCount(totalCount);
+        stepExecution.getExecutionContext().putLong(STEP_TOTAL_COUNT, totalCount);
     }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
-        stepExecution.getExecutionContext().put(STEP_UUID, UUID.randomUUID().toString());
+        this.stepExecution = stepExecution;
+        this.stepExecution.getExecutionContext().put(STEP_UUID, UUID.randomUUID().toString());
 
         logger.setJobUuid(getJobUuid(stepExecution));
         logger.setJobName(getJobName(stepExecution));
@@ -120,9 +123,9 @@ public class StepNotificationListener implements StepExecutionListener {
         stepExecutionDto.setJobExecutionId(getJobExecutionId(stepExecution));
         stepExecutionDto.setHostName(getHostName(stepExecution));
         stepExecutionDto.setNodeName(getNodeName(stepExecution));
-        stepExecutionDto.setId(getStepUuid(stepExecution));
         stepExecutionDto.setStepName(getStepName(stepExecution));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(stepExecution));
+        stepExecutionDto.setTotalCount(getStepExecutionTotalCount(stepExecution));
         stepExecutionDto.setRunningTime(DateTimeUtils.getRunningTime(stepExecution));
     }
 
