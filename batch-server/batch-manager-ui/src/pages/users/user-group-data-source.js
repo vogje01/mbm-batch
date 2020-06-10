@@ -1,14 +1,23 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {getParams} from "../../utils/param-util";
+import {deleteItem, getItem, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer} from "../../utils/method-timer";
 
 export const UserGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('usergroups' + params, 'userGroupDtoes');
+                let url = process.env.REACT_APP_API_URL + 'usergroups' + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of user groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'userGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (userGroup) {
                 let url = process.env.REACT_APP_API_URL + 'usergroups/insert';
@@ -32,10 +41,16 @@ export const UsergroupUserDataSource = (userGroup) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (!userGroup._links) return;
-                let url = userGroup._links.users.href;
-                url = mergeParams(loadOptions, url, 'userId', 'asc');
-                return getList(url, 'userDtoes');
+                let url = userGroup._links.users.href + getParams(loadOptions, 'userId', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of users');
+                    })
+                    .then(data => {
+                        return handleData(data, 'userDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (user) {
                 return getItem(userGroup._links.addUser.href + user.id);
