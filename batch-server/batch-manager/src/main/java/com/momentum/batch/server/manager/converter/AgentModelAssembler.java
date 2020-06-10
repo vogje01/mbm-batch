@@ -39,6 +39,8 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
         agentDto.setAvgSystemLoadWeek(entity.getAvgSystemLoadWeek());
         agentDto.setActive(entity.getActive());
         agentDto.setStatus(entity.getStatus().name());
+        agentDto.setLastPing(entity.getLastPing());
+        agentDto.setLastStart(entity.getLastStart());
 
         agentDto.setCreatedAt(entity.getCreatedAt());
         agentDto.setCreatedBy(entity.getCreatedBy());
@@ -84,8 +86,10 @@ public class AgentModelAssembler extends RepresentationModelAssemblerSupport<Age
         entity.setSystemLoad(agentDto.getSystemLoad());
         entity.setAvgSystemLoadDay(agentDto.getAvgSystemLoadDay());
         entity.setAvgSystemLoadWeek(agentDto.getAvgSystemLoadWeek());
-        entity.setActive(agentDto.getActive());
         entity.setStatus(AgentStatus.valueOf(agentDto.getStatus()));
+        entity.setLastPing(agentDto.getLastPing());
+        entity.setLastStart(agentDto.getLastStart());
+        entity.setActive(agentDto.getActive());
         return entity;
     }
 }

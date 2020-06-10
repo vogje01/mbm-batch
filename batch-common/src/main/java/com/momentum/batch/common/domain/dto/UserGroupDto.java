@@ -25,10 +25,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
      */
     private String id;
     /**
-     * Version
-     */
-    private Long version;
-    /**
      * Name
      */
     private String name;
@@ -56,10 +52,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
      * Modified at
      */
     private Date modifiedAt;
-    /**
-     * Total count
-     */
-    private Long totalSize;
 
     public UserGroupDto() {
         // Default constructor
@@ -81,14 +73,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
     }
 
     public String getName() {
@@ -139,14 +123,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,20 +130,18 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         if (!super.equals(o)) return false;
         UserGroupDto that = (UserGroupDto) o;
         return Objects.equal(id, that.id) &&
-                Objects.equal(version, that.version) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(description, that.description) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(totalSize, that.totalSize);
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
+        return Objects.hashCode(super.hashCode(), id, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     public Boolean getActive() {
@@ -182,7 +156,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("name", name)
                 .add("description", description)
                 .add("active", active)
@@ -190,7 +163,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("totalSize", totalSize)
                 .toString();
     }
 }
