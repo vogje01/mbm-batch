@@ -28,7 +28,7 @@ import java.util.List;
 
 import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -157,7 +157,7 @@ public class JobScheduleControllerTest {
         jobScheduleDtoList.add(jobScheduleDto2);
 
         when(jobScheduleService.findAll(any())).thenReturn(new PageImpl<>(jobScheduleList));
-        when(modelConverter.convertJobScheduleToDto(anyList(), anyLong())).thenReturn(jobScheduleDtoList);
+        when(modelConverter.convertJobScheduleToDto(any())).thenReturn(jobScheduleDto1);
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
                 //.andDo(print())

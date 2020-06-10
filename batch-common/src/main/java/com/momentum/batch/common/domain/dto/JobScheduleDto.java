@@ -48,12 +48,12 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
      */
     private Date modifiedAt;
     /**
-     * Total list size
+     * Job definition
      */
-    private Long totalSize;
-
     private JobDefinitionDto jobDefinitionDto;
-
+    /**
+     * Agents
+     */
     private List<AgentDto> agentDtos = new ArrayList<>();
 
     @JsonCreator
@@ -157,14 +157,6 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     public JobDefinitionDto getJobDefinitionDto() {
         return jobDefinitionDto;
     }
@@ -205,14 +197,14 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
                 Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(totalSize, that.totalSize) &&
                 Objects.equal(agentDtos, that.agentDtos) &&
                 Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize, agentDtos, jobDefinitionDto);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt,
+                modifiedBy, modifiedAt, agentDtos, jobDefinitionDto);
     }
 
     @Override
@@ -230,9 +222,6 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("totalSize", totalSize)
-                .add("agentDtos", agentDtos)
-                .add("jobDefinitionDto", jobDefinitionDto)
                 .toString();
     }
 }

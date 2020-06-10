@@ -62,16 +62,6 @@ public class ModelConverter {
         return modelMapper.map(jobExecutionParam, JobExecutionParamDto.class);
     }
 
-    public JobExecutionParamDto convertJobExecutionParamToDto(JobExecutionParam jobExecutionParam, long totalCount) {
-        JobExecutionParamDto jobExecutionParamDto = modelMapper.map(jobExecutionParam, JobExecutionParamDto.class);
-        jobExecutionParamDto.setTotalCount(totalCount);
-        return jobExecutionParamDto;
-    }
-
-    public List<JobExecutionParamDto> convertJobExecutionParamToDto(List<JobExecutionParam> jobExecutionParamList, long totalCount) {
-        return jobExecutionParamList.stream().map(j -> convertJobExecutionParamToDto(j, totalCount)).collect(toList());
-    }
-
     public JobExecutionParam convertJobExecutionParamToEntity(JobExecutionParamDto jobExecutionParamDto) {
         JobExecutionParam jobExecutionParam = modelMapper.map(jobExecutionParamDto, JobExecutionParam.class);
         switch (jobExecutionParamDto.getTypeCd()) {
@@ -93,13 +83,6 @@ public class ModelConverter {
                 .collect(toList());
         jobExecutionInfo.setJobExecutionParams(jobExecutionParams);
         return jobExecutionInfo;
-    }
-
-    public JobExecutionLogDto convertJobExecutionLogToDto(JobExecutionLog jobExecutionLog, long totalCount) {
-        JobExecutionLogDto jobExecutionLogDto = modelMapper.map(jobExecutionLog, JobExecutionLogDto.class);
-        if (jobExecutionLog.getTimestamp() != null)
-            jobExecutionLogDto.setTimestamp(jobExecutionLog.getTimestamp());
-        return jobExecutionLogDto;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -167,20 +150,6 @@ public class ModelConverter {
         return jobScheduleDto;
     }
 
-    public List<JobScheduleDto> convertJobScheduleToDto(List<JobSchedule> jobScheduleList, long totalCount) {
-        return jobScheduleList.stream().map(s -> convertJobScheduleToDto(s, totalCount)).collect(toList());
-    }
-
-    public JobScheduleDto convertJobScheduleToDto(JobSchedule jobSchedule, long totalCount) {
-        JobScheduleDto jobScheduleDto = modelMapper.map(jobSchedule, JobScheduleDto.class);
-        if (jobSchedule.getJobDefinition() != null) {
-            jobScheduleDto.setJobDefinitionDto(convertJobDefinitionToDto(jobSchedule.getJobDefinition()));
-            jobScheduleDto.setJobDefinitionName(jobSchedule.getJobDefinition().getName());
-        }
-        jobScheduleDto.setTotalSize(totalCount);
-        return jobScheduleDto;
-    }
-
     public JobSchedule convertJobScheduleToEntity(JobScheduleDto jobScheduleDto) {
         JobSchedule jobSchedule = modelMapper.map(jobScheduleDto, JobSchedule.class);
         if (jobScheduleDto.getJobDefinitionDto() != null) {
@@ -217,34 +186,13 @@ public class ModelConverter {
         return jobDefinitionDto;
     }
 
-    public JobDefinitionDto convertJobDefinitionToDto(JobDefinition jobDefinition, long totalCount) {
-        JobDefinitionDto jobDefinitionDto = convertJobDefinitionToDto(jobDefinition);
-        jobDefinitionDto.setTotalSize(totalCount);
-        return jobDefinitionDto;
-    }
-
-    public List<JobDefinitionDto> convertJobDefinitionToDto(List<JobDefinition> jobDefinitions, long totalCount) {
-        return jobDefinitions.stream().map(j -> convertJobDefinitionToDto(j, totalCount)).collect(toList());
-    }
-
     public JobDefinitionParamDto convertJobDefinitionParamToDto(JobDefinitionParam jobDefinitionParam) {
-        return modelMapper.map(jobDefinitionParam, JobDefinitionParamDto.class);
-    }
-
-    public JobDefinitionParamDto convertJobDefinitionParamToDto(JobDefinitionParam jobDefinitionParam, long totalCount) {
-        JobDefinitionParamDto jobDefinitionParamDto = convertJobDefinitionParamToDto(jobDefinitionParam);
-        jobDefinitionParamDto.setTotalSize(totalCount);
-        return jobDefinitionParamDto;
-    }
-
-    public List<JobDefinitionParamDto> convertJobDefinitionParamToDto(List<JobDefinitionParam> jobDefinitionParams, long totalCount) {
-        return jobDefinitionParams.stream().map(j -> convertJobDefinitionParamToDto(j, totalCount)).collect(toList());
+        return convertJobDefinitionParamToDto(jobDefinitionParam);
     }
 
     public JobDefinition convertJobDefinitionToEntity(JobDefinitionDto jobDefinitionDto) {
         JobDefinition jobDefinition = modelMapper.map(jobDefinitionDto, JobDefinition.class);
         jobDefinition.setJobGroup(convertJobGroupToEntity(jobDefinitionDto.getJobGroupDto()));
-//        jobDefinition.setJobGroups(convertJobGroupToEntity(jobDefinitionDto.getJobGroupDtoes()));
 
         if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
             jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
@@ -266,25 +214,8 @@ public class ModelConverter {
         return modelMapper.map(jobGroup, JobGroupDto.class);
     }
 
-    public JobGroupDto convertJobGroupToDto(JobGroup jobGroup, long totalCount) {
-        JobGroupDto jobGroupDto = convertJobGroupToDto(jobGroup);
-        jobGroupDto.setTotalSize(totalCount);
-        return jobGroupDto;
-    }
-
-    public List<JobGroupDto> convertJobGroupToDto(List<JobGroup> jobGroups, long totalCount) {
-        return jobGroups.stream().map(j -> convertJobGroupToDto(j, totalCount)).collect(toList());
-    }
-
     public JobGroup convertJobGroupToEntity(JobGroupDto jobGroupDto) {
-        if (jobGroupDto != null) {
-            return modelMapper.map(jobGroupDto, JobGroup.class);
-        }
-        return null;
-    }
-
-    public List<JobGroup> convertJobGroupToEntity(List<JobGroupDto> jobGroupDtoes) {
-        return jobGroupDtoes.stream().map(this::convertJobGroupToEntity).collect(toList());
+        return modelMapper.map(jobGroupDto, JobGroup.class);
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -335,15 +266,6 @@ public class ModelConverter {
         return userDto;
     }
 
-    public List<UserDto> convertUserToDto(List<User> userList, long totalCount) {
-        return userList.stream().map(a -> convertUserToDto(a, totalCount)).collect(toList());
-    }
-
-    public UserDto convertUserToDto(User user, long totalCount) {
-        UserDto userDto = convertUserToDto(user);
-        return userDto;
-    }
-
     public User convertUserToEntity(UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);
         user.setDateTimeFormat(DateTimeFormat.valueOf(userDto.getDateTimeFormat()));
@@ -364,15 +286,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public UserGroupDto convertUserGroupToDto(UserGroup userGroup) {
         return modelMapper.map(userGroup, UserGroupDto.class);
-    }
-
-    public List<UserGroupDto> convertUserGroupToDto(List<UserGroup> userGroupList, long totalCount) {
-        return userGroupList.stream().map(a -> convertUserGroupToDto(a, totalCount)).collect(toList());
-    }
-
-    public UserGroupDto convertUserGroupToDto(UserGroup userGroup, long totalCount) {
-        UserGroupDto userGroupDto = convertUserGroupToDto(userGroup);
-        return userGroupDto;
     }
 
     public UserGroup convertUserGroupToEntity(UserGroupDto userGroupDto) {

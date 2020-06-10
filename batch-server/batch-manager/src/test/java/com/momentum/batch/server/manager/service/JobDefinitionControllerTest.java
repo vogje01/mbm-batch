@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -104,9 +104,9 @@ public class JobDefinitionControllerTest {
             .build();
         JobDefinitionParamDto jobDefinitionParamDto2 = new JobDefinitionParamDtoBuilder()
             .withRandomId()
-            .withKeyName("param1")
-            .withBooleanValue(true)
-            .build();
+                .withKeyName("param1")
+                .withBooleanValue(true)
+                .build();
         jobDefinition1Dto.addJobDefinitionParam(jobDefinitionParamDto2);
 
         List<JobDefinitionDto> jobDefinitionDtoList = new ArrayList<>();
@@ -114,19 +114,17 @@ public class JobDefinitionControllerTest {
         jobDefinitionDtoList.add(jobDefinition2Dto);
 
         when(jobDefinitionService.allJobDefinitions(any())).thenReturn(new PageImpl<>(jobDefinitionList));
-        when(modelConverter.convertJobDefinitionToDto(anyList(), anyLong()))
-            .thenReturn(jobDefinitionDtoList);
-        when(modelConverter.convertJobDefinitionToDto(any(JobDefinition.class), anyLong()))
-            .thenReturn(jobDefinition1Dto, jobDefinition2Dto);
+        when(modelConverter.convertJobDefinitionToDto(any())).thenReturn(jobDefinition1Dto);
+        when(modelConverter.convertJobDefinitionToDto(any())).thenReturn(jobDefinition1Dto, jobDefinition2Dto);
 
         this.mockMvc.perform(get("/api/jobdefinitions?page=0&size=5")) //
-            //.andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaTypes.HAL_JSON))
-            .andExpect(jsonPath("$.links[0].rel", is("self")))
-            .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobdefinitions?page=0&size=5{&sortBy,sortDir}")))
-            .andExpect(jsonPath("$.content[0].name", is("Job1")))
-            .andExpect(jsonPath("$.content[1].name", is("Job2")));
+                //.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.links[0].rel", is("self")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/jobdefinitions?page=0&size=5{&sortBy,sortDir}")))
+                .andExpect(jsonPath("$.content[0].name", is("Job1")))
+                .andExpect(jsonPath("$.content[1].name", is("Job2")));
     }
 
     @Test

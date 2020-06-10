@@ -114,11 +114,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
         this.jobId = jobId;
     }
 
-    public String setJobIdConverted(JobExecutionDto jobExecutionInfo) {
-        jobId = jobExecutionInfo.getId() != null ? jobExecutionInfo.getId() : "JobId";
-        return jobId;
-    }
-
     public Long getJobExecutionId() {
         return jobExecutionId;
     }
@@ -366,7 +361,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("jobExecutionDto", jobExecutionDto)
                 .toString();
     }
 

@@ -39,10 +39,6 @@ public class JobGroupDto extends RepresentationModel<JobGroupDto> {
      * Deleted flag
      */
     private boolean active = false;
-    /**
-     * Total count
-     */
-    private long totalSize;
 
     /**
      * Constructor
@@ -91,14 +87,6 @@ public class JobGroupDto extends RepresentationModel<JobGroupDto> {
         this.active = deleted;
     }
 
-    public long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -108,7 +96,6 @@ public class JobGroupDto extends RepresentationModel<JobGroupDto> {
                 .add("label", label)
                 .add("description", description)
                 .add("active", active)
-                .add("totalCount", totalSize)
                 .toString();
     }
 
@@ -118,7 +105,6 @@ public class JobGroupDto extends RepresentationModel<JobGroupDto> {
         if (o == null || getClass() != o.getClass()) return false;
         JobGroupDto that = (JobGroupDto) o;
         return active == that.active &&
-                totalSize == that.totalSize &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(version, that.version) &&
                 Objects.equal(name, that.name) &&
@@ -128,6 +114,6 @@ public class JobGroupDto extends RepresentationModel<JobGroupDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, version, name, label, description, active, totalSize);
+        return Objects.hashCode(id, version, name, label, description, active);
     }
 }

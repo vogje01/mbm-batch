@@ -271,7 +271,7 @@ public class UserDto extends RepresentationModel<UserDto> {
     @Override
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, theme, dateTimeFormat, numberFormat, description,
-                active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt, userGroupDtoes);
+                active, passwordChanged, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     @Override

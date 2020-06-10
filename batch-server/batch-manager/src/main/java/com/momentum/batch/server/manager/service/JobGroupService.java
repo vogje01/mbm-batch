@@ -10,8 +10,6 @@ public interface JobGroupService {
 
     Page<JobGroup> findAll(Pageable pageable);
 
-    long countAll();
-
     JobGroup getJobGroup(final String id);
 
     JobGroup getJobGroupByName(final String name);

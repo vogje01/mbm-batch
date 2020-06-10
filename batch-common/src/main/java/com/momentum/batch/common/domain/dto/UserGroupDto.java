@@ -91,6 +91,14 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
         this.description = description;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public String getCreatedBy() {
         return createdBy;
     }
@@ -142,14 +150,6 @@ public class UserGroupDto extends RepresentationModel<UserGroupDto> {
     @Override
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), id, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt);
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     @Override

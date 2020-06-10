@@ -103,10 +103,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
      */
     private Date modifiedAt;
     /**
-     * Total size of available job definitions.
-     */
-    private Long totalSize;
-    /**
      * Job groups
      */
     private JobGroupDto jobGroupDto;
@@ -283,14 +279,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     public JobGroupDto getJobGroupDto() {
         return jobGroupDto;
     }
@@ -346,13 +334,13 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(totalSize, that.totalSize);
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
+                jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     @Override
@@ -378,7 +366,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("totalSize", totalSize)
                 .toString();
     }
 }

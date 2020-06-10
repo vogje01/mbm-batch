@@ -1,7 +1,6 @@
 package com.momentum.batch.server.manager.service;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.common.domain.dto.ServerCommandDto;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -105,9 +103,6 @@ public class JobExecutionControllerCacheTest {
     private static final AgentSchedulerMessageProducer mockAgentSchedulerMessageProducer = mock(AgentSchedulerMessageProducer.class);
 
     private static final ModelConverter mockModelConverter = mock(ModelConverter.class);
-
-    @SuppressWarnings("unchecked")
-    private static final KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
 
     private final JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
 
