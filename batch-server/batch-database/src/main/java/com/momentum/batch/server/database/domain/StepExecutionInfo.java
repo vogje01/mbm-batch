@@ -186,7 +186,12 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.filterCount = stepExecutionDto.getFilterCount();
         this.exitCode = stepExecutionDto.getExitCode();
         this.exitMessage = stepExecutionDto.getExitMessage();
-        this.stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
+        if (stepExecutionDto.getStepExecutionContextDto() != null) {
+            if (this.stepExecutionContext == null) {
+                this.stepExecutionContext = new StepExecutionContext();
+            }
+            this.stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
+        }
     }
 
     public String getId() {
