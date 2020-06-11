@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.JobScheduleType;
+import com.momentum.batch.common.domain.JobScheduleMode;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     private String name;
 
-    private JobScheduleType mode;
+    private JobScheduleMode mode;
 
     private String jobDefinitionName;
 
@@ -101,11 +101,11 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
         this.lastExecution = lastExecution;
     }
 
-    public JobScheduleType getMode() {
+    public JobScheduleMode getMode() {
         return mode;
     }
 
-    public void setMode(JobScheduleType mode) {
+    public void setMode(JobScheduleMode mode) {
         this.mode = mode;
     }
 
@@ -196,15 +196,13 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(agentDtos, that.agentDtos) &&
-                Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt,
-                modifiedBy, modifiedAt, agentDtos, jobDefinitionDto);
+                modifiedBy, modifiedAt);
     }
 
     @Override

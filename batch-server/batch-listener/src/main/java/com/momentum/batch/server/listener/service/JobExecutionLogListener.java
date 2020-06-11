@@ -14,6 +14,13 @@ import org.springframework.stereotype.Service;
 
 import static java.text.MessageFormat.format;
 
+/**
+ * Listener for the job execution logs messages send to the Kafka batchJobExecutionLog queue.
+ *
+ * @author Jens vogt (jensvogt47@gmail.com)
+ * @version 0.0.4
+ * @since 0.0.2
+ */
 @Service
 public class JobExecutionLogListener {
 

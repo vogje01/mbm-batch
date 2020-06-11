@@ -262,19 +262,19 @@ ALTER TABLE BATCH_JOB_EXECUTION_LOG
 CREATE TABLE BATCH_JOB_SCHEDULE
 (
     ID                VARCHAR(36) NOT NULL PRIMARY KEY,
-    VERSION           BIGINT      NOT NULL DEFAULT 0,
+    VERSION           BIGINT      NOT NULL                                     DEFAULT 0,
     JOB_DEFINITION_ID VARCHAR(36) NOT NULL,
     SCHEDULE          VARCHAR(16) NOT NULL,
-    MODE              ENUM ('CENTRAL', 'LOCAL'),
+    MODE              ENUM ('FIXED', 'RANDOM', 'RANDOM_GROUP', 'MINIMUM_LOAD') DEFAULT 'FIXED',
     LAST_EXECUTION    DATETIME,
     NEXT_EXECUTION    DATETIME,
     NAME              VARCHAR(100),
     GROUP_NAME        VARCHAR(100),
     ACTIVE            BIT,
-    CREATED_BY        VARCHAR(32)          DEFAULT 'admin',
-    CREATED_AT        DATETIME             DEFAULT CURRENT_TIMESTAMP,
-    MODIFIED_BY       VARCHAR(32)          DEFAULT 'admin',
-    MODIFIED_AT       DATETIME             DEFAULT CURRENT_TIMESTAMP,
+    CREATED_BY        VARCHAR(32)                                              DEFAULT 'admin',
+    CREATED_AT        DATETIME                                                 DEFAULT CURRENT_TIMESTAMP,
+    MODIFIED_BY       VARCHAR(32)                                              DEFAULT 'admin',
+    MODIFIED_AT       DATETIME                                                 DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT JOB_SCHEDULE_JOBDEFINITION_FK FOREIGN KEY (JOB_DEFINITION_ID)
         REFERENCES BATCH_JOB_DEFINITION (ID)
 ) ENGINE = InnoDB;
