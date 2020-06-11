@@ -15,6 +15,7 @@
     <modules>
         <module>batch-database</module>
         <module>batch-listener</module>
+        <module>batch-scheduler</module>
         <module>batch-manager</module>
     </modules>
 

@@ -5,7 +5,7 @@ import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperati
 import {JobScheduleDataSource} from "./job-schedule-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
-import {EmptyItem, GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
+import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
 import {RequiredRule} from "devextreme-react/validator";
 import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import JobScheduleAgentList from "./job-schedule-agent-list";
@@ -23,6 +23,9 @@ class JobSchedulerList extends React.Component {
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.cloneJobSchedule = this.cloneJobSchedule.bind(this);
+        this.jobScheduleModes = [
+            'FIXED', 'RANDOM', 'RANDOM_GROUP', 'MINIMUM_LOAD'
+        ]
     }
 
     selectionChanged(e) {
@@ -96,7 +99,13 @@ class JobSchedulerList extends React.Component {
                                         <SimpleItem dataField={'nextExecution'} editorType={'dxTextBox'}
                                                     editorOptions={{readOnly: true, value: getFormattedTime(this.state.currentJobSchedule, 'nextExecution')}}/>
                                         <SimpleItem dataField="schedule"/>
-                                        <EmptyItem colSpan={2}/>
+                                        <SimpleItem dataField="mode"
+                                                    editorType={'dxSelectBox'}
+                                                    editorOptions={{dataSource: this.jobScheduleModes}}>
+                                            <RequiredRule message="Job name required"/>
+                                            <StringLengthRule min={2} message="Job name must be at least 2 characters long."/>
+                                        </SimpleItem>
+
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
                                     </GroupItem>
                                     <GroupItem caption={"Agents"} colCount={4}>
@@ -126,6 +135,12 @@ class JobSchedulerList extends React.Component {
                             <Column
                                 dataField={'jobDefinitionName'}
                                 caption={'Job Definition'}
+                                dataType={'string'}
+                                allowSorting={true}
+                                allowReordering={true}/>
+                            <Column
+                                dataField={'mode'}
+                                caption={'Schedule Mode'}
                                 dataType={'string'}
                                 allowSorting={true}
                                 allowReordering={true}/>

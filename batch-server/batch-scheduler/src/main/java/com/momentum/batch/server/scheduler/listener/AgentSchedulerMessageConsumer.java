@@ -1,4 +1,4 @@
-package com.momentum.batch.server.listener.service;
+package com.momentum.batch.server.scheduler.listener;
 
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;

@@ -3,6 +3,7 @@ package com.momentum.batch.server.database.domain;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.common.domain.JobScheduleMode;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -40,7 +41,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
 
     @Column(name = "MODE")
     @Enumerated(EnumType.STRING)
-    private String mode;
+    private JobScheduleMode mode;
 
     @Column(name = "ACTIVE")
     private Boolean active;
@@ -79,6 +80,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.nextExecution = origin.nextExecution;
         this.name = origin.name;
         this.active = origin.active;
+        this.mode = origin.mode;
         this.jobDefinition = origin.jobDefinition;
     }
 
@@ -114,11 +116,11 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.name = hostName;
     }
 
-    public String getMode() {
+    public JobScheduleMode getMode() {
         return mode;
     }
 
-    public void setMode(String mode) {
+    public void setMode(JobScheduleMode mode) {
         this.mode = mode;
     }
 
