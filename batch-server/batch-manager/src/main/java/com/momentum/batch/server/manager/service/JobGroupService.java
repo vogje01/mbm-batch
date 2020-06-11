@@ -25,4 +25,6 @@ public interface JobGroupService {
     JobGroup addJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
 
     JobGroup removeJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
+
+    Page<JobGroup> findByJobDefinition(String jobDefinitionId, Pageable pageable);
 }

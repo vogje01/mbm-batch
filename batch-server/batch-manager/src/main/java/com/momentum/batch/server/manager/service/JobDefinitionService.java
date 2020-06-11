@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,10 +22,8 @@ public interface JobDefinitionService {
 
     JobDefinition insertJobDefinition(JobDefinition jobDefinition);
 
-    JobDefinition updateJobDefinition(final String jobDefinitionId,
-                                      JobDefinition jobDefinition) throws ResourceNotFoundException;
+    JobDefinition updateJobDefinition(final String jobDefinitionId, JobDefinition jobDefinition) throws ResourceNotFoundException;
 
-    @CacheEvict
     void deleteJobDefinition(final String id);
 
     void startJob(final String id) throws ResourceNotFoundException;
@@ -36,4 +33,8 @@ public interface JobDefinitionService {
     List<JobDefinition> exportJobDefinitions();
 
     void importJobDefinitions(List<JobDefinition> jobDefinitions);
+
+    JobDefinition addJobGroup(String jobDefinitionId, String jobGroupId) throws ResourceNotFoundException;
+
+    JobDefinition removeJobGroup(String jobDefinitionId, String jobGroupId) throws ResourceNotFoundException;
 }

@@ -2,7 +2,9 @@ package com.momentum.batch.server.manager.service;
 
 import com.google.common.collect.Lists;
 import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
+import com.momentum.batch.server.database.repository.JobGroupRepository;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +31,13 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private final JobScheduleService jobScheduleService;
 
+    private final JobGroupRepository jobGroupRepository;
+
     @Autowired
-    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService) {
+    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService, JobGroupRepository jobGroupRepository) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobScheduleService = jobScheduleService;
+        this.jobGroupRepository = jobGroupRepository;
     }
 
     @Override
@@ -148,5 +153,45 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
             logger.error(format("Job definition not found - id: {0}", jobDefinitionId));
             throw new ResourceNotFoundException();
         }
+    }
+
+    /**
+     * Adds a job group to a job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @param jobGroupId      job group ID.
+     */
+    @Override
+    @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
+    public JobDefinition addJobGroup(String jobDefinitionId, String jobGroupId) throws ResourceNotFoundException {
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findById(jobDefinitionId);
+        Optional<JobGroup> jobGroupOptional = jobGroupRepository.findById(jobGroupId);
+        if (jobDefinitionOptional.isPresent() && jobGroupOptional.isPresent()) {
+            JobDefinition jobDefinition = jobDefinitionOptional.get();
+            JobGroup jobGroup = jobGroupOptional.get();
+            jobDefinition.addJobGroup(jobGroup);
+            return jobDefinitionRepository.save(jobDefinition);
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    /**
+     * Removes a job group from a job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @param jobGroupId      job group ID.
+     */
+    @Override
+    @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
+    public JobDefinition removeJobGroup(String jobDefinitionId, String jobGroupId) throws ResourceNotFoundException {
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findById(jobDefinitionId);
+        Optional<JobGroup> jobGroupOptional = jobGroupRepository.findById(jobGroupId);
+        if (jobDefinitionOptional.isPresent() && jobGroupOptional.isPresent()) {
+            JobDefinition jobDefinition = jobDefinitionOptional.get();
+            JobGroup jobGroup = jobGroupOptional.get();
+            jobDefinition.removeJobGroup(jobGroup);
+            return jobDefinitionRepository.save(jobDefinition);
+        }
+        throw new ResourceNotFoundException();
     }
 }

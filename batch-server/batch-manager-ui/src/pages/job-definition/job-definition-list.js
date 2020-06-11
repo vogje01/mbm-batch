@@ -22,6 +22,7 @@ import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
 import {getFormattedTime} from "../../utils/date-time-util";
+import JobDefinitionJobGroupList from "./job-definition-job-group-list";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -185,6 +186,9 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobDefinition, 'modifiedAt'), readOnly: true}}/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
+                                        <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
                                     <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
                                         <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>

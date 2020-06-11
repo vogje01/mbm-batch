@@ -7,6 +7,7 @@ import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.controller.JobDefinitionController;
 import com.momentum.batch.server.manager.controller.JobDefinitionParamController;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
+import com.momentum.batch.server.manager.controller.JobGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,13 @@ public class JobDefinitionModelAssembler extends RepresentationModelAssemblerSup
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).update(jobDefinitionDto.getId(), jobDefinitionDto)).withRel("update"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).delete(jobDefinitionDto.getId())).withRel("delete"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).start(jobDefinitionDto.getId())).withRel("start"));
+
+            // Job groups links
+            jobDefinitionDto.add(linkTo(methodOn(JobGroupController.class).findByJobDefinition(jobDefinitionDto.getId(), Pageable.unpaged())).withRel("jobGroups"));
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).addJobGroup(null, null)).withRel("addJobGroup").expand(jobDefinitionDto.getId(), ""));
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).removeJobGroup(null, null)).withRel("removeJobGroup").expand(jobDefinitionDto.getId(), ""));
+
+            // Job parameters
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).addJobDefinitionParam(jobDefinitionDto.getId(), new JobDefinitionParamDto())).withRel("addParam"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).findByJobDefinitionId(jobDefinitionDto.getId(), Pageable.unpaged())).withRel("params"));
 

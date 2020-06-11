@@ -209,6 +209,44 @@ public class JobDefinitionController {
     }
 
     /**
+     * Add an job group to a job definition.
+     *
+     * @param jobDefinitionId ID of job definition.
+     * @param jobGroupId      job group ID.
+     */
+    @GetMapping("/{jobDefinitionId}/addJobGroup/{jobGroupId}")
+    public ResponseEntity<JobDefinitionDto> addJobGroup(@PathVariable String jobDefinitionId, @PathVariable String jobGroupId) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Add job group to job definition
+        JobDefinition jobDefinition = jobDefinitionService.addJobGroup(jobDefinitionId, jobGroupId);
+        JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+        logger.debug(format("Finished add job group to job definition request - jobDefinitionId: {0} jobGroupId: {1} {2}", jobDefinitionId, jobGroupId, t.elapsedStr()));
+
+        return ResponseEntity.ok(jobDefinitionDto);
+    }
+
+    /**
+     * Removes a user group from an user.
+     *
+     * @param jobDefinitionId ID of job definition.
+     * @param jobGroupId      job group ID.
+     */
+    @GetMapping("/{jobDefinitionId}/removeJobGroup/{jobGroupId}")
+    public ResponseEntity<JobDefinitionDto> removeJobGroup(@PathVariable String jobDefinitionId, @PathVariable String jobGroupId) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Remove job group to job definition
+        JobDefinition jobDefinition = jobDefinitionService.removeJobGroup(jobDefinitionId, jobGroupId);
+        JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+        logger.debug(format("Finished removing job group from job definition request - jobDefinitionId: {0} jobGroupId: {1} {2}", jobDefinitionId, jobGroupId, t.elapsedStr()));
+
+        return ResponseEntity.ok(jobDefinitionDto);
+    }
+
+    /**
      * Start a new job.
      *
      * @param jobDefinitionId job definition UUID.

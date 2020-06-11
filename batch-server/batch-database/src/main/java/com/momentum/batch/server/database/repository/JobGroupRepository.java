@@ -11,9 +11,9 @@ import java.util.Optional;
 
 public interface JobGroupRepository extends PagingAndSortingRepository<JobGroup, String> {
 
-    @Query("select j from JobGroup j where j.active = true")
-    Page<JobGroup> findAllActive(Pageable pageable);
-
-    @Query("select j from JobGroup j where j.name = :name and j.active = true")
+    @Query("select g from JobGroup g where g.name = :name")
     Optional<JobGroup> findByName(@Param("name") String name);
+
+    @Query("select g from JobGroup g join g.jobDefinitions j where j.id = :jobDefinitionId")
+    Page<JobGroup> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
 }

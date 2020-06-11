@@ -95,3 +95,30 @@ export const JobDefinitionParamDataSource = (jobDefinition) => {
         })
     });
 };
+
+export const JobDefinitionJobGroupDataSource = (jobDefinition) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                StartTimer();
+                let url = jobDefinition._links.jobGroups.href + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response);
+                    })
+                    .then((data) => {
+                        return handleData(data, 'jobGroupDtoes');
+                    })
+                    .finally(() => {
+                        EndTimer();
+                    });
+            },
+            insert: function (user) {
+                return getItem(jobDefinition._links.addJobGroup.href + user.id);
+            },
+            remove: function (user) {
+                return getItem(jobDefinition._links.removeJobGroup.href + user.id);
+            }
+        })
+    });
+};

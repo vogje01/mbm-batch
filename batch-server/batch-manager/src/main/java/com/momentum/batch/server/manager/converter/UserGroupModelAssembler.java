@@ -3,6 +3,7 @@ package com.momentum.batch.server.manager.converter;
 import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.manager.controller.UserController;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,9 @@ public class UserGroupModelAssembler extends RepresentationModelAssemblerSupport
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).insertUserGroup(userGroupDto)).withRel("insert"));
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).updateUserGroup(userGroupDto.getId(), userGroupDto)).withRel("update"));
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).deleteUserGroup(userGroupDto.getId())).withRel("delete"));
+
+            // User links
+            userGroupDto.add(linkTo(methodOn(UserController.class).findByUserGroup(userGroupDto.getId(), Pageable.unpaged())).withRel("users"));
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).addUser(null, null)).withRel("addUser").expand(userGroupDto.getId(), ""));
             userGroupDto.add(linkTo(methodOn(UserGroupController.class).removeUser(null, null)).withRel("removeUser").expand(userGroupDto.getId(), ""));
         } catch (ResourceNotFoundException e) {

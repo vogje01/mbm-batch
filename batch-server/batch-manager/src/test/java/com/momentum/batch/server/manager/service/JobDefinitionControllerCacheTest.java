@@ -43,7 +43,7 @@ public class JobDefinitionControllerCacheTest {
 
         @Bean
         public JobDefinitionService jobDefinitionService() {
-            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null);
+            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null, null);
         }
 
         @Bean

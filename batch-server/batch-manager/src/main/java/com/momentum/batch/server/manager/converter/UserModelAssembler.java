@@ -42,10 +42,14 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
             userDto.add(linkTo(methodOn(UserController.class).insertUser(userDto)).withRel("insert"));
             userDto.add(linkTo(methodOn(UserController.class).updateUser(userDto.getId(), userDto)).withRel("update"));
             userDto.add(linkTo(methodOn(UserController.class).deleteUser(userDto.getId())).withRel("delete"));
+
+            // User group links
+            userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), Pageable.unpaged())).withRel("userGroups"));
             userDto.add(linkTo(methodOn(UserController.class).addUserGroup(null, null)).withRel("addUserGroup").expand(userDto.getId(), ""));
             userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(null, null)).withRel("removeUserGroup").expand(userDto.getId(), ""));
+
+            // Avatar links
             userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
-            userDto.add(linkTo(methodOn(UserGroupController.class).findByUser(userDto.getId(), Pageable.unpaged())).withRel("userGroups"));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

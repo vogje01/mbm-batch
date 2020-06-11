@@ -116,6 +116,25 @@ public class JobGroupController {
     }
 
     /**
+     * Returns all job groups connected to a job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @return job groups belonging to given job definition.
+     */
+    @Cacheable(cacheNames = "JobGroup")
+    @GetMapping(value = "/byJobDefinition/{jobDefinitionId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobGroupDto>> findByJobDefinition(@RequestParam String jobDefinitionId, Pageable pageable) {
+
+        t.restart();
+        Page<JobGroup> jobGroups = jobGroupService.findByJobDefinition(jobDefinitionId, pageable);
+        PagedModel<JobGroupDto> collectionModel = jobGroupPagedResourcesAssembler.toModel(jobGroups, jobGroupModelAssembler);
+        logger.debug(format("Job group list by job definition request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
+    }
+
+    /**
      * Update a job group.
      *
      * @param jobGroupDto job group DTO.
