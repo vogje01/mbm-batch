@@ -74,7 +74,7 @@ public abstract class BatchSchedulerHelper {
             }
         } catch (SchedulerException ex) {
             logger.error(format("Could not check existence - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinitionDto.getJobGroupDto().getName(), jobDefinitionDto.getName(), ex.getMessage()), ex);
+                    jobDefinitionDto.getMainGroup(), jobDefinitionDto.getName(), ex.getMessage()), ex);
         }
         return false;
     }

@@ -116,7 +116,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param jobDefinition job definition to add to the scheduler.
      */
     public void addJobToScheduler(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
-        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupDto().getName(), jobDefinition.getName()));
+        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
         JobKey jobKey = findJob(jobDefinition);
 
         // Check existence
@@ -157,7 +157,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void removeJobFromScheduler(JobScheduleDto jobSchedule) {
         JobDefinitionDto jobDefinitionDto = jobSchedule.getJobDefinitionDto();
-        logger.info(format("Remove from scheduler - jobGroup: {0} jobName: {1}", jobDefinitionDto.getJobGroupDto().getName(), jobDefinitionDto.getName()));
+        logger.info(format("Remove from scheduler - jobGroup: {0} jobName: {1}", jobDefinitionDto.getMainGroup(), jobDefinitionDto.getName()));
         JobKey jobKey = findJob(jobDefinitionDto);
         if (jobKey != null) {
             if (isScheduled(jobKey)) {
@@ -175,7 +175,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     public void rescheduleJob(JobScheduleDto jobSchedule) {
 
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
-        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupDto().getName(), jobDefinition.getName()));
+        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
 
         JobKey jobKey = findJob(jobDefinition);
         if (jobKey != null) {

@@ -11,6 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -279,13 +280,9 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    /*public JobGroupDto getJobGroupDto() {
-        return jobGroupDto;
+    public String getMainGroup() {
+        return jobGroupDtoes.size() > 0 ? jobGroupDtoes.get(0).getName() : UUID.randomUUID().toString();
     }
-
-    public void setJobGroupDto(JobGroupDto jobGroupDto) {
-        this.jobGroupDto = jobGroupDto;
-    }*/
 
     public List<JobGroupDto> getJobGroupDtoes() {
         return jobGroupDtoes;
