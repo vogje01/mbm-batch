@@ -53,8 +53,12 @@ public class AgentServiceImpl implements AgentService {
     /**
      * Constructor.
      *
-     * @param agentRepository agent repository.
-     * @param cacheManager    cache manager.
+     * @param serverName                 host name of the server machine.
+     * @param agentRepository            agent repository.
+     * @param agentGroupRepository       agent group repository.
+     * @param jobScheduleRepository      job schedule  repository.
+     * @param agentStatusMessageProducer Kafka agent status message producer.
+     * @param cacheManager               cache manager.
      */
     @Autowired
     public AgentServiceImpl(String serverName, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,

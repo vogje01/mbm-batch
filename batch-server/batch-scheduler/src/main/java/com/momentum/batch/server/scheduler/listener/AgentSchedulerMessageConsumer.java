@@ -37,11 +37,11 @@ public class AgentSchedulerMessageConsumer {
      * Listen for agent scheduler messages, send from one the agents.
      * <p>
      * Supported agent scheduler messages are:
-     *     <ul>
-     *         <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
-     *         <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
-     *     </ul>
      * </p>
+     * <ul>
+     *     <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
+     *     <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
+     * </ul>
      *
      * @param agentSchedulerMessageDto agent command data transfer object.
      */

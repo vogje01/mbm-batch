@@ -106,7 +106,9 @@ public class UserGroupController {
     /**
      * Returns one page of job definitions.
      *
+     * @param userGroupId user group ID.
      * @return on page of job definitions.
+     * @throws ResourceNotFoundException when the user group cannot be found.
      */
     @GetMapping(value = "/{userGroupId}", produces = {"application/hal+json"})
     public ResponseEntity<UserGroupDto> findById(@PathVariable String userGroupId) throws ResourceNotFoundException {
@@ -151,8 +153,10 @@ public class UserGroupController {
     /**
      * Updates an userGroup.
      *
-     * @param userGroupDto userGroup DTO to update.
-     * @return userGroup DTO.
+     * @param userGroupId  user group ID to update
+     * @param userGroupDto user group DTO to update.
+     * @return user group DTO response entity.
+     * @throws ResourceNotFoundException when the user group cannot be found.
      */
     @PutMapping(value = "/{userGroupId}/update", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
     public ResponseEntity<UserGroupDto> updateUserGroup(@PathVariable String userGroupId, @RequestBody UserGroupDto userGroupDto) throws ResourceNotFoundException {
@@ -171,6 +175,8 @@ public class UserGroupController {
      * Deletes an userGroup.
      *
      * @param userGroupId ID of userGroup to delete.
+     * @return void return.
+     * @throws ResourceNotFoundException when the user group cannot be found.
      */
     @DeleteMapping(value = "/{userGroupId}/delete")
     public ResponseEntity<Void> deleteUserGroup(@PathVariable String userGroupId) throws ResourceNotFoundException {
@@ -189,6 +195,8 @@ public class UserGroupController {
      *
      * @param userGroupId user group ID.
      * @param id          user ID.
+     * @return user group response entity.
+     * @throws ResourceNotFoundException when the user group cannot be found.
      */
     @GetMapping("/{userGroupId}/addUser/{id}")
     public ResponseEntity<UserGroupDto> addUser(@PathVariable String userGroupId, @PathVariable String id) throws ResourceNotFoundException {
@@ -208,6 +216,8 @@ public class UserGroupController {
      *
      * @param userGroupId user group ID.
      * @param id          user ID.
+     * @return user group response entity.
+     * @throws ResourceNotFoundException when the user group cannot be found.
      */
     @GetMapping("/{userGroupId}/removeUser/{id}")
     public ResponseEntity<UserGroupDto> removeUser(@PathVariable String userGroupId, @PathVariable String id) throws ResourceNotFoundException {

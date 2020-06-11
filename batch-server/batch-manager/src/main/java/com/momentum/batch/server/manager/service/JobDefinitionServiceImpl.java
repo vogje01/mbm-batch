@@ -88,7 +88,6 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
      * @param jobDefinitionId job definition ID.
      * @param jobDefinition   job definition.
      * @return updated job definition.
-     * @throws ResourceNotFoundException
      */
     @Override
     @Transactional

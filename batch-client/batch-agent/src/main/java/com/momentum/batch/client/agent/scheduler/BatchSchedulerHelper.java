@@ -140,6 +140,9 @@ public abstract class BatchSchedulerHelper {
     /**
      * Convert the job definition to the corresponding Quartz job details structure.
      *
+     * @param hostName      host name of the machine.
+     * @param nodeName      agent node name.
+     * @param jobSchedule   job schedule.
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
@@ -167,12 +170,14 @@ public abstract class BatchSchedulerHelper {
      * <p>
      * Parameters are appended to the command line using the pattern '-DparameterName=parameterValue'. In order to access
      * the parameter in the batch read/writer/processor use:
+     * </p>
      * <pre>
-     *     @Value("${parameterName}")
+     *     	&#64;Value("&#36;{parameterName}")
      *     private int value;
      * </pre>
-     * </p>
      *
+     * @param hostName      host name of the machine.
+     * @param nodeName      node name of the agent.
      * @param jobDefinition job definition to process.
      * @return command line.
      */

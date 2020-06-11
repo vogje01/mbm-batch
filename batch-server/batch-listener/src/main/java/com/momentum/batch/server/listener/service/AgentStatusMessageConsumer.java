@@ -64,13 +64,13 @@ public class AgentStatusMessageConsumer {
      * Listen for agent messages, send from one the agents.
      * <p>
      * Supported agent messages are
-     *     <ul>
-     *         <li>AGENT_REGISTER: an agent want to register.</li>
-     *         <li>AGENT_STATUS: an agent sends status information.</li>
-     *         <li>AGENT_PING: a ping received from an agent.</li>
-     *         <li>AGENT_PERFORMANCE: performance data collected from an agent.</li>
-     *     </ul>
      * </p>
+     * <ul>
+     *     <li>AGENT_REGISTER: an agent want to register.</li>
+     *     <li>AGENT_STATUS: an agent sends status information.</li>
+     *     <li>AGENT_PING: a ping received from an agent.</li>
+     *     <li>AGENT_PERFORMANCE: performance data collected from an agent.</li>
+     * </ul>
      *
      * @param agentStatusMessageDto agent command data transfer object.
      */

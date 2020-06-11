@@ -89,6 +89,10 @@ public class JwtTokenUtil implements Serializable {
      * <li>Sign the JWT using the HS512 algorithm and secret key.</li>
      * <li>According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1) compaction of the JWT to a URL-safe string.</li>
      * </ul>
+     *
+     * @param claims  token claims.
+     * @param subject token subject.
+     * @return generated token.
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         long now = System.currentTimeMillis();

@@ -39,19 +39,21 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
 
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     /**
      * Constructor
      *
-     * @param userRepository user repository.
-     * @param cacheManager   cache manager.
+     * @param userRepository               user repository.
+     * @param userGroupRepository          user group repository.
+     * @param passwordResetTokenRepository password reset repository.
+     * @param cacheManager                 cache manager.
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository, CacheManager cacheManager) {

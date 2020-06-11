@@ -43,6 +43,7 @@ public class JobNotificationListener implements JobExecutionListener {
     /**
      * Constructor.
      *
+     * @param logger         batch logger.
      * @param modelConverter model converter.
      * @param statusProducer Kafka status message producer.
      */
@@ -103,6 +104,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * Set additional properties.
      *
      * @param jobExecution job execution.
+     * @param jobExecutionDto job execution data transfer object.
      */
     private void addAdditionalProperties(JobExecution jobExecution, JobExecutionDto jobExecutionDto) {
         jobExecutionDto.setId(getJobUuid(jobExecution));
@@ -120,6 +122,7 @@ public class JobNotificationListener implements JobExecutionListener {
      * Set exit code / message according to the values in the job definition.
      *
      * @param jobExecution job execution.
+     * @param jobExecutionDto job execution data transfer object.
      */
     private void setExitValues(JobExecution jobExecution, JobExecutionDto jobExecutionDto) {
         if (jobExecution.getStatus().equals(BatchStatus.FAILED)) {

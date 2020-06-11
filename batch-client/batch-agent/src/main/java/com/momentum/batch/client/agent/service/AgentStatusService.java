@@ -33,12 +33,12 @@ import static java.text.MessageFormat.format;
  * The node name is usually the host name. It can be send in the configuration file as well as on the command line
  * using the -DnodeName=&lt;nodeName&gt; syntax. The ping and performance intervals can set in the configuration
  * file as well as on the command line:
- *     <ul>
- *         <li>agent.nodeName: node name for the identification</li>
- *         <li>agent.pingInterval: interval in milliseconds for the ping sending</li>
- *         <li>agent.performanceInterval: interval in milliseconds for the performance data sending</li>
- *     </ul>
  * </p>
+ * <ul>
+ *     <li>agent.nodeName: node name for the identification</li>
+ *     <li>agent.pingInterval: interval in milliseconds for the ping sending</li>
+ *     <li>agent.performanceInterval: interval in milliseconds for the performance data sending</li>
+ * </ul>
  *
  * @author Jens Vogt jensvogt47@gmail.com
  * @version 0.0.4
@@ -71,8 +71,13 @@ public class AgentStatusService {
     /**
      * Constructor.
      *
-     * @param schedulerTask scheduler task.
-     * @param nodeName      node name.
+     * @param scheduler                  job scheduler.
+     * @param schedulerTask              scheduler task.
+     * @param serverName                 name of the server.
+     * @param hostName                   host name of the agent machine.
+     * @param nodeName                   node name.
+     * @param agentStatus                agent status.
+     * @param agentStatusMessageProducer Kafka message producer
      */
     @Autowired
     public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String serverName, String hostName, String nodeName, AgentStatus agentStatus,

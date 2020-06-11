@@ -42,7 +42,10 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * This constructor will start all jobs during initialization.
      * </p>
      *
-     * @param scheduler quartz scheduler.
+     * @param scheduler                     quartz scheduler.
+     * @param agentSchedulerMessageProducer Kafka message producer for schedule messages.
+     * @param hostName                      host name of the machine.
+     * @param nodeName                      node name of the agent.
      */
     @Autowired
     public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {
@@ -113,6 +116,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * scheduler. If the job exists already, the method logs a message and returns.
      * </p>
      *
+     * @param jobSchedule   job schedule data transfer object.
      * @param jobDefinition job definition to add to the scheduler.
      */
     public void addJobToScheduler(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {

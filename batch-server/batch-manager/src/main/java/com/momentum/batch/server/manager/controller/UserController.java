@@ -32,7 +32,7 @@ import static java.text.MessageFormat.format;
 /**
  * User  REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -56,7 +56,9 @@ public class UserController {
     /**
      * Constructor.
      *
-     * @param userService service implementation.
+     * @param userService                 service implementation.
+     * @param userPagedResourcesAssembler user resource assembler.
+     * @param userModelAssembler          user model assembler.
      */
     @Autowired
     public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler) {
@@ -88,6 +90,8 @@ public class UserController {
     /**
      * Returns one page of users.
      *
+     * @param id       user group ID
+     * @param pageable paging parameters.
      * @return on page of users.
      */
     @GetMapping(value = "/{id}/byUserGroup", produces = {"application/hal+json"})
@@ -105,14 +109,15 @@ public class UserController {
     }
 
     /**
-     * Returns one page of job definitions, which are not already part of the current job group.
+     * Returns one page of users, which are not already part of the current user group.
      *
-     * @param pageable paging parameters.
-     * @return on page of job definitions.
+     * @param userGroupId user group ID.
+     * @param pageable    paging parameters.
+     * @return on page of users.
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(value = "/restricted/{userGroupId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<UserDto>> findWithoutJobGroup(@PathVariable String userGroupId, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<UserDto>> findWithoutUserGroup(@PathVariable String userGroupId, Pageable pageable) throws ResourceNotFoundException {
 
         t.restart();
 
@@ -126,9 +131,11 @@ public class UserController {
     }
 
     /**
-     * Returns one page of job definitions.
+     * Returns a user by ID.
      *
-     * @return on page of job definitions.
+     * @param id user ID.
+     * @return user DTO response object.
+     * @throws ResourceNotFoundException when use cannot be found.
      */
     @GetMapping(value = "/{id}", produces = {"application/hal+json"})
     public ResponseEntity<UserDto> findById(@PathVariable String id) throws ResourceNotFoundException {
@@ -174,8 +181,10 @@ public class UserController {
     /**
      * Updates an user.
      *
+     * @param id      user ID.
      * @param userDto user DTO to update.
-     * @return user DTO.
+     * @return user DTO response object.
+     * @throws ResourceNotFoundException when use cannot be found.
      */
     @PutMapping(value = "/{id}/update", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
     public ResponseEntity<UserDto> updateUser(@PathVariable String id, @RequestBody UserDto userDto) throws ResourceNotFoundException {
@@ -197,6 +206,8 @@ public class UserController {
      * Deletes an user.
      *
      * @param id ID of user to delete.
+     * @return void.
+     * @throws ResourceNotFoundException when use cannot be found.
      */
     @DeleteMapping(value = "/{id}/delete")
     public ResponseEntity<Void> deleteUser(@PathVariable String id) throws ResourceNotFoundException {
@@ -213,6 +224,8 @@ public class UserController {
      *
      * @param id          ID of user.
      * @param userGroupId user group ID.
+     * @return user DTO response object.
+     * @throws ResourceNotFoundException when use cannot be found.
      */
     @GetMapping("/{id}/addUserGroup/{userGroupId}")
     public ResponseEntity<UserDto> addUserGroup(@PathVariable String id, @PathVariable String userGroupId) throws ResourceNotFoundException {
@@ -232,6 +245,8 @@ public class UserController {
      *
      * @param id          ID of user.
      * @param userGroupId user group ID.
+     * @return user DTO response object.
+     * @throws ResourceNotFoundException when use cannot be found.
      */
     @GetMapping("/{id}/removeUserGroup/{userGroupId}")
     public ResponseEntity<UserDto> removeUserGroup(@PathVariable String id, @PathVariable String userGroupId) throws ResourceNotFoundException {
@@ -254,6 +269,7 @@ public class UserController {
      *
      * @param id ID of user.
      * @return avatar image as PNG file.
+     * @throws ResourceNotFoundException when the avatar cannot be found.
      */
     @GetMapping(value = "/avatar/{id}", produces = {"image/png"})
     public ResponseEntity<byte[]> avatar(@PathVariable String id) throws ResourceNotFoundException {

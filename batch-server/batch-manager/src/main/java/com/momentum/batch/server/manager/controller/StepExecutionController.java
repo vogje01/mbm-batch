@@ -48,7 +48,9 @@ public class StepExecutionController {
     /**
      * Constructor.
      *
-     * @param stepExecutionService step execution service implementation.
+     * @param stepExecutionService            step execution service implementation.
+     * @param pagedResourcesAssembler         page resource assembler.
+     * @param stepExecutionInfoModelAssembler model assembler.
      */
     @Autowired
     StepExecutionController(StepExecutionService stepExecutionService, PagedResourcesAssembler<StepExecutionInfo> pagedResourcesAssembler,
@@ -99,7 +101,7 @@ public class StepExecutionController {
      * @return list of step execution infos for a given job.
      */
     @GetMapping(value = "/byjob/{jobId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<StepExecutionDto>> findByJobId(@PathVariable String jobId, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<StepExecutionDto>> findByJobId(@PathVariable String jobId, Pageable pageable) {
         t.restart();
 
         // Get step execution infos

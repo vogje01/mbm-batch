@@ -77,7 +77,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Constructor.
      *
-     * @param nodeName node name.
+     * @param agentSchedulerMessageProducer Kafka scheduler message producer.
+     * @param hostName                      host name of the machine.
+     * @param nodeName                      node name.
      */
     @Autowired
     public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {

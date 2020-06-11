@@ -61,7 +61,11 @@ public class AgentController {
     /**
      * Constructor.
      *
-     * @param agentService service implementation.
+     * @param agentService                       service implementation.
+     * @param agentPagedResourcesAssembler       agent paged resource assembler.
+     * @param agentModelAssembler                agent model assembler.
+     * @param jobSchedulePagedResourcesAssembler job definition paged resource assembler.
+     * @param jobScheduleModelAssembler          job definition model assembler.
      */
     @Autowired
     public AgentController(AgentService agentService, PagedResourcesAssembler<Agent> agentPagedResourcesAssembler, AgentModelAssembler agentModelAssembler,
@@ -76,6 +80,7 @@ public class AgentController {
     /**
      * Returns one page of job definitions.
      *
+     * @param pageable paging parameters.
      * @return on page of job definitions.
      */
     @GetMapping(produces = {"application/hal+json"})
@@ -95,7 +100,9 @@ public class AgentController {
     /**
      * Returns one page of job definitions.
      *
+     * @param id agent ID.
      * @return on page of job definitions.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping(value = "/byId", produces = {"application/hal+json"})
     public ResponseEntity<AgentDto> findById(@PathParam("id") String id) throws ResourceNotFoundException {
@@ -138,10 +145,12 @@ public class AgentController {
     /**
      * Returns one page of agents belonging to an agent group.
      *
+     * @param id       agent group ID.
+     * @param pageable paging parameter.
      * @return on page of agents.
      */
     @GetMapping(value = "/{id}/byAgentGroup", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<AgentDto>> findByAgentGroup(@PathVariable String id, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<AgentDto>> findByAgentGroup(@PathVariable String id, Pageable pageable) {
 
         t.restart();
 
@@ -159,6 +168,7 @@ public class AgentController {
      *
      * @param agentDto agent DTO to update.
      * @return agent DTO.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @PutMapping(value = "/update", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
     public ResponseEntity<AgentDto> updateAgent(@RequestBody AgentDto agentDto) throws ResourceNotFoundException {
@@ -177,6 +187,7 @@ public class AgentController {
      * Deletes an agent.
      *
      * @param agentId agent ID to delete.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @DeleteMapping("/{agentId}/delete")
     public ResponseEntity<Void> deleteAgent(@PathVariable String agentId) throws ResourceNotFoundException {
@@ -195,6 +206,7 @@ public class AgentController {
      *
      * @param agentId      agent ID.
      * @param agentGroupId agent group ID.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping("/{agentId}/addAgentGroup/{agentGroupId}")
     public ResponseEntity<AgentDto> addAgentGroup(@PathVariable String agentId, @PathVariable String agentGroupId) throws ResourceNotFoundException {
@@ -214,6 +226,7 @@ public class AgentController {
      *
      * @param agentId      ID of agent.
      * @param agentGroupId agent group ID.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping("/{agentId}/removeAgentGroup/{agentGroupId}")
     public ResponseEntity<AgentDto> removeAgentGroup(@PathVariable String agentId, @PathVariable String agentGroupId) throws ResourceNotFoundException {
@@ -236,10 +249,9 @@ public class AgentController {
      *
      * @param agentId agent ID.
      * @return page of job schedule resources.
-     * @throws ResourceNotFoundException in case the job schedule is not existing.
      */
     @GetMapping(value = "/{agentId}/getSchedules", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobScheduleDto>> getSchedules(@PathVariable("agentId") String agentId, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<CollectionModel<JobScheduleDto>> getSchedules(@PathVariable("agentId") String agentId, Pageable pageable) {
 
         t.restart();
 
@@ -280,6 +292,7 @@ public class AgentController {
      *
      * @param agentId       agent ID.
      * @param jobScheduleId job schedule ID.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping(value = "/{agentId}/removeJobSchedule/{jobScheduleId}")
     public ResponseEntity<AgentDto> removeSchedule(@PathVariable String agentId, @PathVariable String jobScheduleId) throws ResourceNotFoundException {
@@ -301,6 +314,7 @@ public class AgentController {
      * Pauses and agent.
      *
      * @param agentId agent ID.
+     * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping(value = "/{agentId}/pauseAgent")
     public ResponseEntity<AgentDto> pauseAgent(@PathVariable String agentId) throws ResourceNotFoundException {
