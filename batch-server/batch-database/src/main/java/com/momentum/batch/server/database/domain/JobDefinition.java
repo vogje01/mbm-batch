@@ -74,9 +74,18 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @Column(name = "COMPLETED_EXIT_MESSAGE")
     private String completedExitMessage;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "JOB_GROUP_ID")
-    private JobGroup jobGroup;
+    //@OneToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "JOB_GROUP_ID")
+    //private JobGroup jobGroup;
+    /**
+     * Job definition job groups many to many relationship
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_JOB_DEFINITION_JOB_GROUP",
+            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
+    private List<JobGroup> jobGroups = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
@@ -89,7 +98,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     public void update(JobDefinition origin) {
         this.name = origin.name;
         this.label = origin.label;
-        this.jobGroup = origin.jobGroup;
+        this.jobGroups = origin.jobGroups;
         this.jobVersion = origin.jobVersion;
         this.type = origin.type;
         this.active = origin.active;
@@ -144,13 +153,13 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.jobVersion = version;
     }
 
-    public JobGroup getJobGroup() {
+    /*public JobGroup getJobGroup() {
         return jobGroup;
     }
 
     public void setJobGroup(JobGroup jobGroup) {
         this.jobGroup = jobGroup;
-    }
+    }*/
 
     public String getDescription() {
         return description;
@@ -234,6 +243,29 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setCompletedExitMessage(String completedExitMessage) {
         this.completedExitMessage = completedExitMessage;
+    }
+
+    public List<JobGroup> getJobGroups() {
+        return jobGroups;
+    }
+
+    public void setJobGroups(List<JobGroup> jobGroups) {
+        this.jobGroups.clear();
+        if (jobGroups != null) {
+            jobGroups.forEach(this::addJobGroup);
+        }
+    }
+
+    public void addJobGroup(JobGroup jobGroup) {
+        if (!jobGroups.contains(jobGroup)) {
+            jobGroups.add(jobGroup);
+        }
+    }
+
+    public void removeJobGroup(JobGroup jobGroup) {
+        if (jobGroups.contains(jobGroup)) {
+            jobGroups.remove(jobGroup);
+        }
     }
 
     public List<JobDefinitionParam> getJobDefinitionParams() {

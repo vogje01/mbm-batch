@@ -105,8 +105,8 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
     /**
      * Job groups
      */
-    private JobGroupDto jobGroupDto;
-//    private List<JobGroupDto> jobGroupDtoes = new ArrayList<>();
+    //  private JobGroupDto jobGroupDto;
+    private List<JobGroupDto> jobGroupDtoes = new ArrayList<>();
     /**
      * Job definition parameters
      */
@@ -279,21 +279,27 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public JobGroupDto getJobGroupDto() {
+    /*public JobGroupDto getJobGroupDto() {
         return jobGroupDto;
     }
 
     public void setJobGroupDto(JobGroupDto jobGroupDto) {
         this.jobGroupDto = jobGroupDto;
-    }
+    }*/
 
-/*    public List<JobGroupDto> getJobGroupDtoes() {
+    public List<JobGroupDto> getJobGroupDtoes() {
         return jobGroupDtoes;
     }
 
     public void setJobGroupDtoes(List<JobGroupDto> jobGroupDtoes) {
         this.jobGroupDtoes = jobGroupDtoes;
-    }*/
+    }
+
+    public void addJobGroup(JobGroupDto jobGroupDto) {
+        if (!jobGroupDtoes.contains(jobGroupDto)) {
+            jobGroupDtoes.add(jobGroupDto);
+        }
+    }
 
     public List<JobDefinitionParamDto> getJobDefinitionParamDtos() {
         return jobDefinitionParamDtos;

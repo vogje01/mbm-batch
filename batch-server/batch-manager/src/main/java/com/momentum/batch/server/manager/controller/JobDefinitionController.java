@@ -3,7 +3,6 @@ package com.momentum.batch.server.manager.controller;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
-import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.manager.converter.JobDefinitionModelAssembler;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
 import com.momentum.batch.server.manager.service.JobGroupService;
@@ -132,6 +131,8 @@ public class JobDefinitionController {
 
         Page<JobDefinition> jobDefinitions = jobDefinitionService.findByJobGroup(jobGroupId, pageable);
         PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(jobDefinitions, jobDefinitionModelAssembler);
+        logger.debug(format("Job definition list by job group request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
         return ResponseEntity.ok(collectionModel);
     }
@@ -181,8 +182,8 @@ public class JobDefinitionController {
         // Get job definition
         JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
 
-        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
-        jobDefinition.setJobGroup(jobGroup);
+        //JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
+        //jobDefinition.setJobGroup(jobGroup);
 
         jobDefinition = jobDefinitionService.updateJobDefinition(jobDefinitionId, jobDefinition);
         jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
