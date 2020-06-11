@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.common.domain.dto.JobExecutionContextDto;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -42,6 +43,16 @@ public class JobExecutionContext implements PrimaryKeyIdentifier<String> {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "JOB_EXECUTION_ID", nullable = false)
     private JobExecutionInfo jobExecutionInfo;
+
+    /**
+     * Updates the job execution context.
+     *
+     * @param jobExecutionContextDto original job execution context.
+     */
+    public void update(JobExecutionContextDto jobExecutionContextDto) {
+        this.shortContext = jobExecutionContextDto.getShortContext();
+        this.serializedContext = jobExecutionContextDto.getSerializedContext();
+    }
 
     public String getId() {
         return id;

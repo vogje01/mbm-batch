@@ -103,6 +103,12 @@ public class JobExecutionStatusListener {
             jobExecutionInfo.setModifiedAt(new Date());
             jobExecutionInfo.setModifiedBy("admin");
             jobExecutionInfoRepository.save(jobExecutionInfo);
+            if (jobExecutionDto.getJobExecutionContextDto() != null) {
+                JobExecutionContext jobExecutionContext = jobExecutionInfo.getJobExecutionContext();
+                jobExecutionContext.update(jobExecutionDto.getJobExecutionContextDto());
+                jobExecutionContextRepository.save(jobExecutionContext);
+                logger.debug(format("Job execution context updated - jobName: {0} jobName: {1}", nodeName, jobName));
+            }
             logger.debug(format("Job execution info updated - jobName: {0} jobName: {1}", nodeName, jobName));
 
         } else {
@@ -166,11 +172,11 @@ public class JobExecutionStatusListener {
                 StepExecutionContext stepExecutionContext = stepExecutionInfo.getStepExecutionContext();
                 stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
                 stepExecutionContextRepository.save(stepExecutionContext);
+                logger.debug(format("Step execution context updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
             }
-
-            logger.debug(format("Step info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
+            logger.debug(format("Step execution info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
         } else {
-            logger.info(format("Step not found, creating new one - nodeName: {0} stepName: {1} stepName: {2}", nodeName, jobName, stepName));
+            logger.info(format("Step not found, creating new one - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
             StepExecutionInfo stepExecutionInfo = new StepExecutionInfo();
             Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(stepExecutionDto.getJobId());
             if (jobExecutionInfoOptional.isPresent()) {
@@ -184,11 +190,11 @@ public class JobExecutionStatusListener {
                 // Create step execution context
                 StepExecutionContext stepExecutionContext = modelConverter.convertStepExecutionContextToEntity(stepExecutionDto.getStepExecutionContextDto());
                 stepExecutionContext.setStepExecutionInfo(stepExecutionInfo);
-                stepExecutionContext = stepExecutionContextRepository.save(stepExecutionContext);
-                logger.debug(format("Step execution context info created - nodeName: {0} stepName: {1} id: {2}", nodeName, stepName, stepExecutionContext.getId()));
+                stepExecutionContextRepository.save(stepExecutionContext);
+                logger.debug(format("Step execution context info created - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
 
             } else {
-                logger.error(format("Job not found - nodeName: {0} jobName: {1}", jobName, jobName));
+                logger.error(format("Step execution info not found - nodeName: {0} jobName: {1} stepName: {2}", jobName, jobName, stepName));
             }
         }
     }
