@@ -163,12 +163,9 @@ public class JobExecutionStatusListener {
             stepExecutionInfo.setModifiedBy("admin");
             stepExecutionInfoRepository.save(stepExecutionInfo);
             if (stepExecutionDto.getStepExecutionContextDto() != null) {
-                Optional<StepExecutionContext> stepExecutionContextOptional = stepExecutionContextRepository.findById(stepExecutionDto.getStepExecutionContextDto().getId());
-                if (stepExecutionContextOptional.isPresent()) {
-                    StepExecutionContext stepExecutionContext = stepExecutionContextOptional.get();
-                    stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
-                    stepExecutionContextRepository.save(stepExecutionContext);
-                }
+                StepExecutionContext stepExecutionContext = stepExecutionInfo.getStepExecutionContext();
+                stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
+                stepExecutionContextRepository.save(stepExecutionContext);
             }
 
             logger.debug(format("Step info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
