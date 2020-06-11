@@ -92,6 +92,14 @@ public class UserGroup extends Auditing implements PrimaryKeyIdentifier<String> 
         this.description = description;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public List<User> getUsers() {
         return users;
     }
@@ -124,14 +132,6 @@ public class UserGroup extends Auditing implements PrimaryKeyIdentifier<String> 
     @Override
     public int hashCode() {
         return Objects.hashCode(id, name, description, active);
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
     }
 
     @Override

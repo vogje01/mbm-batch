@@ -111,7 +111,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
             name = "BATCH_USER_USER_GROUP",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
-    private List<UserGroup> userGroups = new ArrayList<>();
+    private final List<UserGroup> userGroups = new ArrayList<>();
 
     public User() {
         // Default constructor
