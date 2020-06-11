@@ -1,7 +1,35 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {deleteItem, getParams, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {deleteItem, handleData, handleResponse, initGet} from "../../utils/server-connection";
 import {EndTimer, StartTimer} from "../../utils/method-timer";
+
+// Special version of the getParams function, as the job name is somehow hidden
+// inside the jobInstance.
+//
+const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
+    let params = '?';
+
+    if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
+        params += 'page=' + loadOptions.skip / loadOptions.take;
+        params += '&size=' + loadOptions.take;
+    } else {
+        params += 'page=0';
+        params += '&size=-1';
+    }
+
+    if (loadOptions.sort) {
+        loadOptions.sort.forEach((s) => {
+            if (s.selector === 'jobName') {
+                s.selector = 'jobExecutionInstance.jobName';
+            }
+            params += '&sort=' + s.selector + (s.desc ? ',desc' : ',asc');
+        });
+    } else {
+        params += '&sort=' + defaultSortBy + ',' + defaultSortDir;
+    }
+    return params;
+};
+
 
 export function JobExecutionDataSource() {
     return new DataSource({

@@ -56,9 +56,6 @@ export const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
 
     if (loadOptions.sort) {
         loadOptions.sort.forEach((s) => {
-            if (s.selector === 'jobName') {
-                s.selector = 'jobExecutionInstance.jobName';
-            }
             params += '&sort=' + s.selector + (s.desc ? ',desc' : ',asc');
         });
     } else {

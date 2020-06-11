@@ -186,6 +186,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.filterCount = stepExecutionDto.getFilterCount();
         this.exitCode = stepExecutionDto.getExitCode();
         this.exitMessage = stepExecutionDto.getExitMessage();
+        this.stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
     }
 
     public String getId() {
@@ -234,6 +235,14 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    public StepExecutionContext getStepExecutionContext() {
+        return stepExecutionContext;
+    }
+
+    public void setStepExecutionContext(StepExecutionContext stepExecutionContext) {
+        this.stepExecutionContext = stepExecutionContext;
     }
 
     public long getReadCount() {
