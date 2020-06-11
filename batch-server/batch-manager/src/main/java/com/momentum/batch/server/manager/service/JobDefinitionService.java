@@ -12,7 +12,7 @@ public interface JobDefinitionService {
 
     Page<JobDefinition> findAll(Pageable pageable);
 
-    long countAll();
+    Page<JobDefinition> findWithoutJobGroup(String jobGroupId, Pageable pageable);
 
     JobDefinition getJobDefinition(final String id);
 

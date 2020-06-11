@@ -105,6 +105,27 @@ public class UserController {
     }
 
     /**
+     * Returns one page of job definitions, which are not already part of the current job group.
+     *
+     * @param pageable paging parameters.
+     * @return on page of job definitions.
+     * @throws ResourceNotFoundException in case the job definition is not existing.
+     */
+    @GetMapping(value = "/restricted/{userGroupId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<UserDto>> findWithoutJobGroup(@PathVariable String userGroupId, Pageable pageable) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Get all job definitions
+        Page<User> users = userService.findWithoutUserGroup(userGroupId, pageable);
+        PagedModel<UserDto> collectionModel = userPagedResourcesAssembler.toModel(users, userModelAssembler);
+        logger.debug(format("User group list without current users user group request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
+    }
+
+    /**
      * Returns one page of job definitions.
      *
      * @return on page of job definitions.

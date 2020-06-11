@@ -33,3 +33,9 @@ Configutation:
         AppenderRef:
           - ref: File_Appender
           - ref: Console_Appender
+      - name: org.hibernate
+        level: error
+        additivity: false
+        AppenderRef:
+          - ref: File_Appender
+          - ref: Console_Appender

@@ -65,3 +65,22 @@ export const JobGroupJobDefinitionDataSource = (jobGroup) => {
         })
     });
 };
+
+export const JobDefinitionRestrictedDataSource = (jobGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/restricted/' + jobGroup.id + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then((data) => {
+                        return handleData(data, 'jobDefinitionDtoes')
+                    })
+                    .finally(() => EndTimer());
+            }
+        })
+    });
+};

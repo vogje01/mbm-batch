@@ -51,10 +51,10 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "DESCRIPTION")
     private String description;
     /**
-     * Deleted flag
+     * Active flag
      */
     @Column(name = "ACTIVE")
-    private boolean active = false;
+    private Boolean active = false;
     /**
      * Link to the corresponding job definition.
      */
@@ -107,11 +107,11 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
         this.description = description;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean deleted) {
+    public void setActive(Boolean deleted) {
         this.active = deleted;
     }
 

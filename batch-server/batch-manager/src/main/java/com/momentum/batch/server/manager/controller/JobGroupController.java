@@ -123,7 +123,7 @@ public class JobGroupController {
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(value = "/byJobDefinition/{jobDefinitionId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobGroupDto>> findByJobDefinition(@RequestParam String jobDefinitionId, Pageable pageable) {
+    public ResponseEntity<PagedModel<JobGroupDto>> findByJobDefinition(@PathVariable String jobDefinitionId, Pageable pageable) {
 
         t.restart();
         Page<JobGroup> jobGroups = jobGroupService.findByJobDefinition(jobDefinitionId, pageable);

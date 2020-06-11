@@ -41,6 +41,8 @@ public class JobGroupModelAssembler extends RepresentationModelAssemblerSupport<
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).findById(jobGroupDto.getId())).withSelfRel());
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).update(jobGroupDto.getId(), jobGroupDto)).withRel("update"));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).delete(jobGroupDto.getId())).withRel("delete"));
+
+            // Job definition links
             jobGroupDto.add(linkTo(methodOn(JobDefinitionController.class).findByJobGroup(jobGroupDto.getId(), Pageable.unpaged())).withRel("jobDefinitions"));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).addJobDefinition(null, null)).withRel("addJobDefinition").expand(jobGroupDto.getId(), ""));
             jobGroupDto.add(linkTo(methodOn(JobGroupController.class).removeJobDefinition(null, null)).withRel("removeJobDefinition").expand(jobGroupDto.getId(), ""));

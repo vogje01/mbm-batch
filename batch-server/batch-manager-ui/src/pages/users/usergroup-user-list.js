@@ -2,7 +2,7 @@ import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
 import {UsergroupUserDataSource} from "./user-group-data-source";
-import {UserDataSource} from "./user-data-source";
+import {UserRestrictedDataSource} from "./user-data-source";
 import {Label, SimpleItem} from "devextreme-react/form";
 
 class UsergroupUserView extends React.Component {
@@ -38,7 +38,7 @@ class UsergroupUserView extends React.Component {
                                 dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: UserDataSource(), valueExpr: 'id', displayExpr: 'userId'}}>
+                                editorOptions={{dataSource: UserRestrictedDataSource(this.props.userGroup), valueExpr: 'id', displayExpr: 'userId'}}>
                                 <Label text={'UserID'}/>
                             </SimpleItem>
                         </Form>

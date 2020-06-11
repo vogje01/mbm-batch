@@ -17,7 +17,6 @@ import UpdateTimer from "../../utils/update-timer";
 import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import Toolbar, {Item} from "devextreme-react/toolbar";
 import {JobDefinitionDataSource} from "./job-definition-data-source";
-import {JobGroupDataSource} from "../job-group/job-group-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
@@ -139,23 +138,17 @@ class JobDefinitionList extends React.Component {
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Name must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem
-                                            dataField={'jobGroupName'}
-                                            editorType={'dxSelectBox'}
-                                            editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
-                                            <RequiredRule/>
-                                        </SimpleItem>
                                         <SimpleItem dataField="jobVersion">
                                             <RequiredRule/>
                                             <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                         <SimpleItem dataField="failedExitCode"/>
                                         <SimpleItem dataField="failedExitMessage"/>
                                         <SimpleItem dataField="completedExitCode"/>
                                         <SimpleItem dataField="completedExitMessage"/>
                                         <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 100}}/>
-                                        <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Command"}>
                                         <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
@@ -179,6 +172,12 @@ class JobDefinitionList extends React.Component {
                                             <StringLengthRule max={256} message="Logging directory must be less than 256 characters."/>
                                         </SimpleItem>
                                     </GroupItem>
+                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
+                                        <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
+                                        <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
+                                    </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
@@ -186,12 +185,6 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobDefinition, 'modifiedAt'), readOnly: true}}/>
-                                    </GroupItem>
-                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
-                                        <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
-                                    </GroupItem>
-                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
-                                        <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>

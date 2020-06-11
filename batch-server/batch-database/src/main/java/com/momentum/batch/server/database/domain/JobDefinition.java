@@ -79,12 +79,10 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "BATCH_JOB_DEFINITION_JOB_GROUP",
-            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
     private final List<JobGroup> jobGroups = new ArrayList<>();
-    /**
-     * Job definition job parameter one to many relationship
-     */
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();

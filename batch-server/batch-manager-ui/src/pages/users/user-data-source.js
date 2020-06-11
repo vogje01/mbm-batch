@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
-import {EndTimer} from "../../utils/method-timer";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const UserDataSource = () => {
     return new DataSource({
@@ -64,6 +64,25 @@ export const UserUsergroupDataSource = (user) => {
             },
             remove: function (userGroup) {
                 return getItem(user._links.removeUserGroup.href + userGroup.id);
+            }
+        })
+    });
+};
+
+export const UserRestrictedDataSource = (userGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'users/restricted/' + userGroup.id + getParams(loadOptions, 'userId', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then((data) => {
+                        return handleData(data, 'userDtoes')
+                    })
+                    .finally(() => EndTimer());
             }
         })
     });

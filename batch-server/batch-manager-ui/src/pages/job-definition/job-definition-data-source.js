@@ -23,7 +23,7 @@ export const JobDefinitionDataSource = () => {
             },
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/' + getParams(loadOptions, 'name', 'asc')
+                let url = process.env.REACT_APP_API_URL + 'jobdefinitions' + getParams(loadOptions, 'name', 'asc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response)

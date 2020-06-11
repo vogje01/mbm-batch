@@ -1,8 +1,7 @@
 import React from 'react';
 import {DataGrid} from "devextreme-react";
 import {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from "devextreme-react/data-grid";
-import {JobGroupJobDefinitionDataSource} from "./job-group-data-source";
-import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
+import {JobDefinitionRestrictedDataSource, JobGroupJobDefinitionDataSource} from "./job-group-data-source";
 import {Label, SimpleItem} from "devextreme-react/form";
 
 class JobGroupJobDefinitionView extends React.Component {
@@ -38,7 +37,7 @@ class JobGroupJobDefinitionView extends React.Component {
                                 dataField={'id'}
                                 isRequired={true}
                                 editorType={'dxSelectBox'}
-                                editorOptions={{dataSource: JobDefinitionDataSource(), valueExpr: 'id', displayExpr: 'jobDefinitionId'}}>
+                                editorOptions={{dataSource: JobDefinitionRestrictedDataSource(this.props.jobGroup), valueExpr: 'id', displayExpr: 'name'}}>
                                 <Label text={'JobDefinitionID'}/>
                             </SimpleItem>
                         </Form>
@@ -47,8 +46,8 @@ class JobGroupJobDefinitionView extends React.Component {
                         dataField={'id'}
                         visible={false}/>
                     <Column
-                        caption={'JobDefinitionID'}
-                        dataField={'jobDefinitionId'}
+                        caption={'Name'}
+                        dataField={'name'}
                         allowEditing={true}
                         allowFiltering={true}
                         allowSorting={true}
@@ -61,7 +60,7 @@ class JobGroupJobDefinitionView extends React.Component {
                         buttons={[
                             {
                                 name: 'delete',
-                                hint: 'Remove jobDefinition from jobDefinition group.',
+                                hint: 'Remove job definition from job group.',
                                 icon: 'material-icons-outlined ic-delete md-18'
                             }
                         ]}/>

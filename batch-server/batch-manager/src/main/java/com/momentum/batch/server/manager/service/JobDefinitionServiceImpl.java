@@ -45,14 +45,28 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
         return jobDefinitionRepository.findAll(pageable);
     }
 
+    /**
+     * Returns all job definitions by job group ID.
+     *
+     * @param jobGroupId job group ID.
+     * @param pageable   paging parameters.
+     * @return page of job definitions belong to the given ob group.
+     */
     @Override
     public Page<JobDefinition> findByJobGroup(String jobGroupId, Pageable pageable) {
         return jobDefinitionRepository.findByJobGroup(jobGroupId, pageable);
     }
 
+    /**
+     * Returns all job definitions by job group ID.
+     *
+     * @param jobGroupId job group ID.
+     * @param pageable   paging parameters.
+     * @return page of job definitions belong to the given ob group.
+     */
     @Override
-    public long countAll() {
-        return jobDefinitionRepository.count();
+    public Page<JobDefinition> findWithoutJobGroup(String jobGroupId, Pageable pageable) {
+        return jobDefinitionRepository.findWithoutJobGroup(jobGroupId, pageable);
     }
 
     /**

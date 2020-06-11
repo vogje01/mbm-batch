@@ -5,7 +5,6 @@ import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.converter.JobDefinitionModelAssembler;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
-import com.momentum.batch.server.manager.service.JobGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
@@ -45,8 +44,6 @@ public class JobDefinitionController {
 
     private final JobDefinitionService jobDefinitionService;
 
-    private final JobGroupService jobGroupService;
-
     private final PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler;
 
     private final JobDefinitionModelAssembler jobDefinitionModelAssembler;
@@ -57,10 +54,9 @@ public class JobDefinitionController {
      * @param jobDefinitionService service implementation.
      */
     @Autowired
-    public JobDefinitionController(JobDefinitionService jobDefinitionService, JobGroupService jobGroupService,
-                                   PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler, JobDefinitionModelAssembler jobDefinitionModelAssembler) {
+    public JobDefinitionController(JobDefinitionService jobDefinitionService, PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler,
+                                   JobDefinitionModelAssembler jobDefinitionModelAssembler) {
         this.jobDefinitionService = jobDefinitionService;
-        this.jobGroupService = jobGroupService;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.jobDefinitionModelAssembler = jobDefinitionModelAssembler;
     }
@@ -79,6 +75,27 @@ public class JobDefinitionController {
 
         // Get all job definitions
         Page<JobDefinition> allJobExecutionInfos = jobDefinitionService.findAll(pageable);
+        PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobDefinitionModelAssembler);
+        logger.debug(format("Job definition list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
+    }
+
+    /**
+     * Returns one page of job definitions, which are not already part of the current job group.
+     *
+     * @param pageable paging parameters.
+     * @return on page of job definitions.
+     * @throws ResourceNotFoundException in case the job definition is not existing.
+     */
+    @GetMapping(value = "/restricted/{jobGroupId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobDefinitionDto>> findWithoutJobGroup(@PathVariable String jobGroupId, Pageable pageable) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Get all job definitions
+        Page<JobDefinition> allJobExecutionInfos = jobDefinitionService.findWithoutJobGroup(jobGroupId, pageable);
         PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobDefinitionModelAssembler);
         logger.debug(format("Job definition list request finished - count: {0}/{1} {2}",
                 collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
@@ -125,7 +142,7 @@ public class JobDefinitionController {
      * @return job definition with given name or error.
      */
     @GetMapping(value = "/byJobGroup/{jobGroupId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobDefinitionDto>> findByJobGroup(@RequestParam String jobGroupId, Pageable pageable) {
+    public ResponseEntity<PagedModel<JobDefinitionDto>> findByJobGroup(@PathVariable String jobGroupId, Pageable pageable) {
 
         t.restart();
 
@@ -151,10 +168,6 @@ public class JobDefinitionController {
         // Get job definition
         JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
         jobDefinition.setId(UUID.randomUUID().toString());
-
-        // Add job group
-        //JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
-        //jobDefinition.setJobGroup(jobGroup);
 
         // Insert into database
         jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);

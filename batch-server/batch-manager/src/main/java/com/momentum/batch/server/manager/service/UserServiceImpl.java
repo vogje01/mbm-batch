@@ -76,14 +76,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
+    /**
+     * Returns all users which are not member of the current user group.
+     *
+     * @param userGroupId user group ID.
+     * @param pageable    paging parameters.
+     * @return page of job definitions belong to the given ob group.
+     */
     @Override
-    public long countAll() {
-        return userRepository.count();
-    }
-
-    @Override
-    public long countByUserGroup(String id) {
-        return userRepository.countByUserGroup(id);
+    public Page<User> findWithoutUserGroup(String userGroupId, Pageable pageable) {
+        return userRepository.findWithoutUserGroup(userGroupId, pageable);
     }
 
     @Override
