@@ -8,7 +8,7 @@ export function JobExecutionDataSource() {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'jobexecutions/' + getParams(loadOptions, 'startTime', 'desc')
+                let url = process.env.REACT_APP_API_URL + 'jobexecutions' + getParams(loadOptions, 'startTime', 'desc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response)

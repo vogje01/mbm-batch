@@ -1,9 +1,8 @@
 import React from "react";
 import './job-execution-log-list.scss'
-import {Column, DataGrid, FilterRow, HeaderFilter, MasterDetail, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
-import {dateTimeCellTemplate, getRunningTime} from "../../utils/date-time-util";
+import {Column, ColumnChooser, DataGrid, FilterRow, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {getTimestamp} from "../../utils/date-time-util";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
-import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {AgentDataSource} from "../agent/agent-data-source";
 import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
@@ -14,8 +13,10 @@ class LogList extends React.Component {
         super(props);
         this.state = {
             currentJobExecution: {},
+            isThreadVisible: false
         };
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.optionChanged = this.optionChanged.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -43,6 +44,14 @@ class LogList extends React.Component {
 
     selectionChanged(e) {
         this.setState({currentJobExecution: e.data});
+    }
+
+    optionChanged(e) {
+        if (e.fullName === 'columns[0].visible') {
+            this.setState({
+                isThreadVisible: e.value
+            });
+        }
     }
 
     render() {
@@ -82,11 +91,15 @@ class LogList extends React.Component {
                             showRowLines={true}
                             showBorders={true}
                             rowAlternationEnabled={true}
+                            onOptionChanged={this.optionChanged}>
                             onEditingStart={this.selectionChanged}>
                             <Selection mode={'single'}/>
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
                             <Sorting mode={'multiple'}/>
+                            <ColumnChooser
+                                enabled={true}
+                                mode="select"/>
                             {/*<Editing
                                 mode={'form'}
                                 useIcons={true}
@@ -136,150 +149,104 @@ class LogList extends React.Component {
                                 </Form>
                             </Editing>*/}
                             <Column
-                                caption={'ID'}
-                                dataField={'id'}
-                                visible={false}/>
-                            <Column
-                                caption={'Job Name'}
-                                dataField={'jobName'}
+                                caption={'Timestamp'}
+                                dataField={'timestamp'}
+                                calculateCellValue={getTimestamp}
                                 allowFiltering={true}
                                 allowSorting={true}
-                                allowReordering={true}
-                                allowEditing={true}>
+                                allowReordering={true}/>
+                            <Column
+                                caption={'Level'}
+                                dataField={'level'}
+                                allowSorting={true}
+                                allowFiltering={true}
+                                allowGrouping={false}
+                                allowReordering={true}/>
+                            <Column
+                                caption={'Logger'}
+                                dataField={'loggerName'}
+                                allowSorting={true}
+                                allowFiltering={true}
+                                allowGrouping={false}
+                                allowReordering={true}>
                                 <HeaderFilter allowSearch={true}/>
                             </Column>
-                            <Column
-                                caption={'Host name'}
-                                dataField={'hostName'}
-                                allowFiltering={true}
-                                allowSorting={true}
-                                allowReordering={true}
-                                width={120}>
-                                <HeaderFilter allowSearch={true}/>
+                            <Column caption={'Job'}
+                                    showInColumnChooser={true}>
+                                <Column
+                                    caption={'Name'}
+                                    dataField={'jobName'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}>
+                                    <HeaderFilter allowSearch={true}/>
+                                </Column>
+                                <Column
+                                    caption={'PID'}
+                                    dataField={'jobPid'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}/>
+                                <Column
+                                    caption={'Version'}
+                                    dataField={'jobVersion'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}/>
                             </Column>
                             <Column
-                                caption={'Node name'}
-                                dataField={'nodeName'}
-                                allowFiltering={true}
+                                caption={'Step Name'}
+                                dataField={'stepName'}
                                 allowSorting={true}
-                                allowReordering={true}
-                                width={120}>
+                                allowFiltering={true}
+                                allowGrouping={false}
+                                allowReordering={true}>
                                 <HeaderFilter allowSearch={true}/>
                             </Column>
+                            <Column caption={'Thread'}
+                                    visible={this.state.isThreadVisible}
+                                    showInColumnChooser={true}>
+                                <Column
+                                    caption={'Name'}
+                                    dataField={'thread'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}/>
+                                <Column
+                                    caption={'ID'}
+                                    dataField={'threadId'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}
+                                    width={50}/>
+                                <Column
+                                    caption={'Prio'}
+                                    dataField={'threadPriority'}
+                                    allowSorting={true}
+                                    allowFiltering={true}
+                                    allowGrouping={false}
+                                    allowReordering={true}
+                                    width={50}/>
+                            </Column>
                             <Column
-                                dataField={'status'}
-                                caption={'Status'}
-                                dataType={'string'}
+                                caption={'Message'}
+                                dataField={'message'}
                                 allowSorting={true}
-                                allowReordering={true}
                                 allowFiltering={true}
-                                width={100}/>
-                            <Column
-                                dataField={'jobExecutionId'}
-                                caption={'ID'}
-                                dataType={'number'}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={true}
-                                width={50}/>
-                            <Column
-                                dataField={'jobPid'}
-                                caption={'PID'}
-                                dataType={'number'}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={true}
-                                width={50}
-                                visible={false}/>
-                            <Column
-                                dataField={'jobVersion'}
-                                caption={'Version'}
-                                dataType={'string'}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={60}/>
-                            <Column
-                                dataField={'exitCode'}
-                                caption={'Exit Code'}
-                                dataType={'string'}
-                                visible={false}/>
-                            <Column
-                                dataField={'exitMessage'}
-                                caption={'Exit Message'}
-                                dataType={'string'}
-                                visible={false}/>
-                            <Column
-                                dataField={'createTime'}
-                                caption={'Created'}
-                                dataType={'datetime'}
-                                cellTemplate={dateTimeCellTemplate}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={120}
-                                visible={false}/>
-                            <Column
-                                dataField={'startTime'}
-                                caption={'Started'}
-                                dataType={'datetime'}
-                                cellTemplate={dateTimeCellTemplate}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={140}/>
-                            <Column
-                                dataField={'endTime'}
-                                caption={'Ended'}
-                                dataType={'datetime'}
-                                cellTemplate={dateTimeCellTemplate}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={140}/>
-                            <Column
-                                dataField={'lastUpdated'}
-                                caption={'Last Update'}
-                                dataType={'datetime'}
-                                cellTemplate={dateTimeCellTemplate}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={140}/>
-                            <Column
-                                calculateCellValue={getRunningTime}
-                                dataField={'runningTime'}
-                                caption={'Running Time'}
-                                dataType={'datetime'}
-                                allowSorting={true}
-                                allowReordering={true}
-                                allowFiltering={false}
-                                width={100}/>
-                            <Column
-                                dataField={'startedBy'}
-                                visible={false}/>
-                            <Column
-                                dataField={'createdBy'}
-                                dataType={'string'}
-                                visible={false}/>
-                            <Column
-                                dataField={'createdAt'}
-                                dataType={'datetime'}
-                                visible={false}/>
-                            <Column
-                                dataField={'modifiedBy'}
-                                dataType={'string'}
-                                visible={false}/>
-                            <Column
-                                dataField={'modifiedAt'}
-                                dataType={'datetime'}
-                                visible={false}/>
+                                allowGrouping={false}
+                                allowReordering={true}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
-                            <MasterDetail enabled={true} component={StepExecutionListPage}/>
+                            {/*<MasterDetail enabled={true} component={StepExecutionListPage}/>*/}
                             <Column
+                                showInColumnChooser={false}
                                 allowSorting={false}
                                 allowReordering={false}
                                 width={80}
