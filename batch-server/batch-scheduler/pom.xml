@@ -89,7 +89,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.momentum.batch.server.listener.BatchListenerApplication</mainClass>
+                    <mainClass>com.momentum.batch.server.scheduler.BatchSchedulerApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
