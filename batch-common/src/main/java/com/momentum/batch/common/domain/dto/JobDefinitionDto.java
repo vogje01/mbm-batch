@@ -2,7 +2,6 @@ package com.momentum.batch.common.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -13,14 +12,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
 /**
  * Job definition data transfer object.
  */
-@JsonInclude(NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = JobDefinitionDto.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id", scope = JobDefinitionDto.class)
 public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     /**
@@ -106,7 +102,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
     /**
      * Job groups
      */
-    //  private JobGroupDto jobGroupDto;
     private List<JobGroupDto> jobGroupDtoes = new ArrayList<>();
     /**
      * Job definition parameters
