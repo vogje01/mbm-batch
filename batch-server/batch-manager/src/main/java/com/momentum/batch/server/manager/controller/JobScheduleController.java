@@ -25,8 +25,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 import static java.text.MessageFormat.format;
 
 /**
@@ -131,21 +129,17 @@ public class JobScheduleController {
         JobSchedule jobSchedule = jobScheduleModelAssembler.toEntity(jobScheduleDto);
 
         // Get job definition
-        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
-        if (jobDefinitionOptional.isPresent()) {
+        JobDefinition jobDefinition = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
 
-            // Set job definition
-            JobDefinition jobDefinition = jobDefinitionOptional.get();
-            jobSchedule.setJobDefinition(jobDefinition);
+        // Set job definition
+        jobSchedule.setJobDefinition(jobDefinition);
 
-            // Insert into database
-            jobSchedule = jobScheduleService.insertJobSchedule(jobSchedule);
-            jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
-            logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
+        // Insert into database
+        jobSchedule = jobScheduleService.insertJobSchedule(jobSchedule);
+        jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
+        logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
 
-            return ResponseEntity.ok(jobScheduleDto);
-        }
-        throw new ResourceNotFoundException();
+        return ResponseEntity.ok(jobScheduleDto);
     }
 
     /**
@@ -166,10 +160,8 @@ public class JobScheduleController {
 
         // Get job definition
         if (!jobScheduleDto.getJobDefinitionName().isEmpty()) {
-            Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
-            if (jobDefinitionOptional.isPresent()) {
-                jobSchedule.setJobDefinition(jobDefinitionOptional.get());
-            }
+            JobDefinition jobDefinition = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
+            jobSchedule.setJobDefinition(jobDefinition);
         }
 
         // Update job schedule

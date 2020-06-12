@@ -16,7 +16,7 @@ import DataGrid, {
 import UpdateTimer from "../../utils/update-timer";
 import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import Toolbar, {Item} from "devextreme-react/toolbar";
-import {JobDefinitionDataSource} from "./job-definition-data-source";
+import {JobDefinitionDataSource, JobStart} from "./job-definition-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
@@ -44,6 +44,7 @@ class JobDefinitionList extends React.Component {
         this.toggleImport = this.toggleImport.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
         this.cloneJobDefinition = this.cloneJobDefinition.bind(this);
+        this.startJobDefinition = this.startJobDefinition.bind(this);
         this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
     }
 
@@ -71,6 +72,15 @@ class JobDefinitionList extends React.Component {
         jobDefinition.label = jobDefinition.label + ' (copy)';
         let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
         this.setState({currentJobDefinition: insertItem(url, JSON.stringify(jobDefinition))});
+    }
+
+    startJobDefinition(e) {
+        e.event.preventDefault();
+        let jobDefinition = e.row.data;
+        JobStart(jobDefinition, {id: '34a001bf-77a0-461b-90ed-d36e046c8941}'})
+            .then(data => {
+                this.setState({currentJobDefinition: data})
+            });
     }
 
     render() {
@@ -308,7 +318,7 @@ class JobDefinitionList extends React.Component {
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={80}
+                                width={100}
                                 type={'buttons'}
                                 buttons={[
                                     {
@@ -321,6 +331,12 @@ class JobDefinitionList extends React.Component {
                                         hint: 'Clone job definition.',
                                         icon: 'material-icons-outlined ic-copy',
                                         onClick: this.cloneJobDefinition
+                                    },
+                                    {
+                                        name: 'start',
+                                        hint: 'Starts the job as on demand job.',
+                                        icon: 'material-icons-outlined ic-start',
+                                        onClick: this.startJobDefinition
                                     },
                                     {
                                         name: 'delete',

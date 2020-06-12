@@ -264,15 +264,19 @@ public class JobDefinitionController {
      *
      * @param jobDefinitionId job definition ID.
      * @param agentId         agent ID.
-     * @return void response entity.
+     * @return updated job definition.
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(value = "/{jobDefinitionId}/start/{agentId}")
-    public ResponseEntity<Void> start(@PathVariable String jobDefinitionId, @PathVariable String agentId) throws ResourceNotFoundException {
+    public ResponseEntity<JobDefinition> start(@PathVariable String jobDefinitionId, @PathVariable String agentId) throws ResourceNotFoundException {
+        t.restart();
+
         JobDefinition jobDefinition = jobDefinitionService.findById(jobDefinitionId);
         JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
         jobDefinitionService.startJob(jobDefinitionDto, agentId);
-        return null;
+        logger.debug(format("On demand job started - jobDefinition: {0} agentId: {1} {2}", jobDefinition.getName(), agentId, t.elapsedStr()));
+
+        return ResponseEntity.ok(jobDefinition);
     }
 
     /**

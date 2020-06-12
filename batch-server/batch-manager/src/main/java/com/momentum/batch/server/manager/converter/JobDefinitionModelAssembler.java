@@ -44,16 +44,19 @@ public class JobDefinitionModelAssembler extends RepresentationModelAssemblerSup
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).findById(jobDefinitionDto.getId())).withSelfRel());
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).update(jobDefinitionDto.getId(), jobDefinitionDto)).withRel("update"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).delete(jobDefinitionDto.getId())).withRel("delete"));
-            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).start(jobDefinitionDto.getId())).withRel("start"));
 
             // Job groups links
             jobDefinitionDto.add(linkTo(methodOn(JobGroupController.class).findByJobDefinition(jobDefinitionDto.getId(), Pageable.unpaged())).withRel("jobGroups"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).addJobGroup(null, null)).withRel("addJobGroup").expand(jobDefinitionDto.getId(), ""));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).removeJobGroup(null, null)).withRel("removeJobGroup").expand(jobDefinitionDto.getId(), ""));
 
-            // Job parameters
+            // Job parameters links
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).addJobDefinitionParam(jobDefinitionDto.getId(), new JobDefinitionParamDto())).withRel("addParam"));
             jobDefinitionDto.add(linkTo(methodOn(JobDefinitionParamController.class).findByJobDefinitionId(jobDefinitionDto.getId(), Pageable.unpaged())).withRel("params"));
+
+            // Start stop links
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).start(null, null)).withRel("startJob").expand(jobDefinitionDto.getId(), ""));
+            jobDefinitionDto.add(linkTo(methodOn(JobDefinitionController.class).stop(null)).withRel("stopJob").expand(jobDefinitionDto.getId(), ""));
 
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();

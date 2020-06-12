@@ -185,9 +185,8 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
      * @throws ResourceNotFoundException in case the job definitino cannot be found.
      */
     @Override
-    @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
     public void startJob(JobDefinitionDto jobDefinitionDto, String agentId) throws ResourceNotFoundException {
-        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        Optional<Agent> agentOptional = agentRepository.findByNodeName("batchagent03");
         if (agentOptional.isPresent()) {
 
             Agent agent = agentOptional.get();
@@ -203,7 +202,6 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     }
 
     @Override
-    @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
     public void stopJob(String jobDefinitionId) throws ResourceNotFoundException {
         Optional<JobDefinition> jobDefinitionOpt = jobDefinitionRepository.findById(jobDefinitionId);
         if (jobDefinitionOpt.isPresent()) {

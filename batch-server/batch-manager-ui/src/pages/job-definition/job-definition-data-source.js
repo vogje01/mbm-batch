@@ -122,3 +122,13 @@ export const JobDefinitionJobGroupDataSource = (jobDefinition) => {
         })
     });
 };
+
+export const JobStart = (jobDefinition, agent) => {
+    StartTimer();
+    let url = jobDefinition._links.startJob.href + agent.id;
+    return fetch(url, initGet())
+        .then(response => {
+            EndTimer();
+            return handleResponse(response);
+        });
+}

@@ -3,6 +3,7 @@ package com.momentum.batch.server.manager.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ public class JobDefinitionControllerCacheTest {
 
         @Bean
         public JobDefinitionService jobDefinitionService() {
-            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null, null);
+            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null, null, null, null);
         }
 
         @Bean
@@ -90,7 +91,7 @@ public class JobDefinitionControllerCacheTest {
     }
 
     @Test
-    public void whenFindByJObDefinitionId_thenCachedValueIsReturned() {
+    public void whenFindByJObDefinitionId_thenCachedValueIsReturned() throws ResourceNotFoundException {
 
         // First invocation should put entity into cache
         service.findById(jobDefinition1.getId());
