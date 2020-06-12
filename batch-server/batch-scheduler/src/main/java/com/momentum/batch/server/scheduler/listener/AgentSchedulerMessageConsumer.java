@@ -81,7 +81,7 @@ public class AgentSchedulerMessageConsumer {
                 agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getJobScheduleName()));
 
         // Get the schedule
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleUuid());
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleDto().getId());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
             if (agentSchedulerMessageDto.getNextFireTime() != null) {
                 jobSchedule.setNextExecution(agentSchedulerMessageDto.getNextFireTime());
