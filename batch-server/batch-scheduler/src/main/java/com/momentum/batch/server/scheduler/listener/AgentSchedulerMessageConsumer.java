@@ -97,8 +97,8 @@ public class AgentSchedulerMessageConsumer {
      * @param agentSchedulerMessageDto agent scheduler message.
      */
     private synchronized void receivedJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
-        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
 
+        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
         logger.debug(format("Job executed message received - hostName: {0} nodeName: {1} schedule: {2}",
                 agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobScheduleDto.getName()));
 
