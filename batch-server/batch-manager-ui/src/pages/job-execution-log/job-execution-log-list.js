@@ -13,7 +13,9 @@ class LogList extends React.Component {
         super(props);
         this.state = {
             currentJobExecution: {},
-            isThreadVisible: false
+            isThreadVisible: false,
+            isHostVisible: false,
+            isNodeVisible: false
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.optionChanged = this.optionChanged.bind(this);
@@ -162,6 +164,22 @@ class LogList extends React.Component {
                                 allowFiltering={true}
                                 allowGrouping={false}
                                 allowReordering={true}/>
+                            <Column
+                                caption={'Hostname'}
+                                dataField={'hostName'}
+                                allowSorting={true}
+                                allowFiltering={true}
+                                allowGrouping={false}
+                                allowReordering={true}
+                                visible={this.state.isHostVisible}/>
+                            <Column
+                                caption={'Node name'}
+                                dataField={'nodeName'}
+                                allowSorting={true}
+                                allowFiltering={true}
+                                allowGrouping={false}
+                                allowReordering={true}
+                                visible={this.state.isNodeVisible}/>
                             <Column
                                 caption={'Logger'}
                                 dataField={'loggerName'}

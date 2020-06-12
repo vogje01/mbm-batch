@@ -77,18 +77,20 @@ public class AgentSchedulerMessageConsumer {
      * @param agentSchedulerMessageDto agent scheduler message.
      */
     private synchronized void receivedJobScheduled(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+
+        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
         logger.debug(format("Job scheduled message received - hostName: {0} nodeName: {1} schedule: {2}",
-                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getJobScheduleName()));
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobScheduleDto.getName()));
 
         // Get the schedule
         Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleDto().getId());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            if (agentSchedulerMessageDto.getNextFireTime() != null) {
-                jobSchedule.setNextExecution(agentSchedulerMessageDto.getNextFireTime());
+            if (jobScheduleDto.getNextExecution() != null) {
+                jobSchedule.setNextExecution(jobScheduleDto.getNextExecution());
+                logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
             }
-            jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentSchedulerMessageDto.getNextFireTime()));
-        }, () -> logger.error(format("Job schedule not found - name: {0}", agentSchedulerMessageDto.getJobScheduleName())));
+            jobScheduleRepository.save(jobSchedule);
+        }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
     }
 
     /**
@@ -107,12 +109,13 @@ public class AgentSchedulerMessageConsumer {
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
             if (jobScheduleDto.getNextExecution() != null) {
                 jobSchedule.setNextExecution(jobScheduleDto.getNextExecution());
+                logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
             }
             if (jobScheduleDto.getNextExecution() != null) {
                 jobSchedule.setLastExecution(jobScheduleDto.getLastExecution());
+                logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
             }
-            jobSchedule = jobScheduleRepository.save(jobSchedule);
-            logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentSchedulerMessageDto.getNextFireTime()));
-        }, () -> logger.error(format("Job schedule not found - name: {0}", agentSchedulerMessageDto.getJobScheduleName())));
+            jobScheduleRepository.save(jobSchedule);
+        }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
     }
 }

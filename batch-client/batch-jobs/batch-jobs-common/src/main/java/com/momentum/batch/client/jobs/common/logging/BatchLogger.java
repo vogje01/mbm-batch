@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class BatchLogger implements Logger {
 
     private final Logger logger;
@@ -48,6 +51,34 @@ public class BatchLogger implements Logger {
         jobExecutionLogDto.setStepUuid(stepUuid);
     }
 
+    private String getStacktrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        throwable.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
+    }
+
+    private void sendLog(JobLogMessageLevel level, String message) {
+        jobExecutionLogDto.setThread(Thread.currentThread().getName());
+        jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
+        jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
+        jobExecutionLogDto.setMessage(message);
+        jobExecutionLogDto.setLevel(level.name());
+        jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
+        batchLogProducer.sendBatchLog(jobExecutionLogDto);
+    }
+
+    private void sendLog(JobLogMessageLevel level, String message, Throwable throwable) {
+        jobExecutionLogDto.setThread(Thread.currentThread().getName());
+        jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
+        jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
+        jobExecutionLogDto.setMessage(message);
+        jobExecutionLogDto.setLevel(level.name());
+        jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
+        jobExecutionLogDto.setException(throwable.getClass().getCanonicalName());
+        jobExecutionLogDto.setExtendedStackTrace(getStacktrace(throwable));
+        batchLogProducer.sendBatchLog(jobExecutionLogDto);
+    }
+
     @Override
     public boolean isTraceEnabled() {
         return logger.isTraceEnabled();
@@ -55,15 +86,9 @@ public class BatchLogger implements Logger {
 
     @Override
     public void trace(String s) {
-        logger.trace(s);
         if (logger.isTraceEnabled()) {
-            jobExecutionLogDto.setThread(Thread.currentThread().getName());
-            jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
-            jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
-            jobExecutionLogDto.setMessage(s);
-            jobExecutionLogDto.setLevel(JobLogMessageLevel.TRACE.name());
-            jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
-            batchLogProducer.sendBatchLog(jobExecutionLogDto);
+            logger.trace(s);
+            sendLog(JobLogMessageLevel.TRACE, s);
         }
     }
 
@@ -84,7 +109,10 @@ public class BatchLogger implements Logger {
 
     @Override
     public void trace(String s, Throwable throwable) {
-        logger.trace(s, throwable);
+        if (logger.isTraceEnabled()) {
+            logger.trace(s);
+            sendLog(JobLogMessageLevel.TRACE, s, throwable);
+        }
     }
 
     @Override
@@ -124,15 +152,9 @@ public class BatchLogger implements Logger {
 
     @Override
     public void debug(String s) {
-        logger.debug(s);
         if (logger.isDebugEnabled()) {
-            jobExecutionLogDto.setThread(Thread.currentThread().getName());
-            jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
-            jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
-            jobExecutionLogDto.setLevel(JobLogMessageLevel.DEBUG.name());
-            jobExecutionLogDto.setMessage(s);
-            jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
-            batchLogProducer.sendBatchLog(jobExecutionLogDto);
+            logger.debug(s);
+            sendLog(JobLogMessageLevel.DEBUG, s);
         }
     }
 
@@ -153,7 +175,10 @@ public class BatchLogger implements Logger {
 
     @Override
     public void debug(String s, Throwable throwable) {
-        logger.debug(s, throwable);
+        if (logger.isDebugEnabled()) {
+            logger.debug(s);
+            sendLog(JobLogMessageLevel.DEBUG, s, throwable);
+        }
     }
 
     @Override
@@ -193,15 +218,9 @@ public class BatchLogger implements Logger {
 
     @Override
     public void info(String s) {
-        logger.info(s);
         if (logger.isInfoEnabled()) {
-            jobExecutionLogDto.setThread(Thread.currentThread().getName());
-            jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
-            jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
-            jobExecutionLogDto.setLevel(JobLogMessageLevel.INFO.name());
-            jobExecutionLogDto.setMessage(s);
-            jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
-            batchLogProducer.sendBatchLog(jobExecutionLogDto);
+            logger.info(s);
+            sendLog(JobLogMessageLevel.INFO, s);
         }
     }
 
@@ -222,7 +241,10 @@ public class BatchLogger implements Logger {
 
     @Override
     public void info(String s, Throwable throwable) {
-        logger.debug(s, throwable);
+        if (logger.isInfoEnabled()) {
+            logger.info(s);
+            sendLog(JobLogMessageLevel.INFO, s, throwable);
+        }
     }
 
     @Override
@@ -262,15 +284,9 @@ public class BatchLogger implements Logger {
 
     @Override
     public void warn(String s) {
-        logger.warn(s);
         if (logger.isWarnEnabled()) {
-            jobExecutionLogDto.setThread(Thread.currentThread().getName());
-            jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
-            jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
-            jobExecutionLogDto.setLevel(JobLogMessageLevel.WARN.name());
-            jobExecutionLogDto.setMessage(s);
-            jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
-            batchLogProducer.sendBatchLog(jobExecutionLogDto);
+            logger.warn(s);
+            sendLog(JobLogMessageLevel.WARN, s);
         }
     }
 
@@ -291,7 +307,10 @@ public class BatchLogger implements Logger {
 
     @Override
     public void warn(String s, Throwable throwable) {
-        logger.warn(s, throwable);
+        if (logger.isWarnEnabled()) {
+            logger.warn(s);
+            sendLog(JobLogMessageLevel.WARN, s, throwable);
+        }
     }
 
     @Override
@@ -331,15 +350,9 @@ public class BatchLogger implements Logger {
 
     @Override
     public void error(String s) {
-        logger.error(s);
         if (logger.isErrorEnabled()) {
-            jobExecutionLogDto.setThread(Thread.currentThread().getName());
-            jobExecutionLogDto.setThreadId(Thread.currentThread().getId());
-            jobExecutionLogDto.setThreadPriority(Thread.currentThread().getPriority());
-            jobExecutionLogDto.setLevel(JobLogMessageLevel.ERROR.name());
-            jobExecutionLogDto.setMessage(s);
-            jobExecutionLogDto.setTimestamp(System.currentTimeMillis());
-            batchLogProducer.sendBatchLog(jobExecutionLogDto);
+            logger.error(s);
+            sendLog(JobLogMessageLevel.ERROR, s);
         }
     }
 
@@ -360,7 +373,10 @@ public class BatchLogger implements Logger {
 
     @Override
     public void error(String s, Throwable throwable) {
-        logger.error(s, throwable);
+        if (logger.isErrorEnabled()) {
+            logger.error(s);
+            sendLog(JobLogMessageLevel.ERROR, s, throwable);
+        }
     }
 
     @Override

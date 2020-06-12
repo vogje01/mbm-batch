@@ -16,12 +16,16 @@ import DataGrid, {
 import UpdateTimer from "../../utils/update-timer";
 import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import Toolbar, {Item} from "devextreme-react/toolbar";
+import Popup from "devextreme-react/popup";
 import {JobDefinitionDataSource, JobStart} from "./job-definition-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
 import {getFormattedTime} from "../../utils/date-time-util";
 import JobDefinitionJobGroupList from "./job-definition-job-group-list";
+import {AgentDataSource} from "../agent/agent-data-source";
+import SelectBox from "devextreme-react/select-box";
+import Button from "devextreme-react/button";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -36,15 +40,19 @@ class JobDefinitionList extends React.Component {
         super(props);
         this.state = {
             currentJobDefinition: {},
-            currentJobDefinitions: [],
+            currentAgent: {},
+            agentPopupVisible: false,
             showExport: false,
             showImport: false
         };
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
+        this.hideAgentPopup = this.hideAgentPopup.bind(this);
+        this.showAgentPopup = this.showAgentPopup.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
         this.cloneJobDefinition = this.cloneJobDefinition.bind(this);
         this.startJobDefinition = this.startJobDefinition.bind(this);
+        this.agentSelectionChanged = this.agentSelectionChanged.bind(this);
         this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
     }
 
@@ -60,8 +68,23 @@ class JobDefinitionList extends React.Component {
         });
     }
 
+    showAgentPopup(e) {
+        this.setState({
+            currentJobDefinition: e.row.data,
+            agentPopupVisible: true
+        });
+    }
+
+    hideAgentPopup() {
+        this.setState({agentPopupVisible: false})
+    }
+
     selectionChanged(e) {
         this.setState({currentJobDefinition: e.data});
+    }
+
+    agentSelectionChanged(e) {
+        this.setState({currentAgent: e.selectedItem});
     }
 
     cloneJobDefinition(e) {
@@ -75,11 +98,9 @@ class JobDefinitionList extends React.Component {
     }
 
     startJobDefinition(e) {
-        e.event.preventDefault();
-        let jobDefinition = e.row.data;
-        JobStart(jobDefinition, {id: '34a001bf-77a0-461b-90ed-d36e046c8941}'})
+        JobStart(this.state.currentJobDefinition, this.state.currentAgent)
             .then(data => {
-                this.setState({currentJobDefinition: data})
+                this.setState({currentJobDefinition: data, agentPopupVisible: false})
             });
     }
 
@@ -336,7 +357,7 @@ class JobDefinitionList extends React.Component {
                                         name: 'start',
                                         hint: 'Starts the job as on demand job.',
                                         icon: 'material-icons-outlined ic-start',
-                                        onClick: this.startJobDefinition
+                                        onClick: this.showAgentPopup
                                     },
                                     {
                                         name: 'delete',
@@ -346,6 +367,37 @@ class JobDefinitionList extends React.Component {
                                 ]}/>
                         </DataGrid>
                         <UpdateTimer/>
+                        <Popup
+                            visible={this.state.agentPopupVisible}
+                            onHiding={this.hideAgentPopup}
+                            dragEnabled={false}
+                            closeOnOutsideClick={true}
+                            showTitle={true}
+                            title="Start on demand job"
+                            width={300}
+                            height={200}>
+                            <div className="popup-property-details">
+                                <span>Agent:</span>
+                                <SelectBox
+                                    dataSource={AgentDataSource()}
+                                    valueExpr={'id'}
+                                    displayExpr={'nodeName'}
+                                    placeholder={'Select an agent...'}
+                                    onSelectionChanged={this.agentSelectionChanged}/>
+                                <Button
+                                    style={{verticalAlignment: 'center', marginTop: '20px', marginRight: '20px'}}
+                                    horizontalAlignment={'center'}
+                                    text={'Start'}
+                                    type={'success'}
+                                    onClick={this.startJobDefinition}/>
+                                <Button
+                                    style={{verticalAlignment: 'center', marginTop: '20px', marginRight: '20px'}}
+                                    horizontalAlignment={'center'}
+                                    text={'Cancel'}
+                                    type={'success'}
+                                    onClick={this.hideAgentPopup}/>
+                            </div>
+                        </Popup>
                     </div>
                 </div>
                 {
