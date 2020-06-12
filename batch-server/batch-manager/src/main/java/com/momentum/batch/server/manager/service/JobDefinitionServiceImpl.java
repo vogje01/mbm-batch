@@ -182,11 +182,11 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
      *
      * @param jobDefinitionDto job definition DTO.
      * @param agentId          agent ID.
-     * @throws ResourceNotFoundException in case the job definitino cannot be found.
+     * @throws ResourceNotFoundException in case the job definition cannot be found.
      */
     @Override
     public void startJob(JobDefinitionDto jobDefinitionDto, String agentId) throws ResourceNotFoundException {
-        Optional<Agent> agentOptional = agentRepository.findByNodeName("batchagent03");
+        Optional<Agent> agentOptional = agentRepository.findByNodeName("batchagent04");
         if (agentOptional.isPresent()) {
 
             Agent agent = agentOptional.get();

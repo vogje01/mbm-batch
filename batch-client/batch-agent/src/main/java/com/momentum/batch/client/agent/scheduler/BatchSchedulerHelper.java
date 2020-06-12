@@ -166,6 +166,31 @@ public abstract class BatchSchedulerHelper {
     }
 
     /**
+     * Convert the job definition to the corresponding Quartz job details structure.
+     *
+     * @param hostName      host name of the machine.
+     * @param nodeName      agent node name.
+     * @param jobDefinition job definition.
+     * @return Quartz scheduler job details.
+     */
+    JobDetail buildJobDetail(String hostName, String nodeName, JobDefinitionDto jobDefinition) {
+        return new JobDetailBuilder()
+                .jobName(jobDefinition.getName())
+                .jobGroupName(jobDefinition.getJobGroupName())
+                .jobType(jobDefinition.getType())
+                .command(jobDefinition.getCommand())
+                .workingDirectory(jobDefinition.getWorkingDirectory())
+                .jarFile(jobDefinition.getFileName())
+                .arguments(buildArguments(hostName, nodeName, jobDefinition))
+                .failedExitCode(jobDefinition.getFailedExitCode())
+                .failedExitMessage(jobDefinition.getFailedExitMessage())
+                .completedExitCode(jobDefinition.getCompletedExitCode())
+                .completedExitMessage(jobDefinition.getCompletedExitMessage())
+                .description(jobDefinition.getDescription())
+                .build();
+    }
+
+    /**
      * Build the command line using the job definition command line and the provided parameters.
      * <p>
      * Parameters are appended to the command line using the pattern '-DparameterName=parameterValue'. In order to access

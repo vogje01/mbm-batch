@@ -53,14 +53,15 @@ public class AgentSchedulerService {
 
             // Get schedule
             JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
-            if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null) {
-                logger.info(format("Missing job schedule"));
+            if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null && agentSchedulerMessageDto.getJobDefinitionDto() == null) {
+                logger.info(format("Missing job definition"));
                 return;
             }
             switch (agentSchedulerMessageDto.getType()) {
                 case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
                 case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
                 case JOB_REMOVE_SCHEDULE -> batchScheduler.removeJobFromScheduler(jobScheduleDto);
+                case JOB_ON_DEMAND -> batchScheduler.addOnDemandJob(agentSchedulerMessageDto.getJobDefinitionDto());
             }
         }
     }

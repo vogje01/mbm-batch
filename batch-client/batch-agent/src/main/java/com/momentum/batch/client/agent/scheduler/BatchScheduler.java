@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static java.text.MessageFormat.format;
@@ -198,17 +199,18 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
     /**
      * Adds a on demand job to the Quartz scheduler.
+     *
      * <p>
      * Trigger time will be now.
      * </p>
      *
      * @param jobDefinition job definition to add to the scheduler.
      */
-    /*public void addOnDemandJob(JobDefinitionDto jobDefinition) {
+    public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroupName());
-        JobDetail jobDetail = buildJobDetail(jobDefinition);
+        JobDetail jobDetail = buildJobDetail(hostName, nodeName, jobDefinition);
         try {
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
@@ -219,7 +221,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
                     jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
         }
         logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
-    }*/
+    }
 
     /**
      * Sends a job scheduled command to the server.
