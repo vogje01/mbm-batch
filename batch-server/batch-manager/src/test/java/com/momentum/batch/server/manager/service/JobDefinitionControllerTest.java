@@ -152,9 +152,9 @@ public class JobDefinitionControllerTest {
             .withRandomId()
             .build();
 
-        when(jobDefinitionService.getJobDefinition(any())).thenReturn(jobDefinition1);
+        when(jobDefinitionService.findById(any())).thenReturn(jobDefinition1);
         when(modelConverter.convertJobDefinitionToDto(any(JobDefinition.class)))
-            .thenReturn(jobDefinition1Dto);
+                .thenReturn(jobDefinition1Dto);
 
         this.mockMvc.perform(get("/api/jobdefinitions/" + jobDefinition1.getId())) //
             //.andDo(print())

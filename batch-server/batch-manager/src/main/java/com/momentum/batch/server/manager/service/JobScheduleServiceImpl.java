@@ -59,21 +59,6 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     }
 
     @Override
-    public long countAll() {
-        return jobScheduleRepository.count();
-    }
-
-    @Override
-    public long countAgents(String jobScheduleId) {
-        return jobScheduleRepository.countAgents(jobScheduleId);
-    }
-
-    @Override
-    public long countAgentGroups(String jobScheduleId) {
-        return jobScheduleRepository.countAgentGroups(jobScheduleId);
-    }
-
-    @Override
     public Page<JobSchedule> findAll(Pageable pageable) {
         return jobScheduleRepository.findAll(pageable);
     }

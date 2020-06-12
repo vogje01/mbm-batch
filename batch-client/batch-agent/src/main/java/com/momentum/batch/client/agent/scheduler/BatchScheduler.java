@@ -235,14 +235,14 @@ public class BatchScheduler extends BatchSchedulerHelper {
         try {
             CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
             Date next = cronExpression.getNextValidTimeAfter(new Date());
+            jobSchedule.setNextExecution(next);
 
             logger.info(format("Next execution - next: {0}", next));
 
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
             agentSchedulerMessageDto.setNodeName(nodeName);
             agentSchedulerMessageDto.setHostName(hostName);
-            agentSchedulerMessageDto.setJobScheduleUuid(jobSchedule.getId());
-            agentSchedulerMessageDto.setNextFireTime(next);
+            agentSchedulerMessageDto.setJobScheduleDto(jobSchedule);
             agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
         } catch (ParseException e) {
             e.printStackTrace();

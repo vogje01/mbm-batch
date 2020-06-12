@@ -49,7 +49,9 @@ public class JobGroupController {
     /**
      * Constructor.
      *
-     * @param jobGroupService service implementation.
+     * @param jobGroupService                 service implementation.
+     * @param jobGroupPagedResourcesAssembler paged resource assembler.
+     * @param jobGroupModelAssembler          job group model assembler.
      */
     @Autowired
     public JobGroupController(JobGroupService jobGroupService, PagedResourcesAssembler<JobGroup> jobGroupPagedResourcesAssembler, JobGroupModelAssembler jobGroupModelAssembler) {
@@ -61,7 +63,7 @@ public class JobGroupController {
     /**
      * Returns one page of job groups.
      *
-     * @param pageable pafinf parameter.
+     * @param pageable paging parameter.
      * @return on page of job groups.
      */
     @Cacheable(cacheNames = "JobGroup")
@@ -119,6 +121,7 @@ public class JobGroupController {
      * Returns all job groups connected to a job definition.
      *
      * @param jobDefinitionId job definition ID.
+     * @param pageable        paging parameters.
      * @return job groups belonging to given job definition.
      */
     @Cacheable(cacheNames = "JobGroup")
@@ -196,6 +199,7 @@ public class JobGroupController {
      *
      * @param jobGroupId jobDefinition group ID.
      * @param id         jobDefinition ID.
+     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @GetMapping("/{jobGroupId}/addJobDefinition/{id}")
     public ResponseEntity<JobGroupDto> addJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {
@@ -215,6 +219,7 @@ public class JobGroupController {
      *
      * @param jobGroupId jobDefinition group ID.
      * @param id         jobDefinition ID.
+     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @GetMapping("/{jobGroupId}/removeJobDefinition/{id}")
     public ResponseEntity<JobGroupDto> removeJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {

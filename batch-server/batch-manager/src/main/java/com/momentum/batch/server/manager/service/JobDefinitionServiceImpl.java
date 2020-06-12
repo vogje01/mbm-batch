@@ -1,8 +1,14 @@
 package com.momentum.batch.server.manager.service;
 
 import com.google.common.collect.Lists;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.database.repository.JobGroupRepository;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -33,11 +39,18 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private final JobGroupRepository jobGroupRepository;
 
+    private final AgentRepository agentRepository;
+
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
+
     @Autowired
-    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService, JobGroupRepository jobGroupRepository) {
+    public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService, JobGroupRepository jobGroupRepository,
+                                    AgentRepository agentRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobScheduleService = jobScheduleService;
         this.jobGroupRepository = jobGroupRepository;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
+        this.agentRepository = agentRepository;
     }
 
     @Override
@@ -70,6 +83,40 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     }
 
     /**
+     * Returns a job definition by ID.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @return job definition entity.
+     * @throws ResourceNotFoundException in case the job definition cannot be found.
+     */
+    @Override
+    @Cacheable(cacheNames = "JobDefinition", key = "#jobDefinitionId")
+    public JobDefinition findById(final String jobDefinitionId) throws ResourceNotFoundException {
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findById(jobDefinitionId);
+        if (jobDefinitionOptional.isPresent()) {
+            return jobDefinitionOptional.get();
+        }
+        throw new ResourceNotFoundException(format("Job definition not found - id: {0}", jobDefinitionId));
+    }
+
+    /**
+     * Returns a job definition by name.
+     *
+     * @param jobDefinitionName job definition name.
+     * @return job definition.
+     * @throws ResourceNotFoundException in case the job definition cannot be found.
+     */
+    @Override
+    @Cacheable(cacheNames = "JobDefinition", key = "#jobDefinitionName")
+    public JobDefinition findByName(final String jobDefinitionName) throws ResourceNotFoundException {
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobDefinitionName);
+        if (jobDefinitionOptional.isPresent()) {
+            return jobDefinitionOptional.get();
+        }
+        throw new ResourceNotFoundException(format("Job definition not found - name: {0}", jobDefinitionName));
+    }
+
+    /**
      * Insert a new job definition.
      *
      * @param jobDefinition job definition entity.
@@ -92,8 +139,7 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     @Override
     @Transactional
     @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
-    public JobDefinition updateJobDefinition(final String jobDefinitionId,
-                                             JobDefinition jobDefinition) throws ResourceNotFoundException {
+    public JobDefinition updateJobDefinition(final String jobDefinitionId, JobDefinition jobDefinition) throws ResourceNotFoundException {
         Optional<JobDefinition> jobDefinitionOld = jobDefinitionRepository.findById(jobDefinitionId);
         if (jobDefinitionOld.isPresent()) {
 
@@ -118,7 +164,7 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     @CacheEvict(cacheNames = "JobDefinition", key = "#jobDefinitionId")
     public void deleteJobDefinition(final String jobDefinitionId) {
         Optional<JobDefinition> jobDefinitionInfo = jobDefinitionRepository.findById(jobDefinitionId);
-        jobDefinitionInfo.ifPresent(jobDefinition -> jobDefinitionRepository.delete(jobDefinition));
+        jobDefinitionInfo.ifPresent(jobDefinitionRepository::delete);
     }
 
     @Override
@@ -131,28 +177,28 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
         jobDefinitionRepository.saveAll(jobDefinitions);
     }
 
-    @Override
-    @Cacheable(cacheNames = "JobDefinition", key = "#jobDefinitionId")
-    public JobDefinition getJobDefinition(final String jobDefinitionId) {
-        Optional<JobDefinition> jobDefinition = jobDefinitionRepository.findById(jobDefinitionId);
-        return jobDefinition.orElse(null);
-    }
-
-    @Override
-    @Cacheable(cacheNames = "JobDefinition", key = "#jobDefinitionName")
-    public Optional<JobDefinition> findByName(final String jobDefinitionName) {
-        return jobDefinitionRepository.findByName(jobDefinitionName);
-    }
-
+    /**
+     * Starts a job on demand.
+     *
+     * @param jobDefinitionDto job definition DTO.
+     * @param agentId          agent ID.
+     * @throws ResourceNotFoundException in case the job definitino cannot be found.
+     */
     @Override
     @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionId")
-    public void startJob(final String jobDefinitionId) throws ResourceNotFoundException {
-        Optional<JobDefinition> jobDefinitionOpt = jobDefinitionRepository.findById(jobDefinitionId);
-        if (jobDefinitionOpt.isPresent()) {
-            //sendTopic("batchCommand", new ServerCommandDto(ServerCommandType.START_JOB, jobDefinitionOpt.get()));
+    public void startJob(JobDefinitionDto jobDefinitionDto, String agentId) throws ResourceNotFoundException {
+        Optional<Agent> agentOptional = agentRepository.findById(agentId);
+        if (agentOptional.isPresent()) {
+
+            Agent agent = agentOptional.get();
+
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND);
+            agentSchedulerMessageDto.setNodeName(agent.getHostName());
+            agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+            agentSchedulerMessageDto.setJobDefinitionDto(jobDefinitionDto);
+            agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
         } else {
-            logger.error(format("Job definition not found - id: {0}", jobDefinitionId));
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(format("Agent not found - agentId: {0}", agentId));
         }
     }
 

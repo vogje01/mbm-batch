@@ -187,6 +187,7 @@ public class AgentController {
      * Deletes an agent.
      *
      * @param agentId agent ID to delete.
+     * @return void.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @DeleteMapping("/{agentId}/delete")
@@ -206,6 +207,7 @@ public class AgentController {
      *
      * @param agentId      agent ID.
      * @param agentGroupId agent group ID.
+     * @return agent data transfer object.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping("/{agentId}/addAgentGroup/{agentGroupId}")
@@ -226,6 +228,7 @@ public class AgentController {
      *
      * @param agentId      ID of agent.
      * @param agentGroupId agent group ID.
+     * @return agent data transfer object.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping("/{agentId}/removeAgentGroup/{agentGroupId}")
@@ -270,6 +273,8 @@ public class AgentController {
      *
      * @param agentId       agent ID.
      * @param jobScheduleId job schedule ID.
+     * @return agent data transfer object.
+     * @throws ResourceNotFoundException in case the agent cannot be found.
      */
     @GetMapping(value = "/{agentId}/addJobSchedule/{jobScheduleId}")
     public ResponseEntity<AgentDto> addSchedule(@PathVariable String agentId, @PathVariable String jobScheduleId) throws ResourceNotFoundException {
@@ -292,6 +297,7 @@ public class AgentController {
      *
      * @param agentId       agent ID.
      * @param jobScheduleId job schedule ID.
+     * @return agent data transfer object.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping(value = "/{agentId}/removeJobSchedule/{jobScheduleId}")
@@ -314,6 +320,7 @@ public class AgentController {
      * Pauses and agent.
      *
      * @param agentId agent ID.
+     * @return agent data transfer object.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
     @GetMapping(value = "/{agentId}/pauseAgent")

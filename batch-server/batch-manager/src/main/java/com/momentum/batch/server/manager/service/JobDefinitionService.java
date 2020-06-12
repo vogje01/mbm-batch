@@ -1,12 +1,12 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface JobDefinitionService {
 
@@ -14,9 +14,9 @@ public interface JobDefinitionService {
 
     Page<JobDefinition> findWithoutJobGroup(String jobGroupId, Pageable pageable);
 
-    JobDefinition getJobDefinition(final String id);
+    JobDefinition findById(final String id) throws ResourceNotFoundException;
 
-    Optional<JobDefinition> findByName(final String name);
+    JobDefinition findByName(final String name) throws ResourceNotFoundException;
 
     Page<JobDefinition> findByJobGroup(final String jobGroupId, Pageable pageable);
 
@@ -26,7 +26,7 @@ public interface JobDefinitionService {
 
     void deleteJobDefinition(final String id);
 
-    void startJob(final String id) throws ResourceNotFoundException;
+    void startJob(final JobDefinitionDto jobDefinitionDto, String agentId) throws ResourceNotFoundException;
 
     void stopJob(final String id) throws ResourceNotFoundException;
 

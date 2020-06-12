@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.text.MessageFormat.format;
@@ -27,7 +26,7 @@ import static java.text.MessageFormat.format;
 /**
  * Job definition REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -113,7 +112,7 @@ public class JobDefinitionController {
     @GetMapping(value = "/{jobDefinitionId}", produces = {"application/hal+json"})
     public ResponseEntity<JobDefinitionDto> findById(@PathVariable String jobDefinitionId) throws ResourceNotFoundException {
 
-        JobDefinition jobDefinition = jobDefinitionService.getJobDefinition(jobDefinitionId);
+        JobDefinition jobDefinition = jobDefinitionService.findById(jobDefinitionId);
         JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
         return ResponseEntity.ok(jobDefinitionDto);
     }
@@ -127,12 +126,9 @@ public class JobDefinitionController {
      */
     @GetMapping(value = "/byName", produces = {"application/hal+json"})
     public ResponseEntity<JobDefinitionDto> findByName(@RequestParam(value = "name") String name) throws ResourceNotFoundException {
-        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionService.findByName(name);
-        if (jobDefinitionOptional.isPresent()) {
-            JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinitionOptional.get());
-            return ResponseEntity.ok(jobDefinitionDto);
-        }
-        throw new ResourceNotFoundException();
+        JobDefinition jobDefinition = jobDefinitionService.findByName(name);
+        JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+        return ResponseEntity.ok(jobDefinitionDto);
     }
 
     /**
@@ -215,7 +211,7 @@ public class JobDefinitionController {
     @DeleteMapping(value = "/{jobDefinitionId}/delete")
     public ResponseEntity<Void> delete(@PathVariable("jobDefinitionId") String jobDefinitionId) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
+        RestPreconditions.checkFound(jobDefinitionService.findById(jobDefinitionId));
         jobDefinitionService.deleteJobDefinition(jobDefinitionId);
         logger.debug(format("Job definitions deleted - id: {0} {1}", jobDefinitionId, t.elapsedStr()));
         return null;
@@ -226,6 +222,8 @@ public class JobDefinitionController {
      *
      * @param jobDefinitionId ID of job definition.
      * @param jobGroupId      job group ID.
+     * @return job definition data transfer object.
+     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping("/{jobDefinitionId}/addJobGroup/{jobGroupId}")
     public ResponseEntity<JobDefinitionDto> addJobGroup(@PathVariable String jobDefinitionId, @PathVariable String jobGroupId) throws ResourceNotFoundException {
@@ -245,6 +243,8 @@ public class JobDefinitionController {
      *
      * @param jobDefinitionId ID of job definition.
      * @param jobGroupId      job group ID.
+     * @return job definition data transfer object.
+     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping("/{jobDefinitionId}/removeJobGroup/{jobGroupId}")
     public ResponseEntity<JobDefinitionDto> removeJobGroup(@PathVariable String jobDefinitionId, @PathVariable String jobGroupId) throws ResourceNotFoundException {
@@ -260,16 +260,18 @@ public class JobDefinitionController {
     }
 
     /**
-     * Start a new job.
+     * Starts a new job on demand.
      *
-     * @param jobDefinitionId job definition UUID.
+     * @param jobDefinitionId job definition ID.
+     * @param agentId         agent ID.
      * @return void response entity.
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
-    @GetMapping(value = "/{jobDefinitionId}/start")
-    public ResponseEntity<Void> start(@PathVariable("jobDefinitionId") String jobDefinitionId) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
-        jobDefinitionService.startJob(jobDefinitionId);
+    @GetMapping(value = "/{jobDefinitionId}/start/{agentId}")
+    public ResponseEntity<Void> start(@PathVariable String jobDefinitionId, @PathVariable String agentId) throws ResourceNotFoundException {
+        JobDefinition jobDefinition = jobDefinitionService.findById(jobDefinitionId);
+        JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+        jobDefinitionService.startJob(jobDefinitionDto, agentId);
         return null;
     }
 
@@ -287,7 +289,7 @@ public class JobDefinitionController {
      */
     @GetMapping(value = "/{jobDefinitionId}/stop")
     public ResponseEntity<Void> stop(@PathVariable("jobDefinitionId") String jobDefinitionId) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
+        RestPreconditions.checkFound(jobDefinitionService.findById(jobDefinitionId));
         jobDefinitionService.stopJob(jobDefinitionId);
         return null;
     }

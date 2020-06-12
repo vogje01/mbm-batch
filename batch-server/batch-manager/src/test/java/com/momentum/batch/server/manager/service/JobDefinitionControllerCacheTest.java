@@ -93,19 +93,19 @@ public class JobDefinitionControllerCacheTest {
     public void whenFindByJObDefinitionId_thenCachedValueIsReturned() {
 
         // First invocation should put entity into cache
-        service.getJobDefinition(jobDefinition1.getId());
-        JobDefinition result = service.getJobDefinition(jobDefinition1.getId());
+        service.findById(jobDefinition1.getId());
+        JobDefinition result = service.findById(jobDefinition1.getId());
         assertThat(result).isEqualTo(jobDefinition1);
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition1.getId());
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition1.getId())).isNotNull();
 
         // Second invocation should be return entity from cache
-        result = service.getJobDefinition(jobDefinition1.getId());
+        result = service.findById(jobDefinition1.getId());
         assertThat(result).isEqualTo(jobDefinition1);
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition1.getId());
 
         // Second invocation should be return entity from cache
-        result = service.getJobDefinition(jobDefinition2.getId());
+        result = service.findById(jobDefinition2.getId());
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition2.getId());
         assertThat(result).isEqualTo(jobDefinition2);
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition1.getId())).isNotNull();

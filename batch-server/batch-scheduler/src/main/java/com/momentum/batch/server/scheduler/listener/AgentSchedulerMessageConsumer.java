@@ -1,5 +1,6 @@
 package com.momentum.batch.server.scheduler.listener;
 
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
@@ -23,10 +24,20 @@ import static java.text.MessageFormat.format;
 @Service
 public class AgentSchedulerMessageConsumer {
 
+    /**
+     * Logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerMessageConsumer.class);
-
+    /**
+     * Job schedule repository.
+     */
     private final JobScheduleRepository jobScheduleRepository;
 
+    /**
+     * Constructor.
+     *
+     * @param jobScheduleRepository job schedule repository.
+     */
     @Autowired
     public AgentSchedulerMessageConsumer(JobScheduleRepository jobScheduleRepository) {
         this.jobScheduleRepository = jobScheduleRepository;
@@ -39,8 +50,13 @@ public class AgentSchedulerMessageConsumer {
      * Supported agent scheduler messages are:
      * </p>
      * <ul>
+     *     <li>JOB_SCHEDULE: Start job registered to Quartz scheduler.</li>
+     *     <li>JOB_REMOVE_SCHEDULE: Job removed from Quartz scheduler.</li>
+     *     <li>JOB_RESCHEDULE: Job schedule changed in Quartz scheduler.</li>
+     *     <li>JOB_SCHEDULED: Job registered with Quartz scheduler.</li>
      *     <li>JOB_EXECUTED: Job executed by the Quartz scheduler.</li>
-     *     <li>JOB_SCHEDULED: Job registered with the Quartz scheduler.</li>
+     *     <li>JOB_SHUTDOWN: Job removed from Quartz scheduler and running executions stopped.</li>
+     *     <li>JOB_ON_DEMAND: Job executed once on demand.</li>
      * </ul>
      *
      * @param agentSchedulerMessageDto agent command data transfer object.
@@ -81,17 +97,19 @@ public class AgentSchedulerMessageConsumer {
      * @param agentSchedulerMessageDto agent scheduler message.
      */
     private synchronized void receivedJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
+
         logger.debug(format("Job executed message received - hostName: {0} nodeName: {1} schedule: {2}",
-                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getJobScheduleName()));
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobScheduleDto.getName()));
 
         // Get the schedule
-        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(agentSchedulerMessageDto.getJobScheduleUuid());
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleDto.getId());
         jobScheduleOptional.ifPresentOrElse(jobSchedule -> {
-            if (agentSchedulerMessageDto.getNextFireTime() != null) {
-                jobSchedule.setNextExecution(agentSchedulerMessageDto.getNextFireTime());
+            if (jobScheduleDto.getNextExecution() != null) {
+                jobSchedule.setNextExecution(jobScheduleDto.getNextExecution());
             }
-            if (agentSchedulerMessageDto.getPreviousFireTime() != null) {
-                jobSchedule.setLastExecution(agentSchedulerMessageDto.getPreviousFireTime());
+            if (jobScheduleDto.getNextExecution() != null) {
+                jobSchedule.setLastExecution(jobScheduleDto.getLastExecution());
             }
             jobSchedule = jobScheduleRepository.save(jobSchedule);
             logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), agentSchedulerMessageDto.getNextFireTime()));

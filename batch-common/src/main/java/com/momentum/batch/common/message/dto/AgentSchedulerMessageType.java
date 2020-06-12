@@ -29,5 +29,6 @@ public enum AgentSchedulerMessageType {
     JOB_RESCHEDULE,
     JOB_SCHEDULED,
     JOB_EXECUTED,
+    JOB_ON_DEMAND,
     JOB_SHUTDOWN;
 }

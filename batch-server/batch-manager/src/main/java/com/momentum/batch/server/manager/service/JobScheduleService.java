@@ -14,12 +14,6 @@ public interface JobScheduleService {
 
     Page<JobSchedule> findAll(Pageable pageable);
 
-    long countAll();
-
-    long countAgents(final String jobScheduleId);
-
-    long countAgentGroups(final String jobScheduleId);
-
     Optional<JobSchedule> findById(String uuid);
 
     Optional<JobSchedule> findByGroupAndName(String groupName, String jobName);
