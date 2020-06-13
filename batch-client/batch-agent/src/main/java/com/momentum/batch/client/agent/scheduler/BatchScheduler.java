@@ -114,7 +114,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
             try {
-                libraryReaderService.getJobFile(jobDefinition.getFileName(), 64118784);
+                libraryReaderService.getJobFile(jobDefinition);
             } catch (IOException e) {
                 logger.error(format("Could not download job file - error: {0}", e.getMessage()));
             }

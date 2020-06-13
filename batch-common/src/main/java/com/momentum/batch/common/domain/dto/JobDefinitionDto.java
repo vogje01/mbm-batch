@@ -52,6 +52,14 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
      */
     private String fileName;
     /**
+     * Job file hash.
+     */
+    private String fileHash;
+    /**
+     * Job file hash.
+     */
+    private long fileSize;
+    /**
      * Job command
      */
     private String command;
@@ -177,6 +185,22 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getCommand() {
@@ -314,6 +338,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         if (!super.equals(o)) return false;
         JobDefinitionDto that = (JobDefinitionDto) o;
         return active == that.active &&
+                fileSize == that.fileSize &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(label, that.label) &&
@@ -321,6 +346,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(description, that.description) &&
                 Objects.equal(fileName, that.fileName) &&
+                Objects.equal(fileHash, that.fileHash) &&
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
                 Objects.equal(loggingDirectory, that.loggingDirectory) &&
@@ -337,8 +363,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
-                jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     @Override
@@ -352,6 +377,8 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("description", description)
                 .add("active", active)
                 .add("fileName", fileName)
+                .add("fileHash", fileHash)
+                .add("fileSize", fileSize)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
                 .add("loggingDirectory", loggingDirectory)

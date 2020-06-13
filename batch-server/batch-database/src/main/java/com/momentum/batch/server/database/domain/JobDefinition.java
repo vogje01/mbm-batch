@@ -53,6 +53,12 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @Column(name = "FILE_NAME")
     private String fileName;
 
+    @Column(name = "FILE_HASH")
+    private String fileHash;
+
+    @Column(name = "FILE_SIZE")
+    private long fileSize;
+
     @Column(name = "COMMAND")
     private String command;
 
@@ -101,6 +107,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.workingDirectory = origin.workingDirectory;
         this.loggingDirectory = origin.loggingDirectory;
         this.fileName = origin.fileName;
+        this.fileHash = origin.fileHash;
+        this.fileSize = origin.fileSize;
         this.description = origin.description;
         this.failedExitCode = origin.failedExitCode;
         this.failedExitMessage = origin.failedExitMessage;
@@ -174,6 +182,22 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getCommand() {
@@ -280,7 +304,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         JobDefinition that = (JobDefinition) o;
-        return Objects.equal(id, that.id) &&
+        return fileSize == that.fileSize &&
+                Objects.equal(id, that.id) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(label, that.label) &&
                 type == that.type &&
@@ -288,6 +313,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 Objects.equal(description, that.description) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(fileName, that.fileName) &&
+                Objects.equal(fileHash, that.fileHash) &&
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
                 Objects.equal(loggingDirectory, that.loggingDirectory) &&
@@ -299,8 +325,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
-                failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override
@@ -314,6 +339,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("description", description)
                 .add("active", active)
                 .add("fileName", fileName)
+                .add("fileHash", fileHash)
+                .add("fileSize", fileSize)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
                 .add("loggingDirectory", loggingDirectory)

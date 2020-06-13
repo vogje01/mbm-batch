@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.converter.JobDefinitionModelAssembler;
@@ -10,6 +11,7 @@ import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -17,6 +19,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +40,9 @@ import static java.text.MessageFormat.format;
 @RestController
 @RequestMapping("/api/jobdefinitions")
 public class JobDefinitionController {
+
+    @Value("${mbm.library.directory}")
+    private String libraryDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionController.class);
 
@@ -158,8 +165,11 @@ public class JobDefinitionController {
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"})
-    public ResponseEntity<JobDefinitionDto> insert(@RequestBody JobDefinitionDto jobDefinitionDto) throws ResourceNotFoundException {
+    public ResponseEntity<JobDefinitionDto> insert(@RequestBody JobDefinitionDto jobDefinitionDto) throws ResourceNotFoundException, IOException, NoSuchAlgorithmException {
         t.restart();
+
+        // Get file size and hash
+        FileUtils.getHash(jobDefinitionDto.getFileName());
 
         // Get job definition
         JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
