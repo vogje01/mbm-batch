@@ -22,10 +22,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
-    @Value("${agent.nodeName:#{null}}")
+    @Value("${mbm.agent.nodeName:#{null}}")
     private String nodeName;
 
-    @Value("${agent.hostName:#{null}}")
+    @Value("${mbm.agent.hostName:#{null}}")
     private String hostName;
 
     private static final AgentStatus agentStatus = AgentStatus.UNKNOWN;

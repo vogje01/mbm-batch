@@ -24,17 +24,11 @@ mbm:
     server: batchmanager
   scheduler:
     server: batchmanager
-
-agent:
-  hostName: hostname
-  nodeName: nodename
-  pingInterval: 300000
-  performanceInterval: 60000
-  docker:
-    network: docker_default
-    hostname: hostname
-server:
-  hostName: batchmanager
+  agent:
+    hostName: hostname
+    nodeName: nodename
+    pingInterval: 300000
+    performanceInterval: 60000
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
