@@ -29,6 +29,9 @@ mbm:
     nodeName: nodename
     pingInterval: 300000
     performanceInterval: 60000
+    docker:
+      network: docker_default
+      hostname: hostname
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.

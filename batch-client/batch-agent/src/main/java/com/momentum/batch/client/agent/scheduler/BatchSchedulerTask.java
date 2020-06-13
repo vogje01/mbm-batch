@@ -47,7 +47,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Docker network
      */
-    @Value("${agent.docker.network}")
+    @Value("${mbm.agent.docker.network}")
     private String dockerNetwork;
     /**
      * Kafka producer for agent commands.
