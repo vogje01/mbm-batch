@@ -20,6 +20,10 @@ mbm:
     directory: C:\work\batch\lib
     server: localhost
     port: 8090
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
 
 agent:
   hostName: hostname
