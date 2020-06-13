@@ -18,7 +18,7 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-mpm:
+mbm:
   scheduler:
     server: batchmanager
 
