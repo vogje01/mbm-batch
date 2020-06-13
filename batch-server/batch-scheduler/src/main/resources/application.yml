@@ -21,6 +21,8 @@ spring:
 mbm:
   scheduler:
     server: batchmanager
+  listener:
+    server: batchmanager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
