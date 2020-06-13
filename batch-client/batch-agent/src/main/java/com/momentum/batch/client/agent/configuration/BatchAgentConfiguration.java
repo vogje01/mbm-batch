@@ -25,15 +25,6 @@ public class BatchAgentConfiguration {
 
     private static final AgentStatus agentStatus = AgentStatus.UNKNOWN;
 
-    /*@Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new ClassPathResource("application.yml"));
-        configurer.setProperties(Objects.requireNonNull(yaml.getObject()));
-        return configurer;
-    }*/
-
     @Bean
     public AgentStatus agentStatus() {
         return agentStatus;
