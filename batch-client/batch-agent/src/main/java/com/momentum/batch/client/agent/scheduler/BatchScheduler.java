@@ -1,6 +1,5 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.client.agent.library.LibraryReaderService;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -39,8 +37,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
     private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
-    private final LibraryReaderService libraryReaderService;
-
     /**
      * Constructor.
      * <p>
@@ -51,16 +47,13 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param agentSchedulerMessageProducer Kafka message producer for schedule messages.
      * @param hostName                      host name of the machine.
      * @param nodeName                      node name of the agent.
-     * @param libraryReaderService          library downloader.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName,
-                          LibraryReaderService libraryReaderService) {
+    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
-        this.libraryReaderService = libraryReaderService;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
@@ -113,11 +106,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
-            try {
-                libraryReaderService.getJobFile(jobDefinition);
-            } catch (IOException e) {
-                logger.error(format("Could not download job file - error: {0}", e.getMessage()));
-            }
             addJobToScheduler(jobSchedule, jobDefinition);
         }
     }

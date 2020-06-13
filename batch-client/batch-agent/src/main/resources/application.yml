@@ -55,12 +55,6 @@ kafka:
     group: batchmanager
     partitions: 5
     replicas: 1
-  serverCommand:
-    offsetReset: latest
-    topic: batchServerCommand
-    group: batchmanager
-    partitions: 5
-    replicas: 1
   jobStatus:
     offsetReset: latest
     topic: batchServerCommand
