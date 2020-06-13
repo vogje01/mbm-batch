@@ -82,6 +82,9 @@ public class LibraryReaderService {
             return true;
         }
         try {
+            if (!FileUtils.exists(libraryDirectory + File.separator + fileName)) {
+                return true;
+            }
             long fileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
             if (fileSize != currentSize) {
                 return true;

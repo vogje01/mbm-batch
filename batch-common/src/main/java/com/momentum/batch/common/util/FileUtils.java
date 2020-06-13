@@ -52,4 +52,18 @@ public class FileUtils {
     public static long getSize(String fileName) {
         return (new File(fileName)).length();
     }
+
+    /**
+     * Check the existence of a file.
+     *
+     * @param fileName fully qualified file name.
+     * @return true in case file exists and is not a directory, otherwise false.
+     */
+    public static boolean exists(String fileName) {
+        File f = new File(fileName);
+        if (f.exists() && !f.isDirectory()) {
+            return true;
+        }
+        return false;
+    }
 }
