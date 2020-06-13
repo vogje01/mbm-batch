@@ -27,7 +27,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration {
 
-    @Value("${listener.serverName:#{null}}")
+    @Value("${mpm.scheduler.server:#{null}}")
     private String serverName;
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecutionInfo",

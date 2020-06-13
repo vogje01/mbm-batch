@@ -18,8 +18,9 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-server:
-  hostName: batchmanager
+mpm:
+  scheduler:
+    server: batchmanager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
@@ -47,12 +48,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchmanager
+    group: batchscheduler
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchmanager
+    group: batchscheduler
     partitions: 5
     replicas: 1
