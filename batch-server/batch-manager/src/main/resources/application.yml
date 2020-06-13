@@ -17,8 +17,15 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
 mbm:
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
   library:
     directory: C:\work\batch\jobs
+  server:
+    host: localhost
+    port: 8090
 
 # Web token secret
 jwt:

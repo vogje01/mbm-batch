@@ -19,12 +19,10 @@ spring:
       write_dates_as_timestamps: false
 
 mbm:
-  library:
-    directory: C:\work\mbm-batch\batch-client\batch-jobs\batch-jobs-housekeeping\target
-    port: 9999
-
-server:
-  hostName: batchmanager
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
