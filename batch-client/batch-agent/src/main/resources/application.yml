@@ -18,7 +18,8 @@ spring:
 mbm:
   library:
     directory: C:\work\batch\lib
-    port: 9999
+    server: localhost
+    port: 8090
 
 agent:
   hostName: hostname
