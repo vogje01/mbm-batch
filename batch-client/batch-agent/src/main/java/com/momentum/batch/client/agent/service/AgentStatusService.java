@@ -122,7 +122,7 @@ public class AgentStatusService {
         logger.info(format("Agent registration message send - hostName: {0} nodeName: {1}", hostName, nodeName));
     }
 
-    @Scheduled(fixedRateString = "${agent.pingInterval}")
+    @Scheduled(fixedRateString = "${mbm.agent.pingInterval}")
     private void ping() {
         if (agentStatus != AgentStatus.STOPPED) {
             agentStatus = AgentStatus.RUNNING;
@@ -134,7 +134,7 @@ public class AgentStatusService {
         }
     }
 
-    @Scheduled(fixedRateString = "${agent.performanceInterval}")
+    @Scheduled(fixedRateString = "${mbm.agent.performanceInterval}")
     private void performance() {
 
         if (agentStatus != AgentStatus.STOPPED) {
