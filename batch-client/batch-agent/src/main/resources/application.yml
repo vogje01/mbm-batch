@@ -15,6 +15,11 @@ spring:
 
 # Agent configuration
 # pingInterval: ping interval in ms.
+mbm:
+  library:
+    directory: C:\work\batch\lib
+    port: 9999
+
 agent:
   hostName: hostname
   nodeName: nodename

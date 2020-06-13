@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "kafka.maxRequestSize",
+      "type": "java.lang.String",
+      "description": "Description for kafka.maxRequestSize."
+    },
+    {
+      "name": "kafka.bootstrapAddress",
+      "type": "java.lang.String",
+      "description": "Apache Kafka bootstrap address."
+    },
+    {
+      "name": "kafka.retentionDays",
+      "type": "java.lang.String",
+      "description": "Description for kafka.retentionDays."
+    }
+  ]
+}

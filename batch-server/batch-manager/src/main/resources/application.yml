@@ -16,6 +16,10 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+mbm:
+  library:
+    directory: C:\work\batch\jobs
+
 # Web token secret
 jwt:
   secret: mU*mJxJ*&31p
