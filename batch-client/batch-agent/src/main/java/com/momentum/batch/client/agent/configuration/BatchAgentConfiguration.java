@@ -3,17 +3,12 @@ package com.momentum.batch.client.agent.configuration;
 import com.momentum.batch.common.domain.AgentStatus;
 import com.momentum.batch.common.util.NetworkUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.util.Objects;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -22,22 +17,22 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
-    @Value("${mbm.agent.nodeName:#{null}}")
-    private String nodeName;
-
     @Value("${mbm.agent.hostName:#{null}}")
     private String hostName;
 
+    @Value("${mbm.agent.nodeName:#{null}}")
+    private String nodeName;
+
     private static final AgentStatus agentStatus = AgentStatus.UNKNOWN;
 
-    @Bean
+    /*@Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
         yaml.setResources(new ClassPathResource("application.yml"));
         configurer.setProperties(Objects.requireNonNull(yaml.getObject()));
         return configurer;
-    }
+    }*/
 
     @Bean
     public AgentStatus agentStatus() {
