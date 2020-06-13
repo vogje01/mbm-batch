@@ -45,17 +45,17 @@ public class LibraryReaderService {
     /**
      * Download the job file from the server.
      *
-     * @param jobDefinitonDto job definition data transfer object.
+     * @param jobDefinitionDto job definition data transfer object.
      * @throws IOException in case the file cannot be read.
      */
-    public void getJobFile(JobDefinitionDto jobDefinitonDto) throws IOException {
+    public void getJobFile(JobDefinitionDto jobDefinitionDto) throws IOException {
 
         t.restart();
-        String fileName = jobDefinitonDto.getFileName();
+        String fileName = jobDefinitionDto.getFileName();
         String jarFileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1);
         logger.info(format("Downloading job library - name: {0}", jarFileName));
 
-        if (checkJobFile(jarFileName, jobDefinitonDto.getFileHash(), jobDefinitonDto.getFileSize())) {
+        if (checkJobFile(jarFileName, jobDefinitionDto.getFileHash(), jobDefinitionDto.getFileSize())) {
             URL website = new URL(getServerUrl(jarFileName));
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             FileOutputStream fos = new FileOutputStream(libraryDirectory + File.separator + jarFileName);
