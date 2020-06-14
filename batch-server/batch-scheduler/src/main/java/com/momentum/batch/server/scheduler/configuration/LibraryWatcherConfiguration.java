@@ -22,8 +22,8 @@ import static java.text.MessageFormat.format;
 @Configuration
 public class LibraryWatcherConfiguration {
 
-    @Value("${mbm.library.directory}")
-    private String libraryDirectory;
+    @Value("${mbm.library.dropins}")
+    private String dropinsDirectory;
 
     @Autowired
     private LibraryFileWatcherService libraryFileWatcherService;
@@ -36,10 +36,10 @@ public class LibraryWatcherConfiguration {
     @Bean
     public FileSystemWatcher fileSystemWatcher() {
         FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
-        fileSystemWatcher.addSourceFolder(new File(libraryDirectory));
+        fileSystemWatcher.addSourceFolder(new File(dropinsDirectory));
         fileSystemWatcher.addListener(libraryFileWatcherService);
         fileSystemWatcher.start();
-        logger.info(format("File system watcher started - path: {0}", libraryDirectory));
+        logger.info(format("File system watcher started - path: {0}", dropinsDirectory));
         return fileSystemWatcher;
     }
 
