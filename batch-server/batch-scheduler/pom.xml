@@ -95,6 +95,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.momentum.batch.server.scheduler.BatchSchedulerApplication</mainClass>
+                    <excludeDevtools>false</excludeDevtools>
                 </configuration>
                 <executions>
                     <execution>

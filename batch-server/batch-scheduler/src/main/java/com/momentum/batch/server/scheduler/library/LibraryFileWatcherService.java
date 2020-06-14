@@ -45,8 +45,12 @@ public class LibraryFileWatcherService implements FileChangeListener {
     /**
      * Job definition repository.
      */
+    private final JobDefinitionRepository jobDefinitionRepository;
+
     @Autowired
-    private JobDefinitionRepository jobDefinitionRepository;
+    public LibraryFileWatcherService(JobDefinitionRepository jobDefinitionRepository) {
+        this.jobDefinitionRepository = jobDefinitionRepository;
+    }
 
     @PostConstruct
     public void initialize() {
