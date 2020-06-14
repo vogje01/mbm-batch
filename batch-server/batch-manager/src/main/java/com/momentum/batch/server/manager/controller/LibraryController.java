@@ -23,14 +23,14 @@ import static java.text.MessageFormat.format;
 @RequestMapping("/api/library")
 public class LibraryController {
 
-    @Value("${mbm.library.directory}")
-    public String libraryDirectory;
+    @Value("${mbm.library.jobs}")
+    public String jobsDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(LibraryController.class);
 
     @RequestMapping(value = "/{file_name}", method = RequestMethod.GET)
     public FileSystemResource getFile(@PathVariable("file_name") String fileName, HttpServletRequest request) {
         logger.info(format("Sending job jar file to agent - fileName: {0} host: {1}", fileName, request.getRemoteHost()));
-        return new FileSystemResource(Paths.get(libraryDirectory, fileName + ".jar"));
+        return new FileSystemResource(Paths.get(jobsDirectory, fileName + ".jar"));
     }
 }

@@ -35,8 +35,11 @@ import static java.text.MessageFormat.format;
 @Component
 public class LibraryFileWatcherService implements FileChangeListener {
 
-    @Value("${mbm.library.directory}")
-    private String libraryDirectory;
+    @Value("${mbm.dropins.directory}")
+    private String dropinsDirectory;
+
+    @Value("${mbm.jobs.directory}")
+    private String jobsDirectory;
 
     /**
      * Logger
@@ -55,13 +58,12 @@ public class LibraryFileWatcherService implements FileChangeListener {
     @PostConstruct
     public void initialize() {
         try {
-            Files.walk(Paths.get(libraryDirectory))
+            Files.walk(Paths.get(jobsDirectory))
                     .filter(Files::isRegularFile)
                     .forEach(this::checkFile);
         } catch (IOException e) {
-            logger.error(format("Could not scan directory - name: {0}", libraryDirectory));
+            logger.error(format("Could not scan directory - name: {0}", dropinsDirectory));
         }
-        //startWatcher();
     }
 
     private void checkFile(Path filePath) {
@@ -74,8 +76,8 @@ public class LibraryFileWatcherService implements FileChangeListener {
         } else {
             try {
 
-                String currentHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
-                long currentFileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
+                String currentHash = FileUtils.getHash(dropinsDirectory + File.separator + fileName);
+                long currentFileSize = FileUtils.getSize(dropinsDirectory + File.separator + fileName);
                 jobDefinitionList.forEach(jobDefinition -> {
                     // Check hash
                     if (!currentHash.equals(jobDefinition.getFileHash())) {
@@ -92,8 +94,8 @@ public class LibraryFileWatcherService implements FileChangeListener {
 
     private void createJobDefinition(String fileName) {
         try {
-            String currentHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
-            long currentFileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
+            String currentHash = FileUtils.getHash(dropinsDirectory + File.separator + fileName);
+            long currentFileSize = FileUtils.getSize(dropinsDirectory + File.separator + fileName);
 
             // Create new job definition
             String jobName = fileName.substring(0, fileName.lastIndexOf('-'));
@@ -118,6 +120,9 @@ public class LibraryFileWatcherService implements FileChangeListener {
             // Save to database
             jobDefinitionRepository.save(jobDefinition);
             logger.info(format("Job definition created - name: {0} size: {1} hash: {2}", jobDefinition.getName(), currentFileSize, currentHash));
+
+            // Move file from dropins to jobs directory.
+            Files.move(new File(dropinsDirectory + File.separator + fileName).toPath(), new File(jobsDirectory + File.separator + fileName).toPath());
 
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0}", fileName));

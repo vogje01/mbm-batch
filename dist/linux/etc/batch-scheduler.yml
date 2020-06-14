@@ -27,7 +27,8 @@ spring:
 #
 mbm:
   library:
-    directory: /opt/batch/server/lib
+    jobs: /opt/batch/server/jobs
+    dropins: /opt/batch/server/dropins
   scheduler:
     server: batchmanager
   listener:

@@ -19,6 +19,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -41,8 +42,8 @@ import static java.text.MessageFormat.format;
 @RequestMapping("/api/jobdefinitions")
 public class JobDefinitionController {
 
-    @Value("${mbm.library.directory}")
-    private String libraryDirectory;
+    @Value("${mbm.library.jobs}")
+    private String jobsDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionController.class);
 
@@ -162,18 +163,27 @@ public class JobDefinitionController {
      *
      * @param jobDefinitionDto job definition DTO.
      * @return job definition resource.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
+     * @throws ResourceNotFoundException in case the job file cannot be found.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"})
     public ResponseEntity<JobDefinitionDto> insert(@RequestBody JobDefinitionDto jobDefinitionDto) throws ResourceNotFoundException, IOException, NoSuchAlgorithmException {
         t.restart();
 
+        // Check file
+        String absoluteFilePath = jobsDirectory + File.separator + jobDefinitionDto.getFileName();
+        if (!FileUtils.exists(absoluteFilePath)) {
+            throw new ResourceNotFoundException(format("File not found - path: {0}", absoluteFilePath));
+        }
+
         // Get file size and hash
-        FileUtils.getHash(jobDefinitionDto.getFileName());
+        String fileHash = FileUtils.getHash(absoluteFilePath);
+        long fileSize = FileUtils.getSize(absoluteFilePath);
 
         // Get job definition
         JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
         jobDefinition.setId(UUID.randomUUID().toString());
+        jobDefinition.setFileHash(fileHash);
+        jobDefinition.setFileSize(fileSize);
 
         // Insert into database
         jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);

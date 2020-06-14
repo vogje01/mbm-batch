@@ -22,7 +22,7 @@ server:
   
 mbm:
   library:
-    directory: /opt/batch/server/lib
+    jobs: /opt/batch/server/jobs
   listener:
     server: batchmanager
   scheduler:
