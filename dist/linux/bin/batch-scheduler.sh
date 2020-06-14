@@ -2,6 +2,10 @@
 #
 # Momentum Batch Management scheduler startup script.
 #
+# Usage:
+#     batch-scheduler.sh [start|stop|restart]
+#
+
 
 # Module
 MODULE=batch-scheduler

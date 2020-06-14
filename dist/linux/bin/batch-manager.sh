@@ -2,6 +2,9 @@
 #
 # Momentum Batch Management manager startup script.
 #
+# Usage:
+#     batch-manager.sh [start|stop|restart]
+#
 
 # Module
 MODULE=batch-manager

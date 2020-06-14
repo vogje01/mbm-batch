@@ -2,6 +2,12 @@
 #
 # Momentum Batch Management agent startup script.
 #
+# Usage:
+#     batch-agent.sh [start|stop|restart] <nodeName>
+#
+# nodeName can be anything, for instance 01, 02, prod etc. The node name is only used internally
+# to route messages and commands between the server and the agents.
+#
 
 # Module
 MODULE=batch-agent
@@ -41,42 +47,41 @@ else
 fi
 
 cd $BASEDIR
-case $1 in 
-    start)
-      echo "Starting $SERVICE_NAME ..."
-      if [ ! -f $PID_PATH_NAME ]; then
-	      nohup $JAVA $JAVA_ARGUMENTS -jar $LIB_DIR/$EXECUTABLE > $LOG_DIR/$MODULE-$2.log 2>&1 &
-	      echo $! > $PID_PATH_NAME
-	      echo "$SERVICE_NAME started ..."
-      else
-	      echo "$SERVICE_NAME is already running ..."
-      fi
-      ;;
-    stop)
-	    if [ -f $PID_PATH_NAME ]; then
-        PID=$(cat $PID_PATH_NAME);
-        echo "$SERVICE_NAME stopping ..."
-        kill $PID;
-        echo "$SERVICE_NAME stopped ..."
-        rm $PID_PATH_NAME
-	    else
-        echo "$SERVICE_NAME is not running ..."
-	    fi
-	    ;;
-    restart)  
-	    if [ -f $PID_PATH_NAME ]; then
-	      PID=$(cat $PID_PATH_NAME);
-	      echo "$SERVICE_NAME stopping ...";
-	      kill $PID;
-	      echo "$SERVICE_NAME stopped ...";
-	      rm $PID_PATH_NAME
-	      echo "$SERVICE_NAME starting ..."
-	      nohup $JAVA $JAVA_ARGUMENTS -jar $LIB_DIR/$EXECUTABLE > $LOG_DIR/$MODULE-$2.log 2>&1 &
-	      echo $! > $PID_PATH_NAME
-	      echo "$SERVICE_NAME started ..."
-	    else
-	      echo "$SERVICE_NAME is not running ..."
-	    fi
-	    ;;
+case $1 in
+start)
+  echo "Starting $SERVICE_NAME ..."
+  if [ ! -f $PID_PATH_NAME ]; then
+    nohup $JAVA $JAVA_ARGUMENTS -jar $LIB_DIR/$EXECUTABLE >$LOG_DIR/$MODULE-$2.log 2>&1 &
+    echo $! >$PID_PATH_NAME
+    echo "$SERVICE_NAME started ..."
+  else
+    echo "$SERVICE_NAME is already running ..."
+  fi
+  ;;
+stop)
+  if [ -f $PID_PATH_NAME ]; then
+    PID=$(cat $PID_PATH_NAME)
+    echo "$SERVICE_NAME stopping ..."
+    kill $PID
+    echo "$SERVICE_NAME stopped ..."
+    rm $PID_PATH_NAME
+  else
+    echo "$SERVICE_NAME is not running ..."
+  fi
+  ;;
+restart)
+  if [ -f $PID_PATH_NAME ]; then
+    PID=$(cat $PID_PATH_NAME)
+    echo "$SERVICE_NAME stopping ..."
+    kill $PID
+    echo "$SERVICE_NAME stopped ..."
+    rm $PID_PATH_NAME
+    echo "$SERVICE_NAME starting ..."
+    nohup $JAVA $JAVA_ARGUMENTS -jar $LIB_DIR/$EXECUTABLE >$LOG_DIR/$MODULE-$2.log 2>&1 &
+    echo $! >$PID_PATH_NAME
+    echo "$SERVICE_NAME started ..."
+  else
+    echo "$SERVICE_NAME is not running ..."
+  fi
+  ;;
 esac
-
