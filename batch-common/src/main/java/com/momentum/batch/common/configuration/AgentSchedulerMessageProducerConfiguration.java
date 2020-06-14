@@ -34,7 +34,7 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     private short replicas;
 
     @Bean
-    public String serverName() {
+    public String schedulerName() {
         return serverName;
     }
 
@@ -54,8 +54,8 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
     }
 
     @Bean
-    public AgentSchedulerMessageProducer agentSchedulerMessageProducer(String serverName) {
-        return new AgentSchedulerMessageProducer(serverName, agentSchedulerMessageKafkaTemplate());
+    public AgentSchedulerMessageProducer agentSchedulerMessageProducer(String schedulerName) {
+        return new AgentSchedulerMessageProducer(schedulerName, agentSchedulerMessageKafkaTemplate());
     }
 
     @Bean

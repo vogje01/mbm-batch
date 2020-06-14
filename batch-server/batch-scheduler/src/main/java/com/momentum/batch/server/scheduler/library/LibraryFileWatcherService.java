@@ -7,7 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import static java.text.MessageFormat.format;
  * @version 0.0.4
  * @since 0.0.4
  */
-@Service
+@Component
 public class LibraryFileWatcherService {
 
     @Value("${mbm.library.directory}")
@@ -53,7 +54,7 @@ public class LibraryFileWatcherService {
         } catch (IOException e) {
             logger.error(format("Could not scan directory - name: {0}", libraryDirectory));
         }
-        startWatcher();
+        //startWatcher();
     }
 
     private void checkFile(Path file) {
@@ -85,7 +86,8 @@ public class LibraryFileWatcherService {
         logger.info(format("Job definition updated - name: {0} size: {1} hash: {2}", jobDefinition.getName(), fileSize, fileHash));
     }
 
-    private void startWatcher() {
+    @Async
+    public void startWatcher() {
         try {
             FileSystem fs = FileSystems.getDefault();
             WatchService ws = fs.newWatchService();

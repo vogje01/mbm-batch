@@ -34,7 +34,7 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
     private short replicas;
 
     @Bean
-    public String serverName() {
+    public String listenerName() {
         return serverName;
     }
 
@@ -54,8 +54,8 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
     }
 
     @Bean
-    public AgentStatusMessageProducer agentStatusMessageProducer(String serverName) {
-        return new AgentStatusMessageProducer(serverName, agentStatusMessageKafkaTemplate());
+    public AgentStatusMessageProducer agentStatusMessageProducer(String listenerName) {
+        return new AgentStatusMessageProducer(listenerName, agentStatusMessageKafkaTemplate());
     }
 
     @Bean

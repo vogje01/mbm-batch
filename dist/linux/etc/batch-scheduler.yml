@@ -25,7 +25,7 @@ spring:
 #   scheduler: job scheduler host
 #     server: name of the scheduler host
 #
-mpm:
+mbm:
   library:
     directory: /opt/batch/server/lib
   scheduler:

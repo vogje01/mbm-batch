@@ -41,7 +41,7 @@ else
 fi
 
 # Java arguments
-JAVA_ARGUMENTS="-Dscheduler.loggingDirectory=$LOG_DIR -Dlog4j2.configurationFile=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
+JAVA_ARGUMENTS="-Dscheduler.loggingDirectory=$LOG_DIR -Dlogging.config=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
 
 cd $BASEDIR
 case $1 in

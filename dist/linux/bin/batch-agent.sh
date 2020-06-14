@@ -34,7 +34,7 @@ CONFIGURATION=$ETC_DIR/$MODULE-$2.yml
 LOG_CONFIGURATION=$ETC_DIR/$MODULE-$2-log.yml
 
 # Node name
-JAVA_ARGUMENTS="-Dagent.loggingDirectory=$LOG_DIR -Dlog4j2.configurationFile=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
+JAVA_ARGUMENTS="-Dagent.loggingDirectory=$LOG_DIR -Dlogging.config=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
 
 # Executable JAR
 EXECUTABLE=$MODULE-$VERSION.jar
