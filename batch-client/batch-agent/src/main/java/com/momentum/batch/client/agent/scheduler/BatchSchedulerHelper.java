@@ -151,7 +151,7 @@ public abstract class BatchSchedulerHelper {
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
                 .jobName(jobDefinition.getName())
-                .jobGroupName(jobDefinition.getJobGroupName())
+                .jobGroupName(jobDefinition.getMainGroup())
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
@@ -176,7 +176,7 @@ public abstract class BatchSchedulerHelper {
     JobDetail buildJobDetail(String hostName, String nodeName, JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
                 .jobName(jobDefinition.getName())
-                .jobGroupName(jobDefinition.getJobGroupName())
+                .jobGroupName(jobDefinition.getMainGroup())
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
