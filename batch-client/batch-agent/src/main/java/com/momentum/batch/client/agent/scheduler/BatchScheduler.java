@@ -10,6 +10,7 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -31,14 +32,16 @@ import static java.text.MessageFormat.format;
 @Service
 public class BatchScheduler extends BatchSchedulerHelper {
 
+    @Value("${mbm.agent.hostName}")
+    private String hostName;
+
+    @Value("${mbm.agent.nodeName}")
+    private String nodeName;
+
+    @Value("${mbm.library.directory}")
+    private String libraryDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
-
-    private final String nodeName;
-
-    private final String hostName;
-
-    private final String libraryDirectory;
 
     private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
@@ -52,18 +55,12 @@ public class BatchScheduler extends BatchSchedulerHelper {
      *
      * @param scheduler                     quartz scheduler.
      * @param agentSchedulerMessageProducer Kafka message producer for schedule messages.
-     * @param hostName                      host name of the machine.
-     * @param nodeName                      node name of the agent.
      * @param libraryReaderService          library downloader.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName,
-                          LibraryReaderService libraryReaderService, String libraryDirectory) {
+    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
-        this.hostName = hostName;
-        this.nodeName = nodeName;
-        this.libraryDirectory = libraryDirectory;
         this.libraryReaderService = libraryReaderService;
         logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} libDir: {2}", hostName, nodeName, libraryDirectory));
     }

@@ -11,6 +11,7 @@ import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -50,11 +51,14 @@ public class AgentStatusService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusService.class);
 
-    private final String serverName;
+    @Value("${mbm.listener.server}")
+    private String listenerName;
 
-    private final String hostName;
+    @Value("${mbm.agent.hostName}")
+    private String hostName;
 
-    private final String nodeName;
+    @Value("${mbm.agent.nodeName}")
+    private String nodeName;
 
     private final OperatingSystemMXBean osBean;
 
@@ -62,7 +66,7 @@ public class AgentStatusService {
 
     private final BatchSchedulerTask schedulerTask;
 
-    private final AgentStatusMessageDto agentStatusMessageDto;
+    private AgentStatusMessageDto agentStatusMessageDto;
 
     private final AgentStatusMessageProducer agentStatusMessageProducer;
 
@@ -73,38 +77,35 @@ public class AgentStatusService {
      *
      * @param scheduler                  job scheduler.
      * @param schedulerTask              scheduler task.
-     * @param serverName                 name of the server.
-     * @param hostName                   host name of the agent machine.
-     * @param nodeName                   node name.
      * @param agentStatus                agent status.
      * @param agentStatusMessageProducer Kafka message producer
      */
     @Autowired
-    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, String serverName, String hostName, String nodeName, AgentStatus agentStatus,
-                              AgentStatusMessageProducer agentStatusMessageProducer) {
+    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, AgentStatus agentStatus, AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
-        this.serverName = serverName;
-        this.hostName = hostName;
-        this.nodeName = nodeName;
         this.agentStatus = agentStatus;
         this.agentStatusMessageProducer = agentStatusMessageProducer;
 
         // Agent command
         this.agentStatusMessageDto = new AgentStatusMessageDto();
-        this.agentStatusMessageDto.setHostName(hostName);
-        this.agentStatusMessageDto.setNodeName(nodeName);
-        this.agentStatusMessageDto.setSender(nodeName);
-        this.agentStatusMessageDto.setPid(ProcessHandle.current().pid());
         this.osBean = System.getProperty("os.name").startsWith("Windows") ?
                 ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class) :
                 ManagementFactory.getPlatformMXBean(UnixOperatingSystemMXBean.class);
-        logger.info(format("Agent status message listener initialized - nodeName: {0} serverName: {1} pid: {2}", nodeName, serverName, ProcessHandle.current().pid()));
     }
 
     @PostConstruct
     public void initializeAgent() {
+
+        // Add additional parameters
+        this.agentStatusMessageDto.setHostName(hostName);
+        this.agentStatusMessageDto.setNodeName(nodeName);
+        this.agentStatusMessageDto.setSender(nodeName);
+        this.agentStatusMessageDto.setPid(ProcessHandle.current().pid());
+
+        // Send registration
         registerAgent();
+        logger.info(format("Agent status message listener initialized - nodeName: {0} listenerName: {1} pid: {2}", nodeName, listenerName, ProcessHandle.current().pid()));
     }
 
     @PreDestroy
@@ -211,7 +212,7 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        if (agentStatusMessageDto.getSender().equals(serverName) && agentStatusMessageDto.getNodeName().equals(nodeName)) {
+        if (agentStatusMessageDto.getSender().equals(listenerName) && agentStatusMessageDto.getNodeName().equals(nodeName)) {
             logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
                     agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
 

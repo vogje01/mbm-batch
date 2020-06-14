@@ -36,6 +36,12 @@ import static java.text.MessageFormat.format;
  */
 @Component
 public class BatchSchedulerTask extends QuartzJobBean {
+    @Value("${mbm.agent.hostName}")
+    private String hostName;
+
+    @Value("${mbm.agent.nodeName}")
+    private String nodeName;
+
     /**
      * Logger
      */
@@ -65,27 +71,15 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * Random number generator for job name.
      */
     private final Random rand = new Random(System.currentTimeMillis());
-    /**
-     * Host name
-     */
-    private final String hostName;
-    /**
-     * Node name
-     */
-    private final String nodeName;
 
     /**
      * Constructor.
      *
      * @param agentSchedulerMessageProducer Kafka scheduler message producer.
-     * @param hostName                      host name of the machine.
-     * @param nodeName                      node name.
      */
     @Autowired
-    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {
+    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
-        this.hostName = hostName;
-        this.nodeName = nodeName;
     }
 
     /**
