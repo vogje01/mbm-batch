@@ -1,8 +1,6 @@
 package com.momentum.batch.server.scheduler.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.common.util.NetworkUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,8 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 @Configuration
 @EnableCaching
 @EnableAsync
@@ -25,20 +21,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration {
 
-    @Value("${mbm.scheduler.server:#{null}}")
-    private String serverName;
-
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecutionInfo",
             "JobExecutionLog", "StepExecutionInfo", "JobSchedule"};
-
-    /*@Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-        YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new ClassPathResource("application.yml"));
-        configurer.setProperties(Objects.requireNonNull(yaml.getObject()));
-        return configurer;
-    }*/
 
     @Bean
     public CacheManager cacheManager() {
@@ -56,11 +40,4 @@ public class BatchSchedulerConfiguration {
                 .recordStats();
     }
 
-    @Bean
-    public String serverName() {
-        if (isNullOrEmpty(this.serverName)) {
-            this.serverName = NetworkUtils.getHostName();
-        }
-        return serverName;
-    }
 }

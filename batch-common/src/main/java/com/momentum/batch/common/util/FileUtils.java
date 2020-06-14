@@ -1,5 +1,7 @@
 package com.momentum.batch.common.util;
 
+import com.momentum.batch.common.domain.JobDefinitionType;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,6 +9,8 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * File utilities.
@@ -65,5 +69,33 @@ public class FileUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Extract the version string from a filename.
+     *
+     * @param fileName file name.
+     * @return version string or 0.0.0
+     */
+    public static String getVersion(String fileName) {
+        Matcher m = Pattern.compile("batch-jobs-.*-(\\d+\\.\\d+\\.\\d+)\\..*").matcher(fileName);
+        if (m.matches()) {
+            return m.group(1);
+        }
+        return "0.0.0";
+    }
+
+    /**
+     * Get job definition type from file name.
+     *
+     * @param fileName file name.
+     * @return JAR, SCRIPT or DOCKER.
+     */
+    public static JobDefinitionType getJobType(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf('.'));
+        if (extension.equals(".jar")) {
+            return JobDefinitionType.JAR;
+        }
+        return JobDefinitionType.UNKNOWN;
     }
 }

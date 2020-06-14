@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -15,6 +16,9 @@ public interface JobDefinitionRepository extends PagingAndSortingRepository<JobD
 
     @Query("select j from JobDefinition j where j.name = :name and j.active = true")
     Optional<JobDefinition> findByName(@Param("name") String name);
+
+    @Query("select j from JobDefinition j where j.fileName = :fileName")
+    List<JobDefinition> findByFileName(@Param("fileName") String fileName);
 
     @Query("select j from JobDefinition j join j.jobGroups g where g.id = :jobGroupId")
     Page<JobDefinition> findByJobGroup(@Param("jobGroupId") String jobGroupId, Pageable pageable);

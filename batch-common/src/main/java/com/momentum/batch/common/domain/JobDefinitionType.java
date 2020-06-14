@@ -6,6 +6,7 @@ package com.momentum.batch.common.domain;
  * @since 0.0.3
  */
 public enum JobDefinitionType {
+    UNKNOWN("UNKNOWN"),
     JAR("JAR"),
     DOCKER("DOCKER"),
     SCRIPT("SCRIPT"),

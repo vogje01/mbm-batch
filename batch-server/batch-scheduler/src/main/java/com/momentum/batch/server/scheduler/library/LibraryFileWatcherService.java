@@ -7,17 +7,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.boot.devtools.filewatch.ChangedFile;
+import org.springframework.boot.devtools.filewatch.ChangedFiles;
+import org.springframework.boot.devtools.filewatch.FileChangeListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
+import java.util.List;
+import java.util.Set;
 
-import static com.sun.nio.file.ExtendedWatchEventModifier.FILE_TREE;
-import static java.nio.file.StandardWatchEventKinds.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -26,7 +33,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.4
  */
 @Component
-public class LibraryFileWatcherService {
+public class LibraryFileWatcherService implements FileChangeListener {
 
     @Value("${mbm.library.directory}")
     private String libraryDirectory;
@@ -38,12 +45,8 @@ public class LibraryFileWatcherService {
     /**
      * Job definition repository.
      */
-    private final JobDefinitionRepository jobDefinitionRepository;
-
     @Autowired
-    public LibraryFileWatcherService(JobDefinitionRepository jobDefinitionRepository) {
-        this.jobDefinitionRepository = jobDefinitionRepository;
-    }
+    private JobDefinitionRepository jobDefinitionRepository;
 
     @PostConstruct
     public void initialize() {
@@ -57,21 +60,61 @@ public class LibraryFileWatcherService {
         //startWatcher();
     }
 
-    private void checkFile(Path file) {
-        String fileName = file.toString();
-        logger.debug(format("Checking file - path: {0}", file.toString()));
-        try {
-            Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(file.toFile().getName());
-            if (jobDefinitionOptional.isPresent()) {
-                JobDefinition jobDefinition = jobDefinitionOptional.get();
+    private void checkFile(Path filePath) {
+        logger.debug(format("Checking file - path: {0}", filePath.toString()));
+        String fileName = new File(String.valueOf(filePath)).getName();
+        List<JobDefinition> jobDefinitionList = jobDefinitionRepository.findByFileName(fileName);
+        if (jobDefinitionList.isEmpty()) {
+            logger.info(format("File not found in job definition repository - name: {0}", fileName));
+            createJobDefinition(fileName);
+        } else {
+            try {
 
-                // Check hash
-                String currentHash = FileUtils.getHash(fileName);
-                if (!currentHash.equals(jobDefinition.getFileHash())) {
-                    long currentFileSize = FileUtils.getSize(fileName);
-                    updateJobDefinition(jobDefinition, currentFileSize, currentHash);
-                }
+                String currentHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
+                long currentFileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
+                jobDefinitionList.forEach(jobDefinition -> {
+                    // Check hash
+                    if (!currentHash.equals(jobDefinition.getFileHash())) {
+                        updateJobDefinition(jobDefinition, currentFileSize, currentHash);
+                    }
+                });
+            } catch (IOException ex) {
+                logger.error(format("Could not get hash of file - name: {0}", filePath));
+            } catch (NoSuchAlgorithmException ex) {
+                logger.error(format("Could not get hash algorithm - name: MD5"));
             }
+        }
+    }
+
+    private void createJobDefinition(String fileName) {
+        try {
+            String currentHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
+            long currentFileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
+
+            // Create new job definition
+            String jobName = fileName.substring(0, fileName.lastIndexOf('-'));
+            JobDefinition jobDefinition = new JobDefinition();
+            jobDefinition.setFileSize(currentFileSize);
+            jobDefinition.setFileHash(currentHash);
+            jobDefinition.setName(jobName);
+            jobDefinition.setFileName(fileName);
+            jobDefinition.setType(FileUtils.getJobType(fileName));
+            jobDefinition.setCommand("Command missing");
+            jobDefinition.setWorkingDirectory("Working directory missing");
+            jobDefinition.setLoggingDirectory("Logging directory missing");
+            jobDefinition.setCompletedExitCode("0");
+            jobDefinition.setCompletedExitMessage("Completed");
+            jobDefinition.setFailedExitCode("-1");
+            jobDefinition.setFailedExitMessage("Failed");
+            jobDefinition.setLabel("New job definition: " + jobName);
+            jobDefinition.setDescription("New job definition: " + jobName);
+            jobDefinition.setJobVersion(FileUtils.getVersion(fileName));
+            jobDefinition.setActive(false);
+
+            // Save to database
+            jobDefinitionRepository.save(jobDefinition);
+            logger.info(format("Job definition created - name: {0} size: {1} hash: {2}", jobDefinition.getName(), currentFileSize, currentHash));
+
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0}", fileName));
         } catch (NoSuchAlgorithmException ex) {
@@ -86,27 +129,23 @@ public class LibraryFileWatcherService {
         logger.info(format("Job definition updated - name: {0} size: {1} hash: {2}", jobDefinition.getName(), fileSize, fileHash));
     }
 
-    @Async
-    public void startWatcher() {
-        try {
-            FileSystem fs = FileSystems.getDefault();
-            WatchService ws = fs.newWatchService();
-            Path pTemp = Paths.get(libraryDirectory);
-            pTemp.register(ws, new WatchEvent.Kind[]{ENTRY_MODIFY, ENTRY_CREATE, ENTRY_DELETE}, FILE_TREE);
-            while (true) {
-                WatchKey watchKey = ws.take();
-                for (WatchEvent<?> e : watchKey.pollEvents()) {
-                    Path filename = (Path) e.context();
-                    if (e.kind().equals(ENTRY_CREATE) || e.kind().equals(ENTRY_MODIFY)) {
-                        checkFile(filename);
-                    }
+    @Override
+    public void onChange(Set<ChangedFiles> changeSet) {
+        for (ChangedFiles cfiles : changeSet) {
+            for (ChangedFile cfile : cfiles.getFiles()) {
+                if ((cfile.getType().equals(ChangedFile.Type.MODIFY) || cfile.getType().equals(ChangedFile.Type.ADD)) && !isLocked(cfile.getFile().toPath())) {
+                    checkFile(cfile.getFile().toPath());
                 }
-                watchKey.reset();
             }
-        } catch (IOException e) {
-            logger.error(format("Could not start file watcher - directory: {0}", libraryDirectory));
-        } catch (InterruptedException e) {
-            logger.error(format("Watcher service interrupted - directory: {0}", libraryDirectory));
         }
     }
+
+    private boolean isLocked(Path path) {
+        try (FileChannel ch = FileChannel.open(path, StandardOpenOption.WRITE); FileLock lock = ch.tryLock()) {
+            return lock == null;
+        } catch (IOException e) {
+            return true;
+        }
+    }
+
 }
