@@ -1,0 +1,61 @@
+spring:
+  kafka:
+    listener:
+      concurrency: 5
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+    web-application-type: none
+  datasource:
+    url: jdbc:mysql://batchmanager:3306/batch
+    username: root
+    password: Dilbert_01
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+mpm:
+  scheduler:
+    server: batchmanager
+  listener:
+    server: batchmanager
+    
+# Kafka configuration.
+# bootstrapAddress: Kafka server URL.
+# maxRequestSize: Maximal request size (default: 4MB).
+# retentionDays: Number of days the logs are kept.
+# deletionDays: Number of days after which the logs are deleted.
+# topic: Apache Kafka topic name.
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 5
+    replicas: 1
+    level: DEBUG
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 5
+    replicas: 1
+  agentStatus:
+    offsetReset: latest
+    topic: batchAgentStatus
+    group: batchscheduler
+    partitions: 5
+    replicas: 1
+  agentScheduler:
+    offsetReset: latest
+    topic: batchAgentScheduler
+    group: batchscheduler
+    partitions: 5
+    replicas: 1
