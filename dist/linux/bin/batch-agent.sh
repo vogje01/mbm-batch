@@ -3,7 +3,7 @@
 # Momentum Batch Management agent startup script.
 #
 # Usage:
-#     batch-agent.sh [start|stop|restart] <nodeName>
+#     batch-agent.sh start|stop|restart <nodeName>
 #
 # nodeName can be anything, for instance 01, 02, prod etc. The node name is only used internally
 # to route messages and commands between the server and the agents.
@@ -83,5 +83,9 @@ restart)
   else
     echo "$SERVICE_NAME is not running ..."
   fi
+  ;;
+*)
+  echo "Usage: "
+  echo "   batch-agent.sh start|stop|restart <nodeName>"
   ;;
 esac

@@ -3,7 +3,7 @@
 # Momentum Batch Management manager startup script.
 #
 # Usage:
-#     batch-manager.sh [start|stop|restart]
+#     batch-manager.sh start|stop|restart
 #
 
 # Module
@@ -13,7 +13,7 @@ MODULE=batch-manager
 VERSION=0.0.4
 
 # Service name
-SERVICE_NAME=batch-listener
+SERVICE_NAME=$MODULE
 PID_PATH_NAME=/tmp/$MODULE-pid
 
 # Base directory
@@ -28,10 +28,10 @@ ETC_DIR=$BASEDIR/etc
 EXECUTABLE=$MODULE-$VERSION.jar
 
 # Configuration
-CONFIGURATION=$ETC_DIR/batch-manager.yml
+CONFIGURATION=$ETC_DIR/$MODULE.yml
 
 # Logging configuration
-LOG_CONFIGURATION=$ETC_DIR/batch-manager-log.yml
+LOG_CONFIGURATION=$ETC_DIR/$MODULE-log.yml
 
 # Which java to use
 if [ -z "$JAVA_HOME" ]; then
@@ -80,5 +80,9 @@ restart)
   else
     echo "$SERVICE_NAME is not running ..."
   fi
+  ;;
+*)
+  echo "Usage: "
+  echo "   batch-manager.sh start|stop|restart"
   ;;
 esac

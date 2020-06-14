@@ -21,6 +21,9 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaConfiguration {
 
+    @Value("${mbm.scheduler.server}")
+    private String serverName;
+
     @Value(value = "${kafka.agentScheduler.topic}")
     private String topic;
 
@@ -29,6 +32,11 @@ public class AgentSchedulerMessageProducerConfiguration extends AbstractKafkaCon
 
     @Value(value = "${kafka.agentScheduler.replicas}")
     private short replicas;
+
+    @Bean
+    public String serverName() {
+        return serverName;
+    }
 
     @Bean
     public ProducerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageProducerFactory() {

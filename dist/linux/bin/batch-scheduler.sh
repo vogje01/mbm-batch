@@ -3,7 +3,7 @@
 # Momentum Batch Management scheduler startup script.
 #
 # Usage:
-#     batch-scheduler.sh [start|stop|restart]
+#     batch-scheduler.sh start|stop|restart
 #
 
 # Module
@@ -81,4 +81,7 @@ restart)
     echo "$SERVICE_NAME is not running ..."
   fi
   ;;
+*)
+  echo "Usage: "
+  echo "   batch-scheduler.sh start|stop|restart"
 esac

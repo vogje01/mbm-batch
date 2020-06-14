@@ -3,7 +3,7 @@
 # Momentum Batch Management listener startup script.
 #
 # Usage:
-#     batch-listener.sh [start|stop|restart]
+#     batch-listener.sh start|stop|restart
 #
 
 # Module
@@ -80,5 +80,9 @@ restart)
   else
     echo "$SERVICE_NAME is not running ..."
   fi
+  ;;
+*)
+  echo "Usage: "
+  echo "   batch-listener.sh start|stop|restart"
   ;;
 esac
