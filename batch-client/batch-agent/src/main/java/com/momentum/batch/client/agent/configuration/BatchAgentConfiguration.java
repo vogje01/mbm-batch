@@ -17,6 +17,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
+    @Value("${mbm.library.directory}")
+    private String libraryDirectory;
+
     @Value("${mbm.agent.hostName:#{null}}")
     private String hostName;
 
@@ -44,5 +47,10 @@ public class BatchAgentConfiguration {
             this.nodeName = NetworkUtils.getHostName();
         }
         return nodeName;
+    }
+
+    @Bean
+    public String libraryDirectory() {
+        return libraryDirectory;
     }
 }

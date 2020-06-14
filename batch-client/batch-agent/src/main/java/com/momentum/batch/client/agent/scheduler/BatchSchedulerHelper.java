@@ -146,8 +146,9 @@ public abstract class BatchSchedulerHelper {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    JobDetail buildJobDetail(String hostName, String nodeName, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
+    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
+                .libraryDirectory(libraryDirectory)
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
                 .jobName(jobDefinition.getName())
@@ -173,8 +174,9 @@ public abstract class BatchSchedulerHelper {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    JobDetail buildJobDetail(String hostName, String nodeName, JobDefinitionDto jobDefinition) {
+    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobDefinitionDto jobDefinition) {
         return new JobDetailBuilder()
+                .libraryDirectory(libraryDirectory)
                 .jobName(jobDefinition.getName())
                 .jobGroupName(jobDefinition.getMainGroup())
                 .jobType(jobDefinition.getType())

@@ -31,11 +31,14 @@ import static java.text.MessageFormat.format;
 @Service
 public class BatchScheduler extends BatchSchedulerHelper {
 
+
     private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 
     private final String nodeName;
 
     private final String hostName;
+
+    private final String libraryDirectory;
 
     private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
@@ -55,13 +58,14 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     @Autowired
     public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName,
-                          LibraryReaderService libraryReaderService) {
+                          LibraryReaderService libraryReaderService, String libraryDirectory) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.hostName = hostName;
         this.nodeName = nodeName;
+        this.libraryDirectory = libraryDirectory;
         this.libraryReaderService = libraryReaderService;
-        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1}", hostName, nodeName));
+        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} libDir: {2}", hostName, nodeName, libraryDirectory));
     }
 
     /**
@@ -139,7 +143,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
         // Check existence
         if (isScheduled(jobKey)) {
             logger.warn(format("Job already register in scheduler - jobGroup: {0} jobName: {1}",
-                    jobDefinition.getJobGroupName(), jobDefinition.getName()));
+                    jobDefinition.getMainGroup(), jobDefinition.getName()));
             return;
         }
 
@@ -149,15 +153,15 @@ public class BatchScheduler extends BatchSchedulerHelper {
             logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
-            JobDetail jobDetail = buildJobDetail(hostName, nodeName, jobSchedule, jobDefinition);
+            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
             try {
                 scheduler.scheduleJob(jobDetail, trigger);
                 sendJobScheduled(jobSchedule);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
-                        jobDefinition.getJobGroupName(), jobDefinition.getName(), trigger.getNextFireTime()));
+                        jobDefinition.getMainGroup(), jobDefinition.getName(), trigger.getNextFireTime()));
             } catch (SchedulerException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                        jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
+                        jobDefinition.getMainGroup(), jobDefinition.getName(), e.getMessage()), e);
             }
         } else {
             logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
@@ -222,7 +226,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroupName());
-        JobDetail jobDetail = buildJobDetail(hostName, nodeName, jobDefinition);
+        JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobDefinition);
         try {
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);

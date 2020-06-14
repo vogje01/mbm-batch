@@ -3,7 +3,6 @@ package com.momentum.batch.client.agent.scheduler;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.util.List;
@@ -19,8 +18,6 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
  */
 public class JobDetailBuilder {
 
-	@Value("${mbm.library.directory}")
-	private String libraryDirectory;
 	/**
 	 * Name
 	 */
@@ -34,6 +31,10 @@ public class JobDetailBuilder {
 	 */
 	private String description;
 	/**
+	 * Library directory
+	 */
+	private String libraryDirectory;
+	/**
 	 * Job data map
 	 */
 	private final JobDataMap jobDataMap;
@@ -42,6 +43,11 @@ public class JobDetailBuilder {
 		jobDataMap = new JobDataMap();
 		group = JOB_GROUP;
 		description = JOB_DESCRIPTION;
+	}
+
+	public JobDetailBuilder libraryDirectory(String libraryDirectory) {
+		this.libraryDirectory = libraryDirectory;
+		return this;
 	}
 
 	public JobDetailBuilder jobName(String name) {
