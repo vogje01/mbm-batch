@@ -175,11 +175,9 @@ class JobDefinitionList extends React.Component {
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
-                                        <SimpleItem dataField="failedExitCode"/>
-                                        <SimpleItem dataField="failedExitMessage"/>
-                                        <SimpleItem dataField="completedExitCode"/>
-                                        <SimpleItem dataField="completedExitMessage"/>
-                                        <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 100}}/>
+                                        <SimpleItem dataField="fileSize" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="fileHash" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 90}}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Command"}>
                                         <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
@@ -202,6 +200,10 @@ class JobDefinitionList extends React.Component {
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Logging directory must be less than 256 characters."/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="failedExitCode"/>
+                                        <SimpleItem dataField="failedExitMessage"/>
+                                        <SimpleItem dataField="completedExitCode"/>
+                                        <SimpleItem dataField="completedExitMessage"/>
                                     </GroupItem>
                                     <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
                                         <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
@@ -332,6 +334,14 @@ class JobDefinitionList extends React.Component {
                                 dataField={'modifiedAt'}
                                 caption={'Modified At'}
                                 dataType={'datetime'}
+                                visible={false}/>
+                            <Column
+                                dataField={'fileSize'}
+                                dataType={'number'}
+                                visible={false}/>
+                            <Column
+                                dataField={'fileHash'}
+                                dataType={'string'}
                                 visible={false}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
