@@ -41,7 +41,7 @@ fi
 JAVA_ARGUMENTS="-Dmanager.loggingDirectory=$LOG_DIR -Dlog4j2.configurationFile=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
 
 cd $BASEDIR
-case $1 in 
+case $1 in
     start)
       echo "Starting $SERVICE_NAME ..."
       if [ ! -f $PID_PATH_NAME ]; then
@@ -63,7 +63,7 @@ case $1 in
         echo "$SERVICE_NAME is not running ..."
 	    fi
 	    ;;
-    restart)  
+    restart)
 	    if [ -f $PID_PATH_NAME ]; then
 	      PID=$(cat $PID_PATH_NAME);
 	      echo "$SERVICE_NAME stopping ...";
