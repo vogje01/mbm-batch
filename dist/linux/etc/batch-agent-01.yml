@@ -1,3 +1,10 @@
+#
+# MPM agent configuration file
+#
+
+#
+# Spring configuration
+#
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -37,7 +44,7 @@ mbm:
     server: batchmanager
   scheduler:
     server: batchmanager
-  agent:  
+  agent:
     hostName: batchmanager
     nodeName: batchagent01
     pingInterval: 300000
@@ -45,13 +52,39 @@ mbm:
     docker:
       network: docker_default
       hostname: hostname
-    
+
+#
 # Kafka configuration.
-# bootstrapAddress: Kafka server URL.
-# maxRequestSize: Maximal request size (default: 4MB).
-# retentionDays: Number of days the logs are kept.
-# deletionDays: Number of days after which the logs are deleted.
-# topic: Apache Kafka topic name.
+#   bootstrapAddress: Kafka server URL.
+#   maxRequestSize: Maximal request size (default: 4MB).
+#   retentionDays: Number of days the logs are kept.
+#   deletionDays: Number of days after which the logs are deleted.
+#   topic: Apache Kafka topic name.
+#   agentStatus: agent status message queue
+#     offsetReset: offset for the message queue
+#     topic: agent status message topic
+#     group: agent status consumer group
+#     partitions: agent status partitions
+#     replicas: agent status replicas
+#   agentScheduler: scheduler message queue
+#     offsetReset: offset for the message queue
+#     topic: scheduler message topic
+#     group: scheduler consumer group
+#     partitions: scheduler partitions
+#     replicas: scheduler replicas
+#   jobStatus: job status message queue
+#     offsetReset: offset for the message queue
+#     topic: job status message topic
+#     group: job status consumer group
+#     partitions: job status partitions
+#     replicas: job status replicas
+#   jobLogging: job logging message queue
+#     offsetReset: offset for the message queue
+#     topic: job logging message topic
+#     group: job logging consumer group
+#     partitions: job logging partitions
+#     replicas: job logging replicas
+#
 kafka:
   bootstrapAddress: localhost:9092
   maxRequestSize: 4194304

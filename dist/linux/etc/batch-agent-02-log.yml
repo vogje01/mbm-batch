@@ -1,3 +1,6 @@
+#
+# MBM log4j2 configuration
+#
 Configuration:
   name: Default
   Appenders:
