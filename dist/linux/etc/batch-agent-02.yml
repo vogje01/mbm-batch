@@ -1,0 +1,71 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+    web-application-type: none
+  quartz:
+    job-store-type: memory
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+  kafka:
+    listener:
+      concurrency: 5
+
+# Agent configuration
+# pingInterval: ping interval in ms.
+mbm:
+  library:
+    directory: /opt/batch/agent/lib
+    server: localhost
+    port: 8090
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
+  agent:  
+    hostName: batchmanager
+    nodeName: batchagent02
+    pingInterval: 300000
+    performanceInterval: 60000
+    docker:
+      network: docker_default
+      hostname: hostname
+
+# Kafka configuration.
+# bootstrapAddress: Kafka server URL.
+# maxRequestSize: Maximal request size (default: 4MB).
+# retentionDays: Number of days the logs are kept.
+# deletionDays: Number of days after which the logs are deleted.
+# topic: Apache Kafka topic name.
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  agentStatus:
+    offsetReset: latest
+    topic: batchAgentStatus
+    group: batchagent02
+    partitions: 5
+    replicas: 1
+  agentScheduler:
+    offsetReset: latest
+    topic: batchAgentScheduler
+    group: batchagent02
+    partitions: 5
+    replicas: 1
+  jobStatus:
+    offsetReset: latest
+    topic: batchServerCommand
+    group: batchmanager
+    partitions: 5
+    replicas: 1
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 5
+    replicas: 1
+    level: DEBUG
