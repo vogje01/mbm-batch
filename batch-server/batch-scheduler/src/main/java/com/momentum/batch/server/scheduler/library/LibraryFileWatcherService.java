@@ -35,10 +35,10 @@ import static java.text.MessageFormat.format;
 @Component
 public class LibraryFileWatcherService implements FileChangeListener {
 
-    @Value("${mbm.dropins.directory}")
+    @Value("${mbm.library.dropins}")
     private String dropinsDirectory;
 
-    @Value("${mbm.jobs.directory}")
+    @Value("${mbm.library.jobs}")
     private String jobsDirectory;
 
     /**
