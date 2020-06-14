@@ -26,6 +26,8 @@ spring:
 #     server: name of the scheduler host
 #
 mpm:
+  library:
+    directory: /opt/batch/server/lib
   scheduler:
     server: batchmanager
   listener:

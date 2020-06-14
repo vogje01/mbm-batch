@@ -64,8 +64,6 @@ public class LibraryFileWatcherService {
             if (jobDefinitionOptional.isPresent()) {
                 JobDefinition jobDefinition = jobDefinitionOptional.get();
 
-                // Check file size
-
                 // Check hash
                 String currentHash = FileUtils.getHash(fileName);
                 if (!currentHash.equals(jobDefinition.getFileHash())) {
@@ -84,7 +82,7 @@ public class LibraryFileWatcherService {
         jobDefinition.setFileSize(fileSize);
         jobDefinition.setFileHash(fileHash);
         jobDefinitionRepository.save(jobDefinition);
-        logger.info(format("Job definition updated - name: {0}", jobDefinition.getName()));
+        logger.info(format("Job definition updated - name: {0} size: {1} hash: {2}", jobDefinition.getName(), fileSize, fileHash));
     }
 
     private void startWatcher() {
