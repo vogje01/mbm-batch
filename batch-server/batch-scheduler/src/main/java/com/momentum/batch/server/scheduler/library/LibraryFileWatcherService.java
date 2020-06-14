@@ -68,7 +68,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
 
     private void checkFile(Path filePath) {
         logger.debug(format("Checking file - path: {0}", filePath.toString()));
-        String fileName = new File(String.valueOf(filePath)).getName();
+        String fileName = filePath.toFile().getName();
         List<JobDefinition> jobDefinitionList = jobDefinitionRepository.findByFileName(fileName);
         if (jobDefinitionList.isEmpty()) {
             logger.info(format("File not found in job definition repository - name: {0}", fileName));
@@ -76,8 +76,8 @@ public class LibraryFileWatcherService implements FileChangeListener {
         } else {
             try {
 
-                String currentHash = FileUtils.getHash(dropinsDirectory + File.separator + fileName);
-                long currentFileSize = FileUtils.getSize(dropinsDirectory + File.separator + fileName);
+                String currentHash = FileUtils.getHash(filePath.toString());
+                long currentFileSize = FileUtils.getSize(filePath.toString());
                 jobDefinitionList.forEach(jobDefinition -> {
                     // Check hash
                     if (!currentHash.equals(jobDefinition.getFileHash())) {
@@ -85,9 +85,9 @@ public class LibraryFileWatcherService implements FileChangeListener {
                     }
                 });
             } catch (IOException ex) {
-                logger.error(format("Could not get hash of file - name: {0}", filePath));
+                logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
             } catch (NoSuchAlgorithmException ex) {
-                logger.error(format("Could not get hash algorithm - name: MD5"));
+                logger.error(format("Could not get hash algorithm - name: MD5 error: {0}", ex.getMessage()));
             }
         }
     }

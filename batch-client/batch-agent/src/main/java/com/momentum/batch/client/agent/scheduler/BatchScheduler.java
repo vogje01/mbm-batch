@@ -62,7 +62,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.libraryReaderService = libraryReaderService;
-        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} libDir: {2}", hostName, nodeName, libraryDirectory));
     }
 
     /**
@@ -71,6 +70,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     @PostConstruct
     public void initializeScheduler() {
         startScheduler();
+        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} libDir: {2}", hostName, nodeName, libraryDirectory));
     }
 
     /**
