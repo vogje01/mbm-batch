@@ -84,4 +84,5 @@ restart)
 *)
   echo "Usage: "
   echo "   batch-scheduler.sh start|stop|restart"
+  ;;
 esac
