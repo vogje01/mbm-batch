@@ -1,7 +1,7 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;

@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.configuration;
 
-import com.momentum.batch.common.domain.AgentStatus;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;

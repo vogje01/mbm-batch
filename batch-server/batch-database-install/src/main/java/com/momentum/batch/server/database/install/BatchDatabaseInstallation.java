@@ -59,6 +59,9 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         }
 
         switch (command) {
+            case "help":
+                usage();
+                break;
             case "drop":
                 BatchDatabaseTasks.dropDatabase(databaseUrl, user, password);
                 break;
@@ -78,6 +81,7 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         System.out.println(format("MBM database installation\nUsage:"));
         System.out.println(format("\tBatchDatabaseInstallation command [options]"));
         System.out.println(format("\tCommands:"));
+        System.out.println(format("\t\thelp: shows the usage screen"));
         System.out.println(format("\t\tdrop: drop the current database"));
         System.out.println(format("\t\tcreate: create batch database"));
         System.out.println(format("\t\tinstall: install batch database schema"));
@@ -87,7 +91,6 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         System.out.println(format("\t\t-d <url>: database url"));
         System.out.println(format("\t\t-u user: database user"));
         System.out.println(format("\t\t-p password: database password"));
-        System.out.println(format("\t\t-h: this usage screen"));
         System.exit(0);
     }
 }

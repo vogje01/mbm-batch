@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.writer;
 
-import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.server.database.domain.PrimaryKeyIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;

@@ -1,11 +1,11 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
-import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
-import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
+import com.momentum.batch.server.database.util.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.server.database.util.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.server.database.util.producer.AgentSchedulerMessageProducer;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

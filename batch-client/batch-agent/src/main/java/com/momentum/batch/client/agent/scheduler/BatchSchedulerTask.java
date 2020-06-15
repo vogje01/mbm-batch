@@ -1,9 +1,9 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
-import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
-import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
-import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
+import com.momentum.batch.server.database.util.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.server.database.util.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.server.database.util.producer.AgentSchedulerMessageProducer;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static com.momentum.batch.common.util.ExecutionParameter.*;
+import static com.momentum.batch.server.database.util.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
@@ -36,6 +36,7 @@ import static java.text.MessageFormat.format;
  */
 @Component
 public class BatchSchedulerTask extends QuartzJobBean {
+
     @Value("${mbm.agent.hostName}")
     private String hostName;
 

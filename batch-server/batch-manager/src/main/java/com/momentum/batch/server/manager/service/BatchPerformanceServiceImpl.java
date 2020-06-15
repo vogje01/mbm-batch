@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.repository.BatchPerformanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;

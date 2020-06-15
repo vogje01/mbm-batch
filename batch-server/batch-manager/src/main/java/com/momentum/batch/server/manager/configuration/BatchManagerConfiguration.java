@@ -3,7 +3,7 @@ package com.momentum.batch.server.manager.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.common.util.NetworkUtils;
+import com.momentum.batch.server.database.util.util.NetworkUtils;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,12 +17,15 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -33,6 +36,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableKafka
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableTransactionManagement
+//@EnableSpringDataWebSupport
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan("com.momentum.batch.server.database.domain")
 public class BatchManagerConfiguration implements WebMvcConfigurer {
@@ -78,5 +82,10 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
             this.serverName = NetworkUtils.getHostName();
         }
         return serverName;
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
     }
 }

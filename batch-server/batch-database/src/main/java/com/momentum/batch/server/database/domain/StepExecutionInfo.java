@@ -3,8 +3,7 @@ package com.momentum.batch.server.database.domain;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
-import com.momentum.batch.common.domain.dto.StepExecutionDto;
+import com.momentum.batch.server.database.domain.dto.StepExecutionDto;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
