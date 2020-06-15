@@ -7,14 +7,29 @@ spring:
       base-path: /api
   jpa:
     show-sql: false
+    generate-ddl: false
+    properties:
+      hibernate:
+        dialect: com.momentum.batch.server.database.util.ImprovedH2Dialect
   quartz:
     job-store-type: memory
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
 
-jwt:
-  secret: javainuse
+mbm:
+  library:
+    jobs: jobs
+    dropins: dropins
+  scheduler:
+    server: localhost
+  listener:
+    server: localhost
+  server:
+    host: localhost
+    port: 8090
+    jwt:
+      secret: secret
 
 ldap:
   server: ldapd-rw.hlcl.com
@@ -38,5 +53,12 @@ kafka:
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
+    group: agentScheduler
+    partitions: 5
+    replicas: 1
+  agentStatus:
+    offsetReset: latest
+    topic: batchAgentStatus
+    group: agentStatus
     partitions: 5
     replicas: 1

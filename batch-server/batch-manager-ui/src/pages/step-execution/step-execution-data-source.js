@@ -1,18 +1,50 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {mergeParams} from "../../utils/param-util";
-import {deleteItem, getList} from "../../utils/server-connection";
+import {deleteItem, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
+
+// Special version of the getParams function, as the job name is somehow hidden
+// inside the jobExecutionInfo.jobInstance.
+//
+const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
+    let params = '?';
+
+    if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
+        params += 'page=' + loadOptions.skip / loadOptions.take;
+        params += '&size=' + loadOptions.take;
+    } else {
+        params += 'page=0';
+        params += '&size=-1';
+    }
+
+    if (loadOptions.sort) {
+        loadOptions.sort.forEach((s) => {
+            if (s.selector === 'jobName') {
+                s.selector = 'jobExecutionInfo.jobExecutionInstance.jobName';
+            }
+            params += '&sort=' + s.selector + (s.desc ? ',desc' : ',asc');
+        });
+    } else {
+        params += '&sort=' + defaultSortBy + ',' + defaultSortDir;
+    }
+    return params;
+};
 
 export const StepExecutionDataSource = (jobExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = process.env.REACT_APP_API_URL + 'stepexecutions';
-                if (jobExecutionInfo !== undefined) {
-                    url = jobExecutionInfo._links.byJobId.href;
-                }
-                url = mergeParams(loadOptions, url, 'startTime', 'desc');
-                return getList(url, 'stepExecutionDtoes');
+                StartTimer();
+                let url = jobExecutionInfo !== undefined ? jobExecutionInfo._links.byJobId.href : process.env.REACT_APP_API_URL + 'stepexecutions';
+                url += getParams(loadOptions, 'startTime', 'desc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then(data => {
+                        return handleData(data, 'stepExecutionDtoes')
+                    })
+                    .finally(() => EndTimer());
             },
             remove: function (key) {
                 let url = key._links.delete.href;
@@ -26,8 +58,17 @@ export const StepExecutionLogDataSource = (stepExecutionInfo) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = mergeParams(loadOptions, stepExecutionInfo._links.logs.href, 'timestamp', 'desc');
-                return getList(url, 'jobExecutionLogDtoes')
+                StartTimer();
+                let url = stepExecutionInfo._links.logs.href + getParams(loadOptions, 'timestamp', 'desc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of step execution logs');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobExecutionLogDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             }
         })
     });

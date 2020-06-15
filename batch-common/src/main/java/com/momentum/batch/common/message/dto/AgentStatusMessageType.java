@@ -4,13 +4,13 @@ package com.momentum.batch.common.message.dto;
  * Agent command types.
  * <p>
  * The following agent commands are supported:
- *     <ul>
- *         <li>AGENT_REGISTER: an agent want to register with the server.</li>
- *         <li>AGENT_PING: a ping from the agent send to the serer.</li>
- *         <li>AGENT_PERFORMANCE: agent performance data send to the server.</li>
- *         <li>AGENT_STATUS: agent status, like started, stopped, paused etc..</li>
- *     </ul>
  * </p>
+ * <ul>
+ *     <li>AGENT_REGISTER: an agent want to register with the server.</li>
+ *     <li>AGENT_PING: a ping from the agent send to the serer.</li>
+ *     <li>AGENT_PERFORMANCE: agent performance data send to the server.</li>
+ *     <li>AGENT_STATUS: agent status, like started, stopped, paused etc..</li>
+ * </ul>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.3

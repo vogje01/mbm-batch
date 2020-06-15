@@ -1,13 +1,13 @@
 package com.momentum.batch.server.manager.service;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.common.domain.dto.ServerCommandDto;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -69,7 +68,7 @@ public class JobExecutionControllerCacheTest {
 
         @Bean
         public JobExecutionService jobExecutionServiceForTest() {
-            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobExecutionInstanceRepository(), stepExecutionInfoRepository(), serverCommandProducer(), modelConverter());
+            return new JobExecutionServiceImpl(jobExecutionInfoRepository(), jobExecutionInstanceRepository(), stepExecutionInfoRepository());
         }
 
         @Bean
@@ -106,9 +105,6 @@ public class JobExecutionControllerCacheTest {
 
     private static final ModelConverter mockModelConverter = mock(ModelConverter.class);
 
-    @SuppressWarnings("unchecked")
-    private static final KafkaTemplate<String, ServerCommandDto> mockTemplate = mock(KafkaTemplate.class);
-
     private final JobExecutionInfo jobExecutionInfo1 = new JobExecutionInfo();
 
     private final JobExecutionInfo jobExecutionInfo2 = new JobExecutionInfo();
@@ -126,7 +122,7 @@ public class JobExecutionControllerCacheTest {
     }
 
     @Test
-    public void whenFindByJobExecutionId_thenCachedValueIsReturned() {
+    public void whenFindByJobExecutionId_thenCachedValueIsReturned() throws ResourceNotFoundException {
 
         // First invocation should put entity into cache
         service.getJobExecutionById(jobExecutionInfo1.getId());
@@ -158,7 +154,7 @@ public class JobExecutionControllerCacheTest {
     }
 
     @Test
-    public void whenDeleteJobExecution_thenCachedValueShouldBeEvicted() {
+    public void whenDeleteJobExecution_thenCachedValueShouldBeEvicted() throws ResourceNotFoundException {
 
         // Delete job execution and check cache.
         service.deleteJobExecutionInfo(jobExecutionInfo1.getId());

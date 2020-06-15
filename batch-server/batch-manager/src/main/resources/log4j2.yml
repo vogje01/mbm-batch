@@ -9,7 +9,7 @@ Configutation:
       name: Console_Appender
       target: SYSTEM_OUT
       PatternLayout:
-        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1}:%L - %msg%n"
     RollingFile:
       name: File_Appender
       fileName: "${sys:manager.loggingDirectory:-./log}/batch-manager.log"
@@ -20,7 +20,7 @@ Configutation:
       DefaultRollOverStrategy:
         max: 5
       PatternLayout:
-        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1} - %msg%n"
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1}:%L - %msg%n"
   Loggers:
     Root:
       level: warn
@@ -29,6 +29,12 @@ Configutation:
     Logger:
       - name: com.momentum.batch.server.manager
         level: debug
+        additivity: false
+        AppenderRef:
+          - ref: File_Appender
+          - ref: Console_Appender
+      - name: org.hibernate
+        level: error
         additivity: false
         AppenderRef:
           - ref: File_Appender

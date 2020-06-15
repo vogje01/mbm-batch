@@ -59,21 +59,6 @@ public class JobScheduleServiceImpl implements JobScheduleService {
     }
 
     @Override
-    public long countAll() {
-        return jobScheduleRepository.count();
-    }
-
-    @Override
-    public long countAgents(String jobScheduleId) {
-        return jobScheduleRepository.countAgents(jobScheduleId);
-    }
-
-    @Override
-    public long countAgentGroups(String jobScheduleId) {
-        return jobScheduleRepository.countAgentGroups(jobScheduleId);
-    }
-
-    @Override
     public Page<JobSchedule> findAll(Pageable pageable) {
         return jobScheduleRepository.findAll(pageable);
     }
@@ -174,7 +159,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobScheduleDto addAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
+    public JobSchedule addAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
 
         Optional<Agent> agentOptional = agentRepository.findById(agentId);
         if (agentOptional.isPresent()) {
@@ -200,7 +185,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
 
-                return jobScheduleDto;
+                return jobSchedule;
             } else {
                 throw new ResourceNotFoundException();
             }
@@ -210,7 +195,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobScheduleDto removeAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
+    public JobSchedule removeAgent(String jobScheduleId, String agentId) throws ResourceNotFoundException {
 
         Optional<Agent> agentOptional = agentRepository.findById(agentId);
         if (agentOptional.isPresent()) {
@@ -235,8 +220,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-
-                return jobScheduleDto;
+                return jobSchedule;
             } else {
                 throw new ResourceNotFoundException();
             }
@@ -256,7 +240,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobScheduleDto addAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
+    public JobSchedule addAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
 
         Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentGroupOptional.isPresent()) {
@@ -283,8 +267,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
                 });
-
-                return jobScheduleDto;
+                return jobSchedule;
             } else {
                 throw new ResourceNotFoundException();
             }
@@ -294,7 +277,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     @Override
     @CachePut(cacheNames = "JobSchedule", key = "#jobScheduleId")
-    public JobScheduleDto removeAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
+    public JobSchedule removeAgentGroup(String jobScheduleId, String agentGroupId) throws ResourceNotFoundException {
 
         Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentGroupOptional.isPresent()) {
@@ -321,9 +304,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
                 });
-
-
-                return jobScheduleDto;
+                return jobSchedule;
             } else {
                 throw new ResourceNotFoundException();
             }

@@ -3,6 +3,8 @@ package com.momentum.batch.server.manager.service;
 import com.momentum.batch.server.database.domain.JobExecutionParam;
 import com.momentum.batch.server.database.repository.JobExecutionParamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,22 +22,25 @@ public class JobExecutionParamServiceImpl implements JobExecutionParamService {
     }
 
     @Override
-    public Page<JobExecutionParam> byJobId(String jobId, Pageable pageable) {
+    public Page<JobExecutionParam> findAll(Pageable pageable) {
+        return jobExecutionParamRepository.findAll(pageable);
+    }
+
+    @Override
+    @CachePut(cacheNames = "JobExecutionParam", key = "#jobId")
+    public Page<JobExecutionParam> findByJobId(String jobId, Pageable pageable) {
         return jobExecutionParamRepository.findByJobId(jobId, pageable);
     }
 
     @Override
-    public Optional<JobExecutionParam> byId(String paramId) {
+    @CachePut(cacheNames = "JobExecutionParam", key = "#paramId")
+    public Optional<JobExecutionParam> findById(String paramId) {
         return jobExecutionParamRepository.findById(paramId);
     }
 
     @Override
-    public void deleteById(String logId) {
-        jobExecutionParamRepository.deleteById(logId);
-    }
-
-    @Override
-    public long countByJobExecutionId(String jobExecutionId) {
-        return jobExecutionParamRepository.countByJobExecutionId(jobExecutionId);
+    @CacheEvict(cacheNames = "JobDefinition", key = "#paramId")
+    public void deleteById(String paramId) {
+        jobExecutionParamRepository.deleteById(paramId);
     }
 }

@@ -3,6 +3,7 @@ package com.momentum.batch.server.manager.service;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +44,7 @@ public class JobDefinitionControllerCacheTest {
 
         @Bean
         public JobDefinitionService jobDefinitionService() {
-            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null);
+            return new JobDefinitionServiceImpl(jobDefinitionRepository(), null, null, null, null);
         }
 
         @Bean
@@ -90,29 +91,29 @@ public class JobDefinitionControllerCacheTest {
     }
 
     @Test
-    public void whenFindByJObDefinitionId_thenCachedValueIsReturned() {
+    public void whenFindByJObDefinitionId_thenCachedValueIsReturned() throws ResourceNotFoundException {
 
         // First invocation should put entity into cache
-        service.getJobDefinition(jobDefinition1.getId());
-        JobDefinition result = service.getJobDefinition(jobDefinition1.getId());
+        service.findById(jobDefinition1.getId());
+        JobDefinition result = service.findById(jobDefinition1.getId());
         assertThat(result).isEqualTo(jobDefinition1);
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition1.getId());
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition1.getId())).isNotNull();
 
         // Second invocation should be return entity from cache
-        result = service.getJobDefinition(jobDefinition1.getId());
+        result = service.findById(jobDefinition1.getId());
         assertThat(result).isEqualTo(jobDefinition1);
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition1.getId());
 
         // Second invocation should be return entity from cache
-        result = service.getJobDefinition(jobDefinition2.getId());
+        result = service.findById(jobDefinition2.getId());
         verify(mockJobDefinitionRepository, times(1)).findById(jobDefinition2.getId());
         assertThat(result).isEqualTo(jobDefinition2);
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition1.getId())).isNotNull();
         assertThat(Objects.requireNonNull(manager.getCache("JobDefinition")).get(jobDefinition2.getId())).isNotNull();
 
         // List invocation
-        Page<JobDefinition> listResult = service.allJobDefinitions(PageRequest.of(0, 10));
+        Page<JobDefinition> listResult = service.findAll(PageRequest.of(0, 10));
         verify(mockJobDefinitionRepository, times(1)).findAll(PageRequest.of(0, 10));
         assertThat(listResult.getTotalElements()).isEqualTo(2L);
         assertThat(listResult.getContent().get(0)).isEqualTo(jobDefinition1);

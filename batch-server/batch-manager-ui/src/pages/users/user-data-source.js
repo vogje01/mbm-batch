@@ -1,14 +1,22 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const UserDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'userId', 'asc');
-                return listItems('users' + params, 'userDtoes');
+                let url = process.env.REACT_APP_API_URL + 'users' + getParams(loadOptions, 'userId', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of users');
+                    })
+                    .then(data => {
+                        return handleData(data, 'userDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (user) {
                 let url = process.env.REACT_APP_API_URL + 'users/insert';
@@ -40,17 +48,41 @@ export const UserUsergroupDataSource = (user) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (user._links !== undefined) {
-                    let url = user._links.userGroups.href;
-                    url = mergeParams(loadOptions, url, 'name', 'asc');
-                    return getList(url, 'userGroupDtoes');
-                }
+                let url = user._links.userGroups.href + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of user groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'userGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (userGroup) {
                 return getItem(user._links.addUserGroup.href + userGroup.id);
             },
             remove: function (userGroup) {
                 return getItem(user._links.removeUserGroup.href + userGroup.id);
+            }
+        })
+    });
+};
+
+export const UserRestrictedDataSource = (userGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'users/restricted/' + userGroup.id + getParams(loadOptions, 'userId', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then((data) => {
+                        return handleData(data, 'userDtoes')
+                    })
+                    .finally(() => EndTimer());
             }
         })
     });

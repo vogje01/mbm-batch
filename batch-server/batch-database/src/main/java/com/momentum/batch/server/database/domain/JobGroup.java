@@ -10,6 +10,8 @@ import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Job group entity.
@@ -49,15 +51,15 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
     @Column(name = "DESCRIPTION")
     private String description;
     /**
-     * Deleted flag
+     * Active flag
      */
     @Column(name = "ACTIVE")
-    private boolean active = false;
+    private Boolean active = false;
     /**
      * Link to the corresponding job definition.
      */
-    //@ManyToMany(fetch = FetchType.LAZY, mappedBy = "jobGroups")
-    //private List<JobDefinition> jobDefinitions = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "jobGroups")
+    private final List<JobDefinition> jobDefinitions = new ArrayList<>();
 
     /**
      * Constructor
@@ -105,20 +107,20 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
         this.description = description;
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean deleted) {
+    public void setActive(Boolean deleted) {
         this.active = deleted;
     }
 
-    /*public List<JobDefinition> getJobDefinitions() {
+    public List<JobDefinition> getJobDefinitions() {
         return jobDefinitions;
     }
 
     public void setJobDefinitions(List<JobDefinition> jobDefinitions) {
-        this.jobDefinitions = jobDefinitions;
+        jobDefinitions.forEach(this::addJobDefinition);
     }
 
     public void addJobDefinition(JobDefinition jobDefinition) {
@@ -129,7 +131,7 @@ public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
 
     public void removeJobDefinition(JobDefinition jobDefinition) {
         jobDefinitions.remove(jobDefinition);
-    }*/
+    }
 
     @Override
     public String toString() {

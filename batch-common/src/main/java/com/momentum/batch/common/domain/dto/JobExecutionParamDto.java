@@ -47,10 +47,6 @@ public class JobExecutionParamDto extends RepresentationModel<JobExecutionParamD
      * Parameter identifier flag
      */
     private Boolean identifying;
-    /**
-     * Total count
-     */
-    private long totalCount;
 
     /**
      * Default constructor
@@ -123,14 +119,6 @@ public class JobExecutionParamDto extends RepresentationModel<JobExecutionParamD
         this.identifying = identifying;
     }
 
-    public long getTotalCount() {
-        return totalCount;
-    }
-
-    public void setTotalCount(long totalCount) {
-        this.totalCount = totalCount;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -142,7 +130,6 @@ public class JobExecutionParamDto extends RepresentationModel<JobExecutionParamD
                 .add("longVal", longVal)
                 .add("doubleVal", doubleVal)
                 .add("identifying", identifying)
-                .add("totalCount", totalCount)
                 .toString();
     }
 
@@ -152,8 +139,7 @@ public class JobExecutionParamDto extends RepresentationModel<JobExecutionParamD
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         JobExecutionParamDto that = (JobExecutionParamDto) o;
-        return totalCount == that.totalCount &&
-                Objects.equal(id, that.id) &&
+        return Objects.equal(id, that.id) &&
                 Objects.equal(keyName, that.keyName) &&
                 Objects.equal(typeCd, that.typeCd) &&
                 Objects.equal(stringVal, that.stringVal) &&
@@ -165,6 +151,6 @@ public class JobExecutionParamDto extends RepresentationModel<JobExecutionParamD
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, keyName, typeCd, stringVal, dateVal, longVal, doubleVal, identifying, totalCount);
+        return Objects.hashCode(super.hashCode(), id, keyName, typeCd, stringVal, dateVal, longVal, doubleVal, identifying);
     }
 }

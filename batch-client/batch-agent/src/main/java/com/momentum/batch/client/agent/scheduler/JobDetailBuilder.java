@@ -4,6 +4,7 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
+import java.io.File;
 import java.util.List;
 
 import static com.momentum.batch.common.util.ExecutionParameter.*;
@@ -18,9 +19,9 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
 public class JobDetailBuilder {
 
 	/**
-	 * Identity
+	 * Name
 	 */
-	private String identity;
+	private String name;
 	/**
 	 * Job group
 	 */
@@ -29,6 +30,10 @@ public class JobDetailBuilder {
 	 * Job description
 	 */
 	private String description;
+	/**
+	 * Library directory
+	 */
+	private String libraryDirectory;
 	/**
 	 * Job data map
 	 */
@@ -40,8 +45,13 @@ public class JobDetailBuilder {
 		description = JOB_DESCRIPTION;
 	}
 
+	public JobDetailBuilder libraryDirectory(String libraryDirectory) {
+		this.libraryDirectory = libraryDirectory;
+		return this;
+	}
+
 	public JobDetailBuilder jobName(String name) {
-		this.identity = name;
+		this.name = name;
 		jobDataMap.put(JOB_NAME, name);
 		return this;
 	}
@@ -62,7 +72,7 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder jarFile(String jarFile) {
-		jobDataMap.put(JOB_JAR_FILE, jarFile);
+		jobDataMap.put(JOB_JAR_FILE, libraryDirectory + File.separator + jarFile);
 		return this;
 	}
 
@@ -113,7 +123,7 @@ public class JobDetailBuilder {
 
 	public JobDetail build() {
 		return JobBuilder.newJob(BatchSchedulerTask.class)
-				.withIdentity(identity, group)
+				.withIdentity(name, group)
 				.withDescription(description)
 				.usingJobData(jobDataMap)
 				.storeDurably()

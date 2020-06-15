@@ -32,22 +32,32 @@ public class JobGroupServiceImpl implements JobGroupService {
     private final JobDefinitionRepository jobDefinitionRepository;
 
     @Autowired
-    public JobGroupServiceImpl(JobGroupRepository jobGroupRepository,
-                               JobScheduleService jobScheduleService,
-                               JobDefinitionRepository jobDefinitionRepository) {
+    public JobGroupServiceImpl(JobGroupRepository jobGroupRepository, JobDefinitionRepository jobDefinitionRepository) {
         this.jobGroupRepository = jobGroupRepository;
         this.jobDefinitionRepository = jobDefinitionRepository;
     }
 
+    /**
+     * Returns a paged list of all job groups.
+     *
+     * @param pageable paging parameters.
+     * @return one page of job definitions.
+     */
     @Override
-    @Cacheable
-    public Page<JobGroup> allJobGroups(Pageable pageable) {
+    public Page<JobGroup> findAll(Pageable pageable) {
         return jobGroupRepository.findAll(pageable);
     }
 
+    /**
+     * Returns a paged list of job groups belonging to a job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @param pageable        paging parameters.
+     * @return one page og job groups belonging to a job definition.
+     */
     @Override
-    public long countAll() {
-        return jobGroupRepository.count();
+    public Page<JobGroup> findByJobDefinition(String jobDefinitionId, Pageable pageable) {
+        return jobGroupRepository.findByJobDefinition(jobDefinitionId, pageable);
     }
 
     /**

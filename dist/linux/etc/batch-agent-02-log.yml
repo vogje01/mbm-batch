@@ -1,0 +1,34 @@
+#
+# MBM log4j2 configuration
+#
+Configuration:
+  name: Default
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%.7t] %c{1}:%L - %msg%n"
+    RollingFile:
+      name: File_Appender
+      fileName: "${sys:agent.loggingDirectory:-./log}/batch-agent-02.log"
+      filePattern: "${sys:agent.loggingDirectory:-./log}/batch-agent-02.%d{yyyy-MM-dd-hh-mm}.log.gz"
+      Policies:
+        SizeBasedTriggeringPolicy:
+          size: 19 MB
+      DefaultRollOverStrategy:
+        max: 5
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%.7t] %c{1}:%L - %msg%n"
+  Loggers:
+    Root:
+      level: warn
+      AppenderRef:
+        - ref: Console_Appender
+    Logger:
+      - name: com.momentum.batch.client
+        level: debug
+        additivity: false
+        AppenderRef:
+          - ref: File_Appender
+          - ref: Console_Appender

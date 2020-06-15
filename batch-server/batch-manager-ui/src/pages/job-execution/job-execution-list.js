@@ -92,7 +92,6 @@ class JobExecutionList extends React.Component {
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            id={'jobTable'}
                             dataSource={JobExecutionDataSource(this)}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}

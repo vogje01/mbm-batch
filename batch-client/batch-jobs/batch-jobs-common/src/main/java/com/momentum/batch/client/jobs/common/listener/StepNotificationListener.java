@@ -43,6 +43,8 @@ public class StepNotificationListener implements StepExecutionListener {
 
     private final JobStatusProducer jobStatusProducer;
 
+    private StepExecution stepExecution;
+
     private StepExecutionDto stepExecutionDto = new StepExecutionDto();
 
     private final Map<String, Long> totalCounts = new HashMap<>();
@@ -65,12 +67,8 @@ public class StepNotificationListener implements StepExecutionListener {
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
-        // Fill in context
-        stepExecution.getExecutionContext().putString(STEP_UUID, UUID.randomUUID().toString());
-        stepExecution.getExecutionContext().put("String", "Test");
-        stepExecution.getExecutionContext().put("Double", 1.0);
-        stepExecution.getExecutionContext().put("Long", 1L);
-        stepExecution.getExecutionContext().put("Integer", 1);
+        this.stepExecution = stepExecution;
+        this.stepExecution.getExecutionContext().put(STEP_UUID, UUID.randomUUID().toString());
 
         saveTotalCount(stepExecution);
 

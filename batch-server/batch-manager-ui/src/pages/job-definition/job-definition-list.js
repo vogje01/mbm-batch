@@ -16,12 +16,16 @@ import DataGrid, {
 import UpdateTimer from "../../utils/update-timer";
 import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/form";
 import Toolbar, {Item} from "devextreme-react/toolbar";
-import {JobDefinitionDataSource} from "./job-definition-data-source";
-import {JobGroupDataSource} from "../job-group/job-group-data-source";
+import Popup from "devextreme-react/popup";
+import {JobDefinitionDataSource, JobStart} from "./job-definition-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {Redirect} from "react-router-dom";
 import {getFormattedTime} from "../../utils/date-time-util";
+import JobDefinitionJobGroupList from "./job-definition-job-group-list";
+import {AgentDataSource} from "../agent/agent-data-source";
+import SelectBox from "devextreme-react/select-box";
+import Button from "devextreme-react/button";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -36,14 +40,19 @@ class JobDefinitionList extends React.Component {
         super(props);
         this.state = {
             currentJobDefinition: {},
-            currentJobDefinitions: [],
+            currentAgent: {},
+            agentPopupVisible: false,
             showExport: false,
             showImport: false
         };
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
+        this.hideAgentPopup = this.hideAgentPopup.bind(this);
+        this.showAgentPopup = this.showAgentPopup.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
         this.cloneJobDefinition = this.cloneJobDefinition.bind(this);
+        this.startJobDefinition = this.startJobDefinition.bind(this);
+        this.agentSelectionChanged = this.agentSelectionChanged.bind(this);
         this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
     }
 
@@ -59,8 +68,23 @@ class JobDefinitionList extends React.Component {
         });
     }
 
+    showAgentPopup(e) {
+        this.setState({
+            currentJobDefinition: e.row.data,
+            agentPopupVisible: true
+        });
+    }
+
+    hideAgentPopup() {
+        this.setState({agentPopupVisible: false})
+    }
+
     selectionChanged(e) {
         this.setState({currentJobDefinition: e.data});
+    }
+
+    agentSelectionChanged(e) {
+        this.setState({currentAgent: e.selectedItem});
     }
 
     cloneJobDefinition(e) {
@@ -71,6 +95,13 @@ class JobDefinitionList extends React.Component {
         jobDefinition.label = jobDefinition.label + ' (copy)';
         let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
         this.setState({currentJobDefinition: insertItem(url, JSON.stringify(jobDefinition))});
+    }
+
+    startJobDefinition(e) {
+        JobStart(this.state.currentJobDefinition, this.state.currentAgent)
+            .then(data => {
+                this.setState({currentJobDefinition: data, agentPopupVisible: false})
+            });
     }
 
     render() {
@@ -138,23 +169,15 @@ class JobDefinitionList extends React.Component {
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Name must be less than 256 characters."/>
                                         </SimpleItem>
-                                        <SimpleItem
-                                            dataField={'jobGroupName'}
-                                            editorType={'dxSelectBox'}
-                                            editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
-                                            <RequiredRule/>
-                                        </SimpleItem>
                                         <SimpleItem dataField="jobVersion">
                                             <RequiredRule/>
                                             <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
-                                        <SimpleItem dataField="failedExitCode"/>
-                                        <SimpleItem dataField="failedExitMessage"/>
-                                        <SimpleItem dataField="completedExitCode"/>
-                                        <SimpleItem dataField="completedExitMessage"/>
-                                        <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 100}}/>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                        <SimpleItem dataField="fileSize" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="fileHash" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 90}}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Command"}>
                                         <SimpleItem dataField="type" editorOptions={{dataSource: types, valueExpr: 'type', displayExpr: 'name'}}>
@@ -177,6 +200,16 @@ class JobDefinitionList extends React.Component {
                                             <RequiredRule/>
                                             <StringLengthRule max={256} message="Logging directory must be less than 256 characters."/>
                                         </SimpleItem>
+                                        <SimpleItem dataField="failedExitCode"/>
+                                        <SimpleItem dataField="failedExitMessage"/>
+                                        <SimpleItem dataField="completedExitCode"/>
+                                        <SimpleItem dataField="completedExitMessage"/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
+                                        <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
+                                    </GroupItem>
+                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
+                                        <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
                                     <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
@@ -185,9 +218,6 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobDefinition, 'modifiedAt'), readOnly: true}}/>
-                                    </GroupItem>
-                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
-                                        <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
                                 </Form>
                             </Editing>
@@ -305,13 +335,21 @@ class JobDefinitionList extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
+                            <Column
+                                dataField={'fileSize'}
+                                dataType={'number'}
+                                visible={false}/>
+                            <Column
+                                dataField={'fileHash'}
+                                dataType={'string'}
+                                visible={false}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={80}
+                                width={100}
                                 type={'buttons'}
                                 buttons={[
                                     {
@@ -326,6 +364,12 @@ class JobDefinitionList extends React.Component {
                                         onClick: this.cloneJobDefinition
                                     },
                                     {
+                                        name: 'start',
+                                        hint: 'Starts the job as on demand job.',
+                                        icon: 'material-icons-outlined ic-start',
+                                        onClick: this.showAgentPopup
+                                    },
+                                    {
                                         name: 'delete',
                                         hint: 'Delete job definition.',
                                         icon: 'material-icons-outlined ic-delete'
@@ -333,6 +377,37 @@ class JobDefinitionList extends React.Component {
                                 ]}/>
                         </DataGrid>
                         <UpdateTimer/>
+                        <Popup
+                            visible={this.state.agentPopupVisible}
+                            onHiding={this.hideAgentPopup}
+                            dragEnabled={false}
+                            closeOnOutsideClick={true}
+                            showTitle={true}
+                            title="Start on demand job"
+                            width={300}
+                            height={200}>
+                            <div className="popup-property-details">
+                                <span>Agent:</span>
+                                <SelectBox
+                                    dataSource={AgentDataSource()}
+                                    valueExpr={'id'}
+                                    displayExpr={'nodeName'}
+                                    placeholder={'Select an agent...'}
+                                    onSelectionChanged={this.agentSelectionChanged}/>
+                                <Button
+                                    style={{verticalAlignment: 'center', marginTop: '20px', marginRight: '20px'}}
+                                    horizontalAlignment={'center'}
+                                    text={'Start'}
+                                    type={'success'}
+                                    onClick={this.startJobDefinition}/>
+                                <Button
+                                    style={{verticalAlignment: 'center', marginTop: '20px', marginRight: '20px'}}
+                                    horizontalAlignment={'center'}
+                                    text={'Cancel'}
+                                    type={'success'}
+                                    onClick={this.hideAgentPopup}/>
+                            </div>
+                        </Popup>
                     </div>
                 </div>
                 {

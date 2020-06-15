@@ -30,7 +30,7 @@ public class JwtTokenUtil implements Serializable {
     public static final long JWT_TOKEN_VALIDITY = 8 * 60 * 60;
     private static final long serialVersionUID = -2550185165626007488L;
 
-    @Value("${jwt.secret}")
+    @Value("${mbm.server.jwt.secret}")
     private String secret;
 
     /**
@@ -89,6 +89,10 @@ public class JwtTokenUtil implements Serializable {
      * <li>Sign the JWT using the HS512 algorithm and secret key.</li>
      * <li>According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1) compaction of the JWT to a URL-safe string.</li>
      * </ul>
+     *
+     * @param claims  token claims.
+     * @param subject token subject.
+     * @return generated token.
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         long now = System.currentTimeMillis();

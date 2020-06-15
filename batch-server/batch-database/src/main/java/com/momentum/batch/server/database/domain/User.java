@@ -111,7 +111,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
             name = "BATCH_USER_USER_GROUP",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "USER_GROUP_ID"))
-    private List<UserGroup> userGroups = new ArrayList<>();
+    private final List<UserGroup> userGroups = new ArrayList<>();
 
     public User() {
         // Default constructor
@@ -245,9 +245,7 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
     }
 
     public void removeUserGroup(UserGroup userGroup) {
-        if (userGroups.contains(userGroup)) {
-            userGroups.remove(userGroup);
-        }
+        userGroups.remove(userGroup);
     }
 
     @Override
@@ -268,13 +266,12 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
                 dateTimeFormat == user.dateTimeFormat &&
                 numberFormat == user.numberFormat &&
                 Objects.equal(description, user.description) &&
-                Objects.equal(active, user.active) &&
-                Objects.equal(userGroups, user.userGroups);
+                Objects.equal(active, user.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, avatar, theme, dateTimeFormat, numberFormat, description, active, userGroups);
+        return Objects.hashCode(super.hashCode(), id, userId, password, lastName, firstName, email, phone, avatar, theme, dateTimeFormat, numberFormat, description, active);
     }
 
     public Boolean getActive() {
@@ -301,7 +298,6 @@ public class User extends Auditing implements PrimaryKeyIdentifier<String> {
                 .add("numberFormat", numberFormat)
                 .add("description", description)
                 .add("active", active)
-                .add("userGroups", userGroups)
                 .toString();
     }
 }

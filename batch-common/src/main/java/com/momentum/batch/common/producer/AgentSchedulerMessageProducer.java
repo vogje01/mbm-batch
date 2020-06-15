@@ -12,8 +12,10 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import static java.text.MessageFormat.format;
 
 /**
+ * Kafka message producer for the agent scheduler messages.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.4
  * @since 0.0.1
  */
 public class AgentSchedulerMessageProducer {

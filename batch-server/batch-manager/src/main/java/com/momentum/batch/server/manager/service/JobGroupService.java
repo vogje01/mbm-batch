@@ -8,9 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface JobGroupService {
 
-    Page<JobGroup> allJobGroups(Pageable pageable);
-
-    long countAll();
+    Page<JobGroup> findAll(Pageable pageable);
 
     JobGroup getJobGroup(final String id);
 
@@ -27,4 +25,6 @@ public interface JobGroupService {
     JobGroup addJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
 
     JobGroup removeJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
+
+    Page<JobGroup> findByJobDefinition(String jobDefinitionId, Pageable pageable);
 }

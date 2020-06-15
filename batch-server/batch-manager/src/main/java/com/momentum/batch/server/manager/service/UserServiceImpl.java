@@ -39,19 +39,21 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
 
-    private PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     /**
      * Constructor
      *
-     * @param userRepository user repository.
-     * @param cacheManager   cache manager.
+     * @param userRepository               user repository.
+     * @param userGroupRepository          user group repository.
+     * @param passwordResetTokenRepository password reset repository.
+     * @param cacheManager                 cache manager.
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository, CacheManager cacheManager) {
@@ -76,14 +78,16 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable);
     }
 
+    /**
+     * Returns all users which are not member of the current user group.
+     *
+     * @param userGroupId user group ID.
+     * @param pageable    paging parameters.
+     * @return page of job definitions belong to the given ob group.
+     */
     @Override
-    public long countAll() {
-        return userRepository.count();
-    }
-
-    @Override
-    public long countByUserGroup(String id) {
-        return userRepository.countByUserGroup(id);
+    public Page<User> findWithoutUserGroup(String userGroupId, Pageable pageable) {
+        return userRepository.findWithoutUserGroup(userGroupId, pageable);
     }
 
     @Override

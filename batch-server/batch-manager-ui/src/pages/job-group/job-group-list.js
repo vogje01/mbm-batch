@@ -40,7 +40,7 @@ class JobGroupList extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2 className={'content-block'}>JobGroups</h2>
+                <h2 className={'content-block'}>Job Groups</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
                         <DataGrid
@@ -66,7 +66,7 @@ class JobGroupList extends React.Component {
                                 allowDeleting={true}>
                                 <Form>
                                     <SimpleItem itemType="group" colCount={4} colSpan={4}
-                                                caption={"JobGroup Group Details: " + this.state.currentJobGroup.name}>
+                                                caption={"Job Group Details: " + this.state.currentJobGroup.name}>
                                         <SimpleItem dataField="name" colSpan={2}>
                                             <RequiredRule message="Name is required"/>
                                             <StringLengthRule min={2} message="Name must be at least 2 characters long."/>
@@ -82,28 +82,11 @@ class JobGroupList extends React.Component {
                                         <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobGroup, 'modifiedAt'), readOnly: true}}/>
                                     </SimpleItem>
-                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"JobGroups"}>
+                                    <SimpleItem itemType="group" colCount={4} colSpan={4} caption={"Job Definitions"}>
                                         <JobGroupJobDefinitionView jobGroup={this.state.currentJobGroup}/>
                                     </SimpleItem>
                                 </Form>
                             </Editing>
-                            <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit jobGroup group',
-                                        icon: 'material-icons-outlined ic-edit',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete jobGroup group',
-                                        icon: 'material-icons-outlined ic-delete',
-                                        visible: this.isDeleteVisible
-                                    }]}/>
                             <Column
                                 caption={'Name'}
                                 dataField={'name'}
@@ -143,6 +126,23 @@ class JobGroupList extends React.Component {
                                 caption={'Modified At'}
                                 dataType={'datetime'}
                                 visible={false}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit jobGroup group',
+                                        icon: 'material-icons-outlined ic-edit',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete jobGroup group',
+                                        icon: 'material-icons-outlined ic-delete',
+                                        visible: this.isDeleteVisible
+                                    }]}/>
                             <Paging defaultPageSize={5}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>

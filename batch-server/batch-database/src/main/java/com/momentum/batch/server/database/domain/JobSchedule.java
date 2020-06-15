@@ -3,6 +3,7 @@ package com.momentum.batch.server.database.domain;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.common.domain.JobScheduleMode;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,6 +38,10 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
 
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "MODE")
+    @Enumerated(EnumType.STRING)
+    private JobScheduleMode mode;
 
     @Column(name = "ACTIVE")
     private Boolean active;
@@ -75,6 +80,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.nextExecution = origin.nextExecution;
         this.name = origin.name;
         this.active = origin.active;
+        this.mode = origin.mode;
         this.jobDefinition = origin.jobDefinition;
     }
 
@@ -108,6 +114,14 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
 
     public void setName(String hostName) {
         this.name = hostName;
+    }
+
+    public JobScheduleMode getMode() {
+        return mode;
+    }
+
+    public void setMode(JobScheduleMode mode) {
+        this.mode = mode;
     }
 
     public Date getNextExecution() {
@@ -195,12 +209,16 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
                 Objects.equal(lastExecution, that.lastExecution) &&
                 Objects.equal(nextExecution, that.nextExecution) &&
                 Objects.equal(name, that.name) &&
-                Objects.equal(active, that.active);
+                Objects.equal(mode, that.mode) &&
+                Objects.equal(active, that.active) &&
+                Objects.equal(jobDefinition, that.jobDefinition) &&
+                Objects.equal(agents, that.agents) &&
+                Objects.equal(agentGroups, that.agentGroups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, active);
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, active, jobDefinition, agents, agentGroups);
     }
 
     @Override
@@ -211,6 +229,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
                 .add("lastExecution", lastExecution)
                 .add("nextExecution", nextExecution)
                 .add("name", name)
+                .add("mode", mode)
                 .add("active", active)
                 .toString();
     }

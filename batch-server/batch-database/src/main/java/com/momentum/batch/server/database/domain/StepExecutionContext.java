@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.common.domain.dto.StepExecutionContextDto;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -42,6 +43,16 @@ public class StepExecutionContext implements PrimaryKeyIdentifier<String> {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "STEP_EXECUTION_ID", nullable = false)
     private StepExecutionInfo stepExecutionInfo;
+
+    /**
+     * Updates the step execution context.
+     *
+     * @param stepExecutionContextDto original step execution context.
+     */
+    public void update(StepExecutionContextDto stepExecutionContextDto) {
+        this.shortContext = stepExecutionContextDto.getShortContext();
+        this.serializedContext = stepExecutionContextDto.getSerializedContext();
+    }
 
     public String getId() {
         return id;

@@ -59,10 +59,6 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
      */
     private Boolean booleanValue;
     /**
-     * Total count
-     */
-    private Long totalSize;
-    /**
      * Created by
      */
     private String createdBy;
@@ -162,14 +158,6 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
         this.booleanValue = booleanValue;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
@@ -225,17 +213,16 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
                 Objects.equal(longValue, that.longValue) &&
                 Objects.equal(doubleValue, that.doubleValue) &&
                 Objects.equal(booleanValue, that.booleanValue) &&
-                Objects.equal(totalSize, that.totalSize) &&
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(jobDefinitionDto, that.jobDefinitionDto);
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobDefinitionDto);
+        return Objects.hashCode(super.hashCode(), id, keyName, type, value, stringValue, dateValue, longValue, doubleValue, booleanValue, createdBy, createdAt,
+                modifiedBy, modifiedAt, jobDefinitionDto);
     }
 
     @Override
@@ -250,7 +237,6 @@ public class JobDefinitionParamDto extends RepresentationModel<JobDefinitionPara
                 .add("longValue", longValue)
                 .add("doubleValue", doubleValue)
                 .add("booleanValue", booleanValue)
-                .add("totalSize", totalSize)
                 .add("createdBy", createdBy)
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)

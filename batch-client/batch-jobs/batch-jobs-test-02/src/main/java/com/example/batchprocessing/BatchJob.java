@@ -1,5 +1,9 @@
 package com.example.batchprocessing;
 
+import com.momentum.batch.client.jobs.common.listener.ChunkNotificationListener;
+import com.momentum.batch.client.jobs.common.listener.JobNotificationListener;
+import com.momentum.batch.client.jobs.common.listener.StepNotificationListener;
+import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -27,13 +31,25 @@ public class BatchJob {
 	public StepBuilderFactory stepBuilderFactory;
 	// end::setup[]
 
+	@Autowired
+	private BatchLogger batchLogger;
+
+	@Autowired
+	private JobNotificationListener jobNotificationListener;
+
+	@Autowired
+	private StepNotificationListener stepNotificationListener;
+
+	@Autowired
+	private ChunkNotificationListener chunkNotificationListener;
+
 	// tag::readerwriterprocessor[]
 	public FlatFileItemReader<Person> reader() {
 		return new FlatFileItemReaderBuilder<Person>()
 				.name("personItemReader")
 				.resource(new ClassPathResource("sample-data.csv"))
 				.delimited()
-				.names(new String[]{"firstName", "lastName"})
+				.names("firstName", "lastName")
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {{
 					setTargetType(Person.class);
 				}})
@@ -47,6 +63,7 @@ public class BatchJob {
 
 	@Bean
 	public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
+		batchLogger.info("Writer initialized");
 		return new JdbcBatchItemWriterBuilder<Person>()
 				.itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
 				.sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
@@ -57,8 +74,10 @@ public class BatchJob {
 
 	@Bean
 	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
+		batchLogger.info("Job initialized");
 		return jobBuilderFactory.get("importUserJob")
 				.incrementer(new RunIdIncrementer())
+				.listener(jobNotificationListener)
 				.listener(listener)
 				.flow(step1)
 				.end()
@@ -66,12 +85,14 @@ public class BatchJob {
 	}
 
 	@Bean
-	public Step step1(JdbcBatchItemWriter<Person> writer) {
+	public Step step1(JdbcBatchItemWriter<Person> writer, PersonItemProcessor processor) {
 		return stepBuilderFactory.get("step1")
 				.<Person, Person>chunk(10)
 				.reader(reader())
-				.processor(processor())
+				.processor(processor)
 				.writer(writer)
+				.listener(stepNotificationListener)
+				.listener(chunkNotificationListener)
 				.build();
 	}
 }

@@ -236,6 +236,14 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
         this.nodeName = nodeName;
     }
 
+    public StepExecutionContext getStepExecutionContext() {
+        return stepExecutionContext;
+    }
+
+    public void setStepExecutionContext(StepExecutionContext stepExecutionContext) {
+        this.stepExecutionContext = stepExecutionContext;
+    }
+
     public long getReadCount() {
         return readCount;
     }
@@ -398,13 +406,14 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 Objects.equal(runningTime, that.runningTime) &&
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
-                Objects.equal(failureExceptions, that.failureExceptions) &&
-                Objects.equal(jobExecutionInfo, that.jobExecutionInfo);
+                Objects.equal(failureExceptions, that.failureExceptions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, failureExceptions, jobExecutionInfo);
+        return Objects.hashCode(id, stepName, stepExecutionId, status, hostName, nodeName, totalCount, readCount, writeCount, filterCount, commitCount,
+                rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage,
+                failureExceptions);
     }
 
     @Override
@@ -432,7 +441,6 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("failureExceptions", failureExceptions)
-                .add("jobExecutionInfo", jobExecutionInfo)
                 .toString();
     }
 }

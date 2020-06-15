@@ -54,8 +54,6 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
 
     private String extendedStackTrace;
 
-    private long totalSize;
-
     public String getId() {
         return id;
     }
@@ -200,14 +198,6 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
         this.extendedStackTrace = extendedStackTrace;
     }
 
-    public long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
@@ -229,7 +219,6 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
                 .add("timestamp", timestamp)
                 .add("exception", exception)
                 .add("extendedStackTrace", extendedStackTrace)
-                .add("totalSize", totalSize)
                 .toString();
     }
 
@@ -241,7 +230,6 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
         JobExecutionLogDto that = (JobExecutionLogDto) o;
         return threadId == that.threadId &&
                 threadPriority == that.threadPriority &&
-                totalSize == that.totalSize &&
                 Objects.equal(id, that.id) &&
                 Objects.equal(jobName, that.jobName) &&
                 Objects.equal(jobPid, that.jobPid) &&
@@ -262,6 +250,7 @@ public class JobExecutionLogDto extends RepresentationModel<JobExecutionLogDto> 
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobPid, jobUuid, jobVersion, stepName, stepUuid, hostName, nodeName, thread, threadId, threadPriority, loggerName, message, level, timestamp, exception, extendedStackTrace, totalSize);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobPid, jobUuid, jobVersion, stepName, stepUuid, hostName, nodeName, thread, threadId,
+                threadPriority, loggerName, message, level, timestamp, exception, extendedStackTrace);
     }
 }

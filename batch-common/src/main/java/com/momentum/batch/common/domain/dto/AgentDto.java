@@ -87,10 +87,6 @@ public class AgentDto extends RepresentationModel<AgentDto> {
      */
     private Boolean active;
     /**
-     * Total count
-     */
-    private Long totalSize;
-    /**
      * Schedule list
      */
     private List<JobScheduleDto> scheduleDtos = new ArrayList<>();
@@ -222,14 +218,6 @@ public class AgentDto extends RepresentationModel<AgentDto> {
         this.active = active;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     public List<JobScheduleDto> getScheduleDtos() {
         return scheduleDtos;
     }
@@ -258,14 +246,13 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 Objects.equal(createdAt, agentDto.createdAt) &&
                 Objects.equal(modifiedBy, agentDto.modifiedBy) &&
                 Objects.equal(modifiedAt, agentDto.modifiedAt) &&
-                Objects.equal(active, agentDto.active) &&
-                Objects.equal(totalSize, agentDto.totalSize) &&
-                Objects.equal(scheduleDtos, agentDto.scheduleDtos);
+                Objects.equal(active, agentDto.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek, createdBy, createdAt, modifiedBy, modifiedAt, active, totalSize, scheduleDtos);
+        return Objects.hashCode(super.hashCode(), id, nodeName, hostName, pid, status, lastStart, lastPing, systemLoad, avgSystemLoadDay, avgSystemLoadWeek,
+                createdBy, createdAt, modifiedBy, modifiedAt, active, scheduleDtos);
     }
 
     @Override
@@ -286,8 +273,6 @@ public class AgentDto extends RepresentationModel<AgentDto> {
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
                 .add("active", active)
-                .add("totalSize", totalSize)
-                .add("scheduleDtos", scheduleDtos)
                 .toString();
     }
 }

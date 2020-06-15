@@ -18,8 +18,11 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
-server:
-  hostName: batchmanager
+mbm:
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.

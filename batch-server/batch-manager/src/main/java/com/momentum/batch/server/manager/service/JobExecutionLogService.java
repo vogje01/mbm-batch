@@ -8,11 +8,15 @@ import java.util.Optional;
 
 public interface JobExecutionLogService {
 
-    Page<JobExecutionLog> byJobId(String jobId, Pageable pageable);
+    long countAll();
 
     long countByJobId(String jobId);
 
     long countByStepId(String stepId);
+
+    Page<JobExecutionLog> findAll(Pageable pageable);
+
+    Page<JobExecutionLog> byJobId(String jobId, Pageable pageable);
 
     Page<JobExecutionLog> byStepId(String stepId, Pageable pageable);
 

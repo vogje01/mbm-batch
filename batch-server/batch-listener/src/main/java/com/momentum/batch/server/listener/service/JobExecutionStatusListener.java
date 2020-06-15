@@ -27,22 +27,50 @@ import static java.text.MessageFormat.format;
 @Service
 public class JobExecutionStatusListener {
 
+    /**
+     * Logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(JobExecutionStatusListener.class);
-
+    /**
+     * Job execution info repository
+     */
     private final JobExecutionInfoRepository jobExecutionInfoRepository;
-
+    /**
+     * Job execution parameter repository
+     */
     private final JobExecutionParamRepository jobExecutionParamRepository;
-
+    /**
+     * Job execution context repository
+     */
     private final JobExecutionContextRepository jobExecutionContextRepository;
-
+    /**
+     * Job execution instance repository
+     */
     private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
-
+    /**
+     * Step execution info repository
+     */
     private final StepExecutionInfoRepository stepExecutionInfoRepository;
-
+    /**
+     * Step execution context repository
+     */
     private final StepExecutionContextRepository stepExecutionContextRepository;
-
+    /**
+     * DTP model converter
+     */
     private final ModelConverter modelConverter;
 
+    /**
+     * Constructor.
+     *
+     * @param jobExecutionInfoRepository     job execution info repository.
+     * @param jobExecutionInstanceRepository job execution instance repository.
+     * @param jobExecutionParamRepository    job execution parameter repository.
+     * @param jobExecutionContextRepository  job execution context repository.
+     * @param stepExecutionInfoRepository    step execution info repository.
+     * @param stepExecutionContextRepository step execution context repository.
+     * @param modelConverter                 model converter.
+     */
     @Autowired
     public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
                                       JobExecutionInstanceRepository jobExecutionInstanceRepository,
@@ -61,27 +89,27 @@ public class JobExecutionStatusListener {
         logger.info(format("Job status listener initialized"));
     }
 
-    //@Transactional
+    /**
+     * Kafka job status notification consumer.
+     *
+     * @param jobStatusDto job status data transfer object.
+     */
     @KafkaListener(topics = "${kafka.jobStatus.topic}", containerFactory = "jobStatusListenerFactory")
     public void listen(JobStatusDto jobStatusDto) {
         logger.info(format("Received job status - type: {0}", jobStatusDto.getType()));
         switch (jobStatusDto.getType()) {
-            case JOB_START:
-            case JOB_FINISHED:
-                jobStatusChanged(jobStatusDto.getJobExecutionDto());
-                break;
-            case STEP_START:
-            case STEP_FINISHED:
-            case CHUNK_START:
-            case CHUNK_FINISHED:
-            case CHUNK_ERROR:
-                stepStatusChanged(jobStatusDto.getStepExecutionDto());
-                break;
+            case JOB_START, JOB_FINISHED -> jobStatusChanged(jobStatusDto.getJobExecutionDto());
+            case STEP_START, STEP_FINISHED, CHUNK_START, CHUNK_FINISHED, CHUNK_ERROR -> stepStatusChanged(jobStatusDto.getStepExecutionDto());
         }
     }
 
     /**
      * Process a job status notification.
+     *
+     * <p>
+     * The job execution info will be updated in the database, as well as the job execution context. This listener is called for
+     * all job notifications.
+     * </p>
      *
      * @param jobExecutionDto job execution data transfer object.
      */
@@ -103,6 +131,12 @@ public class JobExecutionStatusListener {
             jobExecutionInfo.setModifiedAt(new Date());
             jobExecutionInfo.setModifiedBy("admin");
             jobExecutionInfoRepository.save(jobExecutionInfo);
+            if (jobExecutionDto.getJobExecutionContextDto() != null) {
+                JobExecutionContext jobExecutionContext = jobExecutionInfo.getJobExecutionContext();
+                jobExecutionContext.update(jobExecutionDto.getJobExecutionContextDto());
+                jobExecutionContextRepository.save(jobExecutionContext);
+                logger.debug(format("Job execution context updated - jobName: {0} jobName: {1}", nodeName, jobName));
+            }
             logger.debug(format("Job execution info updated - jobName: {0} jobName: {1}", nodeName, jobName));
 
         } else {
@@ -144,6 +178,11 @@ public class JobExecutionStatusListener {
     /**
      * Process a step status notification.
      *
+     * <p>
+     * The step execution info will be updated in the database, as well as the step execution context. This listener is called for
+     * all step notifications and chunk notifications.
+     * </p>
+     *
      * @param stepExecutionDto step execution data transfer object.
      */
     private synchronized void stepStatusChanged(StepExecutionDto stepExecutionDto) {
@@ -157,18 +196,30 @@ public class JobExecutionStatusListener {
         Optional<StepExecutionInfo> stepExecutionInfoOptional = stepExecutionInfoRepository.findById(stepExecutionDto.getId());
         if (stepExecutionInfoOptional.isPresent()) {
             logger.debug(format("Step info found - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
+
+            // Update step execution info
             StepExecutionInfo stepExecutionInfo = stepExecutionInfoOptional.get();
             stepExecutionInfo.update(stepExecutionDto);
             stepExecutionInfo.setModifiedAt(new Date());
             stepExecutionInfo.setModifiedBy("admin");
             stepExecutionInfoRepository.save(stepExecutionInfo);
-            logger.debug(format("Step info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
+
+            // Save step execution context
+            if (stepExecutionDto.getStepExecutionContextDto() != null) {
+                StepExecutionContext stepExecutionContext = stepExecutionInfo.getStepExecutionContext();
+                stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
+                stepExecutionContextRepository.save(stepExecutionContext);
+                logger.debug(format("Step execution context updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
+            }
+            logger.debug(format("Step execution info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
         } else {
-            logger.info(format("Step not found, creating new one - nodeName: {0} stepName: {1} stepName: {2}", nodeName, jobName, stepName));
+            logger.info(format("Step not found, creating new one - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
             StepExecutionInfo stepExecutionInfo = new StepExecutionInfo();
             Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfoRepository.findById(stepExecutionDto.getJobId());
             if (jobExecutionInfoOptional.isPresent()) {
                 logger.debug(format("Job found - nodeName: {0} jobName: {1}", nodeName, jobName));
+
+                // Save job execution info
                 stepExecutionInfo.update(stepExecutionDto);
                 stepExecutionInfo.setJobExecutionInfo(jobExecutionInfoOptional.get());
                 stepExecutionInfo.setCreatedAt(new Date());
@@ -178,11 +229,11 @@ public class JobExecutionStatusListener {
                 // Create step execution context
                 StepExecutionContext stepExecutionContext = modelConverter.convertStepExecutionContextToEntity(stepExecutionDto.getStepExecutionContextDto());
                 stepExecutionContext.setStepExecutionInfo(stepExecutionInfo);
-                stepExecutionContext = stepExecutionContextRepository.save(stepExecutionContext);
-                logger.debug(format("Step execution context info created - nodeName: {0} stepName: {1} id: {2}", nodeName, stepName, stepExecutionContext.getId()));
+                stepExecutionContextRepository.save(stepExecutionContext);
+                logger.debug(format("Step execution context info created - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
 
             } else {
-                logger.error(format("Job not found - nodeName: {0} jobName: {1}", jobName, jobName));
+                logger.error(format("Step execution info not found - nodeName: {0} jobName: {1} stepName: {2}", jobName, jobName, stepName));
             }
         }
     }

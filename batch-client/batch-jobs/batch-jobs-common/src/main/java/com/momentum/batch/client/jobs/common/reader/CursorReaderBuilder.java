@@ -40,10 +40,6 @@ public class CursorReaderBuilder<T> {
      * Parameters of the query.
      */
     private Map<String, Object> params;
-    /**
-     * The actual reader
-     */
-    private HibernateCursorItemReader<T> hibernateCursorItemReader;
 
     /**
      * Constructor.
@@ -60,7 +56,7 @@ public class CursorReaderBuilder<T> {
      * @param entityManagerFactory entity manager factory
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder entityManagerFactory(EntityManagerFactory entityManagerFactory) {
+    public CursorReaderBuilder<T> entityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
         return this;
     }
@@ -74,7 +70,7 @@ public class CursorReaderBuilder<T> {
      * @param queryString query string.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder queryString(String queryString) {
+    public CursorReaderBuilder<T> queryString(String queryString) {
         this.queryString = queryString;
         return this;
     }
@@ -82,10 +78,10 @@ public class CursorReaderBuilder<T> {
     /**
      * Sets the parameters for the parametrized query string.
      *
-     * @param params paramter map.
+     * @param params parameter map.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder parameters(Map<String, Object> params) {
+    public CursorReaderBuilder<T> parameters(Map<String, Object> params) {
         this.params = params;
         return this;
     }
@@ -96,7 +92,7 @@ public class CursorReaderBuilder<T> {
      * @param fetchSize fetch size.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder fetchSize(int fetchSize) {
+    public CursorReaderBuilder<T> fetchSize(int fetchSize) {
         this.fetchSize = fetchSize;
         return this;
     }
@@ -107,7 +103,7 @@ public class CursorReaderBuilder<T> {
      * @param maxItemCount maximal number of items to process.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder maxItems(int maxItemCount) {
+    public CursorReaderBuilder<T> maxItems(int maxItemCount) {
         this.maxItems = maxItemCount;
         return this;
     }
@@ -121,7 +117,7 @@ public class CursorReaderBuilder<T> {
      * @param currentItem index of the current item.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder currentItem(int currentItem) {
+    public CursorReaderBuilder<T> currentItem(int currentItem) {
         this.currentItem = currentItem;
         return this;
     }
@@ -132,22 +128,18 @@ public class CursorReaderBuilder<T> {
      * @param timeout query timeout in seconds.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder timeout(int timeout) {
+    public CursorReaderBuilder<T> timeout(int timeout) {
         this.timeout = timeout;
         return this;
     }
 
     /**
      * Sets the query hints.
-     * <p>
-     * If you need to supply query hints, you need to use the
-     * {@link com.hlag.fis.db.db2.config.ExtendedDB2Dialect ExtendedDb2Dialect} in your application.
-     * </p>
      *
      * @param queryHint query hints.
      * @return CursorReaderBuilder
      */
-    public CursorReaderBuilder queryHint(String queryHint) {
+    public CursorReaderBuilder<T> queryHint(String queryHint) {
         this.queryHint = queryHint;
         return this;
     }
@@ -157,12 +149,15 @@ public class CursorReaderBuilder<T> {
      *
      * @return item stream cursor reader.
      */
-    public ItemStreamReader build() {
+    public ItemStreamReader<T> build() {
         QueryProvider queryProvider = new QueryProvider();
         queryProvider.setQueryString(queryString);
         queryProvider.setQueryHint(queryHint);
         queryProvider.setTimeout(timeout);
-        hibernateCursorItemReader = new HibernateCursorItemReader<>();
+        /**
+         * The actual reader
+         */
+        HibernateCursorItemReader<T> hibernateCursorItemReader = new HibernateCursorItemReader<>();
         hibernateCursorItemReader.setSessionFactory(sessionFactory);
         hibernateCursorItemReader.setMaxItemCount(maxItems);
         hibernateCursorItemReader.setFetchSize(fetchSize);

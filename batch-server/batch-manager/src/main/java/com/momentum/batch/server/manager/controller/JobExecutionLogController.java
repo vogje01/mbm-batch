@@ -2,33 +2,29 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.manager.converter.JobExecutionLogModelAssembler;
 import com.momentum.batch.server.manager.service.JobExecutionLogService;
-import com.momentum.batch.server.manager.service.JobExecutionService;
-import com.momentum.batch.server.manager.service.StepExecutionService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Objects;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Job execution log REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -44,83 +40,75 @@ public class JobExecutionLogController {
 
     private final JobExecutionLogService jobExecutionLogService;
 
-    private final JobExecutionService jobExecutionService;
+    private final PagedResourcesAssembler<JobExecutionLog> pagedResourcesAssembler;
 
-    private final StepExecutionService stepExecutionService;
-
-    private final ModelConverter modelConverter;
+    private final JobExecutionLogModelAssembler jobExecutionLogModelAssembler;
 
     @Autowired
-    public JobExecutionLogController(JobExecutionService jobExecutionService, StepExecutionService stepExecutionService,
-                                     JobExecutionLogService jobExecutionLogService, ModelConverter modelConverter) {
-        this.jobExecutionService = jobExecutionService;
-        this.stepExecutionService = stepExecutionService;
+    public JobExecutionLogController(JobExecutionLogService jobExecutionLogService,
+                                     PagedResourcesAssembler<JobExecutionLog> pagedResourcesAssembler,
+                                     JobExecutionLogModelAssembler jobExecutionLogModelAssembler) {
         this.jobExecutionLogService = jobExecutionLogService;
-        this.modelConverter = modelConverter;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.jobExecutionLogModelAssembler = jobExecutionLogModelAssembler;
     }
 
     /**
      * Returns one page of job execution logs.
      *
-     * @param jobId   UUID of the job.
-     * @param page    page number.
-     * @param size    page size.
-     * @param sortBy  sorting column.
-     * @param sortDir sorting direction.
+     * @param pageable paging parameters.
      * @return one page of job execution logs.
      */
-    @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobExecutionLogDto>> findByJobId(@PathVariable("jobId") String jobId, @RequestParam("page") int page,
-                                                                           @RequestParam("size") int size,
-                                                                           @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                           @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+    @GetMapping(produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobExecutionLogDto>> findAll(Pageable pageable) {
         t.restart();
 
-        RestPreconditions.checkFound(jobExecutionService.getJobExecutionById(jobId));
-
-        // Get paging parameters
-        long totalCount = jobExecutionLogService.countByJobId(jobId);
-        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byJobId(jobId, PagingUtil.getPageable(page, size, sortBy, sortDir));
-        List<JobExecutionLogDto> jobExecutionLogDtoes = modelConverter.convertJobExecutionLogToDto(allJobExecutionLogs.toList(), totalCount);
-
-        // Add links
-        jobExecutionLogDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
-        Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job execution log list request finished - count: {0} {1}", allJobExecutionLogs.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtoes, self));
+        // Get logs
+        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.findAll(pageable);
+        PagedModel<JobExecutionLogDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionLogs, jobExecutionLogModelAssembler);
+        logger.debug(format("Job execution log list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
-     * Returns one page of job execution infos.
+     * Returns one page of job execution logs.
      *
-     * @param stepId  UUID of the step.
-     * @param page    page number.
-     * @param size    page size.
-     * @param sortBy  sorting column.
-     * @param sortDir sorting direction.
-     * @return on page of job executions.
+     * @param jobId    UUID of the job.
+     * @param pageable paging parameters.
+     * @return one page of job execution logs.
+     */
+    @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobExecutionLogDto>> findByJobId(@PathVariable String jobId, Pageable pageable) {
+        t.restart();
+
+        // Get job execution logs
+        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byJobId(jobId, pageable);
+        PagedModel<JobExecutionLogDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionLogs, jobExecutionLogModelAssembler);
+        logger.debug(format("Job execution log list by job id request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
+    }
+
+    /**
+     * Returns one page of step execution logs.
+     *
+     * @param stepId   UUID of the step.
+     * @param pageable paging parameters.
+     * @return one page of step executions logs.
      * @throws ResourceNotFoundException in case the job execution log is not existing.
      */
     @GetMapping(value = "/byStepId/{stepId}", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobExecutionLogDto>> findByStepId(@PathVariable("stepId") String stepId,
-                                                                            @RequestParam("page") int page,
-                                                                            @RequestParam("size") int size,
-                                                                            @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                            @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<JobExecutionLogDto>> findByStepId(@PathVariable String stepId, Pageable pageable) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(stepExecutionService.getStepExecutionDetail(stepId));
 
-        long totalCount = jobExecutionLogService.countByStepId(stepId);
-        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byStepId(stepId, PagingUtil.getPageable(page, size, sortBy, sortDir));
-        List<JobExecutionLogDto> jobExecutionLogDtoes = modelConverter.convertJobExecutionLogToDto(allJobExecutionLogs.toList(), totalCount);
+        Page<JobExecutionLog> allJobExecutionLogs = jobExecutionLogService.byStepId(stepId, pageable);
+        PagedModel<JobExecutionLogDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionLogs, jobExecutionLogModelAssembler);
+        logger.debug(format("Job execution log list by step id request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Add links
-        jobExecutionLogDtoes.forEach(j -> addLinks(j, page, size, sortBy, sortDir));
-        Link self = linkTo(methodOn(JobExecutionController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job execution log list request finished - count: {0} {1}", allJobExecutionLogs.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionLogDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -146,14 +134,5 @@ public class JobExecutionLogController {
         RestPreconditions.checkFound(jobExecutionLogService.byLogId(logId));
         jobExecutionLogService.deleteById(logId);
         return null;
-    }
-
-    private void addLinks(JobExecutionLogDto jobExecutionLogDto, int page, int size, String sortBy, String sortDir) {
-        try {
-            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).findById(jobExecutionLogDto.getId())).withSelfRel());
-            jobExecutionLogDto.add(linkTo(methodOn(JobExecutionLogController.class).delete(jobExecutionLogDto.getId())).withRel("delete"));
-        } catch (ResourceNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -1,7 +1,6 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams} from "../../utils/param-util";
-import {getItem} from "../../utils/server-connection";
+import {getItem, getParams} from "../../utils/server-connection";
 
 export const PerformanceDataSource = (nodeName, type, metric, scale, startTime, endTime) => {
     return new DataSource({

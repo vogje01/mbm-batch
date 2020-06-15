@@ -40,7 +40,7 @@ public class JobExecutionInfoReader {
         logger.debug(format("Job execution reader starting - cutOff: {0}", cutOff));
 
         String queryString = "select j from JobExecutionInfo j where j.lastUpdated < :cutOff";
-        Map<String, Date> parameters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("cutOff", cutOff);
         return new CursorReaderBuilder<>(mysqlEmf)
                 .queryString(queryString)

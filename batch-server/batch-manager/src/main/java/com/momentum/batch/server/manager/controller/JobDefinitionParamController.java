@@ -2,23 +2,21 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
+import com.momentum.batch.server.manager.converter.JobDefinitionParamModelAssembler;
 import com.momentum.batch.server.manager.service.JobDefinitionParamService;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static java.text.MessageFormat.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -45,52 +43,43 @@ public class JobDefinitionParamController {
 
     private final JobDefinitionParamService jobDefinitionParamService;
 
-    private final ModelConverter modelConverter;
+    private final PagedResourcesAssembler<JobDefinitionParam> pagedResourcesAssembler;
+
+    private final JobDefinitionParamModelAssembler jobDefinitionParamModelAssembler;
 
     /**
      * Constructor.
      *
      * @param jobDefinitionService      job definition service implementation.
      * @param jobDefinitionParamService job definition param service implementation.
-     * @param modelConverter            model converter.
      */
     @Autowired
-    public JobDefinitionParamController(JobDefinitionService jobDefinitionService, JobDefinitionParamService jobDefinitionParamService, ModelConverter modelConverter) {
+    public JobDefinitionParamController(JobDefinitionService jobDefinitionService, JobDefinitionParamService jobDefinitionParamService,
+                                        PagedResourcesAssembler<JobDefinitionParam> pagedResourcesAssembler, JobDefinitionParamModelAssembler jobDefinitionParamModelAssembler) {
         this.jobDefinitionService = jobDefinitionService;
         this.jobDefinitionParamService = jobDefinitionParamService;
-        this.modelConverter = modelConverter;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.jobDefinitionParamModelAssembler = jobDefinitionParamModelAssembler;
     }
 
     /**
      * Returns one page of job definitions.
      *
-     * @param page    page number.
-     * @param size    page size.
-     * @param sortBy  sorting column.
-     * @param sortDir sorting direction.
+     * @param pageable paging parameter.
      * @return on page of job definitions.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobDefinitionParamDto>> findAll(@RequestParam("page") int page, @RequestParam("size") int size,
-                                                                          @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                          @RequestParam(value = "sortDir", required = false) String sortDir) {
+    public ResponseEntity<PagedModel<JobDefinitionParamDto>> findAll(Pageable pageable) {
+
         t.restart();
 
-        // Get paging parameters
-        long totalCount = jobDefinitionParamService.countAll();
-        Page<JobDefinitionParam> allJobDefinitionParams = jobDefinitionParamService.allJobDefinitionParams(PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all job definition parameters
+        Page<JobDefinitionParam> allJobExecutionParams = jobDefinitionParamService.allJobDefinitionParams(pageable);
+        PagedModel<JobDefinitionParamDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionParams, jobDefinitionParamModelAssembler);
+        logger.debug(format("Job definition parameter list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Get DTOs
-        List<JobDefinitionParamDto> jobDefinitionParamDtoes = modelConverter.convertJobDefinitionParamToDto(allJobDefinitionParams.toList(), totalCount);
-
-        // Add links
-        jobDefinitionParamDtoes.forEach(this::addLinks);
-
-        // Add self link
-        Link self = linkTo(methodOn(JobDefinitionParamController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job definition parameters list request finished - count: {0} {1}", allJobDefinitionParams.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobDefinitionParamDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -100,10 +89,9 @@ public class JobDefinitionParamController {
      * @return job definition parameter with given ID or error.
      */
     @GetMapping(value = "/{jobDefinitionParamId}")
-    public ResponseEntity<JobDefinitionParamDto> findById(@PathVariable("jobDefinitionParamId") String jobDefinitionParamId) {
+    public ResponseEntity<JobDefinitionParamDto> findById(@PathVariable String jobDefinitionParamId) {
         JobDefinitionParam jobDefinitionParam = jobDefinitionParamService.findById(jobDefinitionParamId);
-        JobDefinitionParamDto jobDefinitionParamDto = modelConverter.convertJobDefinitionParamToDto(jobDefinitionParam);
-        addLinks(jobDefinitionParamDto);
+        JobDefinitionParamDto jobDefinitionParamDto = jobDefinitionParamModelAssembler.toModel(jobDefinitionParam);
         logger.debug(format("Finished job definition parameter by ID - id:{0} {1}", jobDefinitionParamId, t.elapsedStr()));
         return ResponseEntity.ok(jobDefinitionParamDto);
     }
@@ -112,37 +100,22 @@ public class JobDefinitionParamController {
      * Returns all job definition parameters for a job definition.
      *
      * @param jobDefinitionId job definition UUID.
-     * @param page            page index.
-     * @param size            page size.
-     * @param sortBy          sorting attribute.
-     * @param sortDir         sort direction.
+     * @param pageable        paging parameter.
      * @return list of job definition parameters or error.
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(value = "/{jobDefinitionId}/byJobDefinition")
-    public ResponseEntity<CollectionModel<JobDefinitionParamDto>> findByJobDefinitionId(@PathVariable("jobDefinitionId") String jobDefinitionId,
-                                                                                        @RequestParam(value = "page", required = false) int page,
-                                                                                        @RequestParam(value = "size", required = false) int size,
-                                                                                        @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                                        @RequestParam(value = "sortDir", required = false) String sortDir) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<JobDefinitionParamDto>> findByJobDefinitionId(@PathVariable String jobDefinitionId, Pageable pageable) {
+
         t.restart();
 
-        long totalCount = jobDefinitionParamService.countByJobDefinitionId(jobDefinitionId);
+        // Get all job definition parameters
+        Page<JobDefinitionParam> allJobExecutionParams = jobDefinitionParamService.allJobDefinitionParamsByJobDefinition(jobDefinitionId, pageable);
+        PagedModel<JobDefinitionParamDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionParams, jobDefinitionParamModelAssembler);
+        logger.debug(format("Job definition parameter by job definition list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        // Get job definition parameters
-        Page<JobDefinitionParam> jobDefinitionParams = jobDefinitionParamService.allJobDefinitionParamsByJobDefinition(jobDefinitionId, PagingUtil.getPageable(page, size, sortBy, sortDir));
-
-        // Get DTOs
-        List<JobDefinitionParamDto> jobDefinitionParamDtoes = modelConverter.convertJobDefinitionParamToDto(jobDefinitionParams.toList(), totalCount);
-
-        // Add links
-        jobDefinitionParamDtoes.forEach(this::addLinks);
-
-        // Ad self link
-        Link self = linkTo(methodOn(JobDefinitionParamController.class).findByJobDefinitionId(jobDefinitionId, page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job definition parameter list request finished - count: {0} {1}", jobDefinitionParams.getTotalElements(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobDefinitionParamDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -153,16 +126,12 @@ public class JobDefinitionParamController {
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @PutMapping(value = "/{jobDefinitionId}/add")
-    public ResponseEntity<Void> addJobDefinitionParam(@PathVariable("jobDefinitionId") String jobDefinitionId,
-                                                      @RequestBody JobDefinitionParamDto jobDefinitionParamDto) throws ResourceNotFoundException {
+    public ResponseEntity<Void> addJobDefinitionParam(@PathVariable String jobDefinitionId, @RequestBody JobDefinitionParamDto jobDefinitionParamDto) {
 
         t.restart();
 
-        // Check job definition exists
-        RestPreconditions.checkFound(jobDefinitionService.getJobDefinition(jobDefinitionId));
-
         // Add parameter
-        JobDefinitionParam jobDefinitionParam = modelConverter.convertJobDefinitionParamToEntity(jobDefinitionParamDto);
+        JobDefinitionParam jobDefinitionParam = jobDefinitionParamModelAssembler.toEntity(jobDefinitionParamDto);
         jobDefinitionParamService.addJobDefinitionParam(jobDefinitionId, jobDefinitionParam);
         logger.debug(format("Job definition parameter added - jobDefinitionId: {0} jobDefinitionParamId: {1} {2}",
                 jobDefinitionId, jobDefinitionParamDto.getId(), t.elapsedStr()));
@@ -172,7 +141,7 @@ public class JobDefinitionParamController {
     /**
      * Update a job definition parameter.
      * <p>
-     * Because of HATOAS, we do not get the primary key back from the UI.
+     * Because of HATEOAS, we do not get the primary key back from the UI.
      * </p>
      *
      * @param jobDefinitionParamId job definition parameter UUID.
@@ -180,17 +149,14 @@ public class JobDefinitionParamController {
      * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @PutMapping(value = "/{jobDefinitionParamId}/update")
-    public ResponseEntity<JobDefinitionParamDto> updateJobDefinitionParam(@PathVariable("jobDefinitionParamId") String jobDefinitionParamId,
+    public ResponseEntity<JobDefinitionParamDto> updateJobDefinitionParam(@PathVariable String jobDefinitionParamId,
                                                                           @RequestBody JobDefinitionParamDto jobDefinitionParamDto) throws ResourceNotFoundException {
         t.restart();
 
         // Convert to entity
-        JobDefinitionParam jobDefinitionParam = modelConverter.convertJobDefinitionParamToEntity(jobDefinitionParamDto);
+        JobDefinitionParam jobDefinitionParam = jobDefinitionParamModelAssembler.toEntity(jobDefinitionParamDto);
         jobDefinitionParam = jobDefinitionParamService.updateJobDefinitionParam(jobDefinitionParamId, jobDefinitionParam);
-        jobDefinitionParamDto = modelConverter.convertJobDefinitionParamToDto(jobDefinitionParam);
-
-        // Add links.
-        addLinks(jobDefinitionParamDto);
+        jobDefinitionParamDto = jobDefinitionParamModelAssembler.toModel(jobDefinitionParam);
         logger.debug(format("Job definition parameter updated - jobDefinitionParamId: {0} {1}", jobDefinitionParamDto.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(jobDefinitionParamDto);

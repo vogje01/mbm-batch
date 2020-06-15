@@ -2,33 +2,31 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.manager.converter.JobGroupModelAssembler;
 import com.momentum.batch.server.manager.service.JobGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Objects;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Job group REST controller.
  * <p>
- * Uses HATOAS for specific links. This allows to change the URL for the different REST methods on the server side.
+ * Uses HATEOAS for specific links. This allows to change the URL for the different REST methods on the server side.
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -44,51 +42,43 @@ public class JobGroupController {
 
     private final JobGroupService jobGroupService;
 
-    private final ModelConverter modelConverter;
+    private final PagedResourcesAssembler<JobGroup> jobGroupPagedResourcesAssembler;
+
+    private final JobGroupModelAssembler jobGroupModelAssembler;
 
     /**
      * Constructor.
      *
-     * @param jobGroupService service implementation.
+     * @param jobGroupService                 service implementation.
+     * @param jobGroupPagedResourcesAssembler paged resource assembler.
+     * @param jobGroupModelAssembler          job group model assembler.
      */
     @Autowired
-    public JobGroupController(JobGroupService jobGroupService, ModelConverter modelConverter) {
+    public JobGroupController(JobGroupService jobGroupService, PagedResourcesAssembler<JobGroup> jobGroupPagedResourcesAssembler, JobGroupModelAssembler jobGroupModelAssembler) {
         this.jobGroupService = jobGroupService;
-        this.modelConverter = modelConverter;
+        this.jobGroupPagedResourcesAssembler = jobGroupPagedResourcesAssembler;
+        this.jobGroupModelAssembler = jobGroupModelAssembler;
     }
 
     /**
      * Returns one page of job groups.
      *
-     * @param page    page number.
-     * @param size    page size.
-     * @param sortBy  sorting column.
-     * @param sortDir sorting direction.
+     * @param pageable paging parameter.
      * @return on page of job groups.
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobGroupDto>> findAll(@RequestParam("page") int page,
-                                                                @RequestParam("size") int size,
-                                                                @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                @RequestParam(value = "sortDir", required = false) String sortDir) {
+    public ResponseEntity<PagedModel<JobGroupDto>> findAll(Pageable pageable) {
+
         t.restart();
 
-        // Get paging parameters
-        long totalCount = jobGroupService.countAll();
-        Page<JobGroup> allJobGroups = jobGroupService.allJobGroups(PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all job groups
+        Page<JobGroup> allJobGroups = jobGroupService.findAll(pageable);
+        PagedModel<JobGroupDto> collectionModel = jobGroupPagedResourcesAssembler.toModel(allJobGroups, jobGroupModelAssembler);
+        logger.debug(format("Job group list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        List<JobGroupDto> jobGroupDtoes = modelConverter.convertJobGroupToDto(allJobGroups.toList(), totalCount);
-
-        // Add links
-        jobGroupDtoes.forEach(this::addLinks);
-
-        // Add self link
-        Link self = linkTo(methodOn(JobGroupController.class).findAll(page, size, sortBy, sortDir)).withSelfRel();
-        Link insert = linkTo(methodOn(JobGroupController.class).insert(new JobGroupDto())).withRel("insert");
-        logger.debug(format("Job group list request finished - count: {0} {1}", allJobGroups.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobGroupDtoes, self, insert));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -96,20 +86,14 @@ public class JobGroupController {
      *
      * @param jobGroupId job group UUID.
      * @return job group with given ID or error.
-     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(value = "/{jobGroupId}", produces = {"application/hal+json"})
-    public ResponseEntity<JobGroupDto> findById(@PathVariable("jobGroupId") String jobGroupId) throws ResourceNotFoundException {
+    public ResponseEntity<JobGroupDto> findById(@PathVariable String jobGroupId) {
+
         t.restart();
-
-        RestPreconditions.checkFound(jobGroupService.getJobGroup(jobGroupId));
-
         JobGroup jobGroup = jobGroupService.getJobGroup(jobGroupId);
-        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add links
-        addLinks(jobGroupDto);
+        JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group by ID request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(jobGroupDto);
@@ -120,22 +104,37 @@ public class JobGroupController {
      *
      * @param jobGroupName job group name.
      * @return job group with given ID or error.
-     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @Cacheable(cacheNames = "JobGroup")
     @GetMapping(value = "/byName", produces = {"application/hal+json"})
-    public ResponseEntity<JobGroupDto> findByName(@RequestParam("name") String jobGroupName) throws ResourceNotFoundException {
+    public ResponseEntity<JobGroupDto> findByName(@RequestParam("name") String jobGroupName) {
+
         t.restart();
-        RestPreconditions.checkFound(jobGroupService.getJobGroupByName(jobGroupName));
-
         JobGroup jobGroup = jobGroupService.getJobGroupByName(jobGroupName);
-        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add links
-        addLinks(jobGroupDto);
+        JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group by name request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(jobGroupDto);
+    }
+
+    /**
+     * Returns all job groups connected to a job definition.
+     *
+     * @param jobDefinitionId job definition ID.
+     * @param pageable        paging parameters.
+     * @return job groups belonging to given job definition.
+     */
+    @Cacheable(cacheNames = "JobGroup")
+    @GetMapping(value = "/byJobDefinition/{jobDefinitionId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobGroupDto>> findByJobDefinition(@PathVariable String jobDefinitionId, Pageable pageable) {
+
+        t.restart();
+        Page<JobGroup> jobGroups = jobGroupService.findByJobDefinition(jobDefinitionId, pageable);
+        PagedModel<JobGroupDto> collectionModel = jobGroupPagedResourcesAssembler.toModel(jobGroups, jobGroupModelAssembler);
+        logger.debug(format("Job group list by job definition request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -149,12 +148,9 @@ public class JobGroupController {
         t.restart();
 
         // Get job group
-        JobGroup jobGroup = modelConverter.convertJobGroupToEntity(jobGroupDto);
+        JobGroup jobGroup = jobGroupModelAssembler.toEntity(jobGroupDto);
         jobGroup = jobGroupService.insertJobGroup(jobGroup);
-        jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add links
-        addLinks(jobGroupDto);
+        jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group update request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(jobGroupDto);
@@ -169,17 +165,13 @@ public class JobGroupController {
      * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @PutMapping(value = "/{jobGroupId}/update", consumes = {"application/hal+json"})
-    public ResponseEntity<JobGroupDto> update(@PathVariable("jobGroupId") String jobGroupId,
-                                              @RequestBody JobGroupDto jobGroupDto) throws ResourceNotFoundException {
+    public ResponseEntity<JobGroupDto> update(@PathVariable String jobGroupId, @RequestBody JobGroupDto jobGroupDto) throws ResourceNotFoundException {
         t.restart();
 
         // Get job group
-        JobGroup jobGroup = modelConverter.convertJobGroupToEntity(jobGroupDto);
+        JobGroup jobGroup = jobGroupModelAssembler.toEntity(jobGroupDto);
         jobGroup = jobGroupService.updateJobGroup(jobGroupId, jobGroup);
-        jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add links
-        addLinks(jobGroupDto);
+        jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group update request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
         return ResponseEntity.ok(jobGroupDto);
@@ -194,7 +186,7 @@ public class JobGroupController {
      */
     @CacheEvict(cacheNames = "JobGroup")
     @DeleteMapping(value = "/{jobGroupId}/delete")
-    public ResponseEntity<Void> delete(@PathVariable("jobGroupId") String jobGroupId) throws ResourceNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable String jobGroupId) throws ResourceNotFoundException {
         t.restart();
         RestPreconditions.checkFound(jobGroupService.getJobGroup(jobGroupId));
         jobGroupService.deleteJobGroup(jobGroupId);
@@ -207,6 +199,7 @@ public class JobGroupController {
      *
      * @param jobGroupId jobDefinition group ID.
      * @param id         jobDefinition ID.
+     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @GetMapping("/{jobGroupId}/addJobDefinition/{id}")
     public ResponseEntity<JobGroupDto> addJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {
@@ -215,10 +208,7 @@ public class JobGroupController {
 
         // Add job definition to job group
         JobGroup jobGroup = jobGroupService.addJobDefinition(jobGroupId, id);
-        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add link
-        addLinks(jobGroupDto);
+        JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Finished add job definition to job group request - jobGroupId: {0} id: {1} {2}", jobGroupId, id, t.elapsedStr()));
 
         return ResponseEntity.ok(jobGroupDto);
@@ -229,6 +219,7 @@ public class JobGroupController {
      *
      * @param jobGroupId jobDefinition group ID.
      * @param id         jobDefinition ID.
+     * @throws ResourceNotFoundException in case the job group is not existing.
      */
     @GetMapping("/{jobGroupId}/removeJobDefinition/{id}")
     public ResponseEntity<JobGroupDto> removeJobDefinition(@PathVariable String jobGroupId, @PathVariable String id) throws ResourceNotFoundException {
@@ -236,24 +227,9 @@ public class JobGroupController {
         t.restart();
 
         JobGroup jobGroup = jobGroupService.removeJobDefinition(jobGroupId, id);
-        JobGroupDto jobGroupDto = modelConverter.convertJobGroupToDto(jobGroup);
-
-        // Add link
-        addLinks(jobGroupDto);
-
+        JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Finished remove jobDefinition from jobDefinition group request - id: {0} jobDefinitionId: {1} {2}", jobGroupId, jobGroupId, t.elapsedStr()));
-        return ResponseEntity.ok(jobGroupDto);
-    }
 
-    private void addLinks(JobGroupDto jobGroupDto) {
-        try {
-            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).findById(jobGroupDto.getId())).withSelfRel());
-            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).update(jobGroupDto.getId(), jobGroupDto)).withRel("update"));
-            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).delete(jobGroupDto.getId())).withRel("delete"));
-            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).addJobDefinition(null, null)).withRel("addJobDefinition").expand(jobGroupDto.getId(), ""));
-            jobGroupDto.add(linkTo(methodOn(JobGroupController.class).removeJobDefinition(null, null)).withRel("removeJobDefinition").expand(jobGroupDto.getId(), ""));
-        } catch (ResourceNotFoundException e) {
-            logger.error(format("Could not add links to DTO - id: {0}", jobGroupDto.getId()), e);
-        }
+        return ResponseEntity.ok(jobGroupDto);
     }
 }

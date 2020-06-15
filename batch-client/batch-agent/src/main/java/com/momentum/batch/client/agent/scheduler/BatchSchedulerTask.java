@@ -36,6 +36,13 @@ import static java.text.MessageFormat.format;
  */
 @Component
 public class BatchSchedulerTask extends QuartzJobBean {
+
+    @Value("${mbm.agent.hostName}")
+    private String hostName;
+
+    @Value("${mbm.agent.nodeName}")
+    private String nodeName;
+
     /**
      * Logger
      */
@@ -47,7 +54,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Docker network
      */
-    @Value("${agent.docker.network}")
+    @Value("${mbm.agent.docker.network}")
     private String dockerNetwork;
     /**
      * Kafka producer for agent commands.
@@ -65,25 +72,15 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * Random number generator for job name.
      */
     private final Random rand = new Random(System.currentTimeMillis());
-    /**
-     * Host name
-     */
-    private final String hostName;
-    /**
-     * Node name
-     */
-    private final String nodeName;
 
     /**
      * Constructor.
      *
-     * @param nodeName node name.
+     * @param agentSchedulerMessageProducer Kafka scheduler message producer.
      */
     @Autowired
-    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer, String hostName, String nodeName) {
+    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
-        this.hostName = hostName;
-        this.nodeName = nodeName;
     }
 
     /**
@@ -252,12 +249,13 @@ public class BatchSchedulerTask extends QuartzJobBean {
 
         // Build agent command
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
+        JobScheduleDto jobScheduleDto = new JobScheduleDto();
+        jobScheduleDto.setName(jobDataMap.getString(JOB_SCHEDULE_NAME));
+        jobScheduleDto.setId(jobDataMap.getString(JOB_SCHEDULE_UUID));
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_EXECUTED);
         agentSchedulerMessageDto.setHostName(hostName);
         agentSchedulerMessageDto.setNodeName(nodeName);
-        agentSchedulerMessageDto.setJobScheduleUuid(jobDataMap.getString(JOB_SCHEDULE_UUID));
-        agentSchedulerMessageDto.setNextFireTime(trigger.getNextFireTime());
-        agentSchedulerMessageDto.setPreviousFireTime(trigger.getPreviousFireTime());
+        agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);
 
         // And send it to the server
         agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);

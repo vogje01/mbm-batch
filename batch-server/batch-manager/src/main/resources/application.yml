@@ -16,6 +16,17 @@ spring:
     show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
+mbm:
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
+  library:
+    directory: C:\work\batch\jobs
+  server:
+    host: localhost
+    port: 8090
+
 # Web token secret
 jwt:
   secret: mU*mJxJ*&31p
@@ -47,10 +58,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
+    group: batchmanager
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
+    group: batchmanager
     partitions: 5
     replicas: 1

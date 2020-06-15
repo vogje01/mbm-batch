@@ -159,23 +159,6 @@ class StepExecutionList extends React.Component {
                                 </Form>
                             </Editing>
                             <Column
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry',
-                                        icon: 'material-icons-outlined ic-edit md-18',
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job execution entry',
-                                        icon: 'material-icons-outlined ic-delete md-18'
-                                    }
-                                ]}/>
-                            <Column
                                 caption={'Job Name'}
                                 dataField={'jobName'}
                                 allowSorting={true}
@@ -275,7 +258,7 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={80}/>
+                                width={60}/>
                             <Column
                                 calculateCellValue={this.getReadCount}
                                 dataField={'readCount'}
@@ -284,7 +267,7 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                width={100}/>
                             <Column
                                 calculateCellValue={this.getReadSkipCount}
                                 dataField={'readSkipCount'}
@@ -293,7 +276,8 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                visible={false}
+                                width={100}/>
                             <Column
                                 calculateCellValue={this.getWriteCount}
                                 caption={'Write'}
@@ -301,7 +285,7 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                width={100}/>
                             <Column
                                 calculateCellValue={this.getWriteSkipCount}
                                 caption={'Write Skip'}
@@ -309,7 +293,8 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                visible={false}
+                                width={100}/>
                             <Column
                                 calculateCellValue={this.getFilterCount}
                                 caption={'Filtered'}
@@ -317,7 +302,7 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={110}/>
+                                width={100}/>
                             <Column
                                 dataField={'commitCount'}
                                 caption={'Commits'}
@@ -325,7 +310,8 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={80}/>
+                                visible={false}
+                                width={60}/>
                             <Column
                                 dataField={'rollbackCount'}
                                 caption={'Rollbacks'}
@@ -333,7 +319,8 @@ class StepExecutionList extends React.Component {
                                 allowSorting={true}
                                 allowReordering={true}
                                 allowFiltering={false}
-                                width={80}/>
+                                visible={false}
+                                width={60}/>
                             <Column
                                 dataField={'createdBy'}
                                 dataType={'string'}
@@ -350,6 +337,23 @@ class StepExecutionList extends React.Component {
                                 dataField={'modifiedAt'}
                                 dataType={'datetime'}
                                 visible={false}/>
+                            <Column
+                                allowSorting={false}
+                                allowReordering={false}
+                                width={80}
+                                type={'buttons'}
+                                buttons={[
+                                    {
+                                        name: 'edit',
+                                        hint: 'Edit job execution entry',
+                                        icon: 'material-icons-outlined ic-edit md-18',
+                                    },
+                                    {
+                                        name: 'delete',
+                                        hint: 'Delete job execution entry',
+                                        icon: 'material-icons-outlined ic-delete md-18'
+                                    }
+                                ]}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}

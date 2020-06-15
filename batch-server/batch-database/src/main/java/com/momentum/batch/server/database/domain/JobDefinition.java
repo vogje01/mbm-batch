@@ -17,6 +17,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Job definition entity.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.4
+ * @since 0.0.1
+ */
 @Entity
 @Table(name = "BATCH_JOB_DEFINITION")
 @EntityListeners(AuditingEntityListener.class)
@@ -25,71 +32,130 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<String> {
 
+    /**
+     * Job definition primary key.
+     */
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-
+    /**
+     * Job definition name.
+     */
     @Column(name = "NAME")
     private String name;
-
+    /**
+     * Job definition label.
+     */
     @Column(name = "LABEL")
     private String label;
-
+    /**
+     * Job definition type.
+     */
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private JobDefinitionType type;
-
+    /**
+     * Job version.
+     */
     @Column(name = "JOB_VERSION")
     private String jobVersion;
-
+    /**
+     * Job description.
+     */
     @Column(name = "DESCRIPTION")
     private String description;
-
+    /**
+     * Active flag
+     */
     @Column(name = "ACTIVE")
     private Boolean active;
-
+    /**
+     * Pure file name
+     */
     @Column(name = "FILE_NAME")
     private String fileName;
-
+    /**
+     * MD5 file hash
+     */
+    @Column(name = "FILE_HASH")
+    private String fileHash;
+    /**
+     * File size in bytes
+     */
+    @Column(name = "FILE_SIZE")
+    private Long fileSize;
+    /**
+     * Command
+     */
     @Column(name = "COMMAND")
     private String command;
-
+    /**
+     * Absolute path to working directory.
+     */
     @Column(name = "WORKING_DIRECTORY")
     private String workingDirectory;
-
+    /**
+     * Absolute path to logging directory.
+     */
     @Column(name = "LOGGING_DIRECTORY")
     private String loggingDirectory;
-
+    /**
+     * Failed exit code
+     */
     @Column(name = "FAILED_EXIT_CODE")
     private String failedExitCode;
-
+    /**
+     * Failed exit message
+     */
     @Column(name = "FAILED_EXIT_MESSAGE")
     private String failedExitMessage;
-
+    /**
+     * Completed exit code
+     */
     @Column(name = "COMPLETED_EXIT_CODE")
     private String completedExitCode;
-
+    /**
+     * Completed exit message
+     */
     @Column(name = "COMPLETED_EXIT_MESSAGE")
     private String completedExitMessage;
-
+    /**
+     * Job main group for Quartz scheduler.
+     */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "JOB_GROUP_ID")
-    private JobGroup jobGroup;
+    @JoinColumn(name = "JOB_MAIN_GROUP")
+    private JobGroup jobMainGroup;
+    /**
+     * Job definition job groups many to many relationship
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "BATCH_JOB_DEFINITION_JOB_GROUP",
+            joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
+            inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
+    private final List<JobGroup> jobGroups = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
 
+    /**
+     * Constructor
+     */
     public JobDefinition() {
         // JSON constructor
     }
 
+    /**
+     * Update the entity from another entity.
+     *
+     * @param origin original entity.
+     */
     public void update(JobDefinition origin) {
         this.name = origin.name;
         this.label = origin.label;
-        this.jobGroup = origin.jobGroup;
         this.jobVersion = origin.jobVersion;
         this.type = origin.type;
         this.active = origin.active;
@@ -97,7 +163,10 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.workingDirectory = origin.workingDirectory;
         this.loggingDirectory = origin.loggingDirectory;
         this.fileName = origin.fileName;
+        this.fileHash = origin.fileHash;
+        this.fileSize = origin.fileSize;
         this.description = origin.description;
+        this.jobMainGroup = origin.jobMainGroup;
         this.failedExitCode = origin.failedExitCode;
         this.failedExitMessage = origin.failedExitMessage;
         this.completedExitCode = origin.completedExitCode;
@@ -144,12 +213,12 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.jobVersion = version;
     }
 
-    public JobGroup getJobGroup() {
-        return jobGroup;
+    public JobGroup getJobMainGroup() {
+        return jobMainGroup;
     }
 
-    public void setJobGroup(JobGroup jobGroup) {
-        this.jobGroup = jobGroup;
+    public void setJobMainGroup(JobGroup mainJobGroup) {
+        this.jobMainGroup = mainJobGroup;
     }
 
     public String getDescription() {
@@ -178,6 +247,22 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getFileHash() {
+        return fileHash;
+    }
+
+    public void setFileHash(String fileHash) {
+        this.fileHash = fileHash;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getCommand() {
@@ -236,6 +321,27 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.completedExitMessage = completedExitMessage;
     }
 
+    public List<JobGroup> getJobGroups() {
+        return jobGroups;
+    }
+
+    public void setJobGroups(List<JobGroup> jobGroups) {
+        this.jobGroups.clear();
+        if (jobGroups != null) {
+            jobGroups.forEach(this::addJobGroup);
+        }
+    }
+
+    public void addJobGroup(JobGroup jobGroup) {
+        if (!jobGroups.contains(jobGroup)) {
+            jobGroups.add(jobGroup);
+        }
+    }
+
+    public void removeJobGroup(JobGroup jobGroup) {
+        jobGroups.remove(jobGroup);
+    }
+
     public List<JobDefinitionParam> getJobDefinitionParams() {
         return jobDefinitionParams;
     }
@@ -263,7 +369,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         JobDefinition that = (JobDefinition) o;
-        return Objects.equal(id, that.id) &&
+        return fileSize == that.fileSize &&
+                Objects.equal(id, that.id) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(label, that.label) &&
                 type == that.type &&
@@ -271,6 +378,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 Objects.equal(description, that.description) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(fileName, that.fileName) &&
+                Objects.equal(fileHash, that.fileHash) &&
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
                 Objects.equal(loggingDirectory, that.loggingDirectory) &&
@@ -282,8 +390,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, command, workingDirectory, loggingDirectory,
-                failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override
@@ -297,6 +404,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
                 .add("description", description)
                 .add("active", active)
                 .add("fileName", fileName)
+                .add("fileHash", fileHash)
+                .add("fileSize", fileSize)
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
                 .add("loggingDirectory", loggingDirectory)

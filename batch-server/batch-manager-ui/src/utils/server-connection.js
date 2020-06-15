@@ -1,7 +1,7 @@
 import {EndTimer, StartTimer} from "./method-timer";
 import {errorMessage, infoMessage} from "./message-util";
 
-const initGet = () => {
+export const initGet = () => {
     return {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}, method: 'GET'
     }
@@ -22,29 +22,46 @@ const initUpdate = (body) => {
     }
 };
 
-const getList = (url, attributes) => {
-    StartTimer();
-    return fetch(url, initGet())
-        .then(response => {
-            if (response.status !== 200) {
-                throw new Error(response.statusText)
-            }
-            return response.json()
-        })
-        .then((data) => {
-            if (data === undefined) {
-                return {
-                    data: [],
-                    totalCount: 0
-                }
-            }
-            return {
-                data: data._embedded ? data._embedded[attributes] : [],
-                totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0
-            };
-        }).finally(() => {
-            EndTimer();
+export const handleResponse = (response, errMsg) => {
+    if (response.status !== 200) {
+        errorMessage(errMsg + " status: " + response.status + " message: " + response.statusText)
+        return undefined;
+    }
+    return response.json()
+}
+
+export const handleData = (data, attributes) => {
+    if (data.page.totalElements > 0) {
+        return {
+            data: data._embedded[attributes],
+            totalCount: data.page.totalElements
+        };
+    }
+    return {
+        data: [],
+        totalCount: 0
+    }
+}
+
+export const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
+    let params = '?';
+
+    if (loadOptions.skip !== undefined && loadOptions.take !== undefined) {
+        params += 'page=' + loadOptions.skip / loadOptions.take;
+        params += '&size=' + loadOptions.take;
+    } else {
+        params += 'page=0';
+        params += '&size=-1';
+    }
+
+    if (loadOptions.sort) {
+        loadOptions.sort.forEach((s) => {
+            params += '&sort=' + s.selector + (s.desc ? ',desc' : ',asc');
         });
+    } else {
+        params += '&sort=' + defaultSortBy + ',' + defaultSortDir;
+    }
+    return params;
 };
 
 const getItem = (url) => {
@@ -57,32 +74,6 @@ const getItem = (url) => {
             return response.json();
         })
         .finally(() => {
-            EndTimer();
-        });
-};
-
-const listItems = (entity, attributes) => {
-    StartTimer();
-    return fetch(process.env.REACT_APP_API_URL + entity, initGet())
-        .then(response => {
-            if (response.status !== 200) {
-                errorMessage("Could not get list of items.")
-            }
-            return response.json()
-        })
-        .then((data) => {
-            if (data === undefined) {
-                return {
-                    data: [],
-                    totalCount: 0
-                }
-            }
-            return {
-                data: data._embedded ? data._embedded[attributes] : [],
-                totalCount: data._embedded ? data._embedded[attributes][0].totalSize : 0,
-                links: data._links ? data._links : []
-            };
-        }).finally(() => {
             EndTimer();
         });
 };
@@ -133,4 +124,4 @@ const deleteItem = (url, key, label) => {
         });
 };
 
-export {getList, deleteItem, insertItem, updateItem, listItems, getItem}
+export {deleteItem, insertItem, updateItem, getItem}

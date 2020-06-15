@@ -21,8 +21,8 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfiguration {
 
-    @Value("${server.hostName}")
-    private String serverName;
+    @Value("${mbm.listener.server}")
+    private String listenerName;
 
     @Value(value = "${kafka.agentStatus.topic}")
     private String topic;
@@ -32,11 +32,6 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
 
     @Value(value = "${kafka.agentStatus.replicas}")
     private short replicas;
-
-    @Bean
-    public String serverName() {
-        return serverName;
-    }
 
     @Bean
     public ProducerFactory<String, AgentStatusMessageDto> agentStatusMessageProducerFactory() {
@@ -54,8 +49,8 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
     }
 
     @Bean
-    public AgentStatusMessageProducer agentStatusMessageProducer(String serverName) {
-        return new AgentStatusMessageProducer(serverName, agentStatusMessageKafkaTemplate());
+    public AgentStatusMessageProducer agentStatusMessageProducer() {
+        return new AgentStatusMessageProducer(listenerName, agentStatusMessageKafkaTemplate());
     }
 
     @Bean

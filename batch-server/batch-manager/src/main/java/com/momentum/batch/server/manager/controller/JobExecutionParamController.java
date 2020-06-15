@@ -2,27 +2,24 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobExecutionParamDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionParam;
+import com.momentum.batch.server.manager.converter.JobExecutionParamModelAssembler;
 import com.momentum.batch.server.manager.service.JobExecutionParamService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import com.momentum.batch.server.manager.service.util.PagingUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Job execution param REST controller.
@@ -41,53 +38,59 @@ public class JobExecutionParamController {
 
     private final MethodTimer t = new MethodTimer();
 
-    private final JobExecutionParamService service;
+    private final JobExecutionParamService jobExecutionParamService;
 
-    private final ModelConverter modelConverter;
+    private final PagedResourcesAssembler<JobExecutionParam> pagedResourcesAssembler;
+
+    private final JobExecutionParamModelAssembler jobExecutionParamModelAssembler;
 
     @Autowired
-    public JobExecutionParamController(JobExecutionParamService service, ModelConverter modelConverter) {
-        this.service = service;
-        this.modelConverter = modelConverter;
+    public JobExecutionParamController(JobExecutionParamService jobExecutionParamService, PagedResourcesAssembler<JobExecutionParam> pagedResourcesAssembler,
+                                       JobExecutionParamModelAssembler jobExecutionParamModelAssembler) {
+        this.jobExecutionParamService = jobExecutionParamService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.jobExecutionParamModelAssembler = jobExecutionParamModelAssembler;
+    }
+
+    /**
+     * Returns one page of job execution params.
+     *
+     * @param pageable paging parameters.
+     * @return one page of job execution params.
+     */
+    @GetMapping(produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobExecutionParamDto>> findAll(Pageable pageable) {
+
+        t.restart();
+
+        // Get all parameters by job ID
+        Page<JobExecutionParam> jobExecutionParams = jobExecutionParamService.findAll(pageable);
+        PagedModel<JobExecutionParamDto> collectionModel = pagedResourcesAssembler.toModel(jobExecutionParams, jobExecutionParamModelAssembler);
+        logger.debug(format("Job execution parameter list by job request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
      * Returns one page of job execution params.
      *
      * @param jobExecutionId UUID of the job.
-     * @param page           page number.
-     * @param size           page size.
-     * @param sortBy         sorting column.
-     * @param sortDir        sorting direction.
+     * @param pageable       paging parameters.
      * @return one page of job execution params.
      */
-    @GetMapping(value = "/byJobId/{jobId}", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<JobExecutionParamDto>> findByJobId(@PathVariable("jobId") String jobExecutionId,
-                                                                             @RequestParam("page") int page,
-                                                                             @RequestParam("size") int size,
-                                                                             @RequestParam(value = "sortBy", required = false) String sortBy,
-                                                                             @RequestParam(value = "sortDir", required = false) String sortDir) {
+    @GetMapping(value = "/byJobId/{jobExecutionId}", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<JobExecutionParamDto>> findByJobId(@PathVariable String jobExecutionId, Pageable pageable) {
+
         t.restart();
 
-        // Get paging parameters
-        long totalCount = service.countByJobExecutionId(jobExecutionId);
-        Page<JobExecutionParam> allJobExecutionParams = service.byJobId(jobExecutionId, PagingUtil.getPageable(page, size, sortBy, sortDir));
+        // Get all parameters by job ID
+        Page<JobExecutionParam> jobExecutionParams = jobExecutionParamService.findByJobId(jobExecutionId, pageable);
+        PagedModel<JobExecutionParamDto> collectionModel = pagedResourcesAssembler.toModel(jobExecutionParams, jobExecutionParamModelAssembler);
+        logger.debug(format("Job execution parameter list by job request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-        List<JobExecutionParamDto> jobExecutionParamDtoes = modelConverter.convertJobExecutionParamToDto(allJobExecutionParams.toList(), totalCount);
-
-        jobExecutionParamDtoes.forEach(l -> {
-            try {
-                l.add(linkTo(methodOn(JobExecutionParamController.class).findById(l.getId())).withSelfRel());
-                l.add(linkTo(methodOn(JobExecutionParamController.class).delete(l.getId())).withRel("delete"));
-            } catch (ResourceNotFoundException e) {
-                logger.error(format("Could not get resources - error: {0}", e.getMessage()), e);
-            }
-        });
-
-        Link self = linkTo(methodOn(JobExecutionParamController.class).findByJobId(jobExecutionId, page, size, sortBy, sortDir)).withSelfRel();
-        logger.debug(format("Job execution param list request finished - count: {0} {1}", allJobExecutionParams.getSize(), t.elapsedStr()));
-
-        return ResponseEntity.ok(new CollectionModel<>(jobExecutionParamDtoes, self));
+        return ResponseEntity.ok(collectionModel);
     }
 
     /**
@@ -98,10 +101,11 @@ public class JobExecutionParamController {
      * @throws ResourceNotFoundException in case the job execution param is not existing.
      */
     @GetMapping(value = "/{paramId}")
-    public ResponseEntity<JobExecutionParam> findById(@PathVariable("paramId") String paramId) throws ResourceNotFoundException {
-        Optional<JobExecutionParam> jobExecutionParamOptional = service.byId(paramId);
+    public ResponseEntity<JobExecutionParamDto> findById(@PathVariable String paramId) throws ResourceNotFoundException {
+        Optional<JobExecutionParam> jobExecutionParamOptional = jobExecutionParamService.findById(paramId);
         if (jobExecutionParamOptional.isPresent()) {
-            return ResponseEntity.ok(jobExecutionParamOptional.get());
+            JobExecutionParamDto jobExecutionParamDto = jobExecutionParamModelAssembler.toModel(jobExecutionParamOptional.get());
+            return ResponseEntity.ok(jobExecutionParamDto);
         }
         throw new ResourceNotFoundException();
     }
@@ -113,9 +117,9 @@ public class JobExecutionParamController {
      * @throws ResourceNotFoundException in case the job execution param is not existing.
      */
     @DeleteMapping(value = "/{paramId}/delete")
-    public ResponseEntity<Void> delete(@PathVariable("paramId") String paramId) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(service.byId(paramId));
-        service.deleteById(paramId);
+    public ResponseEntity<Void> delete(@PathVariable String paramId) throws ResourceNotFoundException {
+        RestPreconditions.checkFound(jobExecutionParamService.findById(paramId));
+        jobExecutionParamService.deleteById(paramId);
         return ResponseEntity.ok().build();
     }
 }

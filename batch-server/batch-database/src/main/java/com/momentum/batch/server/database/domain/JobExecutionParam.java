@@ -76,8 +76,9 @@ public class JobExecutionParam implements PrimaryKeyIdentifier<String> {
     /**
      * Copy constructor.
      *
-     * @param keyName parameter key.
-     * @param origin  parameter value.
+     * @param keyName          parameter key.
+     * @param origin           parameter value.
+     * @param jobExecutionInfo job execution infos.
      */
     public JobExecutionParam(String keyName, JobParameter origin, JobExecutionInfo jobExecutionInfo) {
         this.jobExecutionInfo = jobExecutionInfo;

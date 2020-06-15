@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams, mergeParams} from "../../utils/param-util";
-import {deleteItem, getItem, getList, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const JobGroupDataSource = () => {
     return new DataSource({
@@ -11,8 +11,17 @@ export const JobGroupDataSource = () => {
                 return getItem(url);
             },
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobgroups' + params, 'jobGroupDtoes');
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'jobgroups' + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of job groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (jobGroup) {
                 let url = process.env.REACT_APP_API_URL + 'jobgroups/insert';
@@ -35,16 +44,42 @@ export const JobGroupJobDefinitionDataSource = (jobGroup) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                if (!jobGroup._links) return;
-                let url = jobGroup._links.jobDefinitions.href;
-                url = mergeParams(loadOptions, url, 'name', 'asc');
-                return getList(url, 'jobDefinitionDtoes');
+                StartTimer();
+                let url = jobGroup._links.jobDefinitions.href + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of job definitions');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobDefinitionDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (user) {
                 return getItem(jobGroup._links.addJobDefinition.href + user.id);
             },
             remove: function (user) {
                 return getItem(jobGroup._links.removeJobDefinition.href + user.id);
+            }
+        })
+    });
+};
+
+export const JobDefinitionRestrictedDataSource = (jobGroup) => {
+    return new DataSource({
+        store: new CustomStore({
+            load: function (loadOptions) {
+                StartTimer();
+                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/restricted/' + jobGroup.id + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then((data) => {
+                        return handleData(data, 'jobDefinitionDtoes')
+                    })
+                    .finally(() => EndTimer());
             }
         })
     });

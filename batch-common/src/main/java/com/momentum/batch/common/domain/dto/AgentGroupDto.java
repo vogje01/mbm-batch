@@ -22,10 +22,6 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
      */
     private String id;
     /**
-     * Version
-     */
-    private Integer version = 0;
-    /**
      * Group name
      */
     private String name;
@@ -53,10 +49,6 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
      * Modified at
      */
     private Date modifiedAt;
-    /**
-     * Total count
-     */
-    private long totalSize;
 
     /**
      * Constructor
@@ -129,19 +121,10 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("version", version)
                 .add("name", name)
                 .add("description", description)
                 .add("active", active)
@@ -149,7 +132,6 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("totalSize", totalSize)
                 .toString();
     }
 
@@ -160,9 +142,7 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
         if (!super.equals(o)) return false;
         AgentGroupDto that = (AgentGroupDto) o;
         return active == that.active &&
-                totalSize == that.totalSize &&
                 Objects.equal(id, that.id) &&
-                Objects.equal(version, that.version) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(description, that.description) &&
                 Objects.equal(createdBy, that.createdBy) &&
@@ -173,6 +153,6 @@ public class AgentGroupDto extends RepresentationModel<AgentGroupDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, version, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt, totalSize);
+        return Objects.hashCode(super.hashCode(), id, name, description, active, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 }

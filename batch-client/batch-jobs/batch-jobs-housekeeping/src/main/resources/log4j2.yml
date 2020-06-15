@@ -23,7 +23,7 @@ Configuration:
       AppenderRef:
         - ref: Console_Appender
     Logger:
-      - name: com.momentum.batch.client.jobs.housekeeping
+      - name: com.momentum.batch.client.jobs
         level: debug
         AppenderRef:
           - ref: File_Appender

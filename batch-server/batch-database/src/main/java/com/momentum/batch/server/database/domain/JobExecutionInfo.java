@@ -135,13 +135,13 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobExecutionInfo")
     @Cascade(CascadeType.ALL)
-    private List<JobExecutionParam> jobExecutionParams = new ArrayList<>();
+    private final List<JobExecutionParam> jobExecutionParams = new ArrayList<>();
     /**
      * Step execution infos.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobExecutionInfo", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
-    private List<StepExecutionInfo> stepExecutionInfos = new ArrayList<>();
+    private final List<StepExecutionInfo> stepExecutionInfos = new ArrayList<>();
 
     /**
      * Constructor
@@ -151,7 +151,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     }
 
     public void update(JobExecutionDto jobExecutionDto) {
-        this.id = jobExecutionDto.getId();
+        //this.id = jobExecutionDto.getId();
         this.jobPid = jobExecutionDto.getJobPid();
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();

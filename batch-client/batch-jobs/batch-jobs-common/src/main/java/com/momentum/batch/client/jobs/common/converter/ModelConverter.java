@@ -8,7 +8,6 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,6 @@ import static java.util.stream.Collectors.toList;
  * @version 0.0.4
  * @since 0.0.1
  */
-@Component
 public class ModelConverter {
 
     private final ModelMapper modelMapper;

@@ -4,11 +4,19 @@ import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
 import com.momentum.batch.server.database.domain.JobGroup;
 
+import java.util.List;
 import java.util.UUID;
 
+/**
+ * Job definition builder for testing.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.4
+ * @since 0.0.1
+ */
 public class JobDefinitionBuilder {
 
-    private JobDefinition jobDefinition = new JobDefinition();
+    private final JobDefinition jobDefinition = new JobDefinition();
 
     public JobDefinitionBuilder withId(String id) {
         jobDefinition.setId(id);
@@ -25,15 +33,15 @@ public class JobDefinitionBuilder {
         return this;
     }
 
-    public JobDefinitionBuilder withJobGroup(JobGroup jobGroup) {
+    /*public JobDefinitionBuilder withJobGroup(JobGroup jobGroup) {
         jobDefinition.setJobGroup(jobGroup);
         return this;
-    }
+    }*/
 
-    /*public JobDefinitionBuilder withJobGroups(List<JobGroup> jobGroups) {
+    public JobDefinitionBuilder withJobGroups(List<JobGroup> jobGroups) {
         jobDefinition.setJobGroups(jobGroups);
         return this;
-    }*/
+    }
 
     public JobDefinitionBuilder addParam(JobDefinitionParam param) {
         jobDefinition.addJobDefinitionParam(param);

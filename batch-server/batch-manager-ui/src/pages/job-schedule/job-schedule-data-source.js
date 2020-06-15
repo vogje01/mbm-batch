@@ -1,14 +1,22 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getParams} from "../../utils/param-util";
-import {deleteItem, getItem, insertItem, listItems, updateItem} from "../../utils/server-connection";
+import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
+import {EndTimer} from "../../utils/method-timer";
 
 export const JobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules' + params, 'jobScheduleDtoes');
+                let url = process.env.REACT_APP_API_URL + 'jobschedules' + getParams(loadOptions, 'name', 'asc');
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of job execution logs');
+                    })
+                    .then(data => {
+                        return handleData(data, 'jobScheduleDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (jobSchedule) {
                 let url = process.env.REACT_APP_API_URL + 'jobschedules/insert';
@@ -34,8 +42,16 @@ export const JobScheduleAgentDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules/' + jobSchedule.id + '/getAgents' + params, 'agentDtoes');
+                let url = jobSchedule._links.agents.href + getParams(loadOptions, 'nodeName', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agents');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (agent) {
                 return getItem(jobSchedule._links.addAgent.href + agent.id);
@@ -51,8 +67,16 @@ export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let params = getParams(loadOptions, 'name', 'asc');
-                return listItems('jobschedules/' + jobSchedule.id + '/getAgentGroups' + params, 'agentGroupDtoes');
+                let url = jobSchedule._links.agentGroups.href + getParams(loadOptions, 'name', 'asc')
+                return fetch(url, initGet())
+                    .then(response => {
+                        return handleResponse(response, 'Could not get list of agent groups');
+                    })
+                    .then(data => {
+                        return handleData(data, 'agentGroupDtoes')
+                    }).finally(() => {
+                        EndTimer();
+                    });
             },
             insert: function (agentGroup) {
                 return getItem(jobSchedule._links.addAgentGroup.href + agentGroup.id);

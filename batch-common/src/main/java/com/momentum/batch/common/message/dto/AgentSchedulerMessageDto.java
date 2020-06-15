@@ -2,6 +2,7 @@ package com.momentum.batch.common.message.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 
 import java.util.Date;
@@ -32,9 +33,13 @@ public class AgentSchedulerMessageDto {
      */
     private String nodeName;
     /**
-     * Schedule
+     * Job schedule
      */
     private JobScheduleDto jobScheduleDto;
+    /**
+     * Job definition
+     */
+    private JobDefinitionDto jobDefinitionDto;
     /**
      * Schedule Name
      */
@@ -103,6 +108,14 @@ public class AgentSchedulerMessageDto {
 
     public void setJobScheduleDto(JobScheduleDto jobScheduleDto) {
         this.jobScheduleDto = jobScheduleDto;
+    }
+
+    public JobDefinitionDto getJobDefinitionDto() {
+        return jobDefinitionDto;
+    }
+
+    public void setJobDefinitionDto(JobDefinitionDto jobDefinitionDto) {
+        this.jobDefinitionDto = jobDefinitionDto;
     }
 
     public Date getPreviousFireTime() {

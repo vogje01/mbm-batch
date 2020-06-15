@@ -23,7 +23,7 @@ public class AgentStatusMessageProducer {
     @Value(value = "${kafka.agentStatus.topic}")
     private String agentCommandTopic;
 
-    private KafkaTemplate<String, AgentStatusMessageDto> template;
+    private final KafkaTemplate<String, AgentStatusMessageDto> template;
 
     private final String nodeName;
 

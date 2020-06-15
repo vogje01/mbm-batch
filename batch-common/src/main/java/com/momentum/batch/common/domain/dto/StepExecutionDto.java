@@ -67,8 +67,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
     private String exitCode;
 
     private String exitMessage;
-
-    private Long totalSize;
     /**
      * Created by
      */
@@ -114,11 +112,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
-    }
-
-    public String setJobIdConverted(JobExecutionDto jobExecutionInfo) {
-        jobId = jobExecutionInfo.getId() != null ? jobExecutionInfo.getId() : "JobId";
-        return jobId;
     }
 
     public Long getJobExecutionId() {
@@ -289,14 +282,6 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
         this.exitMessage = exitMessage;
     }
 
-    public Long getTotalSize() {
-        return totalSize;
-    }
-
-    public void setTotalSize(Long totalSize) {
-        this.totalSize = totalSize;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
@@ -372,12 +357,10 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 .add("runningTime", runningTime)
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
-                .add("totalSize", totalSize)
                 .add("createdBy", createdBy)
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("jobExecutionDto", jobExecutionDto)
                 .toString();
     }
 
@@ -411,16 +394,16 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
                 Objects.equal(runningTime, that.runningTime) &&
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
-                Objects.equal(totalSize, that.totalSize) &&
                 Objects.equal(createdBy, that.createdBy) &&
                 Objects.equal(createdAt, that.createdAt) &&
                 Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt) &&
-                Objects.equal(jobExecutionDto, that.jobExecutionDto);
+                Objects.equal(modifiedAt, that.modifiedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt, jobExecutionDto);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount,
+                readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime,
+                lastUpdated, runningTime, exitCode, exitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 }

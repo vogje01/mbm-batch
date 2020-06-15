@@ -1,9 +1,10 @@
 package com.momentum.batch.server.listener.configuration;
 
 import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,20 +36,24 @@ public class JobLoggingConsumerConfiguration extends AbstractKafkaConfiguration 
         return new NewTopic(loggingTopic, loggingPartitions, loggingReplicas);
     }
 
-    public ConsumerFactory<String, JobExecutionLog> logConsumerFactory() {
-        JsonDeserializer<JobExecutionLog> deserializer = new JsonDeserializer<>(JobExecutionLog.class);
+    public Deserializer<JobExecutionLogDto> deserializer() {
+        JsonDeserializer<JobExecutionLogDto> deserializer = new JsonDeserializer<>(JobExecutionLogDto.class);
         deserializer.setRemoveTypeHeaders(false);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeMapperForKey(true);
+        return deserializer;
+    }
+
+    public ConsumerFactory<String, JobExecutionLogDto> logConsumerFactory() {
         Map<String, Object> properties = defaultConsumerConfiguration();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "JobExecutionLog");
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetReset);
-        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer);
+        return new DefaultKafkaConsumerFactory<>(properties, new StringDeserializer(), deserializer());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, JobExecutionLog> logKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, JobExecutionLog> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, JobExecutionLogDto> logKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, JobExecutionLogDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(logConsumerFactory());
         factory.setConcurrency(loggingPartitions);
         return factory;
