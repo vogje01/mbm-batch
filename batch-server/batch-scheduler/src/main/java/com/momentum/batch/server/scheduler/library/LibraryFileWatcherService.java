@@ -1,8 +1,8 @@
 package com.momentum.batch.server.scheduler.library;
 
+import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
-import com.momentum.batch.server.database.util.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

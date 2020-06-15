@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.JobDefinitionBuilder;
+import com.momentum.batch.common.domain.JobDefinitionParamBuilder;
 import com.momentum.batch.server.database.domain.JobDefinition;
-import com.momentum.batch.server.database.domain.JobDefinitionBuilder;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
-import com.momentum.batch.server.database.domain.JobDefinitionParamBuilder;
 import com.momentum.batch.server.manager.controller.JobDefinitionController;
 import org.junit.Before;
 import org.junit.Test;

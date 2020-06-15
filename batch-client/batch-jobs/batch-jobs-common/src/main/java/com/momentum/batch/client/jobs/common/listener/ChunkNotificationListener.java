@@ -2,15 +2,15 @@ package com.momentum.batch.client.jobs.common.listener;
 
 import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.server.database.domain.dto.JobStatusDto;
-import com.momentum.batch.server.database.domain.dto.StepExecutionDto;
-import com.momentum.batch.server.database.util.util.ExecutionParameter;
+import com.momentum.batch.common.domain.dto.JobStatusDto;
+import com.momentum.batch.common.domain.dto.StepExecutionDto;
+import com.momentum.batch.common.util.ExecutionParameter;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.stereotype.Component;
 
-import static com.momentum.batch.server.database.domain.JobStatusType.*;
-import static com.momentum.batch.server.database.util.util.ExecutionParameter.*;
+import static com.momentum.batch.common.domain.JobStatusType.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

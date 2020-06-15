@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
-import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
-import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.momentum.batch.server.database.util.util.ExecutionParameter.*;
+import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**

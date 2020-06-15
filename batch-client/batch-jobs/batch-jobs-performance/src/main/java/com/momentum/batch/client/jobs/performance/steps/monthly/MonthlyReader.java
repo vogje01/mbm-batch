@@ -1,7 +1,7 @@
 package com.momentum.batch.client.jobs.performance.steps.monthly;
 
 import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
-import com.momentum.batch.server.database.domain.BatchPerformanceType;
+import com.momentum.batch.common.domain.BatchPerformanceType;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

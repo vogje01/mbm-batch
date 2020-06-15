@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.repository.UserRepository;
-import com.momentum.batch.server.database.util.util.PasswordHash;
 import com.momentum.batch.server.manager.service.common.UnauthorizedException;
 import com.unboundid.ldap.sdk.*;
 import org.slf4j.Logger;

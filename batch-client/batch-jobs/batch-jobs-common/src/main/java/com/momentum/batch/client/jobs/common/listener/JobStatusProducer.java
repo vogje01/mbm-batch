@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.listener;
 
-import com.momentum.batch.server.database.domain.dto.JobStatusDto;
+import com.momentum.batch.common.domain.dto.JobStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

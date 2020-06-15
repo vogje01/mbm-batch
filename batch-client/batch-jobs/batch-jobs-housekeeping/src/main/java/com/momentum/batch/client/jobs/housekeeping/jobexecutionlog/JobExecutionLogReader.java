@@ -2,7 +2,7 @@ package com.momentum.batch.client.jobs.housekeeping.jobexecutionlog;
 
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
-import com.momentum.batch.server.database.util.util.DateTimeUtils;
+import com.momentum.batch.common.util.DateTimeUtils;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

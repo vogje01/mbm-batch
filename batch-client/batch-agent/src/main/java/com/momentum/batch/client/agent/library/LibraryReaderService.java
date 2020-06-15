@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.library;
 
-import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
-import com.momentum.batch.server.database.util.util.FileUtils;
-import com.momentum.batch.server.database.util.util.MethodTimer;
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
+import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.MethodTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

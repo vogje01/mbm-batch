@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
-import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
-import com.momentum.batch.server.database.util.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

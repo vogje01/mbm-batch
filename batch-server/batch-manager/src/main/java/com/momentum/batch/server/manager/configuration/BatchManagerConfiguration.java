@@ -3,7 +3,7 @@ package com.momentum.batch.server.manager.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.server.database.util.util.NetworkUtils;
+import com.momentum.batch.common.util.NetworkUtils;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;

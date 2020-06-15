@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.converter;
 
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
-import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.manager.controller.JobDefinitionParamController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.jetbrains.annotations.NotNull;

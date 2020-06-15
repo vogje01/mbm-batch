@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.writer;
 
-import com.momentum.batch.server.database.domain.PrimaryKeyIdentifier;
+import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 

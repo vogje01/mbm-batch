@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.JobDefinition;
-import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

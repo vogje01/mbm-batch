@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
+import com.momentum.batch.common.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
-import com.momentum.batch.server.database.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
-import com.momentum.batch.server.database.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
 import org.junit.Before;
 import org.junit.Test;
