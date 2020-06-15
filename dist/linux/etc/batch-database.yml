@@ -1,0 +1,13 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    banner-mode: off
+    web-application-type: none
+  datasource:
+    url: jdbc:mysql://batchmanager:3306/batch
+    username: root
+    password: Dilbert_01
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: false
