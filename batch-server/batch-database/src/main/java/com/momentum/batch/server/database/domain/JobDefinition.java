@@ -55,7 +55,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     private String fileHash;
 
     @Column(name = "FILE_SIZE")
-    private long fileSize;
+    private Long fileSize;
 
     @Column(name = "COMMAND")
     private String command;
@@ -190,11 +190,11 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.fileHash = fileHash;
     }
 
-    public long getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(long fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

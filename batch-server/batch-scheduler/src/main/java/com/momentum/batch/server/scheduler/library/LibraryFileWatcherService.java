@@ -128,7 +128,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
         } catch (NoSuchAlgorithmException ex) {
-            logger.error(format("Could not get hash algorithm - name: MD5 error: {1}", ex.getMessage()));
+            logger.error(format("Could not get hash algorithm - name: MD5 error: {0}", ex.getMessage()));
         }
     }
 
