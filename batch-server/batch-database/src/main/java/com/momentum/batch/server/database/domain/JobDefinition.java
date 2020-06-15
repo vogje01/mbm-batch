@@ -17,6 +17,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Job definition entity.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.4
+ * @since 0.0.1
+ */
 @Entity
 @Table(name = "BATCH_JOB_DEFINITION")
 @EntityListeners(AuditingEntityListener.class)
@@ -25,60 +32,101 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<String> {
 
+    /**
+     * Job definition primary key.
+     */
     @Id
     @Column(name = "ID")
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
-
+    /**
+     * Job definition name.
+     */
     @Column(name = "NAME")
     private String name;
-
+    /**
+     * Job definition label.
+     */
     @Column(name = "LABEL")
     private String label;
-
+    /**
+     * Job definition type.
+     */
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private JobDefinitionType type;
-
+    /**
+     * Job version.
+     */
     @Column(name = "JOB_VERSION")
     private String jobVersion;
-
+    /**
+     * Job description.
+     */
     @Column(name = "DESCRIPTION")
     private String description;
-
+    /**
+     * Active flag
+     */
     @Column(name = "ACTIVE")
     private Boolean active;
-
+    /**
+     * Pure file name
+     */
     @Column(name = "FILE_NAME")
     private String fileName;
-
+    /**
+     * MD5 file hash
+     */
     @Column(name = "FILE_HASH")
     private String fileHash;
-
+    /**
+     * File size in bytes
+     */
     @Column(name = "FILE_SIZE")
     private Long fileSize;
-
+    /**
+     * Command
+     */
     @Column(name = "COMMAND")
     private String command;
-
+    /**
+     * Absolute path to working directory.
+     */
     @Column(name = "WORKING_DIRECTORY")
     private String workingDirectory;
-
+    /**
+     * Absolute path to logging directory.
+     */
     @Column(name = "LOGGING_DIRECTORY")
     private String loggingDirectory;
-
+    /**
+     * Failed exit code
+     */
     @Column(name = "FAILED_EXIT_CODE")
     private String failedExitCode;
-
+    /**
+     * Failed exit message
+     */
     @Column(name = "FAILED_EXIT_MESSAGE")
     private String failedExitMessage;
-
+    /**
+     * Completed exit code
+     */
     @Column(name = "COMPLETED_EXIT_CODE")
     private String completedExitCode;
-
+    /**
+     * Completed exit message
+     */
     @Column(name = "COMPLETED_EXIT_MESSAGE")
     private String completedExitMessage;
+    /**
+     * Job main group for Quartz scheduler.
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "JOB_MAIN_GROUP")
+    private JobGroup jobMainGroup;
     /**
      * Job definition job groups many to many relationship
      */
@@ -93,10 +141,18 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
 
+    /**
+     * Constructor
+     */
     public JobDefinition() {
         // JSON constructor
     }
 
+    /**
+     * Update the entity from another entity.
+     *
+     * @param origin original entity.
+     */
     public void update(JobDefinition origin) {
         this.name = origin.name;
         this.label = origin.label;
@@ -110,6 +166,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
         this.fileHash = origin.fileHash;
         this.fileSize = origin.fileSize;
         this.description = origin.description;
+        this.jobMainGroup = origin.jobMainGroup;
         this.failedExitCode = origin.failedExitCode;
         this.failedExitMessage = origin.failedExitMessage;
         this.completedExitCode = origin.completedExitCode;
@@ -154,6 +211,14 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setJobVersion(String version) {
         this.jobVersion = version;
+    }
+
+    public JobGroup getJobMainGroup() {
+        return jobMainGroup;
+    }
+
+    public void setJobMainGroup(JobGroup mainJobGroup) {
+        this.jobMainGroup = mainJobGroup;
     }
 
     public String getDescription() {

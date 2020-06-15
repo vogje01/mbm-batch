@@ -108,6 +108,10 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
      */
     private Date modifiedAt;
     /**
+     * Job main group
+     */
+    private JobGroupDto jobMainGroupDto;
+    /**
      * Job groups
      */
     private List<JobGroupDto> jobGroupDtoes = new ArrayList<>();
@@ -233,6 +237,14 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     public void setJobGroupName(String jobGroupName) {
         this.jobGroupName = jobGroupName;
+    }
+
+    public JobGroupDto getJobMainGroupDto() {
+        return jobMainGroupDto;
+    }
+
+    public void setJobMainGroupDto(JobGroupDto jobMainGroupDto) {
+        this.jobMainGroupDto = jobMainGroupDto;
     }
 
     public String getFailedExitCode() {
