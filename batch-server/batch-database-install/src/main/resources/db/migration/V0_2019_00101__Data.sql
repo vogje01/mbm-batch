@@ -142,7 +142,7 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'housekeeping-batch-linux', 'Housekeeping Batch Linux',
         'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.4',
-        'java', 'batch-jobs-housekeeping-0.0.4.jar', '/opt/batch', '/opt/batch/log', '0', 'Completed',
+        'java', 'batch-jobs-housekeeping-0.0.4.jar', '/opt/batch/agent', '/opt/batch/agent/log', '0', 'Completed',
         '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'd4c132d5-c100-452b-b843-851849b1a01c');
@@ -248,7 +248,7 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACT
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', 'performance-batch-linux', 'Performance Batch Linux',
         '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Linux.', 1, 'JAR',
-        '0.0.4', 'java', 'batch-jobs-performance-0.0.4.jar', '/opt/batch', '/opt/batch/log', '0',
+        '0.0.4', 'java', 'batch-jobs-performance-0.0.4.jar', '/opt/batch/agent', '/opt/batch/agent/log', '0',
         'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', '64272f77-142f-478a-be2b-70fc5f4a8d7b');
