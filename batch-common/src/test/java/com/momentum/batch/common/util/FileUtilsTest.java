@@ -26,9 +26,9 @@ public class FileUtilsTest {
     @Test
     public void fileVersionTest() {
 
-        String fileName = "batch-jobs-abc-0.0.4.jar";
+        String fileName = "batch-jobs-abc-0.0.5-RELEASE.jar";
 
         String version = FileUtils.getVersion(fileName);
-        assertEquals("0.0.4", version);
+        assertEquals("0.0.5-RELEASE", version);
     }
 }

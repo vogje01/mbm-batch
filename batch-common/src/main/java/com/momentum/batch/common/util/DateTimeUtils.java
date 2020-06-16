@@ -5,7 +5,6 @@ import org.springframework.batch.core.StepExecution;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -26,27 +25,6 @@ public class DateTimeUtils {
             .toFormatter();
 
     private DateTimeUtils() {
-    }
-
-    /**
-     * Converts Dates in HLAGs custom Format [year][day of year][hours][minutes][centiseconds]
-     *
-     * @param dateTime dae/time to convert
-     * @return Hapag-Lloyd date time format for last_change columns.
-     */
-    public static Long toHlagTimestamp(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return 0L;
-        }
-        return Long.parseLong(hlDateTimeFormatter.format(dateTime)) / 10;
-    }
-
-    public static long getCutOff(int cutOffDays) {
-        return cutOffDays > 0 ? DateTimeUtils.toHlagTimestamp(LocalDateTime.now().minus(cutOffDays, ChronoUnit.DAYS)) : 0;
-    }
-
-    public static long getCutOffHours(int cutOffHours) {
-        return cutOffHours > 0 ? DateTimeUtils.toHlagTimestamp(LocalDateTime.now().minus(cutOffHours, ChronoUnit.HOURS)) : 0;
     }
 
     public static Date getCutOffDate(int cutOffDays) {

@@ -13,7 +13,7 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
  * Converts the job definition into a job detail class, needed for the Quartz scheduler.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5-RELEASE
  * @since 0.0.3
  */
 public class JobDetailBuilder {

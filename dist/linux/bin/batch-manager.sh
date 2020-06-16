@@ -10,7 +10,7 @@
 MODULE=batch-manager
 
 # Version
-VERSION=0.0.4
+VERSION=0.0.5-RELEASE
 
 # Service name
 SERVICE_NAME=$MODULE

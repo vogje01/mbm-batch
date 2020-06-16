@@ -11,7 +11,7 @@
     <groupId>com.momentum</groupId>
     <artifactId>batch-agent</artifactId>
     <name>batch-agent</name>
-    <version>0.0.4</version>
+    <version>0.0.5-RELEASE</version>
     <description>Momentum Batch Management agent</description>
 
     <properties>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5-RELEASE</version>
         </dependency>
 
     </dependencies>

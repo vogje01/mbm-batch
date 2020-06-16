@@ -11,7 +11,7 @@ import java.util.Date;
  * Agent scheduler message DTO.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5-RELEASE
  * @since 0.0.1
  */
 public class AgentSchedulerMessageDto {

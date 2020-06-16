@@ -8,11 +8,11 @@
         <version>2.1.7.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>com.hlag.fis.batch</groupId>
-    <artifactId>fis-batch-manager-ui</artifactId>
-    <name>fis-batch-manager-ui</name>
+    <groupId>com.momentum.batch</groupId>
+    <artifactId>batch-manager-ui</artifactId>
+    <name>batch-manager-ui</name>
     <version>0.0.3</version>
-    <description>HLAG FIS3 Batch-Manager UI</description>
+    <description>Momentum Batch Management UI</description>
 
     <build>
         <plugins>

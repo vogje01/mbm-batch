@@ -2,14 +2,14 @@ version: '3.8'
 services:
 
   # MySQL Database for the batch manager
-  fis-batch-db:
+  batch-db:
     image: mysql:latest
-    container_name: fis-batch-db
+    container_name: batch-db
     command: --lower_case_table_names=1
     environment:
       TZ: "Europe/Berlin"
-      MYSQL_ROOT_PASSWORD: Hlag123
-      MYSQL_DATABASE: fisbatch
+      MYSQL_ROOT_PASSWORD: Secret_123
+      MYSQL_DATABASE: batch
     volumes:
       - /C/work/mysql/Data:/var/lib/mysql
     ports:
@@ -22,9 +22,9 @@ services:
       retries: 10
 
   # Apache zookeeper
-  fis-batch-zookeeper:
+  batch-zookeeper:
     image: zookeeper:latest
-    container_name: fis-batch-zookeeper
+    container_name: batch-zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -35,19 +35,19 @@ services:
   #
   # Kafka
   #
-  fis-batch-kafka:
+  batch-kafka:
     image: confluentinc/cp-enterprise-kafka:latest
-    container_name: fis-batch-kafka
+    container_name: batch-kafka
     ports:
       - "9092:9092"
     depends_on:
-      - fis-batch-zookeeper
+      - batch-zookeeper
     environment:
       TZ: "Europe/Berlin"
       KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: fis-batch-zookeeper:2181
-      KAFKA_LISTENERS: LISTENER://fis-batch-kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER://fis-batch-kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: batch-zookeeper:2181
+      KAFKA_LISTENERS: LISTENER://batch-kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER://batch-kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -59,63 +59,63 @@ services:
     hostname: kafka-setup
     container_name: kafka-setup
     depends_on:
-      - fis-batch-kafka
+      - batch-kafka
     command: "bash -c  'kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic batchJobStatus && \
-                        kafka-topics --create --if-not-exists --zookeeper fis-batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchServerCommand && \
-                        kafka-topics --create --if-not-exists --zookeeper fis-batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchAgentCommand && \
-                        kafka-topics --create --if-not-exists --zookeeper fis-batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchJobExecutionLog'"
+                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchServerCommand && \
+                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchAgentCommand && \
+                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 -- batchJobExecutionLog'"
   #
-  # FIS3 Batch listener
+  # Batch listener
   #
-  fis-batch-listener:
-    image: com.hlag.fis.batch/fis-batch-listener:0.0.3
-    container_name: fis-batch-listener
+  batch-listener:
+    image: com.momentum.batch/batch-listener:0.0.5-RELEASE
+    container_name: batch-listener
     environment:
       TZ: "Europe/Berlin"
     depends_on:
-      - fis-batch-db
-      - fis-batch-kafka
+      - batch-db
+      - batch-kafka
 
   #
-  # FIS3 Batch agent
+  # Batch agent
   #
-  fis-batch-agent:
+  batch-agent:
     hostname: batchagent01
-    image: com.hlag.fis.batch/fis-batch-agent:0.0.3
-    container_name: fis-batch-agent
+    image: com.momentum.batch/batch-agent:0.0.3
+    container_name: batch-agent
     environment:
       TZ: "Europe/Berlin"
     depends_on:
-      - fis-batch-kafka
+      - batch-kafka
     volumes:
       - /usr/local/bin/docker:/usr/bin/docker
       - /var/run/docker.sock:/var/run/docker.sock
 
   #
-  # FIS3 Batch manager
+  #  Batch manager
   #
-  fis-batch-manager:
-    image: com.hlag.fis.batch/fis-batch-manager:0.0.3
-    hostname: fis-batch-manager
-    container_name: fis-batch-manager
+  batch-manager:
+    image: com.momentum.batch/batch-manager:0.0.3
+    hostname: batch-manager
+    container_name: batch-manager
     environment:
       TZ: "Europe/Berlin"
     user: root
     depends_on:
-      - fis-batch-db
-      - fis-batch-kafka
+      - batch-db
+      - batch-kafka
     ports:
       - '8090:8090'
 
   #
-  # FIS3 Batch UI
+  # Batch UI
   #
-  fis-batch-manager-ui:
-    image: com.hlag.fis.batch/fis-batch-manager-ui:0.0.3
-    container_name: fis-batch-manager-ui
+  batch-manager-ui:
+    image: com.momentum.batch/batch-manager-ui:0.0.3
+    container_name: batch-manager-ui
     environment:
       TZ: "Europe/Berlin"
     depends_on:
-      - fis-batch-manager
+      - batch-manager
     ports:
       - '80:80'

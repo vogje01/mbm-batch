@@ -10,10 +10,6 @@ import java.util.Map;
 /**
  * Cursor reader extending the Hibernate cursor reader.
  * <p>
- * Because DB2 in HLAG uses uncommitted read as default, we need to use a query provider, which introduces another
- * transaction isolation level. Used is 'Cursor stability' (CS) isolation level.
- * </p>
- * <p>
  * The Hibernate cursor item reader uses an own session, which is kept open as long as the cursor is opened. Therefore
  * the reader does not participate in the usual transaction reader/processor/writer transaction. If this is a problem
  * use the PagedReader.

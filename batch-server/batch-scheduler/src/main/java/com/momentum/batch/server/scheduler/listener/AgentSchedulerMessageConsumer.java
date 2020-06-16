@@ -18,7 +18,7 @@ import static java.text.MessageFormat.format;
  * Listener for the agent scheduler notification messages send to the Kafka batchAgentScheduler message queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.4
+ * @version 0.0.5-RELEASE
  * @since 0.0.2
  */
 @Service

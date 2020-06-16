@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.momentum</groupId>
         <artifactId>batch</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.5-RELEASE</version>
     </parent>
     <artifactId>batch-common</artifactId>
     <name>batch-common</name>
-    <version>0.0.4</version>
+	<version>0.0.5-RELEASE</version>
     <description>Momentum Batch Management common classes</description>
     <packaging>jar</packaging>
 

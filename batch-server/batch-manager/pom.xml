@@ -11,7 +11,7 @@
     <groupId>com.momentum.batch.server</groupId>
     <artifactId>batch-manager</artifactId>
     <name>batch-manager</name>
-    <version>0.0.4</version>
+    <version>0.0.5-RELEASE</version>
     <description>Momentum Batch Management REST server</description>
 
     <properties>
@@ -96,12 +96,12 @@
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5-RELEASE</version>
         </dependency>
 
         <!-- Apache commons -->
@@ -150,7 +150,7 @@
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5-RELEASE</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

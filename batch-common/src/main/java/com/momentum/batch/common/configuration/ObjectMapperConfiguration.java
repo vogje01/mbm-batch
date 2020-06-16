@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * Class description.
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.4
+ * @version 0.0.5-RELEASE
  * @since 0.0.1
  */
 @Configuration
