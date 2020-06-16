@@ -14,7 +14,7 @@ VERSION=0.0.4
 
 # Service name
 SERVICE_NAME=batch-scheduler
-PID_PATH_NAME=/tmp/batch-scheduler-pid
+PID_PATH_NAME=/tmp/$MODULE-pid
 
 # Base directory
 BASEDIR=/opt/batch/server
@@ -28,10 +28,10 @@ ETC_DIR=$BASEDIR/etc
 EXECUTABLE=$MODULE-$VERSION.jar
 
 # Configuration
-CONFIGURATION=$ETC_DIR/batch-scheduler.yml
+CONFIGURATION=$ETC_DIR/$MODULE.yml
 
 # Logging configuration
-LOG_CONFIGURATION=$ETC_DIR/batch-scheduler-log.yml
+LOG_CONFIGURATION=$ETC_DIR/$MODULE-log.yml
 
 # Which java to use
 if [ -z "$JAVA_HOME" ]; then
@@ -41,7 +41,7 @@ else
 fi
 
 # Java arguments
-JAVA_ARGUMENTS="-Dscheduler.loggingDirectory=$LOG_DIR -Dlogging.config=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION"
+JAVA_ARGUMENTS="-Dscheduler.loggingDirectory=$LOG_DIR -Dlogging.config=file:$LOG_CONFIGURATION -Dspring.config.location=file:$CONFIGURATION -Djasypt.encryptor.password=1Qaz0oKm"
 
 cd $BASEDIR
 case $1 in
