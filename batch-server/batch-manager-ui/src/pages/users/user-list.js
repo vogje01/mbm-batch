@@ -72,10 +72,12 @@ class UserList extends React.Component {
 
     dateFormatValueChanged(e) {
         localStorage.setItem('dateTimeFormat', e.value);
+        this.state.currentUser.dateTimeFormat = e.value;
     }
 
     numberFormatValueChanged(e) {
         localStorage.setItem('numberFormat', e.value);
+        this.state.currentUser.numberFormat = e.value;
     }
 
     render() {
@@ -143,7 +145,7 @@ class UserList extends React.Component {
                                                 dataSource: dateFormatList,
                                                 valueExpr: 'value',
                                                 displayExpr: 'label',
-                                                onValueChanged: this.dateFormatValueChanged
+                                                onSelectionChanged: this.dateFormatValueChanged
                                             }}>
                                             <RequiredRule/>
                                         </SimpleItem>
@@ -154,7 +156,7 @@ class UserList extends React.Component {
                                                 dataSource: numberFormatList,
                                                 valueExpr: 'value',
                                                 displayExpr: 'label',
-                                                onValueChanged: this.numberFormatValueChanged
+                                                onSelectionChanged: this.numberFormatValueChanged
                                             }}>
                                             <RequiredRule/>
                                         </SimpleItem>

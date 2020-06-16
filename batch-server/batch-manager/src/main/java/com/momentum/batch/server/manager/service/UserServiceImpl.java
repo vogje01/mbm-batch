@@ -1,6 +1,5 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
@@ -12,6 +11,7 @@ import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     private final CacheManager cacheManager;
 
-    private final PasswordHash passwordHash;
+    private final StringEncryptor stringEnryptor;
 
     /**
      * Constructor
@@ -59,11 +59,11 @@ public class UserServiceImpl implements UserService {
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository,
-                           PasswordHash passwordHash, CacheManager cacheManager) {
+                           StringEncryptor stringEncryptor, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
-        this.passwordHash = passwordHash;
+        this.stringEnryptor = stringEncryptor;
         this.cacheManager = cacheManager;
     }
 
@@ -191,7 +191,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void changePassword(User user, String password) {
-        user.setPassword(passwordHash.encryptPassword(password));
+        user.setPassword(stringEnryptor.encrypt(password));
         userRepository.save(user);
     }
 

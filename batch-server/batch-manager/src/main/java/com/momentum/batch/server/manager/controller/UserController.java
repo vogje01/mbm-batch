@@ -2,13 +2,13 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.converter.UserModelAssembler;
 import com.momentum.batch.server.manager.service.UserService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.apache.commons.io.IOUtils;
+import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ public class UserController {
 
     private final UserModelAssembler userModelAssembler;
 
-    private final PasswordHash passwordHash;
+    private final StringEncryptor stringEncryptor;
 
     /**
      * Constructor.
@@ -63,11 +63,11 @@ public class UserController {
      * @param userModelAssembler          user model assembler.
      */
     @Autowired
-    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler, PasswordHash passwordHash) {
+    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler, StringEncryptor stringEncryptor) {
         this.userService = userService;
         this.userPagedResourcesAssembler = userPagedResourcesAssembler;
         this.userModelAssembler = userModelAssembler;
-        this.passwordHash = passwordHash;
+        this.stringEncryptor = stringEncryptor;
     }
 
     /**
@@ -172,7 +172,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userDto.setPassword(passwordHash.encryptPassword("password"));
+        userDto.setPassword(stringEncryptor.encrypt(userDto.getPassword()));
         User user = userModelAssembler.toEntity(userDto);
         user = userService.insertUser(user);
         userDto = userModelAssembler.toModel(user);
@@ -196,7 +196,7 @@ public class UserController {
 
         User user = userModelAssembler.toEntity(userDto);
         if (userDto.getPasswordChanged()) {
-            user.setPassword(passwordHash.encryptPassword(userDto.getPassword()));
+            user.setPassword(stringEncryptor.encrypt(userDto.getPassword()));
         }
         user = userService.updateUser(user);
         userDto = userModelAssembler.toModel(user);

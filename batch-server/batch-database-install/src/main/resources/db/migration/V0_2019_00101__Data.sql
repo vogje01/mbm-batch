@@ -8,7 +8,7 @@
 INSERT INTO BATCH_USER(ID, VERSION, USERID, LAST_NAME, FIRST_NAME, PASSWORD, DESCRIPTION, EMAIL, PHONE, DATE_FORMAT,
                        NUMBER_FORMAT, THEME, ACTIVE)
 VALUES ('1a86d0ae-b3fc-4103-b378-44d50b31263e', 1, 'admin', 'admin', 'admin',
-        'sI21320qBzvPuSfEAT3cqKg/ab38o+6FCx2Q9XRNW3Hs5BOON/Nj6dSYXR0iEZVa',
+        'DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329',
         'General user with administrative rights. This user cannot be deleted nor changed.',
         '', '', 'ENUS', 'ENUS', 'material.blue.light.compact', 1);
 
