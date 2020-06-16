@@ -125,7 +125,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
      * Job main group for Quartz scheduler.
      */
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "JOB_MAIN_GROUP")
+    @JoinColumn(name = "JOB_MAIN_GROUP_ID")
     private JobGroup jobMainGroup;
     /**
      * Job definition job groups many to many relationship
