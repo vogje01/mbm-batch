@@ -14,12 +14,6 @@
     <version>0.0.4</version>
     <description>Momentum Batch Management agent</description>
 
-    <properties>
-        <java.version>14</java.version>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <!-- Spring -->
         <dependency>
@@ -68,6 +62,13 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
+        </dependency>
+
+        <!-- Jasypt -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- Batch -->

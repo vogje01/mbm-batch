@@ -65,6 +65,8 @@ public class ExecutionParameter {
 
     public static final String STEP_TOTAL_COUNT = "totalCount";
 
+    public static final String JASYPT_PASSWORD = "jasypt.encryptor.password";
+
     public static String getHostName(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(HOST_NAME);
     }
