@@ -38,7 +38,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
 
-    @Value("${mbm.library.directory}")
+    @Value("${mbm.library.jobs}")
     private String libraryDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);

@@ -16,7 +16,7 @@ class UserUsergroupView extends React.Component {
     }
 
     render() {
-        if (this.props.hidden) {
+        if (this.props.user.userId === undefined) {
             return null;
         }
         return (

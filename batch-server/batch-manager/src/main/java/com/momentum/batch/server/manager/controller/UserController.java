@@ -2,13 +2,14 @@ package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.converter.UserModelAssembler;
 import com.momentum.batch.server.manager.service.UserService;
+import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.apache.commons.io.IOUtils;
+import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class UserController {
 
     private final UserModelAssembler userModelAssembler;
 
+    private final StringEncryptor stringEncryptor;
+
     /**
      * Constructor.
      *
@@ -61,10 +64,11 @@ public class UserController {
      * @param userModelAssembler          user model assembler.
      */
     @Autowired
-    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler) {
+    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler, StringEncryptor stringEncryptor) {
         this.userService = userService;
         this.userPagedResourcesAssembler = userPagedResourcesAssembler;
         this.userModelAssembler = userModelAssembler;
+        this.stringEncryptor = stringEncryptor;
     }
 
     /**
@@ -159,9 +163,10 @@ public class UserController {
      *
      * @param userDto user DTO to inserted.
      * @return user DTO.
+     * @throws BadRequestException in case the user cannot be created.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
-    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) throws BadRequestException {
 
         t.restart();
         Optional<User> userOptional = userService.findByUserId(userDto.getUserId());
@@ -169,11 +174,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userDto.setPassword(PasswordHash.encryptPassword("password"));
         User user = userModelAssembler.toEntity(userDto);
         user = userService.insertUser(user);
         userDto = userModelAssembler.toModel(user);
-        logger.debug(format("Finished insert user request - id: {0} {1}", user.getId(), t.elapsedStr()));
+        logger.debug(format("Finished insert user request - userId: {0} {1}", user.getUserId(), t.elapsedStr()));
 
         return ResponseEntity.ok(userDto);
     }
@@ -193,7 +197,7 @@ public class UserController {
 
         User user = userModelAssembler.toEntity(userDto);
         if (userDto.getPasswordChanged()) {
-            user.setPassword(PasswordHash.encryptPassword(userDto.getPassword()));
+            user.setPassword(stringEncryptor.encrypt(userDto.getPassword()));
         }
         user = userService.updateUser(user);
         userDto = userModelAssembler.toModel(user);

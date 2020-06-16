@@ -1,17 +1,20 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.util.PasswordHash;
+import com.momentum.batch.common.domain.DateTimeFormat;
+import com.momentum.batch.common.domain.NumberFormat;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
+import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -47,6 +50,8 @@ public class UserServiceImpl implements UserService {
 
     private final CacheManager cacheManager;
 
+    private final StringEncryptor stringEncryptor;
+
     /**
      * Constructor
      *
@@ -56,10 +61,12 @@ public class UserServiceImpl implements UserService {
      * @param cacheManager                 cache manager.
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository, CacheManager cacheManager) {
+    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository,
+                           StringEncryptor stringEncryptor, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.stringEncryptor = stringEncryptor;
         this.cacheManager = cacheManager;
     }
 
@@ -115,7 +122,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User insertUser(User user) {
-        return userRepository.save(user);
+        if (validateUser(user)) {
+            return userRepository.save(user);
+        }
+        throw new BadRequestException();
     }
 
     @Override
@@ -187,7 +197,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void changePassword(User user, String password) {
-        user.setPassword(PasswordHash.encryptPassword(password));
+        user.setPassword(stringEncryptor.encrypt(password));
         userRepository.save(user);
     }
 
@@ -219,5 +229,24 @@ public class UserServiceImpl implements UserService {
         } catch (EmailException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean validateUser(User user) {
+
+        if (user.getPassword() == null) {
+            return false;
+        }
+        user.setPassword(stringEncryptor.encrypt(user.getPassword()));
+
+        if (user.getDateTimeFormat() == null) {
+            user.setDateTimeFormat(DateTimeFormat.DE);
+        }
+        if (user.getDateTimeFormat() == null) {
+            user.setNumberFormat(NumberFormat.DE);
+        }
+        if (user.getTheme() == null) {
+            user.setTheme("material.blue.light.compact");
+        }
+        return true;
     }
 }

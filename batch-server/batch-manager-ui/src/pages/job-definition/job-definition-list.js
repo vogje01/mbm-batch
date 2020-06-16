@@ -26,6 +26,7 @@ import JobDefinitionJobGroupList from "./job-definition-job-group-list";
 import {AgentDataSource} from "../agent/agent-data-source";
 import SelectBox from "devextreme-react/select-box";
 import Button from "devextreme-react/button";
+import {JobGroupDataSource} from "../job-group/job-group-data-source";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -174,7 +175,14 @@ class JobDefinitionList extends React.Component {
                                             <StringLengthRule min={5} max={32} message="Version must be less than 32 characters."/>
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
+                                        <SimpleItem
+                                            dataField={'jobMainGroupDto.name'}
+                                            editorType={'dxSelectBox'}
+                                            editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
+                                            <RequiredRule/>
+                                        </SimpleItem>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
+                                        <EmptyItem/>
                                         <SimpleItem dataField="fileSize" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="fileHash" editorType={"dxTextBox"} editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 90}}/>
@@ -245,6 +253,14 @@ class JobDefinitionList extends React.Component {
                             <Column
                                 dataField={'jobVersion'}
                                 caption={'Job Version'}
+                                dataType={'string'}
+                                allowEditing={true}
+                                allowSorting={true}
+                                allowReordering={true}
+                                width={80}/>
+                            <Column
+                                dataField={'jobMainGroupDto.name'}
+                                caption={'Main Group'}
                                 dataType={'string'}
                                 allowEditing={true}
                                 allowSorting={true}

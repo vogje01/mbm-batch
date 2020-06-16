@@ -70,6 +70,13 @@
             <version>2.3.2</version>
         </dependency>
 
+        <!-- Jasypt -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <!-- Batch -->
         <dependency>
             <groupId>com.momentum</groupId>

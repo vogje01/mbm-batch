@@ -13,12 +13,6 @@
 	<version>0.0.4</version>
     <description>House keeping for the batch database schema</description>
 
-    <properties>
-        <java.version>14</java.version>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-    </properties>
-
     <dependencies>
 		<!-- Spring -->
 		<dependency>
@@ -127,6 +121,13 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
+		</dependency>
+
+		<!-- Jasypt -->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>3.0.3</version>
 		</dependency>
 
 		<!-- Tools -->

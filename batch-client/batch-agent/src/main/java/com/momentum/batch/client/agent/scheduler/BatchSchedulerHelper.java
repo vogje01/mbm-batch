@@ -7,6 +7,8 @@ import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,6 +27,9 @@ import static java.text.MessageFormat.format;
 public abstract class BatchSchedulerHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchSchedulerHelper.class);
+
+    @Autowired
+    private ApplicationContext context;
 
     public final Scheduler scheduler;
 
@@ -223,6 +228,13 @@ public abstract class BatchSchedulerHelper {
         arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());
         arguments.add("-D" + JOB_COMPLETED_EXIT_MESSAGE + "=" + jobDefinition.getCompletedExitMessage());
 
+        // Add jasypt password
+        String jasyptPassword = context.getEnvironment().getProperty(JASYPT_PASSWORD);
+        if (jasyptPassword != null && !jasyptPassword.isEmpty()) {
+            arguments.add("-D" + JASYPT_PASSWORD + "=" + jasyptPassword);
+        }
+
+        // Add job definition parameters
         List<JobDefinitionParamDto> params = jobDefinition.getJobDefinitionParamDtos();
         if (!params.isEmpty()) {
             params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));

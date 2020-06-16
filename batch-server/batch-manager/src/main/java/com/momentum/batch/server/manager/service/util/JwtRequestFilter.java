@@ -54,7 +54,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (request.getRequestURI().contains("/api/changePassword")) {
             try {
-                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername("admin", "Dilbert_01");
+                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername("admin", "Secret_123");
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the

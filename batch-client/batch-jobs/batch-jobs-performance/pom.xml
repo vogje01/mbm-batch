@@ -14,12 +14,6 @@
     <version>0.0.4</version>
     <description>Collection and consolidation of performance data.</description>
 
-    <properties>
-        <java.version>12</java.version>
-        <maven.compiler.source>12</maven.compiler.source>
-        <maven.compiler.target>12</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <!-- Spring -->
         <dependency>
@@ -123,6 +117,13 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
+        </dependency>
+
+        <!-- Jasypt -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <!-- Tools -->

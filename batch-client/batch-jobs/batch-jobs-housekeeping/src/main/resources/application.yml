@@ -1,27 +1,19 @@
-# General spring configurations
+#
+# MBM housekeeping batch job configuration
+#
+
+# Spring configurations
 spring:
   main:
-    allow-bean-definition-overriding: true
     banner-mode: off
     web-application-type: none
-  jpa:
-    show-sql: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    hibernate:
-      ddl-auto: none
-  cache:
-    cache-names: JobExecutionInfo,StepExecutionInfo,JobExecutionLog
-    caffeine:
-      spec: initialCapacity=1000,maximumSize=10000,expireAfterAccess=300s,recordStats
+  datasource:
+    url: jdbc:mysql://batchmanager:3306/batch
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
+    driverClassName: com.mysql.cj.jdbc.Driver
   batch:
     initialize-schema: never
-
-mysql:
-  datasource:
-    jdbc-url: jdbc:mysql://batchmanager:3306/batch
-    username: root
-    password: Dilbert_01
-    driverClassName: com.mysql.cj.jdbc.Driver
 
 # Batch Kafka configuration
 # bootstrapAddress: Kafka server URL

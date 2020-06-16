@@ -48,6 +48,9 @@ export const UserUsergroupDataSource = (user) => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
+                if (user._links === undefined) {
+                    return {data: [], totalCount: 0}
+                }
                 let url = user._links.userGroups.href + getParams(loadOptions, 'name', 'asc');
                 return fetch(url, initGet())
                     .then(response => {

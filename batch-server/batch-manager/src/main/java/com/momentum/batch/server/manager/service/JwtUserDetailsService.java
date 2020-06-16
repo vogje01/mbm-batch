@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.util.PasswordHash;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.service.common.UnauthorizedException;
 import com.unboundid.ldap.sdk.*;
+import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,20 +43,23 @@ public class JwtUserDetailsService implements UserDetailsService {
 	private static final String HL_LOGIN_NAME_ATTRIBUTE_NAME = "hlLoginName";
 	private static final String HL_WEB_USER_STATUS_ATTRIBUTE_NAME = "hlWebUserStatus";
 
-	@Value("${ldap.server}")
+	@Value("${mbm.ldap.server}")
 	private String ldapServerHost;
 
-	@Value("${ldap.port}")
+	@Value("${mbm.ldap.port}")
 	private int ldapServerPort;
 
 	private UserRepository userRepository;
+
+	private StringEncryptor stringEncryptor;
 
 	public JwtUserDetailsService() {
 	}
 
 	@Autowired
-	public JwtUserDetailsService(UserRepository userRepository) {
+	public JwtUserDetailsService(UserRepository userRepository, StringEncryptor stringEncryptor) {
 		this.userRepository = userRepository;
+		this.stringEncryptor = stringEncryptor;
 	}
 
 	@Cacheable(cacheNames = "UserDetails", key = "#userId")
@@ -99,11 +102,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return null;
 	}
 
+	@Cacheable(cacheNames = "User", key = "#userId")
 	public UserDetails loadUserByUsername(String userId, String password) throws UnauthorizedException {
-		String encPassword = PasswordHash.encryptPassword(password);
-		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserIdAndPasswordAndActive(userId, encPassword);
+
+		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);
 		if (userOptional.isPresent()) {
-			return new User(userId, password, emptyList());
+			String decPassword = stringEncryptor.decrypt(userOptional.get().getPassword());
+			if (password.equals(decPassword)) {
+				return new User(userId, password, emptyList());
+			}
 		}
 		throw new UnauthorizedException();
 	}

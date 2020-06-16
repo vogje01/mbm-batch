@@ -32,13 +32,15 @@ import static java.text.MessageFormat.format;
  * </p>
  * <p>
  * The node name is usually the host name. It can be send in the configuration file as well as on the command line
- * using the -DnodeName=&lt;nodeName&gt; syntax. The ping and performance intervals can set in the configuration
+ * using the -Dmbm.agent.nodeName=&lt;nodeName&gt; syntax. The ping and performance intervals can set in the configuration
  * file as well as on the command line:
  * </p>
  * <ul>
- *     <li>agent.nodeName: node name for the identification</li>
- *     <li>agent.pingInterval: interval in milliseconds for the ping sending</li>
- *     <li>agent.performanceInterval: interval in milliseconds for the performance data sending</li>
+ *     <li>mbm.agent.hostName: host name for the identification.</li>
+ *     <li>mbm.agent.nodeName: node name for the identification.</li>
+ *     <li>mbm.listener.server: host name of the listener server.</li>
+ *     <li>mbm.agent.pingInterval: interval in milliseconds for the ping sending.</li>
+ *     <li>mbm.agent.performanceInterval: interval in milliseconds for the performance data sending.</li>
  * </ul>
  *
  * @author Jens Vogt jensvogt47@gmail.com
@@ -66,7 +68,7 @@ public class AgentStatusService {
 
     private final BatchSchedulerTask schedulerTask;
 
-    private AgentStatusMessageDto agentStatusMessageDto;
+    private final AgentStatusMessageDto agentStatusMessageDto;
 
     private final AgentStatusMessageProducer agentStatusMessageProducer;
 
@@ -94,8 +96,15 @@ public class AgentStatusService {
                 ManagementFactory.getPlatformMXBean(UnixOperatingSystemMXBean.class);
     }
 
+    /**
+     * Initialization.
+     *
+     * <p>
+     * The agent registers with the listener.
+     * </p>
+     */
     @PostConstruct
-    public void initializeAgent() {
+    public void initialize() {
 
         // Add additional parameters
         this.agentStatusMessageDto.setHostName(hostName);
@@ -197,6 +206,11 @@ public class AgentStatusService {
         logger.info("Batch agent stopped");
     }
 
+    /**
+     * Sets the current status.
+     *
+     * @param agentStatus current agent status.
+     */
     public void setStatus(AgentStatus agentStatus) {
         this.agentStatus = agentStatus;
         agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());

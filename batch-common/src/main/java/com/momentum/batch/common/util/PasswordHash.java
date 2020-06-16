@@ -1,9 +1,8 @@
 package com.momentum.batch.common.util;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Formatter;
+import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Password hashing.
@@ -12,27 +11,21 @@ import java.util.Formatter;
  * @version 0.0.4
  * @since 0.0.3
  */
+@Component
 public class PasswordHash {
 
-    public static String encryptPassword(String password) {
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(password.getBytes(StandardCharsets.UTF_8));
-            return byteToHex(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private StringEncryptor stringEncryptor;
+
+    @Autowired
+    public PasswordHash(StringEncryptor stringEncryptor) {
+        this.stringEncryptor = stringEncryptor;
     }
 
-    private static String byteToHex(final byte[] hash) {
-        Formatter formatter = new Formatter();
-        for (byte b : hash) {
-            formatter.format("%02x", b);
-        }
-        String result = formatter.toString();
-        formatter.close();
-        return result;
+    public String encryptPassword(String password) {
+        return stringEncryptor.encrypt(password);
+    }
+
+    public String decryptPassword(String password) {
+        return stringEncryptor.decrypt(password);
     }
 }

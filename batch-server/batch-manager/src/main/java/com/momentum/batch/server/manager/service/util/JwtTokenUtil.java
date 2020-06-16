@@ -105,9 +105,18 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
-    //validate token
+    /**
+     * Validate token
+     *
+     * @param token       web token
+     * @param userDetails user details
+     * @return true if user could be validated, otherwise false.
+     */
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
+        if (userDetails == null) {
+            return false;
+        }
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }

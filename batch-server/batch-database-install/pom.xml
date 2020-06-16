@@ -77,6 +77,13 @@
             <version>6.1.4</version>
         </dependency>
 
+        <!-- Jasypt -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <!-- Batch -->
         <dependency>
             <groupId>com.momentum</groupId>
@@ -96,7 +103,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.momentum.batch.server.scheduler.BatchSchedulerApplication</mainClass>
+                    <mainClass>com.momentum.batch.server.database.install.BatchDatabaseInstallation</mainClass>
                     <excludeDevtools>false</excludeDevtools>
                 </configuration>
                 <executions>

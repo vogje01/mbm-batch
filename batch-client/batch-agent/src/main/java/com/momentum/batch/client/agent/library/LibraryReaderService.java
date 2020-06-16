@@ -29,7 +29,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class LibraryReaderService {
 
-    @Value("${mbm.library.directory}")
+    @Value("${mbm.library.jobs}")
     private String libraryDirectory;
 
     @Value("${mbm.library.server}")

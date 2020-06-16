@@ -11,6 +11,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 import static java.text.MessageFormat.format;
 
 /**
@@ -38,6 +40,10 @@ public class AgentSchedulerService {
     @Autowired
     public AgentSchedulerService(BatchScheduler batchScheduler) {
         this.batchScheduler = batchScheduler;
+    }
+
+    @PostConstruct
+    public void initialize() {
         logger.info(format("Agent scheduler message listener initialized - nodeName: {0} schedulerName: {1}", nodeName, schedulerName));
     }
 

@@ -2,6 +2,7 @@ package com.momentum.batch.server.listener.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.common.util.NetworkUtils;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -22,6 +23,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Configuration
 @EnableCaching
+@EnableEncryptableProperties
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
