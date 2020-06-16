@@ -40,6 +40,8 @@ mbm:
     directory: /opt/batch/agent/lib
     server: batchmanager
     port: 8090
+    user: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
   listener:
     server: batchmanager
   scheduler:
