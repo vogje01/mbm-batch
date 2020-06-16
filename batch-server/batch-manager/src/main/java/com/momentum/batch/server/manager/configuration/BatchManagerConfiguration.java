@@ -35,11 +35,11 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableWebMvc
 @EnableCaching
 @EnableKafka
-@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
+@EnableEncryptableProperties
 @EnableTransactionManagement
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan("com.momentum.batch.server.database.domain")
-@EnableEncryptableProperties
 public class BatchManagerConfiguration implements WebMvcConfigurer {
 
     @Value("${mbm.server.host}")

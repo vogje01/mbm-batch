@@ -20,7 +20,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchDatabaseTasks {
 
-    private StringEncryptor stringEncryptor;
+    private final StringEncryptor stringEncryptor;
 
     @Autowired
     public BatchDatabaseTasks(StringEncryptor stringEncryptor) {
@@ -183,6 +183,6 @@ public class BatchDatabaseTasks {
 
     public void encryptPassword(String userPassword) {
         String encPassword = stringEncryptor.encrypt(userPassword);
-        System.out.println("Encrypted password: " + stringEncryptor.encrypt(encPassword) + " decrypted: " + stringEncryptor.decrypt(encPassword));
+        System.out.println("Encrypted password: " + encPassword + " decrypted: " + stringEncryptor.decrypt(encPassword));
     }
 }

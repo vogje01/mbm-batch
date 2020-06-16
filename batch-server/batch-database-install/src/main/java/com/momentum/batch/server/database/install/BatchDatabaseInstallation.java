@@ -22,7 +22,7 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
     @Autowired
     private BatchDatabaseTasks batchDatabaseTasks;
 
-    private static Logger logger = LoggerFactory.getLogger(BatchDatabaseInstallation.class);
+    private static final Logger logger = LoggerFactory.getLogger(BatchDatabaseInstallation.class);
 
     public static void main(String[] args) {
         SpringApplication.run(BatchDatabaseInstallation.class, args);
