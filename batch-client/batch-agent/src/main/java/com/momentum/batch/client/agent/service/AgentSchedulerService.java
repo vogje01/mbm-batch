@@ -60,7 +60,7 @@ public class AgentSchedulerService {
 
             // Get schedule
             JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
-            if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null && agentSchedulerMessageDto.getJobDefinitionDto() == null) {
+            if (jobScheduleDto != null && jobScheduleDto.getJobDefinitionDto() == null) {
                 logger.info(format("Missing job definition"));
                 return;
             }
