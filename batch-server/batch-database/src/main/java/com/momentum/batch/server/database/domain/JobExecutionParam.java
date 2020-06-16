@@ -185,13 +185,12 @@ public class JobExecutionParam implements PrimaryKeyIdentifier<String> {
                 Objects.equal(dateVal, that.dateVal) &&
                 Objects.equal(longVal, that.longVal) &&
                 Objects.equal(doubleVal, that.doubleVal) &&
-                Objects.equal(identifying, that.identifying) &&
-                Objects.equal(jobExecutionInfo, that.jobExecutionInfo);
+                Objects.equal(identifying, that.identifying);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, keyName, typeCd, stringVal, dateVal, longVal, doubleVal, identifying, jobExecutionInfo);
+        return Objects.hashCode(id, keyName, typeCd, stringVal, dateVal, longVal, doubleVal, identifying);
     }
 
     @Override

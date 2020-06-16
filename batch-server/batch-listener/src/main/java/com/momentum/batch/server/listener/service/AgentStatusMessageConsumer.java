@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -34,6 +35,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.2
  */
 @Service
+@Transactional
 public class AgentStatusMessageConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusMessageConsumer.class);
@@ -200,7 +202,7 @@ public class AgentStatusMessageConsumer {
      *
      * @param agent agent, which should execute the job.
      */
-    private void startJobs(@NotNull Agent agent) {
+    public void startJobs(@NotNull Agent agent) {
 
         // Get schedules
         List<JobSchedule> jobSchedules = jobScheduleRepository.findActiveByAgent(agent.getId());

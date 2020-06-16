@@ -20,9 +20,9 @@ public interface JobDefinitionRepository extends PagingAndSortingRepository<JobD
     @Query("select j from JobDefinition j where j.fileName = :fileName")
     List<JobDefinition> findByFileName(@Param("fileName") String fileName);
 
-    @Query("select j from JobDefinition j join j.jobGroups g where g.id = :jobGroupId")
+    @Query("select j from JobDefinition j join j.jobGroups jg where jg.id = :jobGroupId")
     Page<JobDefinition> findByJobGroup(@Param("jobGroupId") String jobGroupId, Pageable pageable);
 
-    @Query("select j from JobDefinition j join j.jobGroups g where g.id <> :jobGroupId")
+    @Query("select j from JobDefinition j join j.jobGroups jg where jg.id <> :jobGroupId")
     Page<JobDefinition> findWithoutJobGroup(@Param("jobGroupId") String jobGroupId, Pageable pageable);
 }

@@ -125,6 +125,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
      * Job main group for Quartz scheduler.
      */
     @OneToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.ALL)
     @JoinColumn(name = "JOB_MAIN_GROUP_ID")
     private JobGroup jobMainGroup;
     /**
@@ -390,7 +391,8 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory,
+                loggingDirectory, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage);
     }
 
     @Override
