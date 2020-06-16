@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.common.util.NetworkUtils;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
@@ -53,11 +52,6 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
 
     private Caffeine<Object, Object> caffeineCacheBuilder() {
         return Caffeine.newBuilder().initialCapacity(100).maximumSize(1000).expireAfterAccess(5, TimeUnit.MINUTES).weakKeys().recordStats();
-    }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
     }
 
     @Bean
