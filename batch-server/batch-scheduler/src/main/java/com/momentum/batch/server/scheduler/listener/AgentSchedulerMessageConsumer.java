@@ -111,9 +111,9 @@ public class AgentSchedulerMessageConsumer {
                 jobSchedule.setNextExecution(jobScheduleDto.getNextExecution());
                 logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
             }
-            if (jobScheduleDto.getNextExecution() != null) {
+            if (jobScheduleDto.getLastExecution() != null) {
                 jobSchedule.setLastExecution(jobScheduleDto.getLastExecution());
-                logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
+                logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobScheduleDto.getLastExecution()));
             }
             jobScheduleRepository.save(jobSchedule);
         }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
