@@ -4,7 +4,7 @@ spring:
     banner-mode: off
     web-application-type: none
   datasource:
-    url: jdbc:mysql://batchmanager:3306/batch
+    url: jdbc:mysql://batchmanager:3306
     username: root
     password: Dilbert_01
     driverClassName: com.mysql.cj.jdbc.Driver

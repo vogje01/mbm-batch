@@ -59,21 +59,13 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         }
 
         switch (command) {
-            case "help":
-                usage();
-                break;
-            case "drop":
-                BatchDatabaseTasks.dropDatabase(databaseUrl, user, password);
-                break;
-            case "create":
-                BatchDatabaseTasks.createDatabase(databaseUrl, user, password);
-                break;
-            case "install":
-                BatchDatabaseTasks.installDatabase(databaseUrl, user, password);
-                break;
-            case "update":
-                BatchDatabaseTasks.updateDatabase(databaseUrl, user, password);
-                break;
+            case "help" -> usage();
+            case "drop" -> BatchDatabaseTasks.dropDatabase(databaseUrl, user, password);
+            case "create" -> BatchDatabaseTasks.createDatabase(databaseUrl, user, password);
+            case "createAdmin" -> BatchDatabaseTasks.createAdminUser(databaseUrl, user, password);
+            case "install" -> BatchDatabaseTasks.installDatabase(databaseUrl, user, password);
+            case "update" -> BatchDatabaseTasks.updateDatabase(databaseUrl, user, password);
+            case "encrypt" -> BatchDatabaseTasks.encryptPassword(password);
         }
     }
 
@@ -84,8 +76,10 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         System.out.println(format("\t\thelp: shows the usage screen"));
         System.out.println(format("\t\tdrop: drop the current database"));
         System.out.println(format("\t\tcreate: create batch database"));
+        System.out.println(format("\t\tcreateAdmin: create admin user"));
         System.out.println(format("\t\tinstall: install batch database schema"));
         System.out.println(format("\t\tupdate: update batch database schema"));
+        System.out.println(format("\t\tencrypt: encrypts a password"));
         System.out.println(format("\tOptions:"));
         System.out.println(format("\t\t-t <type>: database type (supported typed: mysql | oracle)"));
         System.out.println(format("\t\t-d <url>: database url"));

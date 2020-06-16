@@ -8,15 +8,9 @@
 INSERT INTO BATCH_USER(ID, VERSION, USERID, LAST_NAME, FIRST_NAME, PASSWORD, DESCRIPTION, EMAIL, PHONE, DATE_FORMAT,
                        NUMBER_FORMAT, THEME, ACTIVE)
 VALUES ('1a86d0ae-b3fc-4103-b378-44d50b31263e', 1, 'admin', 'admin', 'admin',
-        'b0fd12d0642858921a28506d09b2c01ff9e79a53',
+        'IyAxVCFi/KvlpuP9DJOITEvoVTxKlJtJeAfSbg/oeY8iCUdHKzAsT8P1IItZVjBp',
         'General user with administrative rights. This user cannot be deleted nor changed.',
         '', '', 'ENUS', 'ENUS', 'material.blue.light.compact', 1);
-INSERT INTO BATCH_USER(ID, VERSION, USERID, LAST_NAME, FIRST_NAME, PASSWORD, DESCRIPTION, EMAIL, PHONE, DATE_FORMAT,
-                       NUMBER_FORMAT, THEME, ACTIVE)
-VALUES ('ae5e26b0-7ab1-45b6-9533-60017d03b175', 1, 'vogje01', 'Vogt', 'Jens',
-        'b0fd12d0642858921a28506d09b2c01ff9e79a53',
-        'Jens is the main MBM developer. He has a PhD in Physics from CERN and proud father of a on.',
-        'jensvogt47@gmail.com', '+49-172-206 1452', 'DE', 'DE', 'material.blue.light.compact', 1);
 
 --
 -- User groups
@@ -31,12 +25,13 @@ VALUES ('c13c9c93-3c47-4f12-8d56-dd98cac04361', 0, 'users', 'General users group
 --
 INSERT INTO BATCH_USER_USER_GROUP(USER_ID, USER_GROUP_ID)
 VALUES ('1a86d0ae-b3fc-4103-b378-44d50b31263e', '2cee032d-929a-44d1-a868-08b51485672d');
-INSERT INTO BATCH_USER_USER_GROUP(USER_ID, USER_GROUP_ID)
-VALUES ('ae5e26b0-7ab1-45b6-9533-60017d03b175', 'c13c9c93-3c47-4f12-8d56-dd98cac04361');
 
 --
 -- Job groups
 --
+INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
+VALUES ('268bf53d-6483-47be-9d95-fd03e2242a30', 1, 'Default', 'Default',
+        'Batch management internal default jobs.', 1);
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
 VALUES ('64272f77-142f-478a-be2b-70fc5f4a8d7b', 1, 'Performance', 'Performance',
         'Batch management internal performance jobs.', 1);
@@ -81,11 +76,11 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '9c61e8c8-8d53-4dd3-92e6-9d936e5
 --
 -- Housekeeping batch Windows
 --
-INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
+INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
                                  FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY, COMPLETED_EXIT_CODE,
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('7b137226-178d-47ab-884f-8b1b37c75878', 'housekeeping-batch-windows', 'Housekeeping Batch Windows',
-        'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Windows.', 1, 'JAR',
+        '268bf53d-6483-47be-9d95-fd03e2242a30', 'Housekeeping of batch data schema on Windows.', 1, 'JAR',
         '0.0.4', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe', 'batch-jobs-housekeeping-0.0.4.jar',
         'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
@@ -137,11 +132,11 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '98836bdf-147a-449e-9d27-6fce564
 --
 -- House keeping batch linux
 --
-INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
+INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
                                  FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY, COMPLETED_EXIT_CODE,
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('11f864e7-bcc6-4f7f-9ef4-35d031ced4f2', 'housekeeping-batch-linux', 'Housekeeping Batch Linux',
-        'd4c132d5-c100-452b-b843-851849b1a01c', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.4',
+        '268bf53d-6483-47be-9d95-fd03e2242a30', 'Housekeeping of batch data schema on Linux.', 1, 'JAR', '0.0.4',
         'java', 'batch-jobs-housekeeping-0.0.4.jar', '/opt/batch/agent', '/opt/batch/agent/log', '0', 'Completed',
         '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
@@ -191,11 +186,11 @@ VALUES ('34a001bf-77a0-461b-90ed-d36e046c8941', '6d416e3e-2180-45e4-99fd-4a53999
 --
 -- Performance batch Windows
 --
-INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
+INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
                                  FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY, COMPLETED_EXIT_CODE,
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('d8a9d19e-e4c1-4c8c-a2e8-4a664d9a6a58', 'performance-batch-windows', 'Performance Batch Windows',
-        '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Windows.', 1, 'JAR',
+        '268bf53d-6483-47be-9d95-fd03e2242a30', 'Performance data collection on Windows.', 1, 'JAR',
         '0.0.4', 'C:\\Program Files\\Java\\jdk-14.0.1\\bin\\java.exe', 'batch-jobs-performance-0.0.4.jar',
         'C:\\work\\batch', 'C:\\work\\batch\\log', '0', 'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
@@ -243,11 +238,11 @@ VALUES ('c83ca18e-ee82-4814-84e2-192cc9f29d96', '84c6f18a-b886-45ca-bfb8-b9cd712
 --
 -- Performance batch Linux
 --
-INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
+INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION, ACTIVE, TYPE, JOB_VERSION, COMMAND,
                                  FILE_NAME, WORKING_DIRECTORY, LOGGING_DIRECTORY, COMPLETED_EXIT_CODE,
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE)
 VALUES ('9e4f170d-8a59-4ea6-be80-149e73235c17', 'performance-batch-linux', 'Performance Batch Linux',
-        '64272f77-142f-478a-be2b-70fc5f4a8d7b', 'Performance data collection on Linux.', 1, 'JAR',
+        '268bf53d-6483-47be-9d95-fd03e2242a30', 'Performance data collection on Linux.', 1, 'JAR',
         '0.0.4', 'java', 'batch-jobs-performance-0.0.4.jar', '/opt/batch/agent', '/opt/batch/agent/log', '0',
         'Completed', '-1', 'Failed');
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
