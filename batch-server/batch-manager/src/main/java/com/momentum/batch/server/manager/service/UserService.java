@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.server.database.domain.User;
+import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public interface UserService {
 
     Page<User> findByUserGroup(String id, Pageable pageable);
 
-    User insertUser(User user);
+    User insertUser(User user) throws BadRequestException;
 
     User updateUser(User user) throws ResourceNotFoundException;
 

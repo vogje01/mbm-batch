@@ -102,6 +102,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return null;
 	}
 
+	@Cacheable(cacheNames = "User", key = "#userId")
 	public UserDetails loadUserByUsername(String userId, String password) throws UnauthorizedException {
 
 		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);

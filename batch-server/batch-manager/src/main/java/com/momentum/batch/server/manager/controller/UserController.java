@@ -5,6 +5,7 @@ import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.converter.UserModelAssembler;
 import com.momentum.batch.server.manager.service.UserService;
+import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.apache.commons.io.IOUtils;
@@ -162,9 +163,10 @@ public class UserController {
      *
      * @param userDto user DTO to inserted.
      * @return user DTO.
+     * @throws BadRequestException in case the user cannot be created.
      */
     @PutMapping(value = "/insert", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
-    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> insertUser(@RequestBody UserDto userDto) throws BadRequestException {
 
         t.restart();
         Optional<User> userOptional = userService.findByUserId(userDto.getUserId());
@@ -172,11 +174,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userDto.setPassword(stringEncryptor.encrypt(userDto.getPassword()));
         User user = userModelAssembler.toEntity(userDto);
         user = userService.insertUser(user);
         userDto = userModelAssembler.toModel(user);
-        logger.debug(format("Finished insert user request - id: {0} {1}", user.getId(), t.elapsedStr()));
+        logger.debug(format("Finished insert user request - userId: {0} {1}", user.getUserId(), t.elapsedStr()));
 
         return ResponseEntity.ok(userDto);
     }
