@@ -182,7 +182,6 @@ public class BatchDatabaseTasks {
     }
 
     public void encryptPassword(String userPassword) {
-        String encPassword = stringEncryptor.encrypt(userPassword);
-        System.out.println("Encrypted password: " + encPassword + " decrypted: " + stringEncryptor.decrypt(encPassword));
+        System.out.println("Encrypted password: " + stringEncryptor.encrypt(userPassword));
     }
 }
