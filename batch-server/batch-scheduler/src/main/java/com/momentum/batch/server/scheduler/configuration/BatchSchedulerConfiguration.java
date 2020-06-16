@@ -1,6 +1,7 @@
 package com.momentum.batch.server.scheduler.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableCaching
 @EnableTransactionManagement
+@EnableEncryptableProperties
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration {

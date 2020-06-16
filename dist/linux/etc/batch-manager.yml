@@ -1,21 +1,12 @@
 spring:
   main:
     banner-mode: off
-    allow-bean-definition-overriding: true
-  jackson:
-    default-property-inclusion: NON_NULL
-  data:
-    rest:
-      base-path: /api
   datasource:
     url: jdbc:mysql://batchmanager:3306/batch
-    username: root
-    password: Dilbert_01
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    show-sql: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    
+
 server:
   address: 0.0.0.0
   port: 8090

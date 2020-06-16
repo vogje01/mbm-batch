@@ -10,20 +10,13 @@ spring:
     listener:
       concurrency: 5
   main:
-    allow-bean-definition-overriding: true
     banner-mode: off
     web-application-type: none
   datasource:
     url: jdbc:mysql://batchmanager:3306/batch
-    username: root
-    password: Dilbert_01
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driverClassName: com.mysql.cj.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
 
 #
 # Listener configuration:
