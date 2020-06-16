@@ -4,6 +4,7 @@ import com.momentum.batch.server.database.install.task.BatchDatabaseTasks;
 import com.momentum.batch.server.database.install.types.DatabaseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,8 +16,11 @@ import static java.text.MessageFormat.format;
  * @version 0.0.1
  * @since 0.0.1
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.momentum.batch.common.util", "com.momentum.batch.server.database"})
 public class BatchDatabaseInstallation implements CommandLineRunner {
+
+    @Autowired
+    private BatchDatabaseTasks batchDatabaseTasks;
 
     private static Logger logger = LoggerFactory.getLogger(BatchDatabaseInstallation.class);
 
@@ -65,7 +69,7 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
             case "createAdmin" -> BatchDatabaseTasks.createAdminUser(databaseUrl, user, password);
             case "install" -> BatchDatabaseTasks.installDatabase(databaseUrl, user, password);
             case "update" -> BatchDatabaseTasks.updateDatabase(databaseUrl, user, password);
-            case "encrypt" -> BatchDatabaseTasks.encryptPassword(password);
+            case "encrypt" -> batchDatabaseTasks.encryptPassword(password);
         }
     }
 

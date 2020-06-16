@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.momentum.batch.common.util.NetworkUtils;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -36,9 +37,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableKafka
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableTransactionManagement
-//@EnableSpringDataWebSupport
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan("com.momentum.batch.server.database.domain")
+@EnableEncryptableProperties
 public class BatchManagerConfiguration implements WebMvcConfigurer {
 
     @Value("${mbm.server.host}")

@@ -1,7 +1,9 @@
 package com.momentum.batch.server.database.install.task;
 
 import org.flywaydb.core.Flyway;
-import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.jasypt.encryption.StringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +17,15 @@ import static java.text.MessageFormat.format;
  * @version 0.0.1
  * @since 0.0.1
  */
+@Component
 public class BatchDatabaseTasks {
+
+    private StringEncryptor stringEncryptor;
+
+    @Autowired
+    public BatchDatabaseTasks(StringEncryptor stringEncryptor) {
+        this.stringEncryptor = stringEncryptor;
+    }
 
     public static void dropDatabase(String url, String user, String password) {
         Connection conn = null;
@@ -171,9 +181,8 @@ public class BatchDatabaseTasks {
         flyway.migrate();
     }
 
-    public static void encryptPassword(String userPassword) {
-        StrongPasswordEncryptor passwordEncryptor = new StrongPasswordEncryptor();
-        String encryptedPassword = passwordEncryptor.encryptPassword(userPassword);
-        System.out.println("Encrypted password: " + encryptedPassword);
+    public void encryptPassword(String userPassword) {
+        String encPassword = stringEncryptor.encrypt(userPassword);
+        System.out.println("Encrypted password: " + stringEncryptor.encrypt(encPassword) + " decrypted: " + stringEncryptor.decrypt(encPassword));
     }
 }

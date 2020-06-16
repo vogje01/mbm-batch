@@ -47,6 +47,8 @@ public class UserServiceImpl implements UserService {
 
     private final CacheManager cacheManager;
 
+    private final PasswordHash passwordHash;
+
     /**
      * Constructor
      *
@@ -56,10 +58,12 @@ public class UserServiceImpl implements UserService {
      * @param cacheManager                 cache manager.
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository, CacheManager cacheManager) {
+    public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository,
+                           PasswordHash passwordHash, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.passwordHash = passwordHash;
         this.cacheManager = cacheManager;
     }
 
@@ -187,7 +191,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void changePassword(User user, String password) {
-        user.setPassword(PasswordHash.encryptPassword(password));
+        user.setPassword(passwordHash.encryptPassword(password));
         userRepository.save(user);
     }
 

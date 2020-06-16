@@ -53,6 +53,8 @@ public class UserController {
 
     private final UserModelAssembler userModelAssembler;
 
+    private final PasswordHash passwordHash;
+
     /**
      * Constructor.
      *
@@ -61,10 +63,11 @@ public class UserController {
      * @param userModelAssembler          user model assembler.
      */
     @Autowired
-    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler) {
+    public UserController(UserService userService, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler, PasswordHash passwordHash) {
         this.userService = userService;
         this.userPagedResourcesAssembler = userPagedResourcesAssembler;
         this.userModelAssembler = userModelAssembler;
+        this.passwordHash = passwordHash;
     }
 
     /**
@@ -169,7 +172,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        userDto.setPassword(PasswordHash.encryptPassword("password"));
+        userDto.setPassword(passwordHash.encryptPassword("password"));
         User user = userModelAssembler.toEntity(userDto);
         user = userService.insertUser(user);
         userDto = userModelAssembler.toModel(user);
@@ -193,7 +196,7 @@ public class UserController {
 
         User user = userModelAssembler.toEntity(userDto);
         if (userDto.getPasswordChanged()) {
-            user.setPassword(PasswordHash.encryptPassword(userDto.getPassword()));
+            user.setPassword(passwordHash.encryptPassword(userDto.getPassword()));
         }
         user = userService.updateUser(user);
         userDto = userModelAssembler.toModel(user);

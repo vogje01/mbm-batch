@@ -51,12 +51,15 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 	private UserRepository userRepository;
 
+	private PasswordHash passwordHash;
+
 	public JwtUserDetailsService() {
 	}
 
 	@Autowired
-	public JwtUserDetailsService(UserRepository userRepository) {
+	public JwtUserDetailsService(UserRepository userRepository, PasswordHash passwordHash) {
 		this.userRepository = userRepository;
+		this.passwordHash = passwordHash;
 	}
 
 	@Cacheable(cacheNames = "UserDetails", key = "#userId")
@@ -100,7 +103,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 	}
 
 	public UserDetails loadUserByUsername(String userId, String password) throws UnauthorizedException {
-		String encPassword = PasswordHash.encryptPassword(password);
+		String encPassword = passwordHash.encryptPassword(password);
 		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserIdAndPasswordAndActive(userId, encPassword);
 		if (userOptional.isPresent()) {
 			return new User(userId, password, emptyList());
