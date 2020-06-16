@@ -3,6 +3,8 @@ package com.momentum.batch.client.agent.library;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
+import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
+import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +13,12 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 
 import static java.text.MessageFormat.format;
@@ -38,12 +43,27 @@ public class LibraryReaderService {
     @Value("${mbm.library.port}")
     private int libraryPort;
 
+    @Value("${mbm.library.user}")
+    private String libraryUser;
+
+    @Value("${mbm.library.password}")
+    private String libraryPassword;
+
     private static final Logger logger = LoggerFactory.getLogger(LibraryReaderService.class);
 
     private final MethodTimer t = new MethodTimer();
 
+    private final StringEncryptor stringEncryptor;
+
+    public LibraryReaderService(StringEncryptor stringEncryptor) {
+        this.stringEncryptor = stringEncryptor;
+    }
+
     /**
      * Download the job file from the server.
+     * <p>
+     * Basic authentication is used to authenticate to the server.
+     * </p>
      *
      * @param jobDefinitionDto job definition data transfer object.
      * @throws IOException in case the file cannot be read.
@@ -56,8 +76,16 @@ public class LibraryReaderService {
         logger.info(format("Downloading job library - name: {0}", jarFileName));
 
         if (checkJobFile(jarFileName, jobDefinitionDto.getFileHash(), jobDefinitionDto.getFileSize())) {
+
             URL website = new URL(getServerUrl(jarFileName));
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            HttpURLConnection httpConnection = (HttpURLConnection) website.openConnection();
+            String auth = libraryUser + ":" + stringEncryptor.encrypt(libraryPassword);
+            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
+            String authHeaderValue = "Basic " + new String(encodedAuth);
+            httpConnection.setRequestProperty("Authorization", authHeaderValue);
+            httpConnection.connect();
+            InputStream inputStream = httpConnection.getInputStream();
+            ReadableByteChannel rbc = Channels.newChannel(inputStream);
             FileOutputStream fos = new FileOutputStream(libraryDirectory + File.separator + jarFileName);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             logger.info(format("Job library downloaded - name: {0} {1}", jarFileName, t.elapsedStr()));
