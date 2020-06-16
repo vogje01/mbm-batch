@@ -2,7 +2,9 @@ package com.momentum.batch.server.scheduler.library;
 
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
+import com.momentum.batch.server.database.repository.JobGroupRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.text.MessageFormat.format;
@@ -49,10 +52,15 @@ public class LibraryFileWatcherService implements FileChangeListener {
      * Job definition repository.
      */
     private final JobDefinitionRepository jobDefinitionRepository;
+    /**
+     * Job group repository.
+     */
+    private final JobGroupRepository jobGroupRepository;
 
     @Autowired
-    public LibraryFileWatcherService(JobDefinitionRepository jobDefinitionRepository) {
+    public LibraryFileWatcherService(JobDefinitionRepository jobDefinitionRepository, JobGroupRepository jobGroupRepository) {
         this.jobDefinitionRepository = jobDefinitionRepository;
+        this.jobGroupRepository = jobGroupRepository;
     }
 
     @PostConstruct
@@ -117,6 +125,10 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setDescription("New job definition: " + jobName);
             jobDefinition.setJobVersion(FileUtils.getVersion(fileName));
             jobDefinition.setActive(false);
+
+            // Get job group
+            Optional<JobGroup> defaultGroup = jobGroupRepository.findByName("Default");
+            defaultGroup.ifPresent(jobDefinition::setJobMainGroup);
 
             // Save to database
             jobDefinitionRepository.save(jobDefinition);
