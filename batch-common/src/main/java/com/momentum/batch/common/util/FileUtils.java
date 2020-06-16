@@ -78,7 +78,7 @@ public class FileUtils {
      * @return version string or 0.0.0
      */
     public static String getVersion(String fileName) {
-        Matcher m = Pattern.compile("batch-jobs-.*-(\\d+\\.\\d+\\.\\d+)\\..*").matcher(fileName);
+        Matcher m = Pattern.compile("batch-jobs-.*-(\\d+\\.\\d+\\.\\d+-RELEASE|SNAPSHOT)\\..*").matcher(fileName);
         if (m.matches()) {
             return m.group(1);
         }
