@@ -252,6 +252,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
         JobScheduleDto jobScheduleDto = new JobScheduleDto();
         jobScheduleDto.setName(jobDataMap.getString(JOB_SCHEDULE_NAME));
         jobScheduleDto.setId(jobDataMap.getString(JOB_SCHEDULE_UUID));
+        jobScheduleDto.setNextExecution(new Date());
+        jobScheduleDto.setLastExecution(trigger.getPreviousFireTime());
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_EXECUTED);
         agentSchedulerMessageDto.setHostName(hostName);
         agentSchedulerMessageDto.setNodeName(nodeName);
