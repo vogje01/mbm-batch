@@ -66,7 +66,7 @@ public class AgentStatusService {
 
     private final BatchSchedulerTask schedulerTask;
 
-    private AgentStatusMessageDto agentStatusMessageDto;
+    private final AgentStatusMessageDto agentStatusMessageDto;
 
     private final AgentStatusMessageProducer agentStatusMessageProducer;
 

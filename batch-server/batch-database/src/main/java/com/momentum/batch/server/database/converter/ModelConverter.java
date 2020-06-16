@@ -174,6 +174,11 @@ public class ModelConverter {
                 .map(this::convertJobGroupToDto)
                 .collect(toList()));
 
+        // Add main job group
+        if (jobDefinition.getJobMainGroup() != null) {
+            jobDefinitionDto.setJobMainGroupDto(modelMapper.map(jobDefinition.getJobMainGroup(), JobGroupDto.class));
+        }
+
         // Add parameter
         if (!jobDefinitionDto.getJobDefinitionParamDtos().isEmpty()) {
             jobDefinitionDto.setJobDefinitionParamDtos(jobDefinition.getJobDefinitionParams()
@@ -194,6 +199,11 @@ public class ModelConverter {
                 .stream()
                 .map(this::convertJobGroupToEntity)
                 .collect(toList()));
+
+        // Add main job group
+        if (jobDefinitionDto.getJobMainGroupDto() != null) {
+            jobDefinition.setJobMainGroup(modelMapper.map(jobDefinitionDto.getJobMainGroupDto(), JobGroup.class));
+        }
 
         if (!jobDefinition.getJobDefinitionParams().isEmpty()) {
             jobDefinition.setJobDefinitionParams(jobDefinitionDto.getJobDefinitionParamDtos()
