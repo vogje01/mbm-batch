@@ -13,6 +13,7 @@ import org.springframework.boot.devtools.filewatch.ChangedFile;
 import org.springframework.boot.devtools.filewatch.ChangedFiles;
 import org.springframework.boot.devtools.filewatch.FileChangeListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -36,6 +37,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.4
  */
 @Component
+@Transactional
 public class LibraryFileWatcherService implements FileChangeListener {
 
     @Value("${mbm.library.dropins}")
