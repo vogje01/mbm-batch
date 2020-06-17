@@ -97,6 +97,18 @@ public class LibraryFileWatcherService implements FileChangeListener {
                 logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
             }
         }
+
+        // Move file from dropins to jobs directory.
+        if (filePath.startsWith(dropinsDirectory)) {
+            try {
+                String src = dropinsDirectory + File.separator + fileName;
+                String dst = jobsDirectory + File.separator + fileName;
+                Files.move(new File(src).toPath(), new File(dst).toPath());
+                logger.info(format("File moved - src: {0} dst: {1}", src, dst));
+            } catch (IOException ex) {
+                logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
+            }
+        }
     }
 
     private void createJobDefinition(Path filePath) {
@@ -132,12 +144,6 @@ public class LibraryFileWatcherService implements FileChangeListener {
             // Save to database
             jobDefinitionRepository.save(jobDefinition);
             logger.info(format("Job definition created - name: {0} size: {1} hash: {2}", jobDefinition.getName(), currentFileSize, currentHash));
-
-            // Move file from dropins to jobs directory.
-            String src = dropinsDirectory + File.separator + fileName;
-            String dst = jobsDirectory + File.separator + fileName;
-            Files.move(new File(src).toPath(), new File(dst).toPath());
-            logger.info(format("File moved - src: {0} dst: {1}", src, dst));
 
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
