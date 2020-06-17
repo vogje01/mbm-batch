@@ -44,15 +44,20 @@ public class JobScheduleModelAssembler extends RepresentationModelAssemblerSuppo
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).update(jobScheduleDto.getId(), jobScheduleDto)).withRel("update"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).delete(jobScheduleDto.getId())).withRel("delete"));
 
+            // Agent links
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgents(jobScheduleDto.getId(), Pageable.unpaged())).withRel("agents"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgent(null, null)).withRel("addAgent").expand(jobScheduleDto.getId(), ""));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgent(null, null)).withRel("removeAgent").expand(jobScheduleDto.getId(), ""));
 
+            // Agent group links
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).getAgentGroups(jobScheduleDto.getId(), Pageable.unpaged())).withRel("agentGroups"));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).addAgentGroup(null, null)).withRel("addAgentGroup").expand(jobScheduleDto.getId(), ""));
             jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).removeAgentGroup(null, null)).withRel("removeAgentGroup").expand(jobScheduleDto.getId(), ""));
 
             jobScheduleDto.add(linkTo(methodOn(AgentController.class).updateAgent(new AgentDto())).withRel("updateAgent"));
+
+            // Job schedule start / stop
+            jobScheduleDto.add(linkTo(methodOn(JobScheduleController.class).startJobSchedule(jobScheduleDto.getId())).withRel("startJobSchedule"));
 
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();

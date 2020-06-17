@@ -311,4 +311,46 @@ public class JobScheduleServiceImpl implements JobScheduleService {
         }
         throw new ResourceNotFoundException();
     }
+
+    /**
+     * Start a job schedule on demand.
+     *
+     * @param jobScheduleId job schedule to execute.
+     * @return updated job schedule.
+     * @throws ResourceNotFoundException in case the job schedule cannot be found.
+     */
+    public JobSchedule startJobSchedule(final String jobScheduleId) throws ResourceNotFoundException {
+
+        // Get job schedule
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleId);
+        if (jobScheduleOptional.isPresent()) {
+
+            JobSchedule jobSchedule = jobScheduleOptional.get();
+
+            // Create server command
+            JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto);
+
+            // Send to all agents
+            jobSchedule.getAgents().forEach(agent -> {
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+            });
+
+            // Send message to agents in agent group
+            jobSchedule.getAgentGroups().forEach(agentGroup -> {
+                agentGroup.getAgents().forEach(agent -> {
+                    agentSchedulerMessageDto.setSender(serverName);
+                    agentSchedulerMessageDto.setHostName(agent.getHostName());
+                    agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                    agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                });
+            });
+            return jobSchedule;
+        } else {
+            throw new ResourceNotFoundException();
+        }
+    }
 }

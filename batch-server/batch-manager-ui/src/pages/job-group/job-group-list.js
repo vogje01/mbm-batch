@@ -33,8 +33,9 @@ class JobGroupList extends React.Component {
         this.setState({currentJobGroup: e.data});
     }
 
+    // Default group cannot be deleted.
     isDeleteVisible(e) {
-        return e.row.data.name !== 'admins' && e.row.data.name !== 'jobGroups';
+        return e.row.data.name !== 'Default';
     }
 
     render() {

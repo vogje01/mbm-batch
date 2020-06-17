@@ -6,7 +6,7 @@ spring:
   datasource:
     url: jdbc:mysql://batchmanager:3306
     username: root
-    password: Dilbert_01
+    password: Secret_123
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect

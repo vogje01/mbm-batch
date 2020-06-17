@@ -1,7 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
 import {deleteItem, getItem, getParams, handleData, handleResponse, initGet, insertItem, updateItem} from "../../utils/server-connection";
-import {EndTimer} from "../../utils/method-timer";
+import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const JobScheduleDataSource = () => {
     return new DataSource({
@@ -87,3 +87,13 @@ export const JobScheduleAgentGroupDataSource = (jobSchedule) => {
         })
     });
 };
+
+export const JobScheduleStart = (jobSchedule) => {
+    StartTimer();
+    let url = jobSchedule._links.startJobSchedule.href;
+    return fetch(url, initGet())
+        .then(response => {
+            EndTimer();
+            return handleResponse(response);
+        });
+}

@@ -1,5 +1,5 @@
 --
--- Momentum batch management demo data
+-- Momentum batch management default data
 --
 
 --
@@ -16,9 +16,9 @@ VALUES ('1a86d0ae-b3fc-4103-b378-44d50b31263e', 1, 'admin', 'admin', 'admin',
 -- User groups
 --
 INSERT INTO BATCH_USER_GROUP(ID, VERSION, NAME, DESCRIPTION, ACTIVE)
-VALUES ('2cee032d-929a-44d1-a868-08b51485672d', 0, 'admins', 'General admin user group', 1);
+VALUES ('2cee032d-929a-44d1-a868-08b51485672d', 0, 'admins', 'General admin user group. Cannot be deleted.', 1);
 INSERT INTO BATCH_USER_GROUP(ID, VERSION, NAME, DESCRIPTION, ACTIVE)
-VALUES ('c13c9c93-3c47-4f12-8d56-dd98cac04361', 0, 'users', 'General users group', 1);
+VALUES ('c13c9c93-3c47-4f12-8d56-dd98cac04361', 0, 'users', 'General users group. Cannot be deleted.', 1);
 
 --
 -- User / user groups relationships
@@ -31,7 +31,7 @@ VALUES ('1a86d0ae-b3fc-4103-b378-44d50b31263e', '2cee032d-929a-44d1-a868-08b5148
 --
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
 VALUES ('268bf53d-6483-47be-9d95-fd03e2242a30', 1, 'Default', 'Default',
-        'Batch management internal default jobs.', 1);
+        'Batch management internal default jobs. Cannot be deleted.', 1);
 INSERT INTO BATCH_JOB_GROUP(ID, VERSION, NAME, LABEL, DESCRIPTION, ACTIVE)
 VALUES ('64272f77-142f-478a-be2b-70fc5f4a8d7b', 1, 'Performance', 'Performance',
         'Batch management internal performance jobs.', 1);

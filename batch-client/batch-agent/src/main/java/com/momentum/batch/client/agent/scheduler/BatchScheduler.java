@@ -134,6 +134,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param jobDefinition job definition to add to the scheduler.
      */
     public void addJobToScheduler(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
+
         logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
         JobKey jobKey = findJob(jobDefinition);
 
@@ -147,7 +148,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
         // Build the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         if (trigger != null) {
-            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
+            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
@@ -161,7 +162,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
                         jobDefinition.getMainGroup(), jobDefinition.getName(), e.getMessage()), e);
             }
         } else {
-            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
+            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
         }
     }
 

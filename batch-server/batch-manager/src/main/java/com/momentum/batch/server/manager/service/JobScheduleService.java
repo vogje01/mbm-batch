@@ -37,4 +37,6 @@ public interface JobScheduleService {
     JobSchedule addAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
 
     JobSchedule removeAgentGroup(final String jobScheduleId, final String agentGroupId) throws ResourceNotFoundException;
+
+    JobSchedule startJobSchedule(final String jobScheduleId) throws ResourceNotFoundException;
 }

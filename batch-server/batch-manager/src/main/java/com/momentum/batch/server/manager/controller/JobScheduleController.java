@@ -314,4 +314,23 @@ public class JobScheduleController {
 
         return ResponseEntity.ok(jobScheduleDto);
     }
+
+    /**
+     * Starts a job schedule on demand.
+     *
+     * @param jobScheduleId job schedule UUID.
+     * @return job schedule resource.
+     * @throws ResourceNotFoundException in case the job schedule is not existing.
+     */
+    @GetMapping(value = "/{jobScheduleId}/startJobSchedule")
+    public ResponseEntity<JobScheduleDto> startJobSchedule(@PathVariable String jobScheduleId) throws ResourceNotFoundException {
+
+        t.restart();
+
+        // Start a job schedule on demand
+        JobSchedule jobSchedule = jobScheduleService.startJobSchedule(jobScheduleId);
+        JobScheduleDto jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
+
+        return ResponseEntity.ok(jobScheduleDto);
+    }
 }

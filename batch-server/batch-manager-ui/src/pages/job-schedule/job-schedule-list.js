@@ -2,7 +2,7 @@ import React from 'react';
 
 import 'devextreme/data/odata/store';
 import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
-import {JobScheduleDataSource} from "./job-schedule-data-source";
+import {JobScheduleDataSource, JobScheduleStart} from "./job-schedule-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
 import {GroupItem, SimpleItem, StringLengthRule} from "devextreme-react/form";
@@ -23,6 +23,7 @@ class JobSchedulerList extends React.Component {
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.cloneJobSchedule = this.cloneJobSchedule.bind(this);
+        this.startJobSchedule = this.startJobSchedule.bind(this);
         this.jobScheduleModes = [
             'FIXED', 'RANDOM', 'RANDOM_GROUP', 'MINIMUM_LOAD'
         ]
@@ -39,6 +40,13 @@ class JobSchedulerList extends React.Component {
         jobSchedule.name = jobSchedule.name + ' (copy)';
         let url = process.env.REACT_APP_API_URL + 'jobschedules/insert';
         this.setState({currentJobSchedule: insertItem(url, JSON.stringify(jobSchedule))});
+    }
+
+    startJobSchedule(e) {
+        JobScheduleStart(e.row.data)
+            .then(data => {
+                this.setState({currentJobSchedule: data})
+            });
     }
 
     render() {
@@ -219,6 +227,12 @@ class JobSchedulerList extends React.Component {
                                         hint: 'Copy job schedule.',
                                         icon: 'material-icons-outlined ic-copy',
                                         onClick: this.cloneJobSchedule
+                                    },
+                                    {
+                                        name: 'start',
+                                        hint: 'Starts the job schedule as on demand jobs.',
+                                        icon: 'material-icons-outlined ic-start',
+                                        onClick: this.startJobSchedule
                                     },
                                     {
                                         name: 'delete',

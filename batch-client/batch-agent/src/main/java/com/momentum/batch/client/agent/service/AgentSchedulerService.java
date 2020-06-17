@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
+import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import org.slf4j.Logger;
@@ -37,11 +38,23 @@ public class AgentSchedulerService {
 
     private final BatchScheduler batchScheduler;
 
+    private final BatchSchedulerTask batchSchedulerTask;
+
+    /**
+     * Constructor.
+     *
+     * @param batchScheduler     batch scheduler.
+     * @param batchSchedulerTask batch scheduler task executor.
+     */
     @Autowired
-    public AgentSchedulerService(BatchScheduler batchScheduler) {
+    public AgentSchedulerService(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask) {
         this.batchScheduler = batchScheduler;
+        this.batchSchedulerTask = batchSchedulerTask;
     }
 
+    /**
+     * Initialization
+     */
     @PostConstruct
     public void initialize() {
         logger.info(format("Agent scheduler message listener initialized - nodeName: {0} schedulerName: {1}", nodeName, schedulerName));
@@ -69,6 +82,7 @@ public class AgentSchedulerService {
                 case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
                 case JOB_REMOVE_SCHEDULE -> batchScheduler.removeJobFromScheduler(jobScheduleDto);
                 case JOB_ON_DEMAND -> batchScheduler.addOnDemandJob(agentSchedulerMessageDto.getJobDefinitionDto());
+                case JOB_SHUTDOWN -> batchSchedulerTask.killProcess(jobScheduleDto);
             }
         }
     }
