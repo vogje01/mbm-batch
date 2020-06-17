@@ -176,7 +176,7 @@ class JobDefinitionList extends React.Component {
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
                                         <SimpleItem
-                                            dataField={'jobMainGroupDto.name'}
+                                            dataField={'jobGroupName'}
                                             editorType={'dxSelectBox'}
                                             editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
                                             <RequiredRule/>
@@ -259,7 +259,7 @@ class JobDefinitionList extends React.Component {
                                 allowReordering={true}
                                 width={80}/>
                             <Column
-                                dataField={'jobMainGroupDto.name'}
+                                dataField={'jobGroupName'}
                                 caption={'Main Group'}
                                 dataType={'string'}
                                 allowEditing={true}

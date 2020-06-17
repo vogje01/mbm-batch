@@ -176,6 +176,7 @@ public class ModelConverter {
 
         // Add main job group
         if (jobDefinition.getJobMainGroup() != null) {
+            jobDefinitionDto.setJobGroupName(jobDefinition.getJobMainGroup().getName());
             jobDefinitionDto.setJobMainGroupDto(convertJobGroupToDto(jobDefinition.getJobMainGroup()));
         }
 
