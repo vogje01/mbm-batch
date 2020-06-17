@@ -20,10 +20,14 @@ spring:
 
 #
 # Scheduler configuration:
-#   listener: job log, job execution status message listener
-#     server: name of the listener host
+#   library: job library
+#     jobs: job directory
+#     dropins: dropins directory
 #   scheduler: job scheduler host
 #     server: name of the scheduler host
+#     interval: time interval in seconds for the scheduler checks.
+#   listener: job log, job execution status message listener
+#     server: name of the listener host
 #
 mbm:
   library:
@@ -31,6 +35,7 @@ mbm:
     dropins: /opt/batch/server/dropins
   scheduler:
     server: batchmanager
+    interval: 3600
   listener:
     server: batchmanager
 

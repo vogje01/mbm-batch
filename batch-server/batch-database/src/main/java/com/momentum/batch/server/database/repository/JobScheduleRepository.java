@@ -1,5 +1,6 @@
 package com.momentum.batch.server.database.repository;
 
+import com.momentum.batch.common.domain.JobScheduleType;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,19 +13,12 @@ import java.util.Optional;
 
 public interface JobScheduleRepository extends PagingAndSortingRepository<JobSchedule, String> {
 
-    @Query("select count(a) from JobSchedule j left join j.agents a where j.id = :scheduleId")
-    long countAgents(@Param("scheduleId") String scheduleId);
-
-    @Query("select count(ag) from JobSchedule j left join j.agentGroups ag where j.id = :scheduleId")
-    long countAgentGroups(@Param("scheduleId") String scheduleId);
-
     @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g where g.name = :groupName and d.name = :jobName")
     Optional<JobSchedule> findByGroupAndName(@Param("groupName") String groupName, @Param("jobName") String jobName);
 
-    @Query("select j from JobSchedule j left join j.jobDefinition d left join j.agents a where a.id = :agentId")
-    List<JobSchedule> findByAgent(@Param("agentId") String agentId);
+    @Query("select j from JobSchedule j where j.type = :type")
+    List<JobSchedule> findByType(@Param("type") JobScheduleType type);
 
-    // TODO: Remove job group?
     @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g left join j.agents a where a.id = :agentId")
     List<JobSchedule> findActiveByAgent(@Param("agentId") String agentId);
 
@@ -36,4 +30,5 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
 
     @Query("select j from JobSchedule j where j.name = :name")
     Optional<JobSchedule> findByName(@Param("name") String name);
+
 }
