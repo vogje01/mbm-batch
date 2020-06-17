@@ -135,20 +135,20 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void addJobToScheduler(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
 
-        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
+        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto(), jobDefinition.getName()));
         JobKey jobKey = findJob(jobDefinition);
 
         // Check existence
         if (isScheduled(jobKey)) {
             logger.warn(format("Job already register in scheduler - jobGroup: {0} jobName: {1}",
-                    jobDefinition.getMainGroup(), jobDefinition.getName()));
+                    jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
             return;
         }
 
         // Build the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         if (trigger != null) {
-            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
+            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
 
             // Build the job details, needed for the scheduler
             JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
@@ -156,13 +156,13 @@ public class BatchScheduler extends BatchSchedulerHelper {
                 scheduler.scheduleJob(jobDetail, trigger);
                 sendJobScheduled(jobSchedule);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
-                        jobDefinition.getMainGroup(), jobDefinition.getName(), trigger.getNextFireTime()));
+                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
             } catch (SchedulerException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                        jobDefinition.getMainGroup(), jobDefinition.getName(), e.getMessage()), e);
+                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()), e);
             }
         } else {
-            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
+            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
         }
     }
 
@@ -176,7 +176,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void removeJobFromScheduler(JobScheduleDto jobSchedule) {
         JobDefinitionDto jobDefinitionDto = jobSchedule.getJobDefinitionDto();
-        logger.info(format("Remove from scheduler - jobGroup: {0} jobName: {1}", jobDefinitionDto.getMainGroup(), jobDefinitionDto.getName()));
+        logger.info(format("Remove from scheduler - jobGroup: {0} jobName: {1}", jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName()));
         JobKey jobKey = findJob(jobDefinitionDto);
         if (jobKey != null) {
             if (isScheduled(jobKey)) {
@@ -194,7 +194,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     public void rescheduleJob(JobScheduleDto jobSchedule) {
 
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
-        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getMainGroup(), jobDefinition.getName()));
+        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
 
         JobKey jobKey = findJob(jobDefinition);
         if (jobKey != null) {
