@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,8 +95,6 @@ public class LibraryFileWatcherService implements FileChangeListener {
                 });
             } catch (IOException ex) {
                 logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
-            } catch (NoSuchAlgorithmException ex) {
-                logger.error(format("Could not get hash algorithm - name: MD5 error: {0}", ex.getMessage()));
             }
         }
     }
@@ -137,12 +134,13 @@ public class LibraryFileWatcherService implements FileChangeListener {
             logger.info(format("Job definition created - name: {0} size: {1} hash: {2}", jobDefinition.getName(), currentFileSize, currentHash));
 
             // Move file from dropins to jobs directory.
-            Files.move(new File(dropinsDirectory + File.separator + fileName).toPath(), new File(jobsDirectory + File.separator + fileName).toPath());
+            String src = dropinsDirectory + File.separator + fileName;
+            String dst = jobsDirectory + File.separator + fileName;
+            Files.move(new File(src).toPath(), new File(dst).toPath());
+            logger.info(format("File moved - src: {0} dst: {1}", src, dst));
 
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
-        } catch (NoSuchAlgorithmException ex) {
-            logger.error(format("Could not get hash algorithm - name: MD5 error: {0}", ex.getMessage()));
         }
     }
 

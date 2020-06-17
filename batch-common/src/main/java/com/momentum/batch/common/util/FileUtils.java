@@ -1,14 +1,10 @@
 package com.momentum.batch.common.util;
 
 import com.momentum.batch.common.domain.JobDefinitionType;
+import com.momentum.batch.common.util.md5.MD5;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,25 +22,10 @@ public class FileUtils {
      *
      * @param fileName fully qualified file name.
      * @return MD5 hash as string.
-     * @throws NoSuchAlgorithmException when the MD5 algorithm is not found.
-     * @throws IOException              in case the file cannot be read.
+     * @throws IOException in case the file cannot be read.
      */
-    public static String getHash(String fileName) throws NoSuchAlgorithmException, IOException {
-        InputStream fis = new FileInputStream(fileName);
-
-        byte[] buffer = new byte[1024];
-        MessageDigest complete = MessageDigest.getInstance("MD5");
-        int numRead;
-
-        do {
-            numRead = fis.read(buffer);
-            if (numRead > 0) {
-                complete.update(buffer, 0, numRead);
-            }
-        } while (numRead != -1);
-
-        fis.close();
-        return String.format("%032X", new BigInteger(1, complete.digest()));
+    public static String getHash(String fileName) throws IOException {
+        return MD5.asHex(MD5.getHash(new File(fileName)));
     }
 
     /**
@@ -65,10 +46,7 @@ public class FileUtils {
      */
     public static boolean exists(String fileName) {
         File f = new File(fileName);
-        if (f.exists() && !f.isDirectory()) {
-            return true;
-        }
-        return false;
+        return f.exists() && !f.isDirectory();
     }
 
     /**
@@ -78,7 +56,7 @@ public class FileUtils {
      * @return version string or 0.0.0
      */
     public static String getVersion(String fileName) {
-        Matcher m = Pattern.compile("batch-jobs-.*-(\\d+\\.\\d+\\.\\d+-RELEASE|SNAPSHOT)\\..*").matcher(fileName);
+        Matcher m = Pattern.compile("batch-jobs-.*-(\\d+\\.\\d+\\.\\d+-.*)\\..*").matcher(fileName);
         if (m.matches()) {
             return m.group(1);
         }

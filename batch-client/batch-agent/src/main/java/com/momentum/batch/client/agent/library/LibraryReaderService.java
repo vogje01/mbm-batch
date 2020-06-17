@@ -20,7 +20,6 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 
 import static java.text.MessageFormat.format;
 
@@ -129,8 +128,6 @@ public class LibraryReaderService {
             }
             String fileHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
             return !currentHash.equals(fileHash);
-        } catch (NoSuchAlgorithmException e) {
-            logger.error(format("Could not find algorithm - error: {0}", e.getMessage()));
         } catch (IOException e) {
             logger.error(format("Could not read file - file: {0} error: {1}", fileName, e.getMessage()));
         }
