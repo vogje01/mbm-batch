@@ -92,7 +92,7 @@ public class JobGroupController {
     public ResponseEntity<JobGroupDto> findById(@PathVariable String jobGroupId) {
 
         t.restart();
-        JobGroup jobGroup = jobGroupService.getJobGroup(jobGroupId);
+        JobGroup jobGroup = jobGroupService.findById(jobGroupId);
         JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group by ID request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
@@ -110,7 +110,7 @@ public class JobGroupController {
     public ResponseEntity<JobGroupDto> findByName(@RequestParam("name") String jobGroupName) {
 
         t.restart();
-        JobGroup jobGroup = jobGroupService.getJobGroupByName(jobGroupName);
+        JobGroup jobGroup = jobGroupService.findByName(jobGroupName);
         JobGroupDto jobGroupDto = jobGroupModelAssembler.toModel(jobGroup);
         logger.debug(format("Job group by name request finished - id: {0} [{1}]", jobGroup.getId(), t.elapsedStr()));
 
@@ -188,7 +188,7 @@ public class JobGroupController {
     @DeleteMapping(value = "/{jobGroupId}/delete")
     public ResponseEntity<Void> delete(@PathVariable String jobGroupId) throws ResourceNotFoundException {
         t.restart();
-        RestPreconditions.checkFound(jobGroupService.getJobGroup(jobGroupId));
+        RestPreconditions.checkFound(jobGroupService.findById(jobGroupId));
         jobGroupService.deleteJobGroup(jobGroupId);
         logger.debug(format("Job groups deleted - id: {0} {1}", jobGroupId, t.elapsedStr()));
         return null;

@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class LoginControllerTest {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private MockMvc mockMvc;
 
@@ -57,8 +57,6 @@ public class LoginControllerTest {
     public void setup() {
         initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(loginController).build();
-        ReflectionTestUtils.setField(jwtUserDetailsService, "ldapServerHost", "ldapd-rw.hlcl.com");
-        ReflectionTestUtils.setField(jwtUserDetailsService, "ldapServerPort", 1391);
         ReflectionTestUtils.setField(jwtTokenUtil, "secret", "javainuse");
 
         // Mock user details

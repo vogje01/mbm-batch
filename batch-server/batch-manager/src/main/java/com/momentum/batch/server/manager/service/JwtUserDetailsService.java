@@ -7,7 +7,6 @@ import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,12 +41,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 	private static final String HL_ENTRY_TYPE_ATTRIBUTE_CONTACT_VALUE = "CONT";
 	private static final String HL_LOGIN_NAME_ATTRIBUTE_NAME = "hlLoginName";
 	private static final String HL_WEB_USER_STATUS_ATTRIBUTE_NAME = "hlWebUserStatus";
-
-	@Value("${mbm.ldap.server}")
-	private String ldapServerHost;
-
-	@Value("${mbm.ldap.port}")
-	private int ldapServerPort;
 
 	private UserRepository userRepository;
 

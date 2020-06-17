@@ -103,14 +103,14 @@ public class JobGroupServiceImpl implements JobGroupService {
 
     @Override
     @Cacheable
-    public JobGroup getJobGroup(final String jobGroupId) {
+    public JobGroup findById(final String jobGroupId) {
         Optional<JobGroup> jobGroup = jobGroupRepository.findById(jobGroupId);
         return jobGroup.orElse(null);
     }
 
     @Override
     @Cacheable
-    public JobGroup getJobGroupByName(final String jobGroupName) {
+    public JobGroup findByName(final String jobGroupName) {
         Optional<JobGroup> jobGroup = jobGroupRepository.findByName(jobGroupName);
         return jobGroup.orElse(null);
     }

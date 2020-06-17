@@ -26,6 +26,8 @@ export const JobScheduleDataSource = () => {
                 jobSchedule.schedule = values.schedule !== undefined ? values.schedule : jobSchedule.schedule;
                 jobSchedule.jobDefinitionName = values.jobDefinitionName !== undefined ? values.jobDefinitionName : jobSchedule.jobDefinitionName;
                 jobSchedule.name = values.name !== undefined ? values.name : jobSchedule.name;
+                jobSchedule.type = values.type !== undefined ? values.type : jobSchedule.type;
+                jobSchedule.mode = values.mode !== undefined ? values.mode : jobSchedule.mode;
                 jobSchedule.active = values.active !== undefined ? values.active : jobSchedule.active;
                 let url = jobSchedule._links.update.href;
                 return updateItem(url, jobSchedule);

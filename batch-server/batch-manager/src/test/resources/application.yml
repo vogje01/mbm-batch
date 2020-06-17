@@ -1,21 +1,21 @@
 spring:
   main:
-    allow-bean-definition-overriding: true
     banner-mode: "off"
-  data:
-    rest:
-      base-path: /api
   jpa:
     show-sql: false
     generate-ddl: false
     properties:
       hibernate:
         dialect: com.momentum.batch.server.database.util.ImprovedH2Dialect
+      javax:
+        persistence:
+          schema-generation:
+            database:
+              action: drop-and-create
+            drop-source: script-then-metadata
+            drop-script-source: drop-tables.sql
   quartz:
     job-store-type: memory
-  flyway:
-    enabled: false
-    locations: classpath:db/migration
 
 mbm:
   library:
@@ -49,7 +49,7 @@ kafka:
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1
-  active: true
+  active: false
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.JobScheduleMode;
+import com.momentum.batch.common.domain.JobScheduleType;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.ArrayList;
@@ -16,20 +17,41 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = JobScheduleDto.class)
 public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
+    /**
+     * Primary key
+     */
     private String id;
-
+    /**
+     * Job schedule
+     */
     private String schedule;
-
+    /**
+     * Date of last execution
+     */
     private Date lastExecution;
-
+    /**
+     * Date of next execution
+     */
     private Date nextExecution;
-
+    /**
+     * Job schedule name
+     */
     private String name;
-
+    /**
+     * Job schedule mode.
+     */
     private JobScheduleMode mode;
-
+    /**
+     * Job schedule type.
+     */
+    private JobScheduleType type;
+    /**
+     * Job definition name
+     */
     private String jobDefinitionName;
-
+    /**
+     * Active flag
+     */
     private Boolean active;
     /**
      * Created by
@@ -107,6 +129,14 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     public void setMode(JobScheduleMode mode) {
         this.mode = mode;
+    }
+
+    public JobScheduleType getType() {
+        return type;
+    }
+
+    public void setType(JobScheduleType type) {
+        this.type = type;
     }
 
     public String getJobDefinitionName() {
@@ -191,6 +221,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 Objects.equal(nextExecution, that.nextExecution) &&
                 Objects.equal(name, that.name) &&
                 mode == that.mode &&
+                type == that.type &&
                 Objects.equal(jobDefinitionName, that.jobDefinitionName) &&
                 Objects.equal(active, that.active) &&
                 Objects.equal(createdBy, that.createdBy) &&
@@ -201,7 +232,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, jobDefinitionName, active, createdBy, createdAt,
+        return Objects.hashCode(super.hashCode(), id, schedule, lastExecution, nextExecution, name, mode, type, jobDefinitionName, active, createdBy, createdAt,
                 modifiedBy, modifiedAt);
     }
 
@@ -214,6 +245,7 @@ public class JobScheduleDto extends RepresentationModel<JobScheduleDto> {
                 .add("nextExecution", nextExecution)
                 .add("name", name)
                 .add("mode", mode)
+                .add("type", type)
                 .add("jobDefinitionName", jobDefinitionName)
                 .add("active", active)
                 .add("createdBy", createdBy)
