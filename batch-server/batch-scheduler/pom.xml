@@ -12,7 +12,7 @@
     <groupId>com.momentum</groupId>
     <artifactId>batch-scheduler</artifactId>
     <name>batch-scheduler</name>
-    <version>0.0.5-RELEASE</version>
+    <version>0.0.6-SNAPSHOT</version>
     <description>Momentum Batch Management scheduler</description>
 
     <properties>
@@ -85,12 +85,12 @@
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.5-RELEASE</version>
+            <version>0.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.momentum</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.5-RELEASE</version>
+            <version>0.0.6-SNAPSHOT</version>
         </dependency>
 
     </dependencies>

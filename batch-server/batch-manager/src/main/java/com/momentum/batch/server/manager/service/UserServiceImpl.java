@@ -36,7 +36,7 @@ import java.util.UUID;
  * On startup the user cache will be filled.
  * </p>
  *
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.3
  */
 @Service

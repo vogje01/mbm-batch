@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.momentum</groupId>
         <artifactId>batch</artifactId>
-        <version>0.0.5-RELEASE</version>
+        <version>0.0.6-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 

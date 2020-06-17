@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.1
  */
 @Repository

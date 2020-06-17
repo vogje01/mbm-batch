@@ -14,7 +14,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
  * Step execution context DTO.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.3
  */
 @JsonInclude(NON_NULL)

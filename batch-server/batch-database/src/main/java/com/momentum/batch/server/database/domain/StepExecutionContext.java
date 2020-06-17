@@ -17,7 +17,7 @@ import javax.persistence.*;
  * Step execution context.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.2
  */
 @Entity

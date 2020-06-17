@@ -32,7 +32,7 @@ import java.util.Optional;
  * On startup the agent cache will be filled.
  * </p>
  *
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.3
  */
 @Service

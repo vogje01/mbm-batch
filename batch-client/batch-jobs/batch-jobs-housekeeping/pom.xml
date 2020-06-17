@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>batch-jobs-housekeeping</artifactId>
-	<version>0.0.5-RELEASE</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<description>House keeping for the batch database schema</description>
 
 	<dependencies>
@@ -67,17 +67,17 @@
 		<dependency>
 			<groupId>com.momentum</groupId>
 			<artifactId>batch-common</artifactId>
-			<version>0.0.5-RELEASE</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.momentum</groupId>
 			<artifactId>batch-jobs-common</artifactId>
-			<version>0.0.5-RELEASE</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.momentum</groupId>
 			<artifactId>batch-database</artifactId>
-			<version>0.0.5-RELEASE</version>
+			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 
 		<!-- JSON/YAML support -->

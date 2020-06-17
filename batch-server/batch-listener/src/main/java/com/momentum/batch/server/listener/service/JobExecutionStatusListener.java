@@ -21,7 +21,7 @@ import static java.text.MessageFormat.format;
  * Listener for the job/step/chunk status notification messages send to the Kafka batchJobStatus queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.5-RELEASE
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.2
  */
 @Service
