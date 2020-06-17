@@ -100,17 +100,17 @@ public class AgentController {
     /**
      * Returns one page of job definitions.
      *
-     * @param id agent ID.
+     * @param agentId agent ID.
      * @return on page of job definitions.
      * @throws ResourceNotFoundException if the agent cannot be found.
      */
-    @GetMapping(value = "/byId", produces = {"application/hal+json"})
-    public ResponseEntity<AgentDto> findById(@PathParam("id") String id) throws ResourceNotFoundException {
+    @GetMapping(value = "/{agentId}", produces = {"application/hal+json"})
+    public ResponseEntity<AgentDto> findById(@PathVariable String agentId) throws ResourceNotFoundException {
 
         t.restart();
 
         // Get paging parameters
-        Optional<Agent> agentOptional = agentService.findById(id);
+        Optional<Agent> agentOptional = agentService.findById(agentId);
 
         // Convert to DTOs
         if (agentOptional.isPresent()) {
@@ -119,7 +119,7 @@ public class AgentController {
             // Add links
             addLinks(agentDto);
 
-            logger.debug(format("Finished find all agent request - id: {0} {1}", id, t.elapsedStr()));
+            logger.debug(format("Finished find all agent request - agentId: {0} {1}", agentId, t.elapsedStr()));
 
             return ResponseEntity.ok(agentDto);
         }

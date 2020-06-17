@@ -49,7 +49,7 @@ kafka:
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1
-  active: true
+  active: false
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler

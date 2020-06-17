@@ -1,0 +1,111 @@
+package com.momentum.batch.server.manager.service;
+
+import com.momentum.batch.common.domain.AgentBuilder;
+import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.manager.controller.AgentController;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
+public class AgentControllerTest {
+
+    private MockMvc mockMvc;
+
+    @MockBean
+    private AgentService agentService;
+
+    @Autowired
+    private AgentController agentController;
+
+    @Before
+    public void setup() {
+        initMocks(this);
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(agentController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .build();
+    }
+
+    @Test
+    public void whenCalledWithValidParameters_thenReturnList() throws Exception {
+
+        Agent agent1 = new AgentBuilder()
+                .withRandomId()
+                .withNodeName("node01")
+                .build();
+        Agent agent2 = new AgentBuilder()
+                .withRandomId()
+                .withNodeName("node02")
+                .build();
+
+        List<Agent> agentList = new ArrayList<>();
+        agentList.add(agent1);
+        agentList.add(agent2);
+
+        when(agentService.findAll(any())).thenReturn(new PageImpl<>(agentList));
+
+        this.mockMvc.perform(get("/api/agents?page=0&size=5")) //
+                //.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.links[0].rel", is("self")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/agents?page=0&size=5")))
+                .andExpect(jsonPath("$.content[0].nodeName", is("node01")))
+                .andExpect(jsonPath("$.content[1].nodeName", is("node02")));
+    }
+
+    @Test
+    public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
+
+        when(agentService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+
+        this.mockMvc.perform(get("/api/agents?page=0&size=5&sort=nodeName,asc")) //
+                //.andDo(print())
+                .andExpect(status().isOk()) //
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.links[0].rel", is("self")))
+                .andExpect(jsonPath("$.links[0].href", is("http://localhost/api/agents?page=0&size=5&sort=nodeName,asc")));
+    }
+
+    @Test
+    public void whenCalledWithValidId_thenReturnAgent() throws Exception {
+
+        Agent agent1 = new AgentBuilder()
+                .withRandomId()
+                .withNodeName("node01")
+                .build();
+
+        when(agentService.findById(any())).thenReturn(java.util.Optional.ofNullable(agent1));
+
+        this.mockMvc.perform(get("/api/agents/" + agent1.getId())) //
+                //.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaTypes.HAL_JSON))
+                .andExpect(jsonPath("$.nodeName", is("node01")));
+    }
+}
