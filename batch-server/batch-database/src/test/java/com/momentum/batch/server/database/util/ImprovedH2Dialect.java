@@ -20,6 +20,6 @@ public class ImprovedH2Dialect extends H2Dialect {
         // We don't need to drop constraints before dropping tables, that just
         // leads to error messages about missing tables when we don't have a
         // schema in the database
-        return false;
+        return true;
     }
 }

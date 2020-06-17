@@ -43,12 +43,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 	private static final String HL_LOGIN_NAME_ATTRIBUTE_NAME = "hlLoginName";
 	private static final String HL_WEB_USER_STATUS_ATTRIBUTE_NAME = "hlWebUserStatus";
 
-	@Value("${mbm.ldap.server}")
-	private String ldapServerHost;
-
-	@Value("${mbm.ldap.port}")
-	private int ldapServerPort;
-
 	private UserRepository userRepository;
 
 	private StringEncryptor stringEncryptor;
