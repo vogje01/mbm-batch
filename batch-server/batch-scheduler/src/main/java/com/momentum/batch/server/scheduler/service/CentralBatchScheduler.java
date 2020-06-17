@@ -55,7 +55,7 @@ public class CentralBatchScheduler {
         logger.info(format("Central job scheduler initialized - interval: {0}", interval));
     }
 
-    @Scheduled(fixedRateString = "${mbm.scheduler.interval}")
+    @Scheduled(fixedRateString = "${mbm.scheduler.interval}000")
     public void checkSchedules() {
         logger.info(format("Check schedules"));
 
