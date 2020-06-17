@@ -72,12 +72,16 @@ class UserList extends React.Component {
 
     dateFormatValueChanged(e) {
         localStorage.setItem('dateTimeFormat', e.value);
-        this.state.currentUser.dateTimeFormat = e.value;
+        let currentUser = {...this.state.currentUser}
+        currentUser.dateTimeFormat = e.value;
+        this.setState({currentUser: currentUser})
     }
 
     numberFormatValueChanged(e) {
         localStorage.setItem('numberFormat', e.value);
-        this.state.currentUser.numberFormat = e.value;
+        let currentUser = {...this.state.currentUser}
+        currentUser.numberFormat = e.value;
+        this.setState({currentUser: currentUser})
     }
 
     render() {
