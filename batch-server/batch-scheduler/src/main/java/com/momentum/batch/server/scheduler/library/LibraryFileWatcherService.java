@@ -20,10 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -103,10 +100,10 @@ public class LibraryFileWatcherService implements FileChangeListener {
             try {
                 String src = dropinsDirectory + File.separator + fileName;
                 String dst = jobsDirectory + File.separator + fileName;
-                Files.move(new File(src).toPath(), new File(dst).toPath());
+                Files.move(new File(src).toPath(), new File(dst).toPath(), StandardCopyOption.REPLACE_EXISTING);
                 logger.info(format("File moved - src: {0} dst: {1}", src, dst));
             } catch (IOException ex) {
-                logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
+                logger.error(format("Could not move file - name: {0} error: {1}", filePath, ex.getMessage()));
             }
         }
     }
