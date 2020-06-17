@@ -79,7 +79,7 @@ public abstract class BatchSchedulerHelper {
             }
         } catch (SchedulerException ex) {
             logger.error(format("Could not check existence - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinitionDto.getMainGroup(), jobDefinitionDto.getName(), ex.getMessage()), ex);
+                    jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName(), ex.getMessage()), ex);
         }
         return false;
     }
@@ -157,7 +157,7 @@ public abstract class BatchSchedulerHelper {
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
                 .jobName(jobDefinition.getName())
-                .jobGroupName(jobDefinition.getMainGroup())
+                .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
@@ -183,7 +183,7 @@ public abstract class BatchSchedulerHelper {
         return new JobDetailBuilder()
                 .libraryDirectory(libraryDirectory)
                 .jobName(jobDefinition.getName())
-                .jobGroupName(jobDefinition.getMainGroup())
+                .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())

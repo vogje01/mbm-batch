@@ -10,7 +10,6 @@ import org.springframework.hateoas.RepresentationModel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Job definition data transfer object.
@@ -309,10 +308,6 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
-    }
-
-    public String getMainGroup() {
-        return jobGroupDtoes.size() > 0 ? jobGroupDtoes.get(0).getName() : UUID.randomUUID().toString();
     }
 
     public List<JobGroupDto> getJobGroupDtoes() {

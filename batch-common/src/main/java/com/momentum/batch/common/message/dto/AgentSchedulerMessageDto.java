@@ -5,8 +5,6 @@ import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 
-import java.util.Date;
-
 /**
  * Agent scheduler message DTO.
  *
@@ -43,19 +41,19 @@ public class AgentSchedulerMessageDto {
     /**
      * Schedule Name
      */
-    private String jobScheduleName;
+   // private String jobScheduleName;
     /**
      * Schedule UUID
      */
-    private String jobScheduleUuid;
+    //private String jobScheduleUuid;
     /**
      * Previous
      */
-    private Date previousFireTime;
+    //private Date previousFireTime;
     /**
      * Next fire time
      */
-    private Date nextFireTime;
+    //private Date nextFireTime;
 
     public AgentSchedulerMessageDto() {
         // Intentionally empty
@@ -68,6 +66,11 @@ public class AgentSchedulerMessageDto {
     public AgentSchedulerMessageDto(AgentSchedulerMessageType type, JobScheduleDto jobScheduleDto) {
         this.type = type;
         this.jobScheduleDto = jobScheduleDto;
+    }
+
+    public AgentSchedulerMessageDto(AgentSchedulerMessageType type, JobDefinitionDto jobDefinitionDto) {
+        this.type = type;
+        this.jobDefinitionDto = jobDefinitionDto;
     }
 
     public AgentSchedulerMessageType getType() {
@@ -118,7 +121,7 @@ public class AgentSchedulerMessageDto {
         this.jobDefinitionDto = jobDefinitionDto;
     }
 
-    public Date getPreviousFireTime() {
+    /*public Date getPreviousFireTime() {
         return previousFireTime;
     }
 
@@ -148,7 +151,7 @@ public class AgentSchedulerMessageDto {
 
     public void setJobScheduleUuid(String jobScheduleUuid) {
         this.jobScheduleUuid = jobScheduleUuid;
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -158,16 +161,12 @@ public class AgentSchedulerMessageDto {
         return type == that.type &&
                 Objects.equal(sender, that.sender) &&
                 Objects.equal(hostName, that.hostName) &&
-                Objects.equal(nodeName, that.nodeName) &&
-                Objects.equal(jobScheduleName, that.jobScheduleName) &&
-                Objects.equal(jobScheduleUuid, that.jobScheduleUuid) &&
-                Objects.equal(previousFireTime, that.previousFireTime) &&
-                Objects.equal(nextFireTime, that.nextFireTime);
+                Objects.equal(nodeName, that.nodeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, sender, hostName, nodeName, jobScheduleName, jobScheduleUuid, previousFireTime, nextFireTime);
+        return Objects.hashCode(type, sender, hostName, nodeName);
     }
 
     @Override
@@ -177,10 +176,6 @@ public class AgentSchedulerMessageDto {
                 .add("sender", sender)
                 .add("hostName", hostName)
                 .add("nodeName", nodeName)
-                .add("jobScheduleName", jobScheduleName)
-                .add("jobScheduleUuid", jobScheduleUuid)
-                .add("previousFireTime", previousFireTime)
-                .add("nextFireTime", nextFireTime)
                 .toString();
     }
 }
