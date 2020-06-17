@@ -223,7 +223,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
         // Build the job details, needed for the scheduler
-        JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobGroupName());
+        JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName());
         JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobDefinition);
         try {
             scheduler.addJob(jobDetail, true);
