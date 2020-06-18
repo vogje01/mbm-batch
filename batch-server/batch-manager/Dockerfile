@@ -1,9 +1,10 @@
-FROM openjdk:12-jdk-alpine
+FROM openjdk:14-jdk-alpine
 ARG JAR_FILE
 
 # Create app directory
-WORKDIR /app/fis-batch/fis-batch-manager
+WORKDIR /app/batch/batch-manager
 
-ADD ${JAR_FILE} fis-batch-manager.jar
+ADD ${JAR_FILE} batch-manager.jar
+
 EXPOSE 8090
-ENTRYPOINT ["java","-jar","fis-batch-manager.jar"]
+ENTRYPOINT ["java","-Dlogging.config=classpath:batch-manager-log.yml","-Dspring.config.location=classpath:batch-manager.yml", "-Djasypt.encryptor.password=1Qaz0oKm", "-jar", "batch-manager.jar"]
