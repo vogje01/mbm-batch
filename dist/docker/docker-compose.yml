@@ -22,7 +22,7 @@ services:
 
   # Apache zookeeper
   batch-zookeeper:
-    image: zookeeper:latest
+    image: confluentinc/cp-zookeeper:latest
     container_name: batch-zookeeper
     ports:
       - "2181:2181"
@@ -67,7 +67,7 @@ services:
   # Batch listener
   #
   batch-listener:
-    image: com.momentum/batch-listener:0.0.6-SNAPSHOT
+    image: com.momentum.batch/batch-listener:0.0.6-SNAPSHOT
     container_name: batch-listener
     environment:
       TZ: "Europe/Berlin"
@@ -79,7 +79,7 @@ services:
   # Batch scheduler
   #
   batch-scheduler:
-    image: com.momentum/batch-scheduler:0.0.6-SNAPSHOT
+    image: com.momentum.batch/batch-scheduler:0.0.6-SNAPSHOT
     container_name: batch-scheduler
     environment:
       TZ: "Europe/Berlin"
@@ -91,7 +91,7 @@ services:
   #  Batch manager
   #
   batch-manager:
-    image: com.momentum/batch-manager:0.0.6-SNAPSHOT
+    image: com.momentum.batch/batch-manager:0.0.6-SNAPSHOT
     hostname: batch-manager
     container_name: batch-manager
     environment:
@@ -120,8 +120,8 @@ services:
   # Batch agent 01
   #
   batch-agent-01:
-    hostname: batch-agent-01
     image: com.momentum.batch/batch-agent:0.0.6-SNAPSHOT
+    hostname: batch-agent-01
     container_name: batch-agent-01
     environment:
       TZ: "Europe/Berlin"
@@ -138,8 +138,8 @@ services:
   # Batch agent 02
   #
   batch-agent-02:
-    hostname: batch-agent-02
     image: com.momentum.batch/batch-agent:0.0.6-SNAPSHOT
+    hostname: batch-agent-02
     container_name: batch-agent-02
     environment:
       TZ: "Europe/Berlin"

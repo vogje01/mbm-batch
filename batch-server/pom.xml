@@ -4,12 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.momentum</groupId>
+        <groupId>com.momentum.batch</groupId>
         <artifactId>batch</artifactId>
         <version>0.0.6-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 
+    <groupId>com.momentum.batch</groupId>
     <artifactId>batch-server</artifactId>
 
     <modules>

@@ -5,14 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.momentum</groupId>
+        <groupId>com.momentum.batch</groupId>
         <artifactId>batch-client</artifactId>
         <version>0.0.6-SNAPSHOT</version>
     </parent>
+    <packaging>pom</packaging>
 
+    <groupId>com.momentum.batch</groupId>
     <artifactId>batch-jobs</artifactId>
 	<name>batch-jobs</name>
-	<packaging>pom</packaging>
 
 	<modules>
         <module>batch-jobs-common</module>

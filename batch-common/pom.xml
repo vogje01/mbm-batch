@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.momentum</groupId>
-        <artifactId>batch</artifactId>
-        <version>0.0.6-SNAPSHOT</version>
-    </parent>
-    <artifactId>batch-common</artifactId>
-    <name>batch-common</name>
-    <version>0.0.6-SNAPSHOT</version>
-    <description>Momentum Batch Management common classes</description>
-    <packaging>jar</packaging>
+	<parent>
+		<groupId>com.momentum.batch</groupId>
+		<artifactId>batch</artifactId>
+		<version>0.0.6-SNAPSHOT</version>
+	</parent>
+	<packaging>jar</packaging>
 
-    <properties>
-        <java.version>14</java.version>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-    </properties>
+	<groupId>com.momentum.batch</groupId>
+	<artifactId>batch-common</artifactId>
+	<name>batch-common</name>
+	<version>0.0.6-SNAPSHOT</version>
+	<description>Momentum Batch Management common classes</description>
+
+	<properties>
+		<java.version>14</java.version>
+		<maven.compiler.source>14</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
+	</properties>
 
     <dependencies>
 		<!-- Spring -->

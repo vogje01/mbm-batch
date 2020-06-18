@@ -9,6 +9,7 @@
         <version>2.2.2.RELEASE</version>
     </parent>
 
+    <groupId>com.momentum.batch</groupId>
     <artifactId>batch-jobs-test-01</artifactId>
     <version>0.0.6-SNAPSHOT</version>
     <description>Batch jobs testing area.</description>
@@ -77,19 +78,19 @@
 
         <!-- Momentum batch -->
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-common</artifactId>
             <version>0.0.6-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-jobs-common</artifactId>
             <version>0.0.6-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
             <version>0.0.6-SNAPSHOT</version>
         </dependency>

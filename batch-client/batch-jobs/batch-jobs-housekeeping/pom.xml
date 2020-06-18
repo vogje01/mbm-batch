@@ -9,6 +9,7 @@
 		<version>2.2.2.RELEASE</version>
 	</parent>
 
+	<groupId>com.momentum.batch</groupId>
 	<artifactId>batch-jobs-housekeeping</artifactId>
 	<version>0.0.6-SNAPSHOT</version>
 	<description>House keeping for the batch database schema</description>
@@ -65,17 +66,17 @@
 
         <!-- Batch -->
 		<dependency>
-			<groupId>com.momentum</groupId>
+			<groupId>com.momentum.batch</groupId>
 			<artifactId>batch-common</artifactId>
 			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.momentum</groupId>
+			<groupId>com.momentum.batch</groupId>
 			<artifactId>batch-jobs-common</artifactId>
 			<version>0.0.6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.momentum</groupId>
+			<groupId>com.momentum.batch</groupId>
 			<artifactId>batch-database</artifactId>
 			<version>0.0.6-SNAPSHOT</version>
 		</dependency>

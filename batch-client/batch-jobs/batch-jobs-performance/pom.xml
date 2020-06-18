@@ -10,6 +10,7 @@
         <version>2.2.2.RELEASE</version>
     </parent>
 
+    <groupId>com.momentum.batch</groupId>
     <artifactId>batch-jobs-performance</artifactId>
     <version>0.0.6-SNAPSHOT</version>
     <description>Collection and consolidation of performance data.</description>
@@ -66,17 +67,17 @@
 
         <!-- Batch -->
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-common</artifactId>
             <version>0.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-jobs-common</artifactId>
             <version>0.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.momentum</groupId>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
             <version>0.0.6-SNAPSHOT</version>
         </dependency>
