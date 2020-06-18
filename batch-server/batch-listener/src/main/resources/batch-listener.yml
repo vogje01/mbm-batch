@@ -1,3 +1,9 @@
+#
+# MPM listener configuration file
+#
+# This configuration file is only used by the docker image.
+#
+
 spring:
   kafka:
     listener:
@@ -7,9 +13,9 @@ spring:
     banner-mode: off
     web-application-type: none
   datasource:
-    url: jdbc:mysql://batchmanager:3306/batch
-    username: root
-    password: Dilbert_01
+    url: jdbc:mysql://batch-db:3306/batch
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -20,9 +26,9 @@ spring:
 
 mbm:
   listener:
-    server: batchmanager
+    server: batch-listener
   scheduler:
-    server: batchmanager
+    server: batch-scheduler
 
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
@@ -31,7 +37,7 @@ mbm:
 # deletionDays: Number of days after which the logs are deleted.
 # topic: Apache Kafka topic name.
 kafka:
-  bootstrapAddress: localhost:9092
+  bootstrapAddress: batch-kafka:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1

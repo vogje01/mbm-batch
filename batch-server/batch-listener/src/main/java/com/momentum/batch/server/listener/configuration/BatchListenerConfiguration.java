@@ -39,7 +39,7 @@ public class BatchListenerConfiguration {
     public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
         YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-        yaml.setResources(new ClassPathResource("application.yml"));
+        yaml.setResources(new ClassPathResource("batch-listener.yml"));
         configurer.setProperties(Objects.requireNonNull(yaml.getObject()));
         return configurer;
     }

@@ -1,9 +1,9 @@
-FROM openjdk:12-jdk-alpine
+FROM openjdk:14-jdk-alpine
 ARG JAR_FILE
 
 # Create app directory
-WORKDIR /app/fis-batch/fis-batch-listener
+WORKDIR /app/batch/batch-listener
 
-ADD ${JAR_FILE} fis-batch-listener.jar
-EXPOSE 8090
-ENTRYPOINT ["java","-jar","fis-batch-listener.jar"]
+ADD ${JAR_FILE} batch-listener.jar
+
+ENTRYPOINT ["java","-Dlogging.config=classpath:batch-listener-log.yml","-Dspring.config.location=classpath:batch-listener.yml", "-Djasypt.encryptor.password=1Qaz0oKm", "-jar", "batch-listener.jar"]

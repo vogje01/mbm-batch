@@ -10,7 +10,7 @@
 MODULE=batch-listener
 
 # Version
-VERSION=0.0.5-RELEASE
+VERSION=0.0.6-SNAPSHOT
 
 # Service name
 SERVICE_NAME=$MODULE
