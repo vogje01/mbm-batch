@@ -70,7 +70,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     @PostConstruct
     public void initializeScheduler() {
         startScheduler();
-        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} libDir: {2}", hostName, nodeName, libraryDirectory));
+        logger.info(format("Batch scheduler initialized - hostName: {0} nodeName: {1} jobs: {2}", hostName, nodeName, libraryDirectory));
     }
 
     /**

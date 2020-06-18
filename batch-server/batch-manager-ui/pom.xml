@@ -11,12 +11,13 @@
     <groupId>com.momentum.batch</groupId>
     <artifactId>batch-manager-ui</artifactId>
     <name>batch-manager-ui</name>
-    <version>0.0.3</version>
+    <version>0.0.6-SNAPSHOT</version>
     <description>Momentum Batch Management UI</description>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
-            <plugin>
+            <!--<plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.8.0</version>
@@ -48,8 +49,8 @@
                         <id>npm run build:production</id>
                     </execution>
                 </executions>
-            </plugin>
-            <!--<plugin>
+            </plugin>-->
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -72,7 +73,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
         </plugins>
     </build>
 </project>

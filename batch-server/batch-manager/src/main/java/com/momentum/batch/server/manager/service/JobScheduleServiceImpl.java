@@ -184,6 +184,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                logger.debug(format("Message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_RESCHEDULE));
 
                 return jobSchedule;
             } else {
@@ -220,6 +221,8 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                logger.debug(format("Message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE));
+
                 return jobSchedule;
             } else {
                 throw new ResourceNotFoundException();
@@ -266,7 +269,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                     agentSchedulerMessageDto.setHostName(agent.getHostName());
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                    logger.debug(format("Job add schedule send to agent - hostName: {0} nodeName: {0}", agent.getHostName(), agent.getNodeName()));
+                    logger.debug(format("Job add schedule send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_SCHEDULE));
                 });
                 return jobSchedule;
             } else {
@@ -304,7 +307,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                     agentSchedulerMessageDto.setHostName(agent.getHostName());
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                    logger.debug(format("Job remove schedule send to agent - hostName: {0} nodeName: {0}", agent.getHostName(), agent.getNodeName()));
+                    logger.debug(format("Job remove schedule send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE));
                 });
                 return jobSchedule;
             } else {
@@ -339,7 +342,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {0}", agent.getHostName(), agent.getNodeName()));
+                logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_ON_DEMAND));
             });
 
             // Send message to agents in agent group
@@ -349,7 +352,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                     agentSchedulerMessageDto.setHostName(agent.getHostName());
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                    logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {0}", agent.getHostName(), agent.getNodeName()));
+                    logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_ON_DEMAND));
                 });
             });
             return jobSchedule;

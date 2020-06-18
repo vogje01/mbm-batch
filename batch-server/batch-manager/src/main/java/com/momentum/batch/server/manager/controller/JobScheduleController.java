@@ -225,7 +225,7 @@ public class JobScheduleController {
         // Add agent
         JobSchedule jobSchedule = jobScheduleService.addAgent(jobScheduleId, agentId);
         JobScheduleDto jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
-        logger.debug(format("Agent added to schedule - jobScheduleId: {0} agentId: {1} {2}", jobScheduleId, agentId, t.elapsedStr()));
+        logger.info(format("Agent added to schedule - jobScheduleId: {0} agentId: {1} {2}", jobScheduleId, agentId, t.elapsedStr()));
 
         return ResponseEntity.ok(jobScheduleDto);
     }
