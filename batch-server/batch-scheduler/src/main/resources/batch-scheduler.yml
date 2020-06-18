@@ -78,13 +78,13 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchlistener
+    group: batch-listener
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchlistener
+    group: batch-scheduler
     partitions: 5
     replicas: 1
   jobLogging:

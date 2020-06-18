@@ -10,4 +10,8 @@ RUN mkdir ./jobs
 
 ADD ${JAR_FILE} batch-agent.jar
 
-ENTRYPOINT ["java","-Dmbm.agent.docker.hostname=${HOST_NAME}","-Dmbm.agent.hostName=${HOST_NAME}","-Dmbm.agent.nodeName=${NODE_NAME}","-Dlogging.config=classpath:batch-agent-log.yml","-Dspring.config.location=classpath:batch-agent.yml", "-Djasypt.encryptor.password=1Qaz0oKm", "-jar", "batch-agent.jar"]
+ENTRYPOINT ["java","-Dmbm.agent.docker.hostname=${HOST_NAME}","-Dmbm.agent.hostName=${HOST_NAME}",\
+            "-Dmbm.agent.nodeName=${NODE_NAME}","-Dlogging.config=classpath:batch-agent-log.yml",\
+            "-Dspring.config.location=classpath:batch-agent.yml","-Djasypt.encryptor.password=1Qaz0oKm",\
+            "-Dkafka.agentStatus.group=${NODE_NAME}","-Dkafka.agentScheduler.group=${NODE_NAME}",\
+            "-jar","batch-agent.jar"]

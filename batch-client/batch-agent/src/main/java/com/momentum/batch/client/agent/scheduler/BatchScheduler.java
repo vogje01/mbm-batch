@@ -150,14 +150,14 @@ public class BatchScheduler extends BatchSchedulerHelper {
         if (trigger != null) {
             logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
 
-            // Build the job details, needed for the scheduler
-            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
             try {
+                // Build the job details, needed for the scheduler
+                JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
                 scheduler.scheduleJob(jobDetail, trigger);
                 sendJobScheduled(jobSchedule);
                 logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
                         jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
-            } catch (SchedulerException e) {
+            } catch (SchedulerException | IOException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                         jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()), e);
             }
@@ -224,13 +224,13 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName());
-        JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobDefinition);
         try {
+            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobDefinition);
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
             logger.info(format("Next execution - groupName: {0} jobName: {1} nextExecution: {2}",
                     jobDefinition.getJobGroupName(), jobDefinition.getName(), LocalDateTime.now()));
-        } catch (SchedulerException e) {
+        } catch (SchedulerException | IOException e) {
             logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                     jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
         }

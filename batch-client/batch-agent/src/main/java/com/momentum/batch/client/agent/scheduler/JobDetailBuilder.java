@@ -56,6 +56,11 @@ public class JobDetailBuilder {
 		return this;
 	}
 
+	public JobDetailBuilder jobScheduleType(String jobScheduledType) {
+		jobDataMap.put(JOB_SCHEDULED_TYPE, jobScheduledType);
+		return this;
+	}
+
 	public JobDetailBuilder jobScheduleUuid(String jobScheduleUuid) {
 		jobDataMap.put(JOB_SCHEDULE_UUID, jobScheduleUuid);
 		return this;
@@ -63,6 +68,16 @@ public class JobDetailBuilder {
 
 	public JobDetailBuilder jobScheduleName(String jobScheduleName) {
 		jobDataMap.put(JOB_SCHEDULE_NAME, jobScheduleName);
+		return this;
+	}
+
+	public JobDetailBuilder jobDefinitionUuid(String jobDefinitionUuid) {
+		jobDataMap.put(JOB_DEFINITION_UUID, jobDefinitionUuid);
+		return this;
+	}
+
+	public JobDetailBuilder jobDefinitionName(String jobDefinitionName) {
+		jobDataMap.put(JOB_DEFINITION_NAME, jobDefinitionName);
 		return this;
 	}
 

@@ -59,6 +59,12 @@ public class ExecutionParameter {
 
     public static final String JOB_COMPLETED_EXIT_MESSAGE = "job.completed.exitMessage";
 
+    public static final String JOB_DEFINITION_NAME = "job.definition.name";
+
+    public static final String JOB_DEFINITION_UUID = "job.definition.uuid";
+
+    public static final String JOB_SCHEDULED_TYPE = "job.scheduled.type";
+
     public static final String STEP_UUID = "stepUuid";
 
     public static final String STEP_NAME = "stepName";

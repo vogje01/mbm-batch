@@ -21,11 +21,11 @@ public class AgentStatusMessageProducer {
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusMessageProducer.class);
 
     @Value(value = "${kafka.agentStatus.topic}")
-    private String agentCommandTopic;
-
-    private final KafkaTemplate<String, AgentStatusMessageDto> template;
+    private String agentStatusTopic;
 
     private final String nodeName;
+
+    private final KafkaTemplate<String, AgentStatusMessageDto> template;
 
     public AgentStatusMessageProducer(String nodeName, KafkaTemplate<String, AgentStatusMessageDto> template) {
         this.nodeName = nodeName;
@@ -44,7 +44,7 @@ public class AgentStatusMessageProducer {
     public void sendMessage(AgentStatusMessageDto agentStatusMessageDto) {
 
         agentStatusMessageDto.setSender(nodeName);
-        ListenableFuture<SendResult<String, AgentStatusMessageDto>> future = template.send(agentCommandTopic, agentStatusMessageDto);
+        ListenableFuture<SendResult<String, AgentStatusMessageDto>> future = template.send(agentStatusTopic, agentStatusMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override

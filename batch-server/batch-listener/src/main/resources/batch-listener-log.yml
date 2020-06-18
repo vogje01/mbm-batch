@@ -17,6 +17,11 @@ Configuration:
       AppenderRef:
         - ref: Console_Appender
     Logger:
+      - name: org.hibernate
+        level: error
+        additivity: false
+        AppenderRef:
+          - ref: Console_Appender
       - name: com.momentum.batch.server.listener
         level: debug
         additivity: false

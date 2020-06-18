@@ -19,7 +19,7 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
     @Query("select j from JobSchedule j where j.type = :type")
     List<JobSchedule> findByType(@Param("type") JobScheduleType type);
 
-    @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g left join j.agents a where a.id = :agentId")
+    @Query("select j from JobSchedule j join j.jobDefinition d left join d.jobGroups g join j.agents a where a.id = :agentId")
     List<JobSchedule> findActiveByAgent(@Param("agentId") String agentId);
 
     @Query("select j from JobSchedule j left join j.jobDefinition d where d.id = :jobDefinitionId")

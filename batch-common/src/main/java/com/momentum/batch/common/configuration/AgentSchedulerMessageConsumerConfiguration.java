@@ -3,6 +3,8 @@ package com.momentum.batch.common.configuration;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.Map;
 
+import static java.text.MessageFormat.format;
+
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-SNAPSHOT
@@ -22,6 +26,8 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(AgentSchedulerMessageConsumerConfiguration.class);
 
     @Value(value = "${kafka.agentScheduler.offsetReset}")
     private String agentSchedulerOffsetReset;
@@ -38,6 +44,7 @@ public class AgentSchedulerMessageConsumerConfiguration extends AbstractKafkaCon
     }
 
     public ConsumerFactory<String, AgentSchedulerMessageDto> agentSchedulerMessageConsumerFactory() {
+        logger.debug(format("Consumer factory initialized - group: {0} offset: {1}", agentSchedulerMessageGroup, agentSchedulerOffsetReset));
         Map<String, Object> properties = defaultConsumerConfiguration();
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, agentSchedulerMessageGroup);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, agentSchedulerOffsetReset);

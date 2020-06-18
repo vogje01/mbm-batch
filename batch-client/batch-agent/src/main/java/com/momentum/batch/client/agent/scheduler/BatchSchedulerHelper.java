@@ -1,5 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
+import com.momentum.batch.client.agent.library.LibraryReaderService;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +32,9 @@ public abstract class BatchSchedulerHelper {
 
     @Autowired
     private ApplicationContext context;
+
+    @Autowired
+    private LibraryReaderService libraryReaderService;
 
     public final Scheduler scheduler;
 
@@ -151,11 +156,13 @@ public abstract class BatchSchedulerHelper {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
+    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) throws IOException {
+        checkJobLibrary(jobDefinition);
         return new JobDetailBuilder()
                 .libraryDirectory(libraryDirectory)
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
+                .jobScheduleType("Scheduled")
                 .jobName(jobDefinition.getName())
                 .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
                 .jobType(jobDefinition.getType())
@@ -179,12 +186,16 @@ public abstract class BatchSchedulerHelper {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobDefinitionDto jobDefinition) {
+    JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobDefinitionDto jobDefinition) throws IOException {
+        checkJobLibrary(jobDefinition);
         return new JobDetailBuilder()
                 .libraryDirectory(libraryDirectory)
                 .jobName(jobDefinition.getName())
+                .jobDefinitionName(jobDefinition.getName())
+                .jobDefinitionUuid(jobDefinition.getId())
                 .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
                 .jobType(jobDefinition.getType())
+                .jobScheduleType("OnDemand")
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(jobDefinition.getFileName())
@@ -265,5 +276,9 @@ public abstract class BatchSchedulerHelper {
             logger.error(format("Invalid parameter type - name: {0}", param.getKeyName()));
         }
         return null;
+    }
+
+    private void checkJobLibrary(JobDefinitionDto jobDefinition) throws IOException {
+        libraryReaderService.getJobFile(jobDefinition);
     }
 }

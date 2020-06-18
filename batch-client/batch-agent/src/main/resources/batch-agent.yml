@@ -82,12 +82,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchmanager
+    group: batch-listener
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchmanager
+    group: batch-scheduler
     partitions: 5
     replicas: 1

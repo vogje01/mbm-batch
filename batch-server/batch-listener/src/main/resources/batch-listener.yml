@@ -9,7 +9,6 @@ spring:
     listener:
       concurrency: 5
   main:
-    allow-bean-definition-overriding: true
     banner-mode: off
     web-application-type: none
   datasource:
@@ -17,12 +16,6 @@ spring:
     username: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driverClassName: com.mysql.cj.jdbc.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: false
-  jackson:
-    serialization:
-      write_dates_as_timestamps: false
 
 mbm:
   listener:
@@ -56,12 +49,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchmanager
+    group: batch-listener
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchmanager
+    group: batch-scheduler
     partitions: 5
     replicas: 1

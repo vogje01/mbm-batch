@@ -1,5 +1,6 @@
 package com.momentum.batch.server.scheduler.listener;
 
+import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -67,6 +69,7 @@ public class AgentSchedulerMessageConsumer {
                 agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), agentSchedulerMessageDto.getType()));
         switch (agentSchedulerMessageDto.getType()) {
             case JOB_EXECUTED -> receivedJobExecuted(agentSchedulerMessageDto);
+            case JOB_ON_DEMAND_EXECUTED -> receivedOnDemandJobExecuted(agentSchedulerMessageDto);
             case JOB_SCHEDULED -> receivedJobScheduled(agentSchedulerMessageDto);
         }
     }
@@ -117,5 +120,31 @@ public class AgentSchedulerMessageConsumer {
             }
             jobScheduleRepository.save(jobSchedule);
         }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
+    }
+
+    /**
+     * Process job on demand executed message.
+     *
+     * @param agentSchedulerMessageDto agent scheduler message.
+     */
+    private synchronized void receivedOnDemandJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+
+        JobDefinitionDto jobDefinitionDto = agentSchedulerMessageDto.getJobDefinitionDto();
+        logger.debug(format("Job executed on demand message received - hostName: {0} nodeName: {1} name: {2}",
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobDefinitionDto.getName()));
+
+        // Get the schedules
+        List<JobSchedule> jobScheduleList = jobScheduleRepository.findByJobDefinitionId(jobDefinitionDto.getId());
+        if (!jobScheduleList.isEmpty()) {
+            jobScheduleList.forEach(jobSchedule -> {
+                if (jobSchedule.getLastExecution() != null) {
+                    jobSchedule.setLastExecution(jobSchedule.getLastExecution());
+                    logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobSchedule.getLastExecution()));
+                }
+                jobScheduleRepository.save(jobSchedule);
+            });
+        } else {
+            logger.info(format("Empty job schedule list - name: {0} id: {1}", jobDefinitionDto.getName(), jobDefinitionDto.getId()));
+        }
     }
 }

@@ -110,7 +110,6 @@ public class AgentStatusMessageConsumer {
 
         // Start jobs for that agent
         startJobs(agent);
-        logger.info(format("Jobs started - nodeName: {0}", agentStatusMessageDto.getNodeName()));
     }
 
     /**
