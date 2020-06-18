@@ -237,7 +237,7 @@ class JobSchedulerList extends React.Component {
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={80}
+                                width={100}
                                 type={'buttons'}
                                 buttons={[
                                     {

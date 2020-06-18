@@ -67,7 +67,7 @@ services:
   # Batch listener
   #
   batch-listener:
-    image: com.momentum.batch/batch-listener:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-listener:latest
     container_name: batch-listener
     environment:
       TZ: "Europe/Berlin"
@@ -79,7 +79,7 @@ services:
   # Batch scheduler
   #
   batch-scheduler:
-    image: com.momentum.batch/batch-scheduler:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-scheduler:latest
     container_name: batch-scheduler
     environment:
       TZ: "Europe/Berlin"
@@ -91,7 +91,7 @@ services:
   #  Batch manager
   #
   batch-manager:
-    image: com.momentum.batch/batch-manager:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-manager:latest
     hostname: batch-manager
     container_name: batch-manager
     environment:
@@ -107,7 +107,7 @@ services:
   # Batch UI
   #
   batch-manager-ui:
-    image: com.momentum.batch/batch-manager-ui:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-manager-ui:latest
     container_name: batch-manager-ui
     environment:
       TZ: "Europe/Berlin"
@@ -120,7 +120,7 @@ services:
   # Batch agent 01
   #
   batch-agent-01:
-    image: com.momentum.batch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:latest
     hostname: batch-agent-01
     container_name: batch-agent-01
     environment:
@@ -138,7 +138,7 @@ services:
   # Batch agent 02
   #
   batch-agent-02:
-    image: com.momentum.batch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:latest
     hostname: batch-agent-02
     container_name: batch-agent-02
     environment:
