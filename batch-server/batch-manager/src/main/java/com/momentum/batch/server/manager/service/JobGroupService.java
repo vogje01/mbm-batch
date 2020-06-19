@@ -1,28 +1,28 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.common.domain.dto.JobGroupDto;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface JobGroupService {
 
-    Page<JobGroup> findAll(Pageable pageable);
+    PagedModel<JobGroupDto> findAll(Pageable pageable);
 
-    JobGroup findById(final String id);
+    PagedModel<JobGroupDto> findByJobDefinition(String jobDefinitionId, Pageable pageable);
 
-    JobGroup findByName(final String name);
+    JobGroupDto findById(final String id) throws ResourceNotFoundException;
 
-    JobGroup insertJobGroup(JobGroup jobGroup);
+    JobGroupDto findByName(final String name) throws ResourceNotFoundException;
 
-    JobGroup updateJobGroup(final String jobGroupId,
-                            JobGroup jobGroup) throws ResourceNotFoundException;
+    JobGroupDto insertJobGroup(JobGroupDto jobGroup);
+
+    JobGroupDto updateJobGroup(final String jobGroupId, JobGroupDto jobGroupDto) throws ResourceNotFoundException;
 
     void deleteJobGroup(final String id);
 
-    JobGroup addJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
+    JobGroupDto addJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
 
-    JobGroup removeJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
+    JobGroupDto removeJobDefinition(String jobGroupId, String jobDefinitionId) throws ResourceNotFoundException;
 
-    Page<JobGroup> findByJobDefinition(String jobDefinitionId, Pageable pageable);
 }
