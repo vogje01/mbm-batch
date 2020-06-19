@@ -1,9 +1,12 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.AgentGroupDto;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
+import com.momentum.batch.server.manager.converter.AgentGroupModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,71 +16,125 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
 
 @Service
+@Transactional
 public class AgentGroupServiceImpl implements AgentGroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentGroupServiceImpl.class);
+
+    private final MethodTimer t = new MethodTimer();
 
     private final AgentRepository agentRepository;
 
     private final AgentGroupRepository agentGroupRepository;
 
+    private final PagedResourcesAssembler<AgentGroup> pagedResourcesAssembler;
+
+    private final AgentGroupModelAssembler agentGroupModelAssembler;
+
     @Autowired
-    public AgentGroupServiceImpl(AgentGroupRepository agentGroupRepository, AgentRepository agentRepository) {
+    public AgentGroupServiceImpl(AgentGroupRepository agentGroupRepository, AgentRepository agentRepository,
+                                 PagedResourcesAssembler<AgentGroup> pagedResourcesAssembler, AgentGroupModelAssembler agentGroupModelAssembler) {
         this.agentGroupRepository = agentGroupRepository;
         this.agentRepository = agentRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.agentGroupModelAssembler = agentGroupModelAssembler;
     }
 
     @Override
-    public Page<AgentGroup> findAll(Pageable pageable) {
-        return agentGroupRepository.findAll(pageable);
+    public PagedModel<AgentGroupDto> findAll(Pageable pageable) {
+        t.restart();
+
+        Page<AgentGroup> agentGroups = agentGroupRepository.findAll(pageable);
+        PagedModel<AgentGroupDto> collectionModel = pagedResourcesAssembler.toModel(agentGroups, agentGroupModelAssembler);
+        logger.debug(format("Agent groups list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override
     @Cacheable(cacheNames = "AgentGroup", key = "#agentGroupId")
-    public AgentGroup findById(final String agentGroupId) {
-        Optional<AgentGroup> agentGroup = agentGroupRepository.findById(agentGroupId);
-        return agentGroup.orElse(null);
+    public AgentGroupDto findById(final String agentGroupId) throws ResourceNotFoundException {
+        t.restart();
+
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
+        if (agentGroupOptional.isPresent()) {
+            AgentGroupDto agentGroupDto = agentGroupModelAssembler.toModel(agentGroupOptional.get());
+            logger.debug(format("Agent group by ID request finished - id: {0} [{1}]", agentGroupDto.getId(), t.elapsedStr()));
+            return agentGroupDto;
+        }
+        throw new ResourceNotFoundException("Agent group not found");
     }
 
     @Override
     @Cacheable(cacheNames = "AgentGroup", key = "#agentGroupName")
-    public AgentGroup findByName(final String agentGroupName) {
-        Optional<AgentGroup> agentGroup = agentGroupRepository.findByName(agentGroupName);
-        return agentGroup.orElse(null);
+    public AgentGroupDto findByName(final String agentGroupName) throws ResourceNotFoundException {
+        t.restart();
+
+        Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findByName(agentGroupName);
+        if (agentGroupOptional.isPresent()) {
+            AgentGroupDto agentGroupDto = agentGroupModelAssembler.toModel(agentGroupOptional.get());
+            logger.debug(format("Agent group by ID request finished - id: {0} [{1}]", agentGroupDto.getId(), t.elapsedStr()));
+
+            return agentGroupDto;
+        }
+        throw new ResourceNotFoundException("Agent group not found");
     }
 
     @Override
     @Cacheable(cacheNames = "AgentGroup", key = "#agentId")
-    public Page<AgentGroup> findByAgentId(String agentId, Pageable pageable) {
-        return agentGroupRepository.findByAgentId(agentId, pageable);
+    public PagedModel<AgentGroupDto> findByAgentId(String agentId, Pageable pageable) {
+        t.restart();
+
+        Page<AgentGroup> agentGroups = agentGroupRepository.findByAgentId(agentId, pageable);
+
+        PagedModel<AgentGroupDto> collectionModel = pagedResourcesAssembler.toModel(agentGroups, agentGroupModelAssembler);
+        logger.debug(format("Agent group list by agent request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     /**
      * Insert a new agent definition.
      *
-     * @param agentGroup agent definition entity.
+     * @param agentGroupDto agent definition entity.
      * @return inserted agent definition
      */
     @Override
-    public AgentGroup insertAgentGroup(AgentGroup agentGroup) {
+    public AgentGroupDto insertAgentGroup(AgentGroupDto agentGroupDto) {
+        t.restart();
+
+        // Get agent group
+        AgentGroup agentGroup = agentGroupModelAssembler.toEntity(agentGroupDto);
         agentGroup = agentGroupRepository.save(agentGroup);
-        return agentGroup;
+        agentGroupDto = agentGroupModelAssembler.toModel(agentGroup);
+        logger.debug(format("Agent group update request finished - id: {0} [{1}]", agentGroup.getId(), t.elapsedStr()));
+
+        return agentGroupDto;
     }
 
     @Override
-    @Transactional
     @Cacheable(cacheNames = "AgentGroup", key = "#agentGroupId")
-    public AgentGroup updateAgentGroup(final String agentGroupId, AgentGroup agentGroup) throws ResourceNotFoundException {
+    public AgentGroupDto updateAgentGroup(final String agentGroupId, AgentGroupDto agentGroupDto) throws ResourceNotFoundException {
+        t.restart();
+
         Optional<AgentGroup> agentGroupOld = agentGroupRepository.findById(agentGroupId);
         if (agentGroupOld.isPresent()) {
+
+            // Get agent group
+            AgentGroup agentGroup = agentGroupModelAssembler.toEntity(agentGroupDto);
 
             // Update agent definition
             AgentGroup agentGroupNew = agentGroupOld.get();
@@ -86,7 +143,10 @@ public class AgentGroupServiceImpl implements AgentGroupService {
             // Save new agent definition
             agentGroupNew = agentGroupRepository.save(agentGroupNew);
 
-            return agentGroupNew;
+            agentGroupDto = agentGroupModelAssembler.toModel(agentGroupNew);
+            logger.debug(format("Agent group update request finished - id: {0} [{1}]", agentGroup.getId(), t.elapsedStr()));
+
+            return agentGroupDto;
         } else {
             logger.error(format("Agent definition not found - id: {0}", agentGroupId));
             throw new ResourceNotFoundException();
@@ -97,7 +157,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
     @CacheEvict(cacheNames = "AgentGroup", key = "#agentGroupId")
     public void deleteAgentGroup(final String agentGroupId) {
         Optional<AgentGroup> agentGroupInfo = agentGroupRepository.findById(agentGroupId);
-        agentGroupInfo.ifPresent(agentGroup -> agentGroupRepository.delete(agentGroup));
+        agentGroupInfo.ifPresent(agentGroupRepository::delete);
     }
 
     /**
@@ -108,7 +168,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
      */
     @Override
     @CachePut(cacheNames = "AgentGroup", key = "#agentGroupId")
-    public AgentGroup addAgent(String agentGroupId, String agentId) throws ResourceNotFoundException {
+    public AgentGroupDto addAgent(String agentGroupId, String agentId) throws ResourceNotFoundException {
         Optional<Agent> agentOptional = agentRepository.findById(agentId);
         Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
@@ -116,7 +176,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
             AgentGroup agentGroup = agentGroupOptional.get();
             agent.addAgentGroup(agentGroup);
             agentRepository.save(agent);
-            return agentGroup;
+            return agentGroupModelAssembler.toModel(agentGroup);
         }
         throw new ResourceNotFoundException();
     }
@@ -129,7 +189,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
      */
     @Override
     @CachePut(cacheNames = "AgentGroup", key = "#agentGroupId")
-    public AgentGroup removeAgent(String agentGroupId, String agentId) throws ResourceNotFoundException {
+    public AgentGroupDto removeAgent(String agentGroupId, String agentId) throws ResourceNotFoundException {
         Optional<Agent> agentOptional = agentRepository.findById(agentId);
         Optional<AgentGroup> agentGroupOptional = agentGroupRepository.findById(agentGroupId);
         if (agentOptional.isPresent() && agentGroupOptional.isPresent()) {
@@ -137,7 +197,7 @@ public class AgentGroupServiceImpl implements AgentGroupService {
             AgentGroup agentGroup = agentGroupOptional.get();
             agent.removeAgentGroup(agentGroup);
             agentRepository.save(agent);
-            return agentGroup;
+            return agentGroupModelAssembler.toModel(agentGroup);
         }
         throw new ResourceNotFoundException();
     }

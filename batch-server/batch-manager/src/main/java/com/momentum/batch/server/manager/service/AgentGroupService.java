@@ -1,27 +1,27 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.AgentGroup;
+import com.momentum.batch.common.domain.dto.AgentGroupDto;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface AgentGroupService {
 
-    AgentGroup findById(final String id);
+    AgentGroupDto findById(final String id) throws ResourceNotFoundException;
 
-    AgentGroup findByName(final String name);
+    AgentGroupDto findByName(final String name) throws ResourceNotFoundException;
 
-    Page<AgentGroup> findAll(Pageable pageable);
+    PagedModel<AgentGroupDto> findAll(Pageable pageable);
 
-    Page<AgentGroup> findByAgentId(final String agentId, Pageable pageable);
+    PagedModel<AgentGroupDto> findByAgentId(final String agentId, Pageable pageable);
 
-    AgentGroup insertAgentGroup(AgentGroup agentGroup);
+    AgentGroupDto insertAgentGroup(AgentGroupDto agentGroupDto);
 
-    AgentGroup updateAgentGroup(final String agentGroupId, AgentGroup agentGroup) throws ResourceNotFoundException;
+    AgentGroupDto updateAgentGroup(final String agentGroupId, AgentGroupDto agentGroupDto) throws ResourceNotFoundException;
 
     void deleteAgentGroup(final String id);
 
-    AgentGroup addAgent(String id, String agentId) throws ResourceNotFoundException;
+    AgentGroupDto addAgent(String id, String agentId) throws ResourceNotFoundException;
 
-    AgentGroup removeAgent(String id, String agentId) throws ResourceNotFoundException;
+    AgentGroupDto removeAgent(String id, String agentId) throws ResourceNotFoundException;
 }
