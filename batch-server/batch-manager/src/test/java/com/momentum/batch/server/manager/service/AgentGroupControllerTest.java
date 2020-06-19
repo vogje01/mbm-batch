@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.AgentGroupBuilder;
 import com.momentum.batch.server.database.domain.AgentGroup;
-import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.manager.controller.AgentGroupController;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -39,7 +36,7 @@ public class AgentGroupControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AgentGroupRepository agentGroupRepository;
+    private AgentGroupService agentGroupService;
 
     @Autowired
     private AgentGroupController agentGroupController;
@@ -69,7 +66,7 @@ public class AgentGroupControllerTest {
         agentGroupList.add(agentGroup1);
         agentGroupList.add(agentGroup2);
 
-        when(agentGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(agentGroupList));
+        when(agentGroupService.findAll(any())).thenReturn(new PageImpl<>(agentGroupList));
 
         this.mockMvc.perform(get("/api/agentgroups?page=0&size=5")) //
                 //.andDo(print())
@@ -84,7 +81,7 @@ public class AgentGroupControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(agentGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(agentGroupService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/agentgroups?page=0&size=5&sort=name,asc")) //
                 //.andDo(print())
@@ -102,9 +99,8 @@ public class AgentGroupControllerTest {
                 .withName("group01")
                 .build();
 
-        when(agentGroupRepository.findById(any())).thenReturn(ofNullable(agentGroup1));
+        when(agentGroupService.findById(any())).thenReturn(agentGroup1);
 
-        assert agentGroup1 != null;
         this.mockMvc.perform(get("/api/agentgroups/" + agentGroup1.getId())) //
                 //.andDo(print())
                 .andExpect(status().isOk())

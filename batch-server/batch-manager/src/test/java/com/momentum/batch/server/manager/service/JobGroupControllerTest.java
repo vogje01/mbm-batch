@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.JobGroupBuilder;
 import com.momentum.batch.server.database.domain.JobGroup;
-import com.momentum.batch.server.database.repository.JobGroupRepository;
 import com.momentum.batch.server.manager.controller.JobGroupController;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,7 +36,7 @@ public class JobGroupControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private JobGroupRepository jobGroupRepository;
+    private JobGroupService jobGroupService;
 
     @Autowired
     private JobGroupController jobGroupController;
@@ -68,7 +66,7 @@ public class JobGroupControllerTest {
         jobGroupList.add(jobGroup1);
         jobGroupList.add(jobGroup2);
 
-        when(jobGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(jobGroupList));
+        when(jobGroupService.findAll(any())).thenReturn(new PageImpl<>(jobGroupList));
 
         this.mockMvc.perform(get("/api/jobgroups?page=0&size=5")) //
                 //.andDo(print())
@@ -83,7 +81,7 @@ public class JobGroupControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobGroupService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobgroups?page=0&size=5&sort=name,asc")) //
                 //.andDo(print())
@@ -101,7 +99,7 @@ public class JobGroupControllerTest {
                 .withName("group01")
                 .build();
 
-        when(jobGroupRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(jobGroup1));
+        when(jobGroupService.findById(any())).thenReturn(jobGroup1);
 
         this.mockMvc.perform(get("/api/jobgroups/" + jobGroup1.getId())) //
                 //.andDo(print())

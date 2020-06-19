@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.User;
-import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.controller.LoginController;
 import com.momentum.batch.server.manager.service.util.JwtRequest;
 import com.momentum.batch.server.manager.service.util.JwtTokenUtil;
@@ -46,7 +45,7 @@ public class LoginControllerTest {
     private UserDetails userDetails;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Mock
     private ModelConverter modelConverter;
@@ -66,7 +65,7 @@ public class LoginControllerTest {
         UserDto userDto = new UserDto();
         userDto.setUserId("vogje01");
         when(userDetails.getUsername()).thenReturn("vogje01");
-        when(userRepository.findByUserId(any())).thenReturn(java.util.Optional.of(user));
+        when(userService.findByUserId(any())).thenReturn(java.util.Optional.of(user));
         when(modelConverter.convertUserToDto(any(User.class))).thenReturn(userDto);
         when(jwtUserDetailsService.loadUserByUsername(any(), any(), any())).thenReturn(userDetails);
     }

@@ -4,8 +4,6 @@ import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.common.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
-import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
-import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,10 +38,10 @@ public class StepExecutionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StepExecutionInfoRepository stepExecutionInfoRepository;
+    private StepExecutionService stepExecutionService;
 
-    @Autowired
-    private JobExecutionInfoRepository jobExecutionInfoRepository;
+    @MockBean
+    private JobExecutionService jobExecutionService;
 
     @Autowired
     private StepExecutionController stepExecutionController;
@@ -80,7 +77,7 @@ public class StepExecutionControllerTest {
         stepExecutionList.add(stepExecution1);
         stepExecutionList.add(stepExecution2);
 
-        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(stepExecutionList));
+        when(stepExecutionService.allStepExecutions(any())).thenReturn(new PageImpl<>(stepExecutionList));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -96,7 +93,7 @@ public class StepExecutionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(stepExecutionService.allStepExecutions(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -128,8 +125,8 @@ public class StepExecutionControllerTest {
         stepExecutionList.add(stepExecution1);
         stepExecutionList.add(stepExecution2);
 
-        when(jobExecutionInfoRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(jobExecution1));
-        when(stepExecutionInfoRepository.findByJobId(any(), any())).thenReturn(new PageImpl<>(stepExecutionList));
+        when(jobExecutionService.getJobExecutionById(any())).thenReturn(jobExecution1);
+        when(stepExecutionService.allStepExecutionsByJob(any(), any())).thenReturn(new PageImpl<>(stepExecutionList));
 
         this.mockMvc.perform(get("/api/stepexecutions/byjob/" + jobExecution1.getId() + "?page=0&size=5")) //
                 //.andDo(print())
@@ -155,7 +152,7 @@ public class StepExecutionControllerTest {
             .withJob(jobExecution1)
             .build();
 
-        when(stepExecutionInfoRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(stepExecution1));
+        when(stepExecutionService.getStepExecutionDetail(any())).thenReturn(stepExecution1);
 
         this.mockMvc.perform(get("/api/stepexecutions/" + stepExecution1.getId()))
                 //.andDo(print())
