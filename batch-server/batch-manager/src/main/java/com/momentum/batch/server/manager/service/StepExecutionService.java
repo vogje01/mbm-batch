@@ -1,20 +1,17 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.StepExecutionInfo;
-import org.springframework.data.domain.Page;
+import com.momentum.batch.common.domain.dto.StepExecutionDto;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 public interface StepExecutionService {
 
-	Page<StepExecutionInfo> allStepExecutions(Pageable pageable);
+    PagedModel<StepExecutionDto> findAll(Pageable pageable);
 
-	long countAll();
+    PagedModel<StepExecutionDto> findByJobId(final String jobId, Pageable pageable);
 
-	Page<StepExecutionInfo> allStepExecutionsByJob(final String jobId, Pageable pageable);
+    StepExecutionDto getById(final String id) throws ResourceNotFoundException;
 
-	long countByJobId(final String id);
-
-	StepExecutionInfo getStepExecutionDetail(final String id);
-
-	void deleteStepExecution(final String id);
+    void deleteStepExecution(final String id);
 }

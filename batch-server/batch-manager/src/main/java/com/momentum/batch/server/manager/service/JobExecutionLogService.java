@@ -1,26 +1,19 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.JobExecutionLog;
-import org.springframework.data.domain.Page;
+import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import org.springframework.hateoas.PagedModel;
 
 public interface JobExecutionLogService {
 
-    long countAll();
+    PagedModel<JobExecutionLogDto> findAll(Pageable pageable);
 
-    long countByJobId(String jobId);
+    PagedModel<JobExecutionLogDto> byJobId(String jobId, Pageable pageable);
 
-    long countByStepId(String stepId);
+    PagedModel<JobExecutionLogDto> byStepId(String stepId, Pageable pageable);
 
-    Page<JobExecutionLog> findAll(Pageable pageable);
-
-    Page<JobExecutionLog> byJobId(String jobId, Pageable pageable);
-
-    Page<JobExecutionLog> byStepId(String stepId, Pageable pageable);
-
-    Optional<JobExecutionLog> byLogId(String logId);
+    JobExecutionLogDto byLogId(String logId) throws ResourceNotFoundException;
 
     void deleteById(String logId);
 }

@@ -2,6 +2,7 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,6 +38,9 @@ public class JobExecutionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private JobExecutionInfoRepository jobExecutionInfoRepository;
+
+    @Autowired
     private JobExecutionService jobExecutionService;
 
     @Autowired
@@ -66,7 +71,7 @@ public class JobExecutionControllerTest {
         jobExecutionList.add(jobExecution1);
         jobExecutionList.add(jobExecution2);
 
-        when(jobExecutionService.allJobExecutions(any())).thenReturn(new PageImpl<>(jobExecutionList));
+        when(jobExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(jobExecutionList));
 
         this.mockMvc.perform(get("/api/jobexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -81,7 +86,7 @@ public class JobExecutionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobExecutionService.allJobExecutions(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobexecutions?page=0&size=5&sort=startTime,desc")) //
                 //.andDo(print())
@@ -99,7 +104,7 @@ public class JobExecutionControllerTest {
                 .withName("Job1")
                 .build();
 
-        when(jobExecutionService.getJobExecutionById(any())).thenReturn(jobExecution1);
+        when(jobExecutionInfoRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(jobExecution1));
 
         this.mockMvc.perform(get("/api/jobexecutions/" + jobExecution1.getId())) //
                 //.andDo(print())

@@ -8,10 +8,10 @@ import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.manager.converter.AgentGroupModelAssembler;
 import com.momentum.batch.server.manager.converter.AgentModelAssembler;
 import com.momentum.batch.server.manager.converter.JobScheduleModelAssembler;
-import com.momentum.batch.server.manager.service.JobDefinitionService;
 import com.momentum.batch.server.manager.service.JobScheduleService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
@@ -46,7 +46,7 @@ public class JobScheduleController {
 
     private final JobScheduleService jobScheduleService;
 
-    private final JobDefinitionService jobDefinitionService;
+    private final JobDefinitionRepository jobDefinitionRepository;
 
     private final PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler;
 
@@ -61,12 +61,12 @@ public class JobScheduleController {
     private final AgentGroupModelAssembler agentGroupModelAssembler;
 
     @Autowired
-    public JobScheduleController(JobScheduleService jobScheduleService, JobDefinitionService jobDefinitionService,
+    public JobScheduleController(JobScheduleService jobScheduleService, JobDefinitionRepository jobDefinitionRepository,
                                  PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler, JobScheduleModelAssembler jobScheduleModelAssembler,
                                  PagedResourcesAssembler<Agent> agentPagedResourcesAssembler, AgentModelAssembler agentModelAssembler,
                                  PagedResourcesAssembler<AgentGroup> agentGroupPagedResourcesAssembler, AgentGroupModelAssembler agentGroupModelAssembler) {
         this.jobScheduleService = jobScheduleService;
-        this.jobDefinitionService = jobDefinitionService;
+        this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobSchedulePagedResourcesAssembler = jobSchedulePagedResourcesAssembler;
         this.jobScheduleModelAssembler = jobScheduleModelAssembler;
         this.agentPagedResourcesAssembler = agentPagedResourcesAssembler;
@@ -125,7 +125,7 @@ public class JobScheduleController {
         JobSchedule jobSchedule = jobScheduleModelAssembler.toEntity(jobScheduleDto);
 
         // Get job definition
-        JobDefinition jobDefinition = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
+        JobDefinition jobDefinition = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName()).get();
 
         // Set job definition
         jobSchedule.setJobDefinition(jobDefinition);
@@ -156,7 +156,7 @@ public class JobScheduleController {
 
         // Get job definition
         if (!jobScheduleDto.getJobDefinitionName().isEmpty()) {
-            JobDefinition jobDefinition = jobDefinitionService.findByName(jobScheduleDto.getJobDefinitionName());
+            JobDefinition jobDefinition = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName()).get();
             jobSchedule.setJobDefinition(jobDefinition);
         }
 
