@@ -13,6 +13,7 @@ spring:
       concurrency: 5
   main:
     banner-mode: off
+    web-application-type: none
   datasource:
     url: jdbc:mysql://batch-db:3306/batch
     username: admin
@@ -20,24 +21,16 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
 
 #
-# Scheduler configuration:
-#   library: job library
-#     jobs: job directory
-#     dropins: dropins directory
-#   scheduler: job scheduler host
-#     server: name of the scheduler host
-#     interval: time interval in seconds for the scheduler checks.
+# Listener configuration:
 #   listener: job log, job execution status message listener
 #     server: name of the listener host
+#   scheduler: job scheduler host
+#     server: name of the scheduler host
 #
 mbm:
-  library:
-    jobs: /app/batch/batch-scheduler/jobs
-    dropins: /app/batch/batch-scheduler/dropins
-  scheduler:
-    server: batch-scheduler
-    interval: 3600
   listener:
+    server: batch-listener
+  scheduler:
     server: batch-listener
 
 #
@@ -78,17 +71,6 @@ kafka:
   retentionDays: 1
   deletionDays: 1
   active: true
-  jobLogging:
-    offsetReset: latest
-    topic: batchJobExecutionLog
-    partitions: 5
-    replicas: 1
-    level: DEBUG
-  jobStatus:
-    offsetReset: latest
-    topic: batchJobStatus
-    partitions: 5
-    replicas: 1
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
@@ -99,5 +81,16 @@ kafka:
     offsetReset: latest
     topic: batchAgentScheduler
     group: batchscheduler
+    partitions: 5
+    replicas: 1
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 5
+    replicas: 1
+    level: DEBUG
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
     partitions: 5
     replicas: 1
