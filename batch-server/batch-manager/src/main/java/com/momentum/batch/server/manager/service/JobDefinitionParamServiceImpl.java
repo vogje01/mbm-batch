@@ -1,9 +1,12 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
 import com.momentum.batch.server.database.repository.JobDefinitionParamRepository;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
+import com.momentum.batch.server.manager.converter.JobDefinitionParamModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,95 +15,116 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
 import java.util.Optional;
+
+import static java.text.MessageFormat.format;
 
 @Service
 public class JobDefinitionParamServiceImpl implements JobDefinitionParamService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionParamServiceImpl.class);
 
-    private JobDefinitionRepository jobDefinitionRepository;
+    private final MethodTimer t = new MethodTimer();
 
-    private JobDefinitionParamRepository jobDefinitionParamRepository;
+    private final JobDefinitionRepository jobDefinitionRepository;
+
+    private final JobDefinitionParamRepository jobDefinitionParamRepository;
+
+    private final PagedResourcesAssembler<JobDefinitionParam> pagedResourcesAssembler;
+
+    private final JobDefinitionParamModelAssembler jobDefinitionParamModelAssembler;
 
     @Autowired
-    public JobDefinitionParamServiceImpl(JobDefinitionRepository jobDefinitionRepository,
-                                         JobDefinitionParamRepository jobDefinitionParamRepository) {
+    public JobDefinitionParamServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobDefinitionParamRepository jobDefinitionParamRepository,
+                                         PagedResourcesAssembler<JobDefinitionParam> pagedResourcesAssembler, JobDefinitionParamModelAssembler jobDefinitionParamModelAssembler) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobDefinitionParamRepository = jobDefinitionParamRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.jobDefinitionParamModelAssembler = jobDefinitionParamModelAssembler;
     }
 
     @Override
     @Cacheable(cacheNames = "JobDefinitionParam")
-    public Page<JobDefinitionParam> allJobDefinitionParams(Pageable pageable) {
-        return jobDefinitionParamRepository.findAll(pageable);
-    }
+    public PagedModel<JobDefinitionParamDto> findAll(Pageable pageable) {
+        t.restart();
 
-    @Override
-    public long countAll() {
-        return jobDefinitionParamRepository.count();
+        Page<JobDefinitionParam> jobDefinitionParams = jobDefinitionParamRepository.findAll(pageable);
+        PagedModel<JobDefinitionParamDto> collectionModel = pagedResourcesAssembler.toModel(jobDefinitionParams, jobDefinitionParamModelAssembler);
+        logger.debug(format("Job definition parameter list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Cacheable(cacheNames = "JobDefinitionParam")
-    public Page<JobDefinitionParam> allJobDefinitionParamsByJobDefinition(String jobDefinitionId, Pageable pageable) {
-        Optional<JobDefinition> jobDefinition = jobDefinitionRepository.findById(jobDefinitionId);
-        return jobDefinition.map(definition -> jobDefinitionParamRepository.findByJobDefinition(definition, Pageable.unpaged())).orElse(null);
-    }
+    public PagedModel<JobDefinitionParamDto> findByJobDefinition(String jobDefinitionId, Pageable pageable) {
+        t.restart();
 
-    @Override
-    public long countByJobDefinitionId(String jobDefinitionId) {
-        return jobDefinitionParamRepository.countByJobDefinitionId(jobDefinitionId);
+        Page<JobDefinitionParam> jobDefinitionParams = jobDefinitionParamRepository.findByJobDefinitionId(jobDefinitionId, pageable);
+        PagedModel<JobDefinitionParamDto> collectionModel = pagedResourcesAssembler.toModel(jobDefinitionParams, jobDefinitionParamModelAssembler);
+        logger.debug(format("Job definition parameter list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override
     @Cacheable(cacheNames = "JobDefinitionParam")
-    public JobDefinitionParam findById(final String jobDefinitionParamId) {
+    public JobDefinitionParamDto findById(final String jobDefinitionParamId) throws ResourceNotFoundException {
         Optional<JobDefinitionParam> jobDefinitionParam = jobDefinitionParamRepository.findById(jobDefinitionParamId);
-        return jobDefinitionParam.orElse(null);
+        if (jobDefinitionParam.isPresent()) {
+            return jobDefinitionParamModelAssembler.toModel(jobDefinitionParam.get());
+        }
+        throw new ResourceNotFoundException("Job definition parameter not found");
     }
 
     @Override
     @Cacheable(cacheNames = "JobDefinition")
-    public JobDefinition addJobDefinitionParam(final String jobDefinitionId, JobDefinitionParam jobDefinitionParam) {
+    public JobDefinitionParamDto addJobDefinitionParam(final String jobDefinitionId, JobDefinitionParamDto jobDefinitionParamDto) throws ResourceNotFoundException {
         Optional<JobDefinition> jobDefinitionOpt = jobDefinitionRepository.findById(jobDefinitionId);
         if (jobDefinitionOpt.isPresent()) {
+
+            JobDefinitionParam jobDefinitionParam = jobDefinitionParamModelAssembler.toEntity(jobDefinitionParamDto);
+
             JobDefinition jobDefinition = jobDefinitionOpt.get();
             jobDefinition.addJobDefinitionParam(jobDefinitionParam);
             jobDefinitionParam.setJobDefinition(jobDefinition);
-            return jobDefinitionRepository.save(jobDefinition);
+            jobDefinitionRepository.save(jobDefinition);
+            return jobDefinitionParamModelAssembler.toModel(jobDefinitionParam);
         }
-        logger.warn("Job definition not found - uuid: " + jobDefinitionId);
-        return null;
+        throw new ResourceNotFoundException("Job definition parameter not found");
     }
 
     @Override
     @Cacheable(cacheNames = "JobDefinitionParam")
-    public JobDefinitionParam updateJobDefinitionParam(String jobDefinitionParamId, JobDefinitionParam jobDefinitionParam) throws ResourceNotFoundException {
+    public JobDefinitionParamDto updateJobDefinitionParam(String jobDefinitionParamId, JobDefinitionParamDto jobDefinitionParamDto) throws ResourceNotFoundException {
         Optional<JobDefinitionParam> jobDefinitionParamOpt = jobDefinitionParamRepository.findById(jobDefinitionParamId);
         if (jobDefinitionParamOpt.isPresent()) {
+
+            JobDefinitionParam jobDefinitionParam = jobDefinitionParamModelAssembler.toEntity(jobDefinitionParamDto);
+
             JobDefinitionParam jobDefinitionParamOld = jobDefinitionParamOpt.get();
             jobDefinitionParamOld.update(jobDefinitionParam);
-            jobDefinitionParamOld = jobDefinitionParamRepository.save(jobDefinitionParamOld);
-            logger.debug(MessageFormat.format("Job definition parameter updated - uuid: {0}", jobDefinitionParam.getId()));
-            return jobDefinitionParamOld;
-        } else {
-            logger.warn("Job definition parameter not found - uuid: " + jobDefinitionParam.getId());
+            jobDefinitionParam = jobDefinitionParamRepository.save(jobDefinitionParamOld);
+            return jobDefinitionParamModelAssembler.toModel(jobDefinitionParam);
         }
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException("Job definition parameter not found");
     }
 
     @Override
     @CacheEvict(cacheNames = "JobDefinitionParam")
-    public void deleteJobDefinitionParam(String jobDefinitionParamId) {
+    public void deleteJobDefinitionParam(String jobDefinitionParamId) throws ResourceNotFoundException {
         Optional<JobDefinitionParam> jobDefinitionParamOpt = jobDefinitionParamRepository.findById(jobDefinitionParamId);
         if (jobDefinitionParamOpt.isPresent()) {
             jobDefinitionParamRepository.delete(jobDefinitionParamOpt.get());
             logger.debug(MessageFormat.format("Job definition parameter deleted - uuid: {0}", jobDefinitionParamId));
             return;
         }
-        logger.warn("Job definition parameter not found - uuid: " + jobDefinitionParamId);
+        throw new ResourceNotFoundException("Job definition parameter not found");
     }
 }
