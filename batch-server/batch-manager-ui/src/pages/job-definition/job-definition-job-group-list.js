@@ -18,7 +18,7 @@ class JobDefinitionJobGroupList extends React.Component {
     }
 
     render() {
-        if (this.props.hidden) {
+        if (this.props.jobDefinition.name === undefined) {
             return null;
         }
         return (

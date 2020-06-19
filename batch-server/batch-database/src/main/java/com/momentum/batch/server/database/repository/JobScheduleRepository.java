@@ -13,6 +13,9 @@ import java.util.Optional;
 
 public interface JobScheduleRepository extends PagingAndSortingRepository<JobSchedule, String> {
 
+    @Query("select j from JobSchedule j left join j.jobDefinition d left join d.jobGroups g")
+    Page<JobSchedule> findAll(Pageable pageable);
+
     @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g where g.name = :groupName and d.name = :jobName")
     Optional<JobSchedule> findByGroupAndName(@Param("groupName") String groupName, @Param("jobName") String jobName);
 

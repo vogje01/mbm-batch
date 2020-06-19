@@ -1,5 +1,6 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
 import com.momentum.batch.server.database.domain.JobDefinition;
@@ -7,12 +8,13 @@ import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.Optional;
 
 public interface JobScheduleService {
 
-    Page<JobSchedule> findAll(Pageable pageable);
+    PagedModel<JobScheduleDto> findAll(Pageable pageable);
 
     Optional<JobSchedule> findById(String uuid);
 

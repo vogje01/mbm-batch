@@ -5,12 +5,13 @@ import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.List;
 
 public interface JobDefinitionService {
 
-    Page<JobDefinition> findAll(Pageable pageable);
+    PagedModel<JobDefinitionDto> findAll(Pageable pageable);
 
     Page<JobDefinition> findWithoutJobGroup(String jobGroupId, Pageable pageable);
 

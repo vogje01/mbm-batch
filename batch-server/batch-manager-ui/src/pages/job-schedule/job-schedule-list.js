@@ -133,13 +133,13 @@ class JobSchedulerList extends React.Component {
                                         </SimpleItem>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"} colSpan={2}/>
                                     </GroupItem>
-                                    <GroupItem caption={"Agents"} colCount={4}>
+                                    <GroupItem caption={"Agents"} colCount={4} visible={this.state.currentJobSchedule.name !== undefined}>
                                         <JobScheduleAgentList schedule={this.state.currentJobSchedule}/>
                                     </GroupItem>
-                                    <GroupItem caption={"Agent Groups"} colCount={4}>
+                                    <GroupItem caption={"Agent Groups"} colCount={4} visible={this.state.currentJobSchedule.name !== undefined}>
                                         <JobScheduleAgentGroupList schedule={this.state.currentJobSchedule}/>
                                     </GroupItem>
-                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4} visible={this.state.currentJobSchedule.name !== undefined}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobSchedule, 'createdAt'), readOnly: true}}/>

@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
+import com.momentum.batch.common.domain.JobDefinitionType;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -175,6 +177,10 @@ public abstract class BatchSchedulerHelper {
     /**
      * Convert the job definition to the corresponding Quartz job details structure.
      *
+     * <p>
+     * This is for scheduled jobs using the Quartz scheduler.
+     * </p>
+     *
      * @param hostName      host name of the machine.
      * @param nodeName      agent node name.
      * @param jobSchedule   job schedule.
@@ -193,7 +199,7 @@ public abstract class BatchSchedulerHelper {
                 .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
-                .jarFile(jobDefinition.getFileName())
+                .jarFile(getJarFileName(jobDefinition, libraryDirectory))
                 .arguments(buildArguments(hostName, nodeName, jobDefinition))
                 .failedExitCode(jobDefinition.getFailedExitCode())
                 .failedExitMessage(jobDefinition.getFailedExitMessage())
@@ -205,6 +211,10 @@ public abstract class BatchSchedulerHelper {
 
     /**
      * Convert the job definition to the corresponding Quartz job details structure.
+     *
+     * <p>
+     *     This is only for on demand jobs, which do not have a schedule attached to it.
+     * </p>
      *
      * @param hostName      host name of the machine.
      * @param nodeName      agent node name.
@@ -223,7 +233,7 @@ public abstract class BatchSchedulerHelper {
                 .jobScheduleType("OnDemand")
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
-                .jarFile(jobDefinition.getFileName())
+                .jarFile(getJarFileName(jobDefinition, libraryDirectory))
                 .arguments(buildArguments(hostName, nodeName, jobDefinition))
                 .failedExitCode(jobDefinition.getFailedExitCode())
                 .failedExitMessage(jobDefinition.getFailedExitMessage())
@@ -304,17 +314,35 @@ public abstract class BatchSchedulerHelper {
     }
 
     /**
+     * Returns the relative file name in case its a JAR file. For docker images the image name is returned. The path
+     * is relative to the working directory for a normal JAR file.
+     *
+     * @param jobDefinitionDto job definition data transfer object.
+     * @param libraryDirectory library directory.
+     * @return relative file name of the JAR file / docker image.
+     */
+    private String getJarFileName(JobDefinitionDto jobDefinitionDto, String libraryDirectory) {
+        if (jobDefinitionDto.getType().equals(JobDefinitionType.DOCKER.name())) {
+            return jobDefinitionDto.getFileName();
+        }
+        return libraryDirectory + File.separator + jobDefinitionDto.getFileName();
+    }
+
+    /**
      * Checks the local library for a job JAR file.
      *
      * <p>
      * In case the job JAR file is not found locally, the job JAR file will be downloaded from the
-     * scheduler.
+     * scheduler. Only non-docker files will be downloaded. Docker images should be loaded into the
+     * docker daemon.
      * </p>
      *
      * @param jobDefinition job definition.
      * @throws IOException in case the job definition cannot be downloaded.
      */
     private void checkJobLibrary(JobDefinitionDto jobDefinition) throws IOException {
-        libraryReaderService.getJobFile(jobDefinition);
+        if (!jobDefinition.getType().equals(JobDefinitionType.DOCKER.name())) {
+            libraryReaderService.getJobFile(jobDefinition);
+        }
     }
 }

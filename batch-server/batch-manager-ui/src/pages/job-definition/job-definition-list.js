@@ -213,13 +213,13 @@ class JobDefinitionList extends React.Component {
                                         <SimpleItem dataField="completedExitCode"/>
                                         <SimpleItem dataField="completedExitMessage"/>
                                     </GroupItem>
-                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4}>
+                                    <GroupItem caption={'Job Groups'} colSpan={2} colCount={4} visible={this.state.currentJobDefinition.name !== undefined}>
                                         <JobDefinitionJobGroupList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
-                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4}>
+                                    <GroupItem caption={'Parameter'} colSpan={2} colCount={4} visible={this.state.currentJobDefinition.name !== undefined}>
                                         <JobDefinitionParamList jobDefinition={this.state.currentJobDefinition}/>
                                     </GroupItem>
-                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
+                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4} visible={this.state.currentJobDefinition.name !== undefined}>
                                         <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
                                         <SimpleItem dataField="createdAt" editorType="dxTextBox"
                                                     editorOptions={{value: getFormattedTime(this.state.currentJobDefinition, 'createdAt'), readOnly: true}}/>

@@ -4,7 +4,6 @@ import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
-import java.io.File;
 import java.util.List;
 
 import static com.momentum.batch.common.util.ExecutionParameter.*;
@@ -87,7 +86,7 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetailBuilder jarFile(String jarFile) {
-		jobDataMap.put(JOB_JAR_FILE, libraryDirectory + File.separator + jarFile);
+		jobDataMap.put(JOB_JAR_FILE, jarFile);
 		return this;
 	}
 

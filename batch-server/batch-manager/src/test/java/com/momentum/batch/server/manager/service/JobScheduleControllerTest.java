@@ -8,6 +8,7 @@ import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import com.momentum.batch.server.manager.controller.JobScheduleController;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -43,7 +45,7 @@ public class JobScheduleControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private JobScheduleService jobScheduleService;
+    private JobScheduleRepository jobScheduleRepository;
 
     @Autowired
     private JobScheduleController jobScheduleController;
@@ -104,7 +106,7 @@ public class JobScheduleControllerTest {
         jobScheduleList.add(jobSchedule1);
         jobScheduleList.add(jobSchedule2);
 
-        when(jobScheduleService.findAll(any())).thenReturn(new PageImpl<>(jobScheduleList));
+        when(jobScheduleRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(jobScheduleList));
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
                 //.andDo(print())
@@ -121,7 +123,7 @@ public class JobScheduleControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobScheduleService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobScheduleRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobschedules?page=0&size=5")) //
                 //.andDo(print())
@@ -140,7 +142,7 @@ public class JobScheduleControllerTest {
                 .withSchedule("0 0 0/2 * * ?")
                 .build();
 
-        when(jobScheduleService.findById(any())).thenReturn(ofNullable(jobSchedule1));
+        when(jobScheduleRepository.findById(any())).thenReturn(ofNullable(jobSchedule1));
 
         this.mockMvc.perform(get("/api/jobschedules/" + jobSchedule1.getId())) //
                 //.andDo(print())

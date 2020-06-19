@@ -5,12 +5,14 @@ import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.database.repository.JobGroupRepository;
+import com.momentum.batch.server.manager.converter.JobDefinitionModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +33,12 @@ import java.util.Optional;
 import static java.text.MessageFormat.format;
 
 @Service
+@Transactional
 public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionServiceImpl.class);
+
+    private MethodTimer t = new MethodTimer();
 
     private final JobDefinitionRepository jobDefinitionRepository;
 
@@ -43,19 +50,40 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
+    private final PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler;
+
+    private final JobDefinitionModelAssembler jobDefinitionModelAssembler;
+
     @Autowired
     public JobDefinitionServiceImpl(JobDefinitionRepository jobDefinitionRepository, JobScheduleService jobScheduleService, JobGroupRepository jobGroupRepository,
-                                    AgentRepository agentRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+                                    AgentRepository agentRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
+                                    PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler, JobDefinitionModelAssembler jobDefinitionModelAssembler) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobScheduleService = jobScheduleService;
         this.jobGroupRepository = jobGroupRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentRepository = agentRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.jobDefinitionModelAssembler = jobDefinitionModelAssembler;
     }
 
+    /**
+     * Returns a page of job definitions.
+     *
+     * @param pageable paging parameters.
+     * @return one page of job definitions.
+     */
     @Override
-    public Page<JobDefinition> findAll(Pageable pageable) {
-        return jobDefinitionRepository.findAll(pageable);
+    public PagedModel<JobDefinitionDto> findAll(Pageable pageable) {
+
+        t.restart();
+
+        Page<JobDefinition> jobDefinitions = jobDefinitionRepository.findAll(pageable);
+        PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(jobDefinitions, jobDefinitionModelAssembler);
+        logger.debug(format("Job definition list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     /**
@@ -163,8 +191,17 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     @Override
     @CacheEvict(cacheNames = "JobDefinition", key = "#jobDefinitionId")
     public void deleteJobDefinition(final String jobDefinitionId) {
-        Optional<JobDefinition> jobDefinitionInfo = jobDefinitionRepository.findById(jobDefinitionId);
-        jobDefinitionInfo.ifPresent(jobDefinitionRepository::delete);
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findById(jobDefinitionId);
+        if (jobDefinitionOptional.isPresent()) {
+            JobDefinition jobDefinition = jobDefinitionOptional.get();
+
+            // Remove main group
+            jobDefinition.setJobMainGroup(null);
+            jobDefinitionRepository.save(jobDefinition);
+
+            // Delete job definition
+            jobDefinitionRepository.delete(jobDefinition);
+        }
     }
 
     @Override

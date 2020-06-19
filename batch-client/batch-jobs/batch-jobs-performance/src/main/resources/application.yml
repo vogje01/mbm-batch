@@ -8,7 +8,7 @@ spring:
     banner-mode: off
     web-application-type: none
   datasource:
-    url: jdbc:mysql://batchmanager:3306/batch
+    url: jdbc:mysql://batch-db:3306/batch
     username: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driverClassName: com.mysql.cj.jdbc.Driver

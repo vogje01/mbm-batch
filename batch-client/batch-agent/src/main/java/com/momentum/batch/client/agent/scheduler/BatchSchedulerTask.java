@@ -161,9 +161,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
         commandList.add(dockerNetwork);
         commandList.add("--hostname");
         commandList.add(nodeName + '_' + rand.nextInt(65536));
-        commandList.add(dockerImage);
         commandList.add("--env");
-        commandList.add("JAVA_OPTS=" + getArgumentString(arguments));
+        commandList.add(getArgumentString(arguments));
+        commandList.add(dockerImage);
         logger.info(format("Starting job - name: {0} workingDirectory: {1} command: {2} dockerImage: {3}", jobName, workingDirectory, command, dockerImage));
         try {
             process = new ProcessBuilder(commandList)
@@ -277,11 +277,13 @@ public class BatchSchedulerTask extends QuartzJobBean {
     }
 
     private String getArgumentString(List<String> arguments) {
-        StringBuilder result = new StringBuilder("JAVA_OPTS=");
+        StringBuilder result = new StringBuilder("JAVA_TOOL_OPTIONS=\"");
         for (String arg : arguments) {
             result.append(arg);
+            result.append(" ");
         }
-        ;
+        result.deleteCharAt(result.length() - 1);
+        result.append("\"");
         logger.debug(format("Converted arguments to options string - args: {0}", result.toString()));
         return result.toString();
     }

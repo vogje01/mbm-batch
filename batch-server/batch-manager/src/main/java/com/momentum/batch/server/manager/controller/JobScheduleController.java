@@ -77,13 +77,9 @@ public class JobScheduleController {
 
     @GetMapping(produces = {"application/hal+json"})
     public ResponseEntity<PagedModel<JobScheduleDto>> findAll(Pageable pageable) {
-        t.restart();
 
-        // Get all job execution
-        Page<JobSchedule> allJobSchedules = jobScheduleService.findAll(pageable);
-        PagedModel<JobScheduleDto> collectionModel = jobSchedulePagedResourcesAssembler.toModel(allJobSchedules, jobScheduleModelAssembler);
-        logger.debug(format("Job schedule list request finished - count: {0}/{1} {2}",
-                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+        // Get all job schedules
+        PagedModel<JobScheduleDto> collectionModel = jobScheduleService.findAll(pageable);
 
         return ResponseEntity.ok(collectionModel);
     }

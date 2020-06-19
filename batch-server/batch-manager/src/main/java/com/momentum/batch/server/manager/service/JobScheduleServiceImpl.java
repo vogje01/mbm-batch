@@ -4,6 +4,7 @@ import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
@@ -12,6 +13,7 @@ import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
+import com.momentum.batch.server.manager.converter.JobScheduleModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +35,12 @@ import java.util.Optional;
 import static java.text.MessageFormat.format;
 
 @Service
+@Transactional
 public class JobScheduleServiceImpl implements JobScheduleService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobScheduleServiceImpl.class);
+
+    private final MethodTimer t = new MethodTimer();
 
     private final JobScheduleRepository jobScheduleRepository;
 
@@ -47,20 +54,35 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     private final String serverName;
 
+    private final PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler;
+
+    private final JobScheduleModelAssembler jobScheduleModelAssembler;
+
+
     @Autowired
     public JobScheduleServiceImpl(String serverName, JobScheduleRepository jobScheduleRepository, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
-                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
+                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter,
+                                  PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler, JobScheduleModelAssembler jobScheduleModelAssembler) {
         this.serverName = serverName;
         this.jobScheduleRepository = jobScheduleRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentRepository = agentRepository;
         this.agentGroupRepository = agentGroupRepository;
         this.modelConverter = modelConverter;
+        this.jobSchedulePagedResourcesAssembler = jobSchedulePagedResourcesAssembler;
+        this.jobScheduleModelAssembler = jobScheduleModelAssembler;
     }
 
     @Override
-    public Page<JobSchedule> findAll(Pageable pageable) {
-        return jobScheduleRepository.findAll(pageable);
+    public PagedModel<JobScheduleDto> findAll(Pageable pageable) {
+        t.restart();
+
+        Page<JobSchedule> jobSchedules = jobScheduleRepository.findAll(pageable);
+        PagedModel<JobScheduleDto> collectionModel = jobSchedulePagedResourcesAssembler.toModel(jobSchedules, jobScheduleModelAssembler);
+        logger.debug(format("Job schedule list request finished - count: {0}/{1} {2}",
+                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override

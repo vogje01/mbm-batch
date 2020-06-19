@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
+import com.momentum.batch.common.domain.JobDefinitionType;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
@@ -115,7 +116,9 @@ public class BatchScheduler extends BatchSchedulerHelper {
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
             try {
-                libraryReaderService.getJobFile(jobDefinition);
+                if (!jobDefinition.getType().equals(JobDefinitionType.DOCKER.name())) {
+                    libraryReaderService.getJobFile(jobDefinition);
+                }
                 addJobToScheduler(jobSchedule, jobDefinition);
             } catch (IOException e) {
                 logger.error(format("Could not download job file - error: {0}", e.getMessage()));
@@ -135,7 +138,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void addJobToScheduler(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
 
-        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto(), jobDefinition.getName()));
+        logger.info(format("Adding job to scheduler - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
         JobKey jobKey = findJob(jobDefinition);
 
         // Check existence
@@ -262,8 +265,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
             CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
             Date next = cronExpression.getNextValidTimeAfter(new Date());
             jobSchedule.setNextExecution(next);
-
-            logger.info(format("Next execution - next: {0}", next));
 
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
             agentSchedulerMessageDto.setNodeName(nodeName);

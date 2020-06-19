@@ -1,11 +1,14 @@
 package com.momentum.batch.server.manager.controller;
 
+import com.momentum.batch.common.domain.JobDefinitionType;
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.manager.converter.JobDefinitionModelAssembler;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
+import com.momentum.batch.server.manager.service.JobGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
@@ -51,6 +54,8 @@ public class JobDefinitionController {
 
     private final JobDefinitionService jobDefinitionService;
 
+    private final JobGroupService jobGroupService;
+
     private final PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler;
 
     private final JobDefinitionModelAssembler jobDefinitionModelAssembler;
@@ -61,9 +66,10 @@ public class JobDefinitionController {
      * @param jobDefinitionService service implementation.
      */
     @Autowired
-    public JobDefinitionController(JobDefinitionService jobDefinitionService, PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler,
-                                   JobDefinitionModelAssembler jobDefinitionModelAssembler) {
+    public JobDefinitionController(JobDefinitionService jobDefinitionService, JobGroupService jobGroupService,
+                                   PagedResourcesAssembler<JobDefinition> pagedResourcesAssembler, JobDefinitionModelAssembler jobDefinitionModelAssembler) {
         this.jobDefinitionService = jobDefinitionService;
+        this.jobGroupService = jobGroupService;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.jobDefinitionModelAssembler = jobDefinitionModelAssembler;
     }
@@ -73,18 +79,14 @@ public class JobDefinitionController {
      *
      * @param pageable paging parameters.
      * @return on page of job definitions.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobDefinitionDto>> findAll(Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<JobDefinitionDto>> findAll(Pageable pageable) {
 
         t.restart();
 
-        // Get all job definitions
-        Page<JobDefinition> allJobExecutionInfos = jobDefinitionService.findAll(pageable);
-        PagedModel<JobDefinitionDto> collectionModel = pagedResourcesAssembler.toModel(allJobExecutionInfos, jobDefinitionModelAssembler);
-        logger.debug(format("Job definition list request finished - count: {0}/{1} {2}",
-                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+        // Get a page of job definitions
+        PagedModel<JobDefinitionDto> collectionModel = jobDefinitionService.findAll(pageable);
 
         return ResponseEntity.ok(collectionModel);
     }
@@ -170,28 +172,40 @@ public class JobDefinitionController {
         t.restart();
 
         // Check file
-        String absoluteFilePath = jobsDirectory + File.separator + jobDefinitionDto.getFileName();
-        if (!FileUtils.exists(absoluteFilePath)) {
-            throw new ResourceNotFoundException(format("File not found - path: {0}", absoluteFilePath));
+        if (!jobDefinitionDto.getType().equals(JobDefinitionType.DOCKER.name())) {
+            String absoluteFilePath = jobsDirectory + File.separator + jobDefinitionDto.getFileName();
+            if (!FileUtils.exists(absoluteFilePath)) {
+                throw new ResourceNotFoundException(format("File not found - path: {0}", absoluteFilePath));
+            }
+            // Get file size and hash
+            String fileHash = FileUtils.getHash(absoluteFilePath);
+            long fileSize = FileUtils.getSize(absoluteFilePath);
+            logger.debug(format("Job definition parameters found - path: {0}  size: {1} hash: {2}", absoluteFilePath, fileSize, fileHash));
+
+            // Get job definition
+            JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
+            jobDefinition.setId(UUID.randomUUID().toString());
+            jobDefinition.setFileHash(fileHash);
+            jobDefinition.setFileSize(fileSize);
+
+            // Insert into database
+            jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);
+
+            // Add links
+            jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+            logger.debug(format("Job definition insert request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
+        } else {
+            // Get job definition
+            JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
+            jobDefinition.setId(UUID.randomUUID().toString());
+
+            // Insert into database
+            jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);
+
+            // Add links
+            jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+            logger.debug(format("Job definition insert request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
         }
-
-        // Get file size and hash
-        String fileHash = FileUtils.getHash(absoluteFilePath);
-        long fileSize = FileUtils.getSize(absoluteFilePath);
-
-        // Get job definition
-        JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
-        jobDefinition.setId(UUID.randomUUID().toString());
-        jobDefinition.setFileHash(fileHash);
-        jobDefinition.setFileSize(fileSize);
-
-        // Insert into database
-        jobDefinition = jobDefinitionService.insertJobDefinition(jobDefinition);
-
-        // Add links
-        jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
-        logger.debug(format("Job definition update request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
-
         return ResponseEntity.ok(jobDefinitionDto);
     }
 
@@ -211,8 +225,8 @@ public class JobDefinitionController {
         // Get job definition
         JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
 
-        //JobGroup jobGroup = jobGroupService.getJobGroupByName(jobDefinitionDto.getJobGroupName());
-        //jobDefinition.setJobGroup(jobGroup);
+        JobGroup jobGroup = jobGroupService.findByName(jobDefinitionDto.getJobGroupName());
+        jobDefinition.setJobMainGroup(jobGroup);
 
         jobDefinition = jobDefinitionService.updateJobDefinition(jobDefinitionId, jobDefinition);
         jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);

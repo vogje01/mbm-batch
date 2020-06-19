@@ -10,6 +10,8 @@
 spring:
   main:
     banner-mode: off
+  jpa:
+    open-in-view: false
   datasource:
     url: jdbc:mysql://batch-db:3306/batch
     username: admin

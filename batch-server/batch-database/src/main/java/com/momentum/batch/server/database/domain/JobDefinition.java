@@ -222,7 +222,9 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setJobMainGroup(JobGroup mainJobGroup) {
         this.jobMainGroup = mainJobGroup;
-        jobMainGroup.addJobDefinition(this);
+        if (mainJobGroup != null) {
+            jobMainGroup.addJobDefinition(this);
+        }
     }
 
     public String getDescription() {

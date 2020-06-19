@@ -13,7 +13,6 @@ spring:
       concurrency: 5
   main:
     banner-mode: off
-    web-application-type: none
   datasource:
     url: jdbc:mysql://batch-db:3306/batch
     username: admin

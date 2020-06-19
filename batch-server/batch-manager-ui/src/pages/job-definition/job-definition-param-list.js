@@ -75,6 +75,9 @@ class JobDefinitionParamList extends React.Component {
     }
 
     render() {
+        if (this.props.jobDefinition.name === undefined) {
+            return null;
+        }
         return (
             <React.Fragment>
                 <DataGrid
