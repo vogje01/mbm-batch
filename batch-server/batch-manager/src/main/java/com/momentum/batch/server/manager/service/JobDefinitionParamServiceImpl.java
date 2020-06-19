@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import static java.text.MessageFormat.format;
 
 @Service
+@Transactional
 public class JobDefinitionParamServiceImpl implements JobDefinitionParamService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionParamServiceImpl.class);
