@@ -134,14 +134,17 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setJobVersion(FileUtils.getVersion(fileName));
             jobDefinition.setActive(false);
 
-            // Get job group
-            Optional<JobGroup> defaultGroup = jobGroupRepository.findByName("Default");
-            defaultGroup.ifPresent(jobDefinition::setJobMainGroup);
 
             // Save to database
-            jobDefinitionRepository.save(jobDefinition);
+            jobDefinition = jobDefinitionRepository.save(jobDefinition);
             logger.info(format("Job definition created - name: {0} size: {1} hash: {2}", jobDefinition.getName(), currentFileSize, currentHash));
 
+            // Set default job group
+            Optional<JobGroup> defaultGroup = jobGroupRepository.findByName("Default");
+            if (defaultGroup.isPresent()) {
+                jobDefinition.setJobMainGroup(defaultGroup.get());
+                jobDefinitionRepository.save(jobDefinition);
+            }
         } catch (IOException ex) {
             logger.error(format("Could not get hash of file - name: {0} error: {1}", filePath, ex.getMessage()));
         }

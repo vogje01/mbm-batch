@@ -137,7 +137,9 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
             joinColumns = @JoinColumn(name = "JOB_DEFINITION_ID"),
             inverseJoinColumns = @JoinColumn(name = "JOB_GROUP_ID"))
     private final List<JobGroup> jobGroups = new ArrayList<>();
-
+    /**
+     * Job definition parameters
+     */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobDefinition", orphanRemoval = true)
     @Cascade(CascadeType.ALL)
     private final List<JobDefinitionParam> jobDefinitionParams = new ArrayList<>();
@@ -220,6 +222,7 @@ public class JobDefinition extends Auditing implements PrimaryKeyIdentifier<Stri
 
     public void setJobMainGroup(JobGroup mainJobGroup) {
         this.jobMainGroup = mainJobGroup;
+        jobMainGroup.addJobDefinition(this);
     }
 
     public String getDescription() {

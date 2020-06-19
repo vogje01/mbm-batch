@@ -1,16 +1,16 @@
-FROM openjdk:12-jdk-alpine
+FROM openjdk:14-jdk-alpine
 
 # Arguments
 ARG JAR_FILE
 
 # Create app directory
-WORKDIR /app/fis-batch/jobs/fis-performance-consolidation
+WORKDIR /app/batch/jobs/performance-consolidation
 
 # Environment
 ENV TZ=Europe/Berlin
 
 # Copy JAR file
-ADD ${JAR_FILE} fis-performance-consolidation.jar
+ADD ${JAR_FILE} performance-consolidation.jar
 
 # Entrypoint
-ENTRYPOINT ["java","-jar","fis-performance-consolidation.jar"]
+ENTRYPOINT ["java","-jar","performance-consolidation.jar"]

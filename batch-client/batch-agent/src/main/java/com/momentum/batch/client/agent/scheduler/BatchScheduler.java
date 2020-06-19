@@ -194,13 +194,20 @@ public class BatchScheduler extends BatchSchedulerHelper {
     public void rescheduleJob(JobScheduleDto jobSchedule) {
 
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
-        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
+        String jobName = jobDefinition.getName();
+        String groupName = jobDefinition.getJobMainGroupDto().getName();
+        logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", groupName, jobName));
 
         JobKey jobKey = findJob(jobDefinition);
         if (jobKey != null) {
+            logger.debug(format("Job key found - jobGroup: {0} jobName: {1}", groupName, jobName));
             if (isScheduled(jobKey)) {
+                logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
                 Trigger trigger = getTrigger(jobKey);
                 removeFromScheduler(jobKey);
+                logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
+
+                // Schedule job
                 if (jobDefinition.isActive()) {
                     jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                     jobSchedule.setNextExecution(trigger.getNextFireTime());
@@ -208,6 +215,9 @@ public class BatchScheduler extends BatchSchedulerHelper {
                     logger.info(format("Job rescheduled - jobGroup: {0} jobName: {1} next: {2}", jobKey.getGroup(), jobKey.getName(), trigger.getNextFireTime()));
                 }
             }
+        } else {
+            logger.debug(format("Job key not found, will be added to scheduler - jobGroup: {0} jobName: {1}", groupName, jobName));
+            addJobToScheduler(jobSchedule, jobDefinition);
         }
     }
 

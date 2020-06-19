@@ -47,6 +47,15 @@ public class FileUtilsTest {
     }
 
     @Test
+    public void shouldReturnVersion_whenCalledWithNullVersion() {
+
+        String fileName = "batch-jobs-abc-0.0.5.jar";
+
+        String version = FileUtils.getVersion(fileName);
+        assertEquals("0.0.5", version);
+    }
+
+    @Test
     public void shouldReturnHash_whenFileCreate() throws IOException {
 
         // Create a temp file

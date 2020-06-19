@@ -3,26 +3,30 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.2.RELEASE</version>
-	</parent>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+    </parent>
 
-	<groupId>com.momentum.batch</groupId>
-	<artifactId>batch-jobs-housekeeping</artifactId>
-	<version>0.0.6-SNAPSHOT</version>
-	<description>House keeping for the batch database schema</description>
+    <groupId>com.momentum.batch</groupId>
+    <artifactId>batch-jobs-housekeeping</artifactId>
+    <version>0.0.6-SNAPSHOT</version>
+    <description>House keeping for the batch database schema</description>
+    <organization>
+        <name>momentumbatch</name>
+        <url>https://hub.docker.com/orgs/momentumbatch</url>
+    </organization>
 
-	<dependencies>
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-batch</artifactId>
-			<version>2.2.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
+    <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-batch</artifactId>
+            <version>2.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>2.2.2.RELEASE</version>
 		</dependency>
@@ -169,17 +173,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.2.2.RELEASE</version>
-				<executions>
-					<execution>
-						<id>build-info</id>
-						<goals>
-							<goal>build-info</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!--<plugin>
+                <version>2.2.2.RELEASE</version>
+                <executions>
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -197,14 +201,15 @@
                                 <argument>build</argument>
                                 <argument>.</argument>
                                 <argument>-t</argument>
-                                <argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
+                                <argument>${project.organization.name}/${project.artifactId}:${project.version}
+                                </argument>
                                 <argument>&#45;&#45;build-arg</argument>
                                 <argument>JAR_FILE=target/${project.artifactId}-${project.version}.jar</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
 		</plugins>
 	</build>
 </project>

@@ -22,8 +22,10 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
 import static java.text.MessageFormat.format;
 
 /**
+ * Helper class for the job scheduler.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.1
  */
 public abstract class BatchSchedulerHelper {
@@ -38,6 +40,11 @@ public abstract class BatchSchedulerHelper {
 
     public final Scheduler scheduler;
 
+    /**
+     * Constructor.
+     *
+     * @param scheduler Quartz scheduler.
+     */
     public BatchSchedulerHelper(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
@@ -71,7 +78,7 @@ public abstract class BatchSchedulerHelper {
     }
 
     /**
-     * Find a job by jobKey.
+     * Find a job by job definition.
      *
      * @param jobDefinitionDto job definition.
      * @return true if scheduled.
@@ -99,12 +106,19 @@ public abstract class BatchSchedulerHelper {
         try {
             return scheduler.checkExists(jobKey);
         } catch (SchedulerException ex) {
-            logger.error(format("Could not check existance - groupName: {0} jobName: {1} error: {2}",
+            logger.error(format("Could not check existence - groupName: {0} jobName: {1} error: {2}",
                     jobKey.getGroup(), jobKey.getName(), ex.getMessage()), ex);
         }
         return false;
     }
 
+    /**
+     * Build a trigger by job schedule.
+     *
+     * @param jobSchedule   job schedule.
+     * @param jobDefinition job definition.
+     * @return trigger for the Quartz scheduler.
+     */
     Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         if (jobSchedule.getSchedule() != null) {
             return TriggerBuilder.newTrigger()
@@ -115,6 +129,12 @@ public abstract class BatchSchedulerHelper {
         return null;
     }
 
+    /**
+     * Returns a trigger key.
+     *
+     * @param jobKey job key.
+     * @return trigger key.
+     */
     TriggerKey getTriggerKey(JobKey jobKey) {
         return TriggerKey.triggerKey(jobKey.getName(), jobKey.getGroup());
     }
@@ -139,6 +159,11 @@ public abstract class BatchSchedulerHelper {
         return CronScheduleBuilder.cronSchedule(cronExpression);
     }
 
+    /**
+     * Remove a job from the Quartz scheduler.
+     *
+     * @param jobKey job key to remove.
+     */
     void removeFromScheduler(JobKey jobKey) {
         try {
             scheduler.deleteJob(jobKey);
@@ -278,6 +303,17 @@ public abstract class BatchSchedulerHelper {
         return null;
     }
 
+    /**
+     * Checks the local library for a job JAR file.
+     *
+     * <p>
+     * In case the job JAR file is not found locally, the job JAR file will be downloaded from the
+     * scheduler.
+     * </p>
+     *
+     * @param jobDefinition job definition.
+     * @throws IOException in case the job definition cannot be downloaded.
+     */
     private void checkJobLibrary(JobDefinitionDto jobDefinition) throws IOException {
         libraryReaderService.getJobFile(jobDefinition);
     }

@@ -1,16 +1,16 @@
-FROM openjdk:12-jdk-alpine
+FROM openjdk:14-jdk-alpine
 
 # Arguments
 ARG JAR_FILE
 
 # Create app directory
-WORKDIR /app/fis-batch/jobs/fis-housekeeping-batch
+WORKDIR /app/batch/jobs/housekeeping-batch
 
 # Environment
 ENV TZ=Europe/Berlin
 
 # Copy JAR file
-ADD ${JAR_FILE} fis-housekeeping-batch.jar
+ADD ${JAR_FILE} housekeeping-batch.jar
 
 # Entrypoint
-ENTRYPOINT ["java","-jar","fis-housekeeping-batch.jar"]
+ENTRYPOINT ["java","-jar","housekeeping-batch.jar"]
