@@ -277,13 +277,11 @@ public class BatchSchedulerTask extends QuartzJobBean {
     }
 
     private String getArgumentString(List<String> arguments) {
-        StringBuilder result = new StringBuilder("JAVA_TOOL_OPTIONS=\"");
+        StringBuilder result = new StringBuilder("JAVA_TOOL_OPTIONS=");
         for (String arg : arguments) {
             result.append(arg);
             result.append(" ");
         }
-        result.deleteCharAt(result.length() - 1);
-        result.append("\"");
         logger.debug(format("Converted arguments to options string - args: {0}", result.toString()));
         return result.toString();
     }
