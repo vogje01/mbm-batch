@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.AgentBuilder;
 import com.momentum.batch.server.database.domain.Agent;
-import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.manager.controller.AgentController;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,9 +36,6 @@ public class AgentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AgentRepository agentRepository;
-
-    @Autowired
     private AgentService agentService;
 
     @Autowired
@@ -71,7 +66,7 @@ public class AgentControllerTest {
         agentList.add(agent1);
         agentList.add(agent2);
 
-        when(agentRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(agentList));
+        when(agentService.findAll(any())).thenReturn(new PageImpl<>(agentList));
 
         this.mockMvc.perform(get("/api/agents?page=0&size=5")) //
                 //.andDo(print())
@@ -86,7 +81,7 @@ public class AgentControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(agentRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(agentService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/agents?page=0&size=5&sort=nodeName,asc")) //
                 //.andDo(print())
@@ -104,7 +99,7 @@ public class AgentControllerTest {
                 .withNodeName("node01")
                 .build();
 
-        when(agentRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(agent1));
+        when(agentService.findById(any())).thenReturn(java.util.Optional.ofNullable(agent1));
 
         this.mockMvc.perform(get("/api/agents/" + agent1.getId())) //
                 //.andDo(print())

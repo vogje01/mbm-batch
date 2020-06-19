@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.UserBuilder;
 import com.momentum.batch.server.database.domain.User;
-import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.controller.UserController;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,9 +36,6 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -71,7 +66,7 @@ public class UserControllerTest {
         userList.add(user1);
         userList.add(user2);
 
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(userList));
+        when(userService.findAll(any())).thenReturn(new PageImpl<>(userList));
 
         this.mockMvc.perform(get("/api/users?page=0&size=5")) //
                 //.andDo(print())
@@ -86,7 +81,7 @@ public class UserControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(userRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(userService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/users?page=0&size=5&sort=nodeName,asc")) //
                 //.andDo(print())
@@ -104,7 +99,7 @@ public class UserControllerTest {
                 .withUserId("user01")
                 .build();
 
-        when(userRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(user1));
+        when(userService.findById(any())).thenReturn(java.util.Optional.ofNullable(user1));
 
         this.mockMvc.perform(get("/api/users/" + user1.getId())) //
                 //.andDo(print())

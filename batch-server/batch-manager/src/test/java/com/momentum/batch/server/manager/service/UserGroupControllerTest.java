@@ -2,7 +2,6 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.UserGroupBuilder;
 import com.momentum.batch.server.database.domain.UserGroup;
-import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -38,9 +36,6 @@ public class UserGroupControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserGroupRepository userGroupRepository;
-
-    @Autowired
     private UserGroupService userGroupService;
 
     @Autowired
@@ -71,7 +66,7 @@ public class UserGroupControllerTest {
         userGroupList.add(userGroup1);
         userGroupList.add(userGroup2);
 
-        when(userGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(userGroupList));
+        when(userGroupService.findAll(any())).thenReturn(new PageImpl<>(userGroupList));
 
         this.mockMvc.perform(get("/api/usergroups?page=0&size=5")) //
                 //.andDo(print())
@@ -86,7 +81,7 @@ public class UserGroupControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(userGroupRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(userGroupService.findAll(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/usergroups?page=0&size=5&sort=name,asc")) //
                 //.andDo(print())
@@ -104,7 +99,7 @@ public class UserGroupControllerTest {
                 .withName("group01")
                 .build();
 
-        when(userGroupRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(userGroup1));
+        when(userGroupService.findById(any())).thenReturn(java.util.Optional.ofNullable(userGroup1));
 
         this.mockMvc.perform(get("/api/usergroups/" + userGroup1.getId())) //
                 //.andDo(print())
