@@ -10,7 +10,6 @@ import com.momentum.batch.server.manager.service.common.RestPreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -52,8 +50,6 @@ public class UserGroupController {
      * Constructor.
      *
      * @param userGroupService                 user group service implementation.
-     * @param userGroupPagedResourcesAssembler paging resource assembler.
-     * @param userGroupModelAssembler          user group assembler.
      */
     @Autowired
     public UserGroupController(UserGroupService userGroupService, PagedResourcesAssembler<UserGroup> userGroupPagedResourcesAssembler, UserGroupModelAssembler userGroupModelAssembler) {
@@ -70,16 +66,7 @@ public class UserGroupController {
      */
     @GetMapping(produces = {"application/hal+json"})
     public ResponseEntity<PagedModel<UserGroupDto>> findAll(Pageable pageable) {
-
-        t.restart();
-
-        // Get all user groups
-        Page<UserGroup> allUserGroups = userGroupService.findAll(pageable);
-        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(allUserGroups, userGroupModelAssembler);
-        logger.debug(format("User group list request finished - count: {0}/{1} {2}",
-                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
-
-        return ResponseEntity.ok(collectionModel);
+        return ResponseEntity.ok(userGroupService.findAll(pageable));
     }
 
     /**
@@ -91,16 +78,7 @@ public class UserGroupController {
      */
     @GetMapping(value = "/{userGroupId}/byUser", produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<UserGroupDto>> findByUser(@PathVariable String userGroupId, Pageable pageable) {
-
-        t.restart();
-
-        // Get user groups of user
-        Page<UserGroup> allUserGroups = userGroupService.findByUser(userGroupId, pageable);
-        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(allUserGroups, userGroupModelAssembler);
-        logger.debug(format("User group of user list request finished - count: {0}/{1} {2}",
-                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
-
-        return ResponseEntity.ok(collectionModel);
+        return ResponseEntity.ok(userGroupService.findByUser(userGroupId, pageable));
     }
 
     /**

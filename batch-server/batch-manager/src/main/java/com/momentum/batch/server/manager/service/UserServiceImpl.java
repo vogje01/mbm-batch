@@ -235,14 +235,14 @@ public class UserServiceImpl implements UserService {
         throw new ResourceNotFoundException();
     }
 
-    public void changePassword(UserDto userDto, String password) {
-        User user = userModelAssembler.toEntity(userDto);
+    @Override
+    public void changePassword(User user, String password) {
         user.setPassword(stringEncryptor.encrypt(password));
         userRepository.save(user);
     }
 
-    public void resetPassword(UserDto userDto) throws ResourceNotFoundException {
-        User user = userModelAssembler.toEntity(userDto);
+    @Override
+    public void resetPassword(User user) throws ResourceNotFoundException {
         if (user.getEmail() != null) {
             PasswordResetToken token = new PasswordResetToken();
             token.setToken(UUID.randomUUID().toString());
@@ -268,7 +268,7 @@ public class UserServiceImpl implements UserService {
             email.addTo(user.getEmail());
             email.send();
         } catch (EmailException e) {
-            e.printStackTrace();
+            logger.error(format("Could not send email to user - error: {0}", e.getMessage()));
         }
     }
 

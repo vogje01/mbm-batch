@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.dto.UserDto;
+import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public interface UserService {
 
     UserDto removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
 
-    void resetPassword(UserDto userDto) throws ResourceNotFoundException;
+    void resetPassword(User user) throws ResourceNotFoundException;
 
-    void changePassword(UserDto userDto, String password);
+    void changePassword(User user, String password);
 }

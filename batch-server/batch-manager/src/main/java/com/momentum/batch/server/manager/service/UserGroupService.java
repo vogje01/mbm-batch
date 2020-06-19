@@ -1,21 +1,18 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.server.database.domain.UserGroup;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 
 import java.util.Optional;
 
 public interface UserGroupService {
 
-    Page<UserGroup> findAll(Pageable pageable);
+    PagedModel<UserGroupDto> findAll(Pageable pageable);
 
-    Page<UserGroup> findByUser(String id, Pageable pageable);
-
-    long countAll();
-
-    long countByUser(String id);
+    PagedModel<UserGroupDto> findByUser(String id, Pageable pageable);
 
     Optional<UserGroup> findById(String id);
 

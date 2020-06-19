@@ -1,22 +1,29 @@
 package com.momentum.batch.server.manager.service;
 
+import com.momentum.batch.common.domain.dto.UserGroupDto;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
+import com.momentum.batch.server.manager.converter.UserGroupModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.text.MessageFormat.format;
 
 /**
  * User service implementation.
@@ -31,54 +38,57 @@ import java.util.Optional;
 @Service
 public class UserGroupServiceImpl implements UserGroupService {
 
-    private UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(UserGroupServiceImpl.class);
 
-    private UserGroupRepository userGroupRepository;
+    private final MethodTimer t = new MethodTimer();
 
-    private CacheManager cacheManager;
+    private final UserRepository userRepository;
+
+    private final UserGroupRepository userGroupRepository;
+
+    private final PagedResourcesAssembler<UserGroup> userGroupPagedResourcesAssembler;
+
+    private final UserGroupModelAssembler userGroupModelAssembler;
 
     /**
      * Constructor
      *
-     * @param userRepository      user repository.
-     * @param userGroupRepository user group repository.
-     * @param cacheManager        cache manager.
+     * @param userRepository                   user repository.
+     * @param userGroupRepository              user group repository.
+     * @param userGroupPagedResourcesAssembler paging resource assembler.
+     * @param userGroupModelAssembler          user group assembler.
      */
     @Autowired
-    public UserGroupServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, CacheManager cacheManager) {
+    public UserGroupServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository,
+                                PagedResourcesAssembler<UserGroup> userGroupPagedResourcesAssembler, UserGroupModelAssembler userGroupModelAssembler) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
-        this.cacheManager = cacheManager;
-    }
-
-    /**
-     * Pre-fill cache with all users.
-     */
-    @PostConstruct
-    public void init() {
-        Page<UserGroup> userGroups = userGroupRepository.findAll(Pageable.unpaged());
-        userGroups.forEach(userGroup ->
-                Objects.requireNonNull(cacheManager.getCache("UserGroup")).put(userGroup.getId(), userGroup));
+        this.userGroupPagedResourcesAssembler = userGroupPagedResourcesAssembler;
+        this.userGroupModelAssembler = userGroupModelAssembler;
     }
 
     @Override
-    public Page<UserGroup> findAll(Pageable pageable) {
-        return userGroupRepository.findAll(pageable);
+    public PagedModel<UserGroupDto> findAll(Pageable pageable) {
+        t.restart();
+
+        Page<UserGroup> userGroups = userGroupRepository.findAll(pageable);
+        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(userGroups, userGroupModelAssembler);
+        logger.debug(format("User group list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override
-    public Page<UserGroup> findByUser(String id, Pageable pageable) {
-        return userGroupRepository.findByUser(id, pageable);
-    }
+    public PagedModel<UserGroupDto> findByUser(String id, Pageable pageable) {
+        t.restart();
 
-    @Override
-    public long countAll() {
-        return userGroupRepository.count();
-    }
+        Page<UserGroup> userGroups = userGroupRepository.findByUser(id, pageable);
+        PagedModel<UserGroupDto> collectionModel = userGroupPagedResourcesAssembler.toModel(userGroups, userGroupModelAssembler);
+        logger.debug(format("User group list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
-    @Override
-    public long countByUser(String id) {
-        return userGroupRepository.countByUser(id);
+        return collectionModel;
     }
 
     @Override
