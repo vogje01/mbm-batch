@@ -4,6 +4,8 @@ import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.common.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
+import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
+import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Optional.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,10 +42,10 @@ public class StepExecutionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StepExecutionService stepExecutionService;
+    private StepExecutionInfoRepository stepExecutionInfoRepository;
 
     @MockBean
-    private JobExecutionService jobExecutionService;
+    private JobExecutionInfoRepository jobExecutionInfoRepository;
 
     @Autowired
     private StepExecutionController stepExecutionController;
@@ -77,7 +81,7 @@ public class StepExecutionControllerTest {
         stepExecutionList.add(stepExecution1);
         stepExecutionList.add(stepExecution2);
 
-        when(stepExecutionService.allStepExecutions(any())).thenReturn(new PageImpl<>(stepExecutionList));
+        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(stepExecutionList));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -93,7 +97,7 @@ public class StepExecutionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(stepExecutionService.allStepExecutions(any())).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -125,8 +129,8 @@ public class StepExecutionControllerTest {
         stepExecutionList.add(stepExecution1);
         stepExecutionList.add(stepExecution2);
 
-        when(jobExecutionService.getJobExecutionById(any())).thenReturn(jobExecution1);
-        when(stepExecutionService.allStepExecutionsByJob(any(), any())).thenReturn(new PageImpl<>(stepExecutionList));
+        when(jobExecutionInfoRepository.findById(any())).thenReturn(ofNullable(jobExecution1));
+        when(stepExecutionInfoRepository.findByJobId(any(), any())).thenReturn(new PageImpl<>(stepExecutionList));
 
         this.mockMvc.perform(get("/api/stepexecutions/byjob/" + jobExecution1.getId() + "?page=0&size=5")) //
                 //.andDo(print())
@@ -152,13 +156,13 @@ public class StepExecutionControllerTest {
             .withJob(jobExecution1)
             .build();
 
-        when(stepExecutionService.getStepExecutionDetail(any())).thenReturn(stepExecution1);
+        when(stepExecutionInfoRepository.findById(any())).thenReturn(ofNullable(stepExecution1));
 
         this.mockMvc.perform(get("/api/stepexecutions/" + stepExecution1.getId()))
                 //.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
-                .andExpect(jsonPath("$.jobExecutionInfo.jobExecutionInstance.jobName", is("Job1")))
+                .andExpect(jsonPath("$.jobName", is("Job1")))
                 .andExpect(jsonPath("$.stepName", is("Step1")));
     }
 }

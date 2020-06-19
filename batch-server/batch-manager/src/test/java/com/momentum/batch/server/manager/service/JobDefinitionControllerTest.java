@@ -92,7 +92,7 @@ public class JobDefinitionControllerTest {
         when(jobDefinitionRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(jobDefinitionList));
 
         this.mockMvc.perform(get("/api/jobdefinitions?page=0&size=5&sort=name,asc"))
-                .andDo(print())
+                //.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaTypes.HAL_JSON))
                 .andExpect(jsonPath("$.links[0].rel", is("self")))
