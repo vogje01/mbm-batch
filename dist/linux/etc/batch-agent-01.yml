@@ -22,7 +22,7 @@ spring:
 #
 # Agent configuration:
 #   library: sub system for the batch-job downloads
-#     directory: directory where the batch-job JARs will be stored
+#     jobs: directory where the batch-job JARs will be stored
 #     server: download server for batch-job JARs
 #     port: server port for the downloads
 #   listener: job log, job execution status message listener
@@ -37,7 +37,7 @@ spring:
 #
 mbm:
   library:
-    directory: /opt/batch/agent/lib
+    jobs: /opt/batch/agent/lib
     server: batchmanager
     port: 8090
     user: admin

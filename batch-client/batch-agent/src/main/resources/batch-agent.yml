@@ -19,11 +19,10 @@ spring:
   kafka:
     listener:
       concurrency: 5
-
 #
 # Agent configuration:
 #   library: sub system for the batch-job downloads
-#     jobs: directory where the batch-job JARs will be stored
+#     directory: directory where the batch-job JARs will be stored
 #     server: download server for batch-job JARs
 #     port: server port for the downloads
 #   listener: job log, job execution status message listener
@@ -38,23 +37,23 @@ spring:
 #
 mbm:
   library:
-    jobs: /opt/batch/agent/lib
-    server: localhost
+    jobs: /app/batch/batch-agent
+    server: batch-agent-01
     port: 8090
     user: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
   listener:
-    server: batchmanager
+    server: batch-listener
   scheduler:
-    server: batchmanager
+    server: batch-scheduler
   agent:
-    hostName: batchmanager
-    nodeName: batchagent02
+    hostName: batch-agent-01
+    nodeName: batch-agent-01
     pingInterval: 300000
     performanceInterval: 60000
     docker:
       network: docker_default
-      hostname: hostname
+      hostname: batch-agent-01
 
 #
 # Kafka configuration.
@@ -89,7 +88,7 @@ mbm:
 #     replicas: job logging replicas
 #
 kafka:
-  bootstrapAddress: localhost:9092
+  bootstrapAddress: batch-kafka:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1
@@ -97,19 +96,19 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchagent02
+    group: batch-agent-01
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchagent02
+    group: batch-agent-01
     partitions: 5
     replicas: 1
   jobStatus:
     offsetReset: latest
     topic: batchServerCommand
-    group: batchmanager
+    group: batch-listener
     partitions: 5
     replicas: 1
   jobLogging:
