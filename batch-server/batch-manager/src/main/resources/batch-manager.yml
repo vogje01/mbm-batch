@@ -13,7 +13,7 @@ spring:
   jpa:
     open-in-view: false
   datasource:
-    url: jdbc:mysql://batchmanager:3306/batch
+    url: jdbc:mysql://batch-db:3306/batch
     username: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,11 +42,11 @@ server:
 #
 mbm:
   library:
-    jobs: /opt/batch/server/jobs
+    jobs: /app/batch/batch-manager/jobs
   listener:
-    server: batchmanager
+    server: batch-listener
   scheduler:
-    server: batchmanager
+    server: batch-scheduler
   server:
     host: localhost
     port: 8090
@@ -58,14 +58,16 @@ mbm:
   mail:
     server: smtp.gmail.com
 
+#
 # Kafka configuration.
 # bootstrapAddress: Kafka server URL.
 # maxRequestSize: Maximal request size (default: 4MB).
 # retentionDays: Number of days the logs are kept.
 # deletionDays: Number of days after which the logs are deleted.
 # topic: Apache Kafka topic name.
+#
 kafka:
-  bootstrapAddress: batchmanager:9092
+  bootstrapAddress: batch-kafka:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1
