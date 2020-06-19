@@ -2,12 +2,15 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.DateTimeFormat;
 import com.momentum.batch.common.domain.NumberFormat;
+import com.momentum.batch.common.domain.dto.UserDto;
+import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
+import com.momentum.batch.server.manager.converter.UserModelAssembler;
 import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -15,40 +18,48 @@ import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.jasypt.encryption.StringEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.text.MessageFormat.format;
+
 /**
  * User service implementation.
- *
- * <p>
- * On startup the user cache will be filled.
- * </p>
  *
  * @version 0.0.6-SNAPSHOT
  * @since 0.0.3
  */
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final MethodTimer t = new MethodTimer();
 
     private final UserRepository userRepository;
 
     private final UserGroupRepository userGroupRepository;
 
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final PagedResourcesAssembler<User> userPagedResourcesAssembler;
 
-    private final CacheManager cacheManager;
+    private final UserModelAssembler userModelAssembler;
+
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     private final StringEncryptor stringEncryptor;
 
@@ -58,31 +69,28 @@ public class UserServiceImpl implements UserService {
      * @param userRepository               user repository.
      * @param userGroupRepository          user group repository.
      * @param passwordResetTokenRepository password reset repository.
-     * @param cacheManager                 cache manager.
      */
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserGroupRepository userGroupRepository, PasswordResetTokenRepository passwordResetTokenRepository,
-                           StringEncryptor stringEncryptor, CacheManager cacheManager) {
+                           StringEncryptor stringEncryptor, PagedResourcesAssembler<User> userPagedResourcesAssembler, UserModelAssembler userModelAssembler) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.stringEncryptor = stringEncryptor;
-        this.cacheManager = cacheManager;
-    }
-
-    /**
-     * Pre-fill cache with all users.
-     */
-    @PostConstruct
-    public void init() {
-        Page<User> users = userRepository.findAll(Pageable.unpaged());
-        users.forEach(user ->
-                Objects.requireNonNull(cacheManager.getCache("User")).put(user.getId(), user));
+        this.userPagedResourcesAssembler = userPagedResourcesAssembler;
+        this.userModelAssembler = userModelAssembler;
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public PagedModel<UserDto> findAll(Pageable pageable) {
+        t.restart();
+
+        Page<User> users = userRepository.findAll(pageable);
+        PagedModel<UserDto> collectionModel = userPagedResourcesAssembler.toModel(users, userModelAssembler);
+        logger.debug(format("Agent list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     /**
@@ -93,49 +101,78 @@ public class UserServiceImpl implements UserService {
      * @return page of job definitions belong to the given ob group.
      */
     @Override
-    public Page<User> findWithoutUserGroup(String userGroupId, Pageable pageable) {
-        return userRepository.findWithoutUserGroup(userGroupId, pageable);
+    public PagedModel<UserDto> findWithoutUserGroup(String userGroupId, Pageable pageable) {
+        t.restart();
+
+        Page<User> users = userRepository.findWithoutUserGroup(userGroupId, pageable);
+        PagedModel<UserDto> collectionModel = userPagedResourcesAssembler.toModel(users, userModelAssembler);
+        logger.debug(format("Agent list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override
     @Cacheable(cacheNames = "User", key = "#id")
-    public Optional<User> findById(String id) {
-        return userRepository.findById(id);
+    public UserDto findById(String id) throws ResourceNotFoundException {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            return userModelAssembler.toModel(userOptional.get());
+        }
+        throw new ResourceNotFoundException("User not found");
     }
 
     @Override
     @Cacheable(cacheNames = "User", key = "#userId")
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserDto findByUserId(String userId) throws ResourceNotFoundException {
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        if (userOptional.isPresent()) {
+            return userModelAssembler.toModel(userOptional.get());
+        }
+        throw new ResourceNotFoundException("User not found");
     }
 
     @Override
     @Cacheable(cacheNames = "User", key = "#id")
-    public Page<User> findByUserGroup(String id, Pageable pageable) {
-        return userRepository.findByUserGroup(id, pageable);
+    public PagedModel<UserDto> findByUserGroup(String id, Pageable pageable) {
+        t.restart();
+
+        Page<User> users = userRepository.findByUserGroup(id, pageable);
+        PagedModel<UserDto> collectionModel = userPagedResourcesAssembler.toModel(users, userModelAssembler);
+        logger.debug(format("Agent list request finished - count: {0}/{1} {2}",
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+
+        return collectionModel;
     }
 
     @Override
-    public User insertUser(User user) {
+    public UserDto insertUser(UserDto userDto) throws BadRequestException {
+        t.restart();
+
+        Optional<User> userOptional = userRepository.findByUserId(userDto.getUserId());
+        if (userOptional.isPresent()) {
+            throw new BadRequestException();
+        }
+
+        User user = userModelAssembler.toEntity(userDto);
         if (validateUser(user)) {
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            logger.debug(format("Finished insert user request - userId: {0} {1}", user.getUserId(), t.elapsedStr()));
+            return userModelAssembler.toModel(user);
         }
         throw new BadRequestException();
     }
 
     @Override
-    @CachePut(cacheNames = "User", key = "#user.id")
-    public User updateUser(User user) throws ResourceNotFoundException {
-        Optional<User> userOldOptional = userRepository.findById(user.getId());
+    @CachePut(cacheNames = "User", key = "#userDto.id")
+    public UserDto updateUser(UserDto userDto) throws ResourceNotFoundException {
+        Optional<User> userOldOptional = userRepository.findById(userDto.getId());
         if (userOldOptional.isPresent()) {
+            User user = userOldOptional.get();
             User userNew = userOldOptional.get();
             userNew.update(user);
-            return userRepository.save(userNew);
+            userNew = userRepository.save(userNew);
+            return userModelAssembler.toModel(userNew);
         }
         throw new ResourceNotFoundException();
     }
@@ -164,14 +201,15 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @CachePut(cacheNames = "User", key = "#id")
-    public User addUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
+    public UserDto addUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
         Optional<User> userOptional = userRepository.findById(id);
         Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
             user.addUserGroup(userGroup);
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            return userModelAssembler.toModel(user);
         }
         throw new ResourceNotFoundException();
     }
@@ -184,24 +222,27 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @CachePut(cacheNames = "User", key = "#id")
-    public User removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
+    public UserDto removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException {
         Optional<User> userOptional = userRepository.findById(id);
         Optional<UserGroup> userGroupOptional = userGroupRepository.findById(userGroupId);
         if (userOptional.isPresent() && userGroupOptional.isPresent()) {
             User user = userOptional.get();
             UserGroup userGroup = userGroupOptional.get();
             user.removeUserGroup(userGroup);
-            return userRepository.save(user);
+            user = userRepository.save(user);
+            return userModelAssembler.toModel(user);
         }
         throw new ResourceNotFoundException();
     }
 
-    public void changePassword(User user, String password) {
+    public void changePassword(UserDto userDto, String password) {
+        User user = userModelAssembler.toEntity(userDto);
         user.setPassword(stringEncryptor.encrypt(password));
         userRepository.save(user);
     }
 
-    public void resetPassword(User user) throws ResourceNotFoundException {
+    public void resetPassword(UserDto userDto) throws ResourceNotFoundException {
+        User user = userModelAssembler.toEntity(userDto);
         if (user.getEmail() != null) {
             PasswordResetToken token = new PasswordResetToken();
             token.setToken(UUID.randomUUID().toString());

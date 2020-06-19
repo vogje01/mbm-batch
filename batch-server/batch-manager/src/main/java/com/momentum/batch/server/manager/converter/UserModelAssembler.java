@@ -3,6 +3,7 @@ package com.momentum.batch.server.manager.converter;
 import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.User;
+import com.momentum.batch.server.manager.controller.AvatarController;
 import com.momentum.batch.server.manager.controller.UserController;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -49,7 +50,7 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
             userDto.add(linkTo(methodOn(UserController.class).removeUserGroup(null, null)).withRel("removeUserGroup").expand(userDto.getId(), ""));
 
             // Avatar links
-            userDto.add(linkTo(methodOn(UserController.class).avatar(userDto.getId())).withRel("avatar"));
+            userDto.add(linkTo(methodOn(AvatarController.class).avatar(userDto.getId())).withRel("avatar"));
         } catch (ResourceNotFoundException e) {
             e.printStackTrace();
         }

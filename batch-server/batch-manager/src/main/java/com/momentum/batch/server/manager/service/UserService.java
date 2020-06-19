@@ -1,38 +1,34 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.User;
+import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
+import org.springframework.hateoas.PagedModel;
 
 public interface UserService {
 
-    Page<User> findAll(Pageable pageable);
+    PagedModel<UserDto> findAll(Pageable pageable);
 
-    Page<User> findWithoutUserGroup(String userGroupId, Pageable pageable);
+    PagedModel<UserDto> findWithoutUserGroup(String userGroupId, Pageable pageable);
 
-    Optional<User> findById(String id);
+    UserDto findById(String id) throws ResourceNotFoundException;
 
-    Optional<User> findByUserId(String userId);
+    UserDto findByUserId(String userId) throws ResourceNotFoundException;
 
-    Optional<User> findByEmail(String email);
+    PagedModel<UserDto> findByUserGroup(String id, Pageable pageable);
 
-    Page<User> findByUserGroup(String id, Pageable pageable);
+    UserDto insertUser(UserDto userDto) throws BadRequestException, ResourceNotFoundException;
 
-    User insertUser(User user) throws BadRequestException;
-
-    User updateUser(User user) throws ResourceNotFoundException;
+    UserDto updateUser(UserDto userDto) throws ResourceNotFoundException;
 
     void deleteUser(String userId);
 
-    User addUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
+    UserDto addUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
 
-    User removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
+    UserDto removeUserGroup(String id, String userGroupId) throws ResourceNotFoundException;
 
-    void resetPassword(User user) throws ResourceNotFoundException;
+    void resetPassword(UserDto userDto) throws ResourceNotFoundException;
 
-    void changePassword(User user, String password);
+    void changePassword(UserDto userDto, String password);
 }
