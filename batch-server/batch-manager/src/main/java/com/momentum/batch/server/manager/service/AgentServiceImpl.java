@@ -19,6 +19,7 @@ import com.momentum.batch.server.manager.service.common.ResourceNotFoundExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,11 +49,12 @@ import static java.text.MessageFormat.format;
 @Transactional
 public class AgentServiceImpl implements AgentService {
 
+    @Value("${mbm.server.host}")
+    private String serverName;
+
     private static final Logger logger = LoggerFactory.getLogger(AgentServiceImpl.class);
 
     private final MethodTimer t = new MethodTimer();
-
-    private final String serverName;
 
     private final AgentRepository agentRepository;
 
@@ -73,7 +75,6 @@ public class AgentServiceImpl implements AgentService {
     /**
      * Constructor.
      *
-     * @param serverName                         host name of the server machine.
      * @param agentRepository                    agent repository.
      * @param agentGroupRepository               agent group repository.
      * @param jobScheduleRepository              job schedule  repository.
@@ -84,11 +85,10 @@ public class AgentServiceImpl implements AgentService {
      * @param jobScheduleModelAssembler          job definition model assembler.
      */
     @Autowired
-    public AgentServiceImpl(String serverName, AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
+    public AgentServiceImpl(AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
                             JobScheduleRepository jobScheduleRepository, AgentStatusMessageProducer agentStatusMessageProducer,
                             PagedResourcesAssembler<Agent> agentPagedResourcesAssembler, AgentModelAssembler agentModelAssembler,
                             PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler, JobScheduleModelAssembler jobScheduleModelAssembler) {
-        this.serverName = serverName;
         this.agentRepository = agentRepository;
         this.agentGroupRepository = agentGroupRepository;
         this.jobScheduleRepository = jobScheduleRepository;
@@ -153,7 +153,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    @CachePut(cacheNames = "Agent", key = "#agent.id")
+    @CachePut(cacheNames = "Agent", key = "#agentDto.id")
     public AgentDto updateAgent(AgentDto agentDto) throws ResourceNotFoundException {
         Optional<Agent> agentOldOptional = agentRepository.findById(agentDto.getId());
         if (agentOldOptional.isPresent()) {

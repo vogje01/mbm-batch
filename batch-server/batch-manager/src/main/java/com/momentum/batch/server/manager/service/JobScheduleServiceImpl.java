@@ -23,6 +23,7 @@ import com.momentum.batch.server.manager.service.common.ResourceNotFoundExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -41,6 +42,9 @@ import static java.text.MessageFormat.format;
 @Service
 @Transactional
 public class JobScheduleServiceImpl implements JobScheduleService {
+
+    @Value("${mbm.server.host}")
+    private String serverName;
 
     private static final Logger logger = LoggerFactory.getLogger(JobScheduleServiceImpl.class);
 
@@ -66,21 +70,18 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
     private final ModelConverter modelConverter;
 
-    private final String serverName;
-
     private final PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler;
 
     private final JobScheduleModelAssembler jobScheduleModelAssembler;
 
 
     @Autowired
-    public JobScheduleServiceImpl(String serverName, JobScheduleRepository jobScheduleRepository, JobDefinitionRepository jobDefinitionRepository,
+    public JobScheduleServiceImpl(JobScheduleRepository jobScheduleRepository, JobDefinitionRepository jobDefinitionRepository,
                                   AgentRepository agentRepository, AgentGroupRepository agentGroupRepository,
                                   PagedResourcesAssembler<Agent> agentPagedResourcesAssembler, AgentModelAssembler agentModelAssembler,
                                   PagedResourcesAssembler<AgentGroup> agentGroupPagedResourcesAssembler, AgentGroupModelAssembler agentGroupModelAssembler,
                                   AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter,
                                   PagedResourcesAssembler<JobSchedule> jobSchedulePagedResourcesAssembler, JobScheduleModelAssembler jobScheduleModelAssembler) {
-        this.serverName = serverName;
         this.jobScheduleRepository = jobScheduleRepository;
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
@@ -136,16 +137,20 @@ public class JobScheduleServiceImpl implements JobScheduleService {
         JobSchedule jobSchedule = jobScheduleModelAssembler.toEntity(jobScheduleDto);
 
         // Get job definition
-        JobDefinition jobDefinition = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName()).get();
+        Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName());
+        if (jobDefinitionOptional.isPresent()) {
 
-        // Set job definition
-        jobSchedule.setJobDefinition(jobDefinition);
+            // Get job definition
+            JobDefinition jobDefinition = jobDefinitionOptional.get();
 
-        // Insert into database
-        jobSchedule = jobScheduleRepository.save(jobSchedule);
-        jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
-        logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
+            // Set job definition
+            jobSchedule.setJobDefinition(jobDefinition);
 
+            // Insert into database
+            jobSchedule = jobScheduleRepository.save(jobSchedule);
+            jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
+            logger.debug(format("Job schedule insert request finished - id: {0} {1}", jobSchedule.getId(), t.elapsedStr()));
+        }
         return jobScheduleDto;
     }
 
@@ -165,25 +170,30 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
             // Get job definition
             if (!jobScheduleDto.getJobDefinitionName().isEmpty()) {
-                JobDefinition jobDefinition = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName()).get();
-                jobSchedule.setJobDefinition(jobDefinition);
+
+                // Get job definition
+                Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName());
+                if (jobDefinitionOptional.isPresent()) {
+
+                    JobDefinition jobDefinition = jobDefinitionOptional.get();
+                    jobSchedule.setJobDefinition(jobDefinition);
+
+                    // Save new job schedule
+                    jobScheduleNew = jobScheduleRepository.save(jobScheduleNew);
+
+                    // Send command to scheduler
+                    jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleNew);
+                    AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+
+                    // Send message to agents
+                    jobScheduleNew.getAgents().forEach(agent -> {
+                        agentSchedulerMessageDto.setSender(serverName);
+                        agentSchedulerMessageDto.setHostName(agent.getHostName());
+                        agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                    });
+                }
             }
-
-            // Save new job schedule
-            jobScheduleNew = jobScheduleRepository.save(jobScheduleNew);
-
-            // Send command to scheduler
-            jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleNew);
-            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
-
-            // Send message to agents
-            jobScheduleNew.getAgents().forEach(agent -> {
-                agentSchedulerMessageDto.setSender(serverName);
-                agentSchedulerMessageDto.setHostName(agent.getHostName());
-                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
-                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-            });
-
             return jobScheduleDto;
         } else {
             logger.error(format("Job schedule not found - id: {0}", jobScheduleId));

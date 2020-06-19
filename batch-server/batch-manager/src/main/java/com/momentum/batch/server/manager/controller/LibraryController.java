@@ -18,8 +18,10 @@ import java.nio.file.Paths;
 import static java.text.MessageFormat.format;
 
 /**
+ * Job file download service.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-SNAPSHOT
  * @since 0.0.1
  */
 @RestController

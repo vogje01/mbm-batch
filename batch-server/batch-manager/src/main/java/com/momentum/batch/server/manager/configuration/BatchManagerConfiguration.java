@@ -1,10 +1,8 @@
 package com.momentum.batch.server.manager.configuration;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.momentum.batch.common.util.NetworkUtils;
 import com.momentum.batch.server.manager.service.util.AuditorAwareImpl;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -24,8 +22,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 @Configuration
 @EnableWebMvc
 @EnableCaching
@@ -36,9 +32,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan("com.momentum.batch.server.database.domain")
 public class BatchManagerConfiguration implements WebMvcConfigurer {
-
-    @Value("${mbm.server.host}")
-    private String serverName;
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecution", "JobExecutionLog", "JobExecutionParam",
             "StepExecution", "JobSchedule", "JobGroup", "Agent", "AgentGroup", "AgentPerformance", "BatchPerformance", "User", "UserGroup", "UserDetails"};
@@ -57,14 +50,6 @@ public class BatchManagerConfiguration implements WebMvcConfigurer {
     @Bean
     AuditorAware<String> auditorProvider() {
         return new AuditorAwareImpl();
-    }
-
-    @Bean
-    public String serverName() {
-        if (isNullOrEmpty(this.serverName)) {
-            this.serverName = NetworkUtils.getHostName();
-        }
-        return serverName;
     }
 
     @Override

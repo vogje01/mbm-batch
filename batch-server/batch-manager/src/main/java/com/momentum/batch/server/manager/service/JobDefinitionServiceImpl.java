@@ -47,7 +47,7 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionServiceImpl.class);
 
-    private MethodTimer t = new MethodTimer();
+    private final MethodTimer t = new MethodTimer();
 
     private final JobDefinitionRepository jobDefinitionRepository;
 
