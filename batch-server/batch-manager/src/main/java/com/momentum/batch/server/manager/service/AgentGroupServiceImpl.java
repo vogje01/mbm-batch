@@ -36,16 +36,6 @@ public class AgentGroupServiceImpl implements AgentGroupService {
     }
 
     @Override
-    public long countAll() {
-        return agentGroupRepository.count();
-    }
-
-    @Override
-    public long countByAgent(String agentId) {
-        return agentGroupRepository.countByAgentId(agentId);
-    }
-
-    @Override
     public Page<AgentGroup> findAll(Pageable pageable) {
         return agentGroupRepository.findAll(pageable);
     }

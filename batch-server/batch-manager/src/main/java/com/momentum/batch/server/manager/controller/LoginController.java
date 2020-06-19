@@ -1,10 +1,10 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
+import com.momentum.batch.server.manager.service.LoginService;
 import com.momentum.batch.server.manager.service.UserService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.UnauthorizedException;
@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * Login controller for the batch manager UI.
@@ -44,8 +42,11 @@ public class LoginController {
 
     private final ModelConverter modelConverter;
 
+    private final LoginService loginService;
+
     @Autowired
-    public LoginController(UserService userService, PasswordResetTokenRepository passwordResetTokenRepository, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
+    public LoginController(LoginService loginService, UserService userService, PasswordResetTokenRepository passwordResetTokenRepository, JwtTokenUtil jwtTokenUtil, ModelConverter modelConverter) {
+        this.loginService = loginService;
         this.userService = userService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -59,16 +60,7 @@ public class LoginController {
 
     @PostMapping(value = "/api/authenticate", produces = {"application/hal+json"})
     public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws UnauthorizedException, ResourceNotFoundException {
-        logger.debug(format("Starting authentication - userId: {0}", authenticationRequest.getUserId()));
-        Optional<User> userOptional = userService.findByUserId(authenticationRequest.getUserId());
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            final String token = jwtTokenUtil.generateToken(user);
-            UserDto userDto = modelConverter.convertUserToDto(user);
-            userDto.add(linkTo(methodOn(UserController.class).avatar(user.getId())).withRel("avatar"));
-            return ResponseEntity.ok(new JwtResponse(token, userDto));
-        }
-        throw new UnauthorizedException();
+        return ResponseEntity.ok(loginService.createAuthenticationToken(authenticationRequest));
     }
 
     @GetMapping(value = "/api/resetPassword/{userId}")

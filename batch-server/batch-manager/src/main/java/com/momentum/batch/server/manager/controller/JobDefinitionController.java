@@ -1,14 +1,9 @@
 package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.manager.service.JobDefinitionService;
-import com.momentum.batch.server.manager.service.JobGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import com.momentum.batch.server.manager.service.common.RestPreconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;
@@ -16,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-
-import static java.text.MessageFormat.format;
 
 /**
  * Job definition REST controller.
@@ -35,14 +27,7 @@ import static java.text.MessageFormat.format;
 @RequestMapping("/api/jobdefinitions")
 public class JobDefinitionController {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(JobDefinitionController.class);
-
-    private final MethodTimer t = new MethodTimer();
-
     private final JobDefinitionService jobDefinitionService;
-
-    private final JobGroupService jobGroupService;
 
     /**
      * Constructor.
@@ -50,9 +35,8 @@ public class JobDefinitionController {
      * @param jobDefinitionService service implementation.
      */
     @Autowired
-    public JobDefinitionController(JobDefinitionService jobDefinitionService, JobGroupService jobGroupService) {
+    public JobDefinitionController(JobDefinitionService jobDefinitionService) {
         this.jobDefinitionService = jobDefinitionService;
-        this.jobGroupService = jobGroupService;
     }
 
     /**
@@ -71,10 +55,9 @@ public class JobDefinitionController {
      *
      * @param pageable paging parameters.
      * @return on page of job definitions.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @GetMapping(value = "/restricted/{jobGroupId}", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobDefinitionDto>> findWithoutJobGroup(@PathVariable String jobGroupId, Pageable pageable) throws ResourceNotFoundException {
+    public ResponseEntity<PagedModel<JobDefinitionDto>> findWithoutJobGroup(@PathVariable String jobGroupId, Pageable pageable) {
         return ResponseEntity.ok(jobDefinitionService.findWithoutJobGroup(jobGroupId, pageable));
     }
 
@@ -144,12 +127,10 @@ public class JobDefinitionController {
      *
      * @param jobDefinitionId job definition UUID.
      * @return job definition with given ID or error.
-     * @throws ResourceNotFoundException in case the job definition is not existing.
      */
     @DeleteMapping(value = "/{jobDefinitionId}/delete")
     public ResponseEntity<Void> delete(@PathVariable("jobDefinitionId") String jobDefinitionId) {
         jobDefinitionService.deleteJobDefinition(jobDefinitionId);
-        logger.debug(format("Job definitions deleted - id: {0} {1}", jobDefinitionId, t.elapsedStr()));
         return null;
     }
 
@@ -206,7 +187,6 @@ public class JobDefinitionController {
      */
     @GetMapping(value = "/{jobDefinitionId}/stop")
     public ResponseEntity<Void> stop(@PathVariable("jobDefinitionId") String jobDefinitionId) throws ResourceNotFoundException {
-        RestPreconditions.checkFound(jobDefinitionService.findById(jobDefinitionId));
         jobDefinitionService.stopJob(jobDefinitionId);
         return null;
     }
@@ -217,17 +197,9 @@ public class JobDefinitionController {
      * @return list of raw job definitions.
      */
     @GetMapping(value = "/export", produces = {"application/json"})
-    public List<JobDefinition> exportAll() {
-        t.restart();
+    public ResponseEntity<PagedModel<JobDefinitionDto>> exportAll() {
+        return ResponseEntity.ok(jobDefinitionService.findAll(Pageable.unpaged()));
 
-        List<JobDefinition> jobDefinitions = jobDefinitionService.exportJobDefinitions();
-
-        // Check existence
-        if (jobDefinitions.isEmpty()) {
-            return Collections.emptyList();
-        }
-        logger.debug(format("Job definitions exported - count: {0} {1}", jobDefinitions.size(), t.elapsedStr()));
-        return jobDefinitions;
     }
 
     /**
@@ -237,8 +209,6 @@ public class JobDefinitionController {
      */
     @PutMapping(value = "/import", consumes = {"application/json"})
     public void importAll(@RequestBody List<JobDefinition> jobDefinitions) {
-        t.restart();
         jobDefinitionService.importJobDefinitions(jobDefinitions);
-        logger.debug(format("Job definitions imported - count: {0} {1}", jobDefinitions.size(), t.elapsedStr()));
     }
 }

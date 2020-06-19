@@ -57,7 +57,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 	@Cacheable(cacheNames = "UserDetails", key = "#userId")
 	public UserDetails loadUserByUsername(String userId) {
-		logger.debug(format("Starting load user - userId: {0}", userId));
+		logger.trace(format("Starting load user - userId: {0}", userId));
 		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);
 		if (userOptional.isPresent()) {
 			return new User(userId, "", emptyList());

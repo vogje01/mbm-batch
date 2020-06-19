@@ -17,6 +17,8 @@ import {JobGroupDataSource} from "./job-group-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {getFormattedTime} from "../../utils/date-time-util";
 import JobGroupJobDefinitionView from "./jobgroup-jobdefinition-list";
+import {Item} from "devextreme-react/autocomplete";
+import {Toolbar} from "devextreme-react/toolbar";
 
 class JobGroupList extends React.Component {
 
@@ -44,6 +46,16 @@ class JobGroupList extends React.Component {
                 <h2 className={'content-block'}>Job Groups</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }, hint: 'Refresh job group list.'
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             dataSource={JobGroupDataSource()}
                             hoverStateEnabled={true}

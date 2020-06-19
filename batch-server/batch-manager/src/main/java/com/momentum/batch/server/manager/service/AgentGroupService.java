@@ -7,10 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface AgentGroupService {
 
-    long countAll();
-
-    long countByAgent(String agentId);
-
     AgentGroup findById(final String id);
 
     AgentGroup findByName(final String name);
@@ -21,8 +17,7 @@ public interface AgentGroupService {
 
     AgentGroup insertAgentGroup(AgentGroup agentGroup);
 
-    AgentGroup updateAgentGroup(final String agentGroupId,
-                                AgentGroup agentGroup) throws ResourceNotFoundException;
+    AgentGroup updateAgentGroup(final String agentGroupId, AgentGroup agentGroup) throws ResourceNotFoundException;
 
     void deleteAgentGroup(final String id);
 

@@ -48,6 +48,11 @@ public class AgentGroup extends Auditing implements PrimaryKeyIdentifier<String>
      */
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "agentGroups")
     private List<Agent> agents = new ArrayList<>();
+    /**
+     * Schedules
+     */
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "agentGroups")
+    private List<JobSchedule> schedules = new ArrayList<>();
 
     /**
      * Constructor
@@ -110,6 +115,26 @@ public class AgentGroup extends Auditing implements PrimaryKeyIdentifier<String>
 
     public void removeAgent(Agent agent) {
         agents.remove(agent);
+    }
+
+    public List<JobSchedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<JobSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public void addSchedule(JobSchedule schedule) {
+        if (!schedules.contains(schedule)) {
+            schedules.add(schedule);
+        }
+    }
+
+    public void removeSchedule(JobSchedule schedule) {
+        if (schedules.contains(schedule)) {
+            schedules.remove(schedule);
+        }
     }
 
     @Override

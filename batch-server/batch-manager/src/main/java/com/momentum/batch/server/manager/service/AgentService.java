@@ -13,19 +13,11 @@ public interface AgentService {
 
     Page<Agent> findAll(Pageable pageable);
 
-    long countAll();
-
-    long countByAgentGroup(String agentGroupId);
-
-    long countSchedules(String agentId);
-
     Page<JobSchedule> getSchedules(String agentId, Pageable pageable);
 
     List<String> findAllAgentNames();
 
     Optional<Agent> findById(String id);
-
-    Optional<Agent> findByNodeName(String nodeName);
 
     Page<Agent> findByAgentGroup(String agentGroupId, Pageable pageable);
 
