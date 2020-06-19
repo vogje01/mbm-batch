@@ -1,37 +1,32 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.server.database.domain.Agent;
-import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.common.domain.dto.AgentDto;
+import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.hateoas.PagedModel;
 
 public interface AgentService {
 
-    Page<Agent> findAll(Pageable pageable);
+    PagedModel<AgentDto> findAll(Pageable pageable);
 
-    Page<JobSchedule> getSchedules(String agentId, Pageable pageable);
+    AgentDto findById(String id) throws ResourceNotFoundException;
 
-    List<String> findAllAgentNames();
+    PagedModel<JobScheduleDto> findSchedules(String agentId, Pageable pageable);
 
-    Optional<Agent> findById(String id);
+    PagedModel<AgentDto> findByAgentGroup(String agentGroupId, Pageable pageable);
 
-    Page<Agent> findByAgentGroup(String agentGroupId, Pageable pageable);
-
-    Agent updateAgent(Agent agent) throws ResourceNotFoundException;
+    AgentDto updateAgent(AgentDto agentDto) throws ResourceNotFoundException;
 
     void deleteAgent(String agentId);
 
-    Agent addAgentGroup(String id, String name) throws ResourceNotFoundException;
+    AgentDto addAgentGroup(String id, String name) throws ResourceNotFoundException;
 
-    Agent removeAgentGroup(String id, String agentGroupId) throws ResourceNotFoundException;
+    AgentDto removeAgentGroup(String id, String agentGroupId) throws ResourceNotFoundException;
 
-    Agent addSchedule(String id, String name) throws ResourceNotFoundException;
+    AgentDto addSchedule(String id, String name) throws ResourceNotFoundException;
 
-    Agent removeSchedule(String id, String scheduleId) throws ResourceNotFoundException;
+    AgentDto removeSchedule(String id, String scheduleId) throws ResourceNotFoundException;
 
-    Agent pauseAgent(String agentId) throws ResourceNotFoundException;
+    AgentDto pauseAgent(String agentId) throws ResourceNotFoundException;
 }

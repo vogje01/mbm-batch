@@ -2,6 +2,7 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
+import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
 import com.momentum.batch.server.manager.controller.UserController;
@@ -61,5 +62,28 @@ public class LoginServiceImpl implements LoginService {
             return new JwtResponse(token, userDto);
         }
         throw new UnauthorizedException();
+    }
+
+    @Override
+    public void resetPassword(String userId) throws ResourceNotFoundException {
+        logger.debug(format("Starting reset password request- userId: {0}", userId));
+        Optional<User> userOptional = userService.findByUserId(userId);
+        if (userOptional.isPresent()) {
+            userService.resetPassword(userOptional.get());
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @Override
+    public void changePassword(String password, String token) throws ResourceNotFoundException, UnauthorizedException {
+        logger.debug(format("Starting change password request- password: {0} token: {1}", password, token));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+        if (passwordResetToken == null) {
+            throw new ResourceNotFoundException();
+        }
+        if (passwordResetToken.isExpired()) {
+            throw new UnauthorizedException();
+        }
+        userService.changePassword(passwordResetToken.getUser(), password);
     }
 }

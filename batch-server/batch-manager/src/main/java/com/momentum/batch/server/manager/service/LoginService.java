@@ -13,4 +13,8 @@ import com.momentum.batch.server.manager.service.util.JwtResponse;
 public interface LoginService {
 
     JwtResponse createAuthenticationToken(JwtRequest authenticationRequest) throws UnauthorizedException, ResourceNotFoundException;
+
+    void resetPassword(String userId) throws ResourceNotFoundException;
+
+    void changePassword(String password, String token) throws ResourceNotFoundException, UnauthorizedException;
 }
