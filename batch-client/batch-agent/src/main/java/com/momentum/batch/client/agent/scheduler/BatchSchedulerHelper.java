@@ -150,6 +150,11 @@ public abstract class BatchSchedulerHelper {
         return null;
     }
 
+    boolean compareTriggers(Trigger trigger, JobScheduleDto jobScheduleDto) {
+        Trigger tmpTrigger = buildTrigger(jobScheduleDto, jobScheduleDto.getJobDefinitionDto());
+        return trigger.compareTo(tmpTrigger) == 0;
+    }
+
     /**
      * Create schedule from a cron expression.
      *

@@ -162,7 +162,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
                         jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
             } catch (SchedulerException | IOException e) {
                 logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()), e);
+                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()));
             }
         } else {
             logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
@@ -206,14 +206,19 @@ public class BatchScheduler extends BatchSchedulerHelper {
             logger.debug(format("Job key found - jobGroup: {0} jobName: {1}", groupName, jobName));
             if (isScheduled(jobKey)) {
 
-                // TODO: Check trigger and skip if equals
+                // Get trigger
+                Trigger trigger = getTrigger(jobKey);
+                if (compareTriggers(trigger, jobSchedule)) {
+                    logger.debug(format("Triggers are equal - jobGroup: {0} jobName: {1}", groupName, jobName));
+                    return;
+                }
+
                 // Remove from schedule
                 removeFromScheduler(jobKey);
                 logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
 
                 // Schedule job
-                if (jobDefinition.isActive()) {
-                    Trigger trigger = getTrigger(jobKey);
+                if (trigger != null && jobDefinition.isActive()) {
                     jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                     jobSchedule.setNextExecution(trigger.getNextFireTime());
                     addJobToScheduler(jobSchedule, jobDefinition);

@@ -1,6 +1,5 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.common.domain.JobScheduleType;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.6
  */
 @Service
+@Transactional
 public class CentralBatchScheduler {
 
     @Value("${mbm.scheduler.interval}")
@@ -75,9 +76,9 @@ public class CentralBatchScheduler {
      * @param jobScheduleRepository job schedules repository.
      */
     @Autowired
-    private CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, JobExecutionInfoRepository jobExecutionRepository,
-                                  AgentRepository agentRepository,
-                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
+    public CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, JobExecutionInfoRepository jobExecutionRepository,
+                                 AgentRepository agentRepository,
+                                 AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
         this.jobScheduleRepository = jobScheduleRepository;
         this.jobExecutionRepository = jobExecutionRepository;
         this.agentRepository = agentRepository;
@@ -102,7 +103,7 @@ public class CentralBatchScheduler {
         logger.info(format("Check schedules"));
 
         // Get job schedule list
-        List<JobSchedule> jobScheduleList = jobScheduleRepository.findByType(JobScheduleType.CENTRAL);
+        Iterable<JobSchedule> jobScheduleList = jobScheduleRepository.findAll();
         jobScheduleList.forEach(jobSchedule -> {
             switch (jobSchedule.getMode()) {
                 case FIXED -> checkFixed(jobSchedule);
@@ -121,20 +122,23 @@ public class CentralBatchScheduler {
      */
     private void checkFixed(JobSchedule jobSchedule) {
 
-        logger.info(format("Checking fixed agent schedule - name: {0} agents: {}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+        logger.info(format("Checking fixed agent schedule - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
         getAgentList(jobSchedule).forEach(agent -> {
 
             // Create jobSchedule DTO
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
 
-            // Create message
-            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE);
-            agentSchedulerMessageDto.setHostName(agent.getHostName());
-            agentSchedulerMessageDto.setNodeName(agent.getNodeName());
-            agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);
-            agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-            logger.debug(format("Reschedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
-                    agent.getHostName(), agent.getNodeName(), jobSchedule.getJobDefinition().getName()));
+            // Send only to active agents
+            if (agent.getActive()) {
+
+                // Create message
+                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                logger.debug(format("Reschedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
+                        agent.getHostName(), agent.getNodeName(), jobSchedule.getJobDefinition().getName()));
+            }
         });
     }
 

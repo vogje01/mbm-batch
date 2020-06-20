@@ -25,7 +25,7 @@ public class AgentSchedulerMessageProducer {
     @Value(value = "${kafka.agentScheduler.topic}")
     private String agentCommandTopic;
 
-    private KafkaTemplate<String, AgentSchedulerMessageDto> template;
+    private final KafkaTemplate<String, AgentSchedulerMessageDto> template;
 
     private final String nodeName;
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.2
  */
 @Service
+@Transactional
 public class AgentSchedulerMessageConsumer {
 
     /**
@@ -79,7 +81,7 @@ public class AgentSchedulerMessageConsumer {
      *
      * @param agentSchedulerMessageDto agent scheduler message.
      */
-    private synchronized void receivedJobScheduled(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+    private void receivedJobScheduled(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
         JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
         logger.debug(format("Job scheduled message received - hostName: {0} nodeName: {1} schedule: {2}",
@@ -118,7 +120,7 @@ public class AgentSchedulerMessageConsumer {
                 jobSchedule.setLastExecution(jobScheduleDto.getLastExecution());
                 logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobScheduleDto.getLastExecution()));
             }
-            jobScheduleRepository.save(jobSchedule);
+            //jobScheduleRepository.save(jobSchedule);
         }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
     }
 
@@ -127,7 +129,7 @@ public class AgentSchedulerMessageConsumer {
      *
      * @param agentSchedulerMessageDto agent scheduler message.
      */
-    private synchronized void receivedOnDemandJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+    private void receivedOnDemandJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
         JobDefinitionDto jobDefinitionDto = agentSchedulerMessageDto.getJobDefinitionDto();
         logger.debug(format("Job executed on demand message received - hostName: {0} nodeName: {1} name: {2}",
