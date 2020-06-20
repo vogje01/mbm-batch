@@ -131,6 +131,13 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     @OneToOne(mappedBy = "jobExecutionInfo", fetch = FetchType.LAZY, optional = false)
     private JobExecutionInstance jobExecutionInstance;
     /**
+     * Job definition
+     */
+    @Cascade(CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "JOB_DEFINITION_ID")
+    private JobDefinition jobDefinition;
+    /**
      * Job execution parameter from JSR-352
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "jobExecutionInfo")
@@ -151,7 +158,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     }
 
     public void update(JobExecutionDto jobExecutionDto) {
-        //this.id = jobExecutionDto.getId();
         this.jobPid = jobExecutionDto.getJobPid();
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();
@@ -165,7 +171,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.status = jobExecutionDto.getStatus();
         this.exitCode = jobExecutionDto.getExitCode();
         this.exitMessage = jobExecutionDto.getExitMessage();
-//        this.jobExecutionInstance = new JobInstanceInfo(jobExecutionDto.getJobName(), this);
     }
 
     public String getId() {
@@ -190,6 +195,14 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
 
     public void setJobExecutionInstance(JobExecutionInstance jobExecutionInstance) {
         this.jobExecutionInstance = jobExecutionInstance;
+    }
+
+    public JobDefinition getJobDefinition() {
+        return jobDefinition;
+    }
+
+    public void setJobDefinition(JobDefinition jobDefinition) {
+        this.jobDefinition = jobDefinition;
     }
 
     public JobExecutionContext getJobExecutionContext() {
@@ -358,9 +371,8 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     }
 
     public void setStepExecutionInfos(List<StepExecutionInfo> stepExecutionInfos) {
-        this.stepExecutionInfos.clear();
         if (stepExecutionInfos != null) {
-            stepExecutionInfos.forEach(s -> addStepExecutionInfo(s));
+            stepExecutionInfos.forEach(this::addStepExecutionInfo);
         }
     }
 
@@ -401,15 +413,13 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 Objects.equal(exitMessage, that.exitMessage) &&
                 Objects.equal(jobConfigurationLocation, that.jobConfigurationLocation) &&
                 Objects.equal(executionContext, that.executionContext) &&
-                Objects.equal(failureExceptions, that.failureExceptions) &&
-                Objects.equal(jobExecutionInstance, that.jobExecutionInstance) &&
-                Objects.equal(jobExecutionParams, that.jobExecutionParams) &&
-                Objects.equal(stepExecutionInfos, that.stepExecutionInfos);
+                Objects.equal(failureExceptions, that.failureExceptions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startedBy, startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions, jobExecutionInstance, jobExecutionParams, stepExecutionInfos);
+        return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobVersion, status, startedBy, startTime, createTime,
+                endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions);
     }
 
     @Override
@@ -434,8 +444,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 .add("executionContext", executionContext)
                 .add("failureExceptions", failureExceptions)
                 .add("jobInstanceInfo", jobExecutionInstance)
-                .add("jobExecutionParams", jobExecutionParams)
-                .add("stepExecutionInfos", stepExecutionInfos)
                 .toString();
     }
 }

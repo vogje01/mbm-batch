@@ -165,7 +165,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
      * @param stepExecutionDto original step execution info.
      */
     public void update(StepExecutionDto stepExecutionDto) {
-        this.id = stepExecutionDto.getId();
+        //this.id = stepExecutionDto.getId();
         this.stepName = stepExecutionDto.getStepName();
         this.stepExecutionId = stepExecutionDto.getStepExecutionId();
         this.status = stepExecutionDto.getStatus();

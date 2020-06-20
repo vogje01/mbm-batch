@@ -1,3 +1,8 @@
+#
+# MPM listener logging configuration file
+#
+# This is only used by the docker images.
+#
 Configuration:
   name: Default
   Appenders:
@@ -6,31 +11,14 @@ Configuration:
       target: SYSTEM_OUT
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%.7t] %c{1}:%L - %msg%n"
-    RollingFile:
-      name: File_Appender
-      fileName: "${sys:listener.loggingDirectory:-./log}/batch-listener.log"
-      filePattern: "${sys:listener.loggingDirectory:-./log}/batch-listener.%d{yyyy-MM-dd-hh-mm}.log.gz"
-      Policies:
-        SizeBasedTriggeringPolicy:
-          size: 10 MB
-      DefaultRollOverStrategy:
-        max: 5
-      PatternLayout:
-        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%.7t] %c{1}:%L - %msg%n"
   Loggers:
     Root:
       level: warn
       AppenderRef:
         - ref: Console_Appender
     Logger:
-      - name: org.springframework.transaction
-        level: error
-        additivity: false
-        AppenderRef:
-          - ref: Console_Appender
       - name: com.momentum.batch.server.listener
         level: debug
         additivity: false
         AppenderRef:
-          - ref: File_Appender
           - ref: Console_Appender

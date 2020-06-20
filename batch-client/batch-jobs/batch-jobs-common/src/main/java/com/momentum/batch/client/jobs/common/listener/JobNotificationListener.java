@@ -112,6 +112,8 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
         jobExecutionDto.setJobVersion(getJobVersion(jobExecution));
         jobExecutionDto.setJobExecutionId(jobExecution.getId());
+        jobExecutionDto.setJobDefinitionId(getJobDefinitionId(jobExecution));
+        jobExecutionDto.setJobDefinitionName(getJobDefinitionName(jobExecution));
         jobExecutionDto.setHostName(getHostName(jobExecution));
         jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setStartedBy(getJobStartedBy(jobExecution));

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.2
  */
 @Service
+@Transactional
 public class JobExecutionStatusListener {
 
     /**
@@ -47,6 +49,10 @@ public class JobExecutionStatusListener {
      * Job execution instance repository
      */
     private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
+    /**
+     * Job definition repository
+     */
+    private final JobDefinitionRepository jobDefinitionRepository;
     /**
      * Step execution info repository
      */
@@ -72,17 +78,16 @@ public class JobExecutionStatusListener {
      * @param modelConverter                 model converter.
      */
     @Autowired
-    public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository,
-                                      JobExecutionInstanceRepository jobExecutionInstanceRepository,
-                                      JobExecutionParamRepository jobExecutionParamRepository,
-                                      JobExecutionContextRepository jobExecutionContextRepository,
-                                      StepExecutionInfoRepository stepExecutionInfoRepository,
-                                      StepExecutionContextRepository stepExecutionContextRepository,
+    public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository, JobExecutionInstanceRepository jobExecutionInstanceRepository,
+                                      JobExecutionParamRepository jobExecutionParamRepository, JobExecutionContextRepository jobExecutionContextRepository,
+                                      JobDefinitionRepository jobDefinitionRepository,
+                                      StepExecutionInfoRepository stepExecutionInfoRepository, StepExecutionContextRepository stepExecutionContextRepository,
                                       ModelConverter modelConverter) {
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.jobExecutionContextRepository = jobExecutionContextRepository;
         this.jobExecutionParamRepository = jobExecutionParamRepository;
+        this.jobDefinitionRepository = jobDefinitionRepository;
         this.stepExecutionInfoRepository = stepExecutionInfoRepository;
         this.stepExecutionContextRepository = stepExecutionContextRepository;
         this.modelConverter = modelConverter;
@@ -105,7 +110,6 @@ public class JobExecutionStatusListener {
 
     /**
      * Process a job status notification.
-     *
      * <p>
      * The job execution info will be updated in the database, as well as the job execution context. This listener is called for
      * all job notifications.
@@ -113,7 +117,7 @@ public class JobExecutionStatusListener {
      *
      * @param jobExecutionDto job execution data transfer object.
      */
-    private synchronized void jobStatusChanged(JobExecutionDto jobExecutionDto) {
+    private void jobStatusChanged(JobExecutionDto jobExecutionDto) {
 
         logger.debug(format("Received status info - nodeName: {0} jobName: {1}", jobExecutionDto.getNodeName(), jobExecutionDto.getJobName()));
 
@@ -145,11 +149,21 @@ public class JobExecutionStatusListener {
             long jobExecutionId = jobExecutionInfoRepository.getLastExecutionId(jobExecutionDto.getJobName()).orElse(0L) + 1;
             logger.debug(format("New job execution id - jobExecutionId: {0}", jobExecutionId));
 
-            // Save job execution
+            // Get the job definition
+            Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findById(jobExecutionDto.getJobDefinitionId());
+
+            // Convert to entity
             JobExecutionInfo jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
             jobExecutionInfo.setCreatedAt(new Date());
             jobExecutionInfo.setCreatedBy("admin");
+
+            // Set job definition
+            if (jobDefinitionOptional.isPresent()) {
+                jobExecutionInfo.setJobDefinition(jobDefinitionOptional.get());
+            }
+
+            // Save job execution
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
             logger.debug(format("Job execution info created - nodeName: {0} jobName: {1} id: {2}", jobName, jobName, jobExecutionInfo.getId()));
 
@@ -159,6 +173,10 @@ public class JobExecutionStatusListener {
             jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
             logger.debug(format("Job execution instance created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
 
+            // Second part of the relationship
+            jobExecutionInfo.setJobExecutionInstance(jobExecutionInstance);
+            jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
+
             // Create job execution context
             JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());
             jobExecutionContext.setJobExecutionInfo(jobExecutionInfo);
@@ -167,9 +185,9 @@ public class JobExecutionStatusListener {
 
             // Create job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
-            jobExecutionInfo.getJobExecutionParams().forEach(p -> {
-                p.setJobExecutionInfo(finalJobExecutionInfo);
-                jobExecutionParamRepository.save(p);
+            jobExecutionInfo.getJobExecutionParams().forEach(jobExecutionParam -> {
+                jobExecutionParam.setJobExecutionInfo(finalJobExecutionInfo);
+                jobExecutionParamRepository.save(jobExecutionParam);
             });
             logger.debug(format("Job execution parameters created - nodeName: {0} jobName: {1} size: {2}", nodeName, jobName, jobExecutionInfo.getJobExecutionParams().size()));
         }
@@ -185,7 +203,7 @@ public class JobExecutionStatusListener {
      *
      * @param stepExecutionDto step execution data transfer object.
      */
-    private synchronized void stepStatusChanged(StepExecutionDto stepExecutionDto) {
+    private void stepStatusChanged(StepExecutionDto stepExecutionDto) {
 
         String nodeName = stepExecutionDto.getNodeName();
         String jobName = stepExecutionDto.getJobName();
@@ -200,8 +218,6 @@ public class JobExecutionStatusListener {
             // Update step execution info
             StepExecutionInfo stepExecutionInfo = stepExecutionInfoOptional.get();
             stepExecutionInfo.update(stepExecutionDto);
-            stepExecutionInfo.setModifiedAt(new Date());
-            stepExecutionInfo.setModifiedBy("admin");
             stepExecutionInfoRepository.save(stepExecutionInfo);
 
             // Save step execution context

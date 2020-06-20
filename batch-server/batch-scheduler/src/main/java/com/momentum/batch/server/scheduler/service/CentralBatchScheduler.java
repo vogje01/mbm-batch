@@ -1,6 +1,5 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.common.domain.JobScheduleMode;
 import com.momentum.batch.common.domain.JobScheduleType;
 import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
@@ -8,19 +7,27 @@ import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.repository.AgentRepository;
+import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import com.momentum.batch.server.scheduler.library.LibraryFileWatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.text.MessageFormat.format;
 
@@ -53,6 +60,14 @@ public class CentralBatchScheduler {
      * Job schedule directory
      */
     private final JobScheduleRepository jobScheduleRepository;
+    /**
+     * Job execution repository
+     */
+    private final JobExecutionInfoRepository jobExecutionRepository;
+    /**
+     * Agent repository
+     */
+    private final AgentRepository agentRepository;
 
     /**
      * Constructor.
@@ -60,9 +75,12 @@ public class CentralBatchScheduler {
      * @param jobScheduleRepository job schedules repository.
      */
     @Autowired
-    private CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
-                                  ModelConverter modelConverter) {
+    private CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, JobExecutionInfoRepository jobExecutionRepository,
+                                  AgentRepository agentRepository,
+                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
         this.jobScheduleRepository = jobScheduleRepository;
+        this.jobExecutionRepository = jobExecutionRepository;
+        this.agentRepository = agentRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
     }
@@ -86,8 +104,13 @@ public class CentralBatchScheduler {
         // Get job schedule list
         List<JobSchedule> jobScheduleList = jobScheduleRepository.findByType(JobScheduleType.CENTRAL);
         jobScheduleList.forEach(jobSchedule -> {
-            if (jobSchedule.getMode() == JobScheduleMode.FIXED) {
-                checkFixed(jobSchedule);
+            switch (jobSchedule.getMode()) {
+                case FIXED:
+                    checkFixed(jobSchedule);
+                    break;
+                case RANDOM_GROUP:
+                    checkRandomGroup(jobSchedule);
+                    break;
             }
         });
     }
@@ -102,7 +125,7 @@ public class CentralBatchScheduler {
      */
     private void checkFixed(JobSchedule jobSchedule) {
 
-        logger.info(format("Checking schedule - name: {0}", jobSchedule.getName()));
+        logger.info(format("Checking fixed agent schedule - name: {0} agents: {}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
         getAgentList(jobSchedule).forEach(agent -> {
 
             // Create jobSchedule DTO
@@ -119,6 +142,19 @@ public class CentralBatchScheduler {
         });
     }
 
+    private void checkRandomGroup(JobSchedule jobSchedule) {
+        logger.info(format("Checking random group schedule - name: {0} agents: {}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+
+        /*JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        Optional<Agent> agent = getLastJobExecutionAgent(jobDefinition.getName());
+
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("startTime").descending());
+        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(pageable);
+        if(!jobExecutionInfos.isEmpty()) {
+
+        }*/
+    }
+
     /**
      * Collects all agents of a job schedule plus all agents, which are part of a agentGroup.
      *
@@ -129,5 +165,17 @@ public class CentralBatchScheduler {
         List<Agent> agents = new ArrayList<>(jobSchedule.getAgents());
         jobSchedule.getAgentGroups().forEach(agentGroup -> agents.addAll(agentGroup.getAgents()));
         return agents;
+    }
+
+    private Optional<Agent> getLastJobExecutionAgent(String jobName) {
+        Pageable pageable = PageRequest.of(0, 1, Sort.by("startTime").descending());
+        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(pageable);
+        if (!jobExecutionInfos.isEmpty()) {
+            Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfos.get().findFirst();
+            if (jobExecutionInfoOptional.isPresent()) {
+                return agentRepository.findByNodeName(jobExecutionInfoOptional.get().getNodeName());
+            }
+        }
+        return Optional.empty();
     }
 }

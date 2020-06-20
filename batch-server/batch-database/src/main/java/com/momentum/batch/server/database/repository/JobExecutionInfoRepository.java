@@ -9,8 +9,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
+/**
+ * Job execution repository.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.ccom)
+ * @version 0.0.6-SNAPSHOT
+ * @since 0.0.1
+ */
 @Repository
 public interface JobExecutionInfoRepository extends PagingAndSortingRepository<JobExecutionInfo, String> {
 
@@ -18,9 +26,16 @@ public interface JobExecutionInfoRepository extends PagingAndSortingRepository<J
 
     Optional<JobExecutionInfo> findById(String id);
 
+    @Query("select j from JobExecutionInfo j where j.jobDefinition.id = :jobDefinitionId")
+    List<JobExecutionInfo> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
+
     @Query("select count(j) from JobExecutionInfo j where j.lastUpdated < :cutOff")
     long countByLastUpdated(@Param("cutOff") Date cutOff);
 
-    @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobExecutionInstance.jobName = :jobName")
+    @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobDefinition.name = :jobName")
     Optional<Long> getLastExecutionId(@Param("jobName") String jobName);
+
+    @Query("select j.jobExecutionId from JobExecutionInfo j where j.jobExecutionInstance.jobName = :jobName order by j.startTime desc")
+    Page<JobExecutionInfo> findLastExecutionInfo(@Param("jobName") String jobName, Pageable pageable);
 }
+

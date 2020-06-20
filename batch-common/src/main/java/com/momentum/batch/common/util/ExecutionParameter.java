@@ -101,6 +101,14 @@ public class ExecutionParameter {
         return jobExecution.getJobParameters().getLong(JOB_PID);
     }
 
+    public static String getJobDefinitionId(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_DEFINITION_UUID);
+    }
+
+    public static String getJobDefinitionName(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_DEFINITION_NAME);
+    }
+
     public static String getJobStartedBy(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_STARTED_BY);
     }

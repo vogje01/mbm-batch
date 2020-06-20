@@ -213,7 +213,7 @@ public abstract class BatchSchedulerHelper {
      * Convert the job definition to the corresponding Quartz job details structure.
      *
      * <p>
-     *     This is only for on demand jobs, which do not have a schedule attached to it.
+     * This is only for on demand jobs, which do not have a schedule attached to it.
      * </p>
      *
      * @param hostName      host name of the machine.
@@ -267,6 +267,8 @@ public abstract class BatchSchedulerHelper {
         arguments.add("-D" + NODE_NAME + "=" + nodeName);
         arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
         arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getJobVersion());
+        arguments.add("-D" + JOB_DEFINITION_NAME + "=" + jobDefinition.getName());
+        arguments.add("-D" + JOB_DEFINITION_UUID + "=" + jobDefinition.getId());
         arguments.add("-D" + JOB_LOGGING_DIRECTORY + "=" + jobDefinition.getLoggingDirectory());
         arguments.add("-D" + JOB_WORKING_DIRECTORY + "=" + jobDefinition.getWorkingDirectory());
         arguments.add("-D" + JOB_FAILED_EXIT_CODE + "=" + jobDefinition.getFailedExitCode());
@@ -277,13 +279,13 @@ public abstract class BatchSchedulerHelper {
         // Add jasypt password
         String jasyptPassword = context.getEnvironment().getProperty(JASYPT_PASSWORD);
         if (jasyptPassword != null && !jasyptPassword.isEmpty()) {
-            arguments.add("-D" + JASYPT_PASSWORD + "=" + jasyptPassword);
+            arguments.add(format("-D{0}={1}", JASYPT_PASSWORD, jasyptPassword));
         }
 
         // Add job definition parameters
         List<JobDefinitionParamDto> params = jobDefinition.getJobDefinitionParamDtos();
         if (!params.isEmpty()) {
-            params.forEach(p -> arguments.add("-D" + p.getKeyName() + "=" + getParamValue(p)));
+            params.forEach(p -> arguments.add(format("-D{0}={1}", p.getKeyName(), getParamValue(p))));
         }
         logger.debug(format("Arguments build - size: {0}", arguments.size()));
         arguments.forEach(a -> logger.debug(format("Argument list - arg: {0}", a)));

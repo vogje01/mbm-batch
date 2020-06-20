@@ -13,6 +13,12 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 /**
+ * Model converter.
+ * <p>
+ * Converts the entity to data transfer objects. Data transfer objects are normally more flat structures of the
+ * corresponding entities.
+ * </p>
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-SNAPSHOT
  * @since 0.0.1
@@ -34,23 +40,6 @@ public class ModelConverter {
     public JobExecutionDto convertJobExecutionToDto(JobExecutionInfo jobExecutionInfo) {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
         jobExecutionDto.setJobName(jobExecutionInfo.getJobExecutionInstance().getJobName());
-        jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
-                .stream()
-                .map(this::convertJobExecutionParamToDto)
-                .collect(toList()));
-        return jobExecutionDto;
-    }
-
-    public List<JobExecutionDto> convertJobExecutionToDto(List<JobExecutionInfo> jobExecutionList, long totalCount) {
-        return jobExecutionList.stream().map(j -> convertJobExecutionToDto(j, totalCount)).collect(toList());
-    }
-
-    public JobExecutionDto convertJobExecutionToDto(JobExecutionInfo jobExecutionInfo, long totalCount) {
-        JobExecutionDto jobExecutionDto = modelMapper.map(jobExecutionInfo, JobExecutionDto.class);
-        jobExecutionDto.setJobName(jobExecutionInfo.getJobExecutionInstance().getJobName());
-        jobExecutionDto.setTotalSize(totalCount);
-        jobExecutionDto.setJobExecutionContextDto(convertJobExecutionContextToDto(jobExecutionInfo.getJobExecutionContext()));
-        jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecutionInfo.getJobExecutionInstance()));
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionInfo.getJobExecutionParams()
                 .stream()
                 .map(this::convertJobExecutionParamToDto)

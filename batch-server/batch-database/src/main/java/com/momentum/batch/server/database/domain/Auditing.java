@@ -54,10 +54,6 @@ public class Auditing {
         return version;
     }
 
-    public void setVersion(Long version) {
-        this.version = version;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
