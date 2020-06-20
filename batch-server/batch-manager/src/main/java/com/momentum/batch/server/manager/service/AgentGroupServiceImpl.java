@@ -98,7 +98,6 @@ public class AgentGroupServiceImpl implements AgentGroupService {
         t.restart();
 
         Page<AgentGroup> agentGroups = agentGroupRepository.findByAgentId(agentId, pageable);
-
         PagedModel<AgentGroupDto> collectionModel = pagedResourcesAssembler.toModel(agentGroups, agentGroupModelAssembler);
         logger.debug(format("Agent group list by agent request finished - count: {0}/{1} {2}",
                 Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));

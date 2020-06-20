@@ -18,6 +18,8 @@ import UpdateTimer from "../../utils/update-timer";
 import './user-list.scss'
 import UsergroupUserView from "./usergroup-user-list";
 import {getFormattedTime} from "../../utils/date-time-util";
+import {Item} from "devextreme-react/autocomplete";
+import {Toolbar} from "devextreme-react/toolbar";
 
 class UserGroupList extends React.Component {
 
@@ -44,6 +46,16 @@ class UserGroupList extends React.Component {
                 <h2 className={'content-block'}>Users</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }, hint: 'Refresh agent list.'
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             id={'UserGroupTable'}
                             dataSource={UserGroupDataSource()}

@@ -21,6 +21,8 @@ import './user-list.scss'
 import UserUsergroupView from "./user-usergroup-list";
 import themes from "devextreme/ui/themes";
 import {getFormattedTime} from "../../utils/date-time-util";
+import {Item} from "devextreme-react/autocomplete";
+import {Toolbar} from "devextreme-react/toolbar";
 
 const themesList = [
     'material.blue.dark.compact',
@@ -93,6 +95,16 @@ class UserList extends React.Component {
                 <h2 className={'content-block'}>Users</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }, hint: 'Refresh agent list.'
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             dataSource={UserDataSource()}
                             hoverStateEnabled={true}
@@ -149,7 +161,7 @@ class UserList extends React.Component {
                                                 dataSource: dateFormatList,
                                                 valueExpr: 'value',
                                                 displayExpr: 'label',
-                                                onSelectionChanged: this.dateFormatValueChanged
+                                                onValueChanged: this.dateFormatValueChanged
                                             }}>
                                             <RequiredRule/>
                                         </SimpleItem>
@@ -160,7 +172,7 @@ class UserList extends React.Component {
                                                 dataSource: numberFormatList,
                                                 valueExpr: 'value',
                                                 displayExpr: 'label',
-                                                onSelectionChanged: this.numberFormatValueChanged
+                                                onValueChanged: this.numberFormatValueChanged
                                             }}>
                                             <RequiredRule/>
                                         </SimpleItem>

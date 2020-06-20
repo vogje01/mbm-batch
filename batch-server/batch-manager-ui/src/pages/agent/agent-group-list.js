@@ -17,6 +17,8 @@ import UpdateTimer from "../../utils/update-timer";
 import {getFormattedTime} from "../../utils/date-time-util";
 import {AgentGroupDataSource} from "./agent-group-data-source";
 import AgentgroupAgentView from "./agentgroup-agent-list";
+import {Item} from "devextreme-react/autocomplete";
+import {Toolbar} from "devextreme-react/toolbar";
 
 class AgentGroupList extends React.Component {
 
@@ -43,6 +45,16 @@ class AgentGroupList extends React.Component {
                 <h2 className={'content-block'}>Agent Groups</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                        this.setState({})
+                                    }, hint: 'Refresh agent list.'
+                                }}/>
+                        </Toolbar>
                         <DataGrid
                             dataSource={AgentGroupDataSource()}
                             hoverStateEnabled={true}
