@@ -205,13 +205,15 @@ public class BatchScheduler extends BatchSchedulerHelper {
         if (jobKey != null) {
             logger.debug(format("Job key found - jobGroup: {0} jobName: {1}", groupName, jobName));
             if (isScheduled(jobKey)) {
-                logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
-                Trigger trigger = getTrigger(jobKey);
+
+                // TODO: Check trigger and skip if equals
+                // Remove from schedule
                 removeFromScheduler(jobKey);
                 logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
 
                 // Schedule job
                 if (jobDefinition.isActive()) {
+                    Trigger trigger = getTrigger(jobKey);
                     jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                     jobSchedule.setNextExecution(trigger.getNextFireTime());
                     addJobToScheduler(jobSchedule, jobDefinition);

@@ -16,5 +16,4 @@ Configuration:
         level: debug
         additivity: false
         AppenderRef:
-          - ref: File_Appender
           - ref: Console_Appender

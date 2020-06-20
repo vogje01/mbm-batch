@@ -37,8 +37,8 @@ spring:
 #
 mbm:
   library:
-    jobs: /app/batch/batch-agent
-    server: batch-agent-01
+    jobs: /app/batch/batch-agent/jobs
+    server: batch-manager
     port: 8090
     user: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
@@ -96,19 +96,19 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batch-agent-01
+    group: batch-listener
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batch-agent-01
+    group: batch-scheduler
     partitions: 5
     replicas: 1
   jobStatus:
     offsetReset: latest
     topic: batchServerCommand
-    group: batch-listener
+    group: batch-scheduler
     partitions: 5
     replicas: 1
   jobLogging:

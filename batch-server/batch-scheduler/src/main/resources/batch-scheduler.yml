@@ -8,16 +8,18 @@
 # Spring configuration
 #
 spring:
-  kafka:
-    listener:
-      concurrency: 5
   main:
     banner-mode: off
+  jpa:
+    open-in-view: false
   datasource:
     url: jdbc:mysql://batch-db:3306/batch
     username: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
     driverClassName: com.mysql.cj.jdbc.Driver
+  kafka:
+    listener:
+      concurrency: 5
 
 #
 # Scheduler configuration:
@@ -92,12 +94,12 @@ kafka:
   agentStatus:
     offsetReset: latest
     topic: batchAgentStatus
-    group: batchlistener
+    group: batch-listener
     partitions: 5
     replicas: 1
   agentScheduler:
     offsetReset: latest
     topic: batchAgentScheduler
-    group: batchscheduler
+    group: batch-scheduler
     partitions: 5
     replicas: 1
