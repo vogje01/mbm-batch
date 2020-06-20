@@ -51,7 +51,7 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
     @Column(name = "ACTIVE")
     private Boolean active;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "JOB_DEFINITION_ID", nullable = false)
     private JobDefinition jobDefinition;
 
@@ -87,7 +87,6 @@ public class JobSchedule extends Auditing implements PrimaryKeyIdentifier<String
         this.active = origin.active;
         this.mode = origin.mode;
         this.type = origin.type;
-        this.jobDefinition = origin.jobDefinition;
     }
 
     public String getId() {

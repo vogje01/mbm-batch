@@ -77,6 +77,12 @@ public class FileUtils {
         if (extension.equals(".jar")) {
             return JobDefinitionType.JAR;
         }
+        if (extension.isEmpty() && fileName.contains(":")) {
+            return JobDefinitionType.DOCKER;
+        }
+        if (extension.equals(".sh") || extension.equals(".cmd") || extension.equals(".bat")) {
+            return JobDefinitionType.SCRIPT;
+        }
         return JobDefinitionType.UNKNOWN;
     }
 }

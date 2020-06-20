@@ -24,7 +24,7 @@ export const JobScheduleDataSource = () => {
             },
             update: function (jobSchedule, values) {
                 jobSchedule.schedule = values.schedule !== undefined ? values.schedule : jobSchedule.schedule;
-                jobSchedule.jobDefinitionName = values.jobDefinitionName !== undefined ? values.jobDefinitionName : jobSchedule.jobDefinitionName;
+                jobSchedule.jobDefinitionName = values.jobDefinitionName !== undefined ? values.jobDefinitionName : null;
                 jobSchedule.name = values.name !== undefined ? values.name : jobSchedule.name;
                 jobSchedule.type = values.type !== undefined ? values.type : jobSchedule.type;
                 jobSchedule.mode = values.mode !== undefined ? values.mode : jobSchedule.mode;

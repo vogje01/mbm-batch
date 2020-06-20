@@ -105,12 +105,8 @@ public class CentralBatchScheduler {
         List<JobSchedule> jobScheduleList = jobScheduleRepository.findByType(JobScheduleType.CENTRAL);
         jobScheduleList.forEach(jobSchedule -> {
             switch (jobSchedule.getMode()) {
-                case FIXED:
-                    checkFixed(jobSchedule);
-                    break;
-                case RANDOM_GROUP:
-                    checkRandomGroup(jobSchedule);
-                    break;
+                case FIXED -> checkFixed(jobSchedule);
+                case RANDOM_GROUP -> checkRandomGroup(jobSchedule);
             }
         });
     }

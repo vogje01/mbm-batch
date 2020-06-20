@@ -165,35 +165,24 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             JobSchedule jobSchedule = jobScheduleModelAssembler.toEntity(jobScheduleDto);
 
             // Update job schedule
-            JobSchedule jobScheduleNew = jobScheduleOptional.get();
-            jobScheduleNew.update(jobSchedule);
+            JobSchedule jobScheduleOld = jobScheduleOptional.get();
+            jobScheduleOld.update(jobSchedule);
 
-            // Get job definition
-            if (!jobScheduleDto.getJobDefinitionName().isEmpty()) {
-
-                // Get job definition
+            // Get job definition, this is only non-null, when the job definition has been changed for the given job schedule
+            if (jobScheduleDto.getJobDefinitionName() != null && !jobScheduleDto.getJobDefinitionName().isEmpty()) {
                 Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName());
-                if (jobDefinitionOptional.isPresent()) {
-
-                    JobDefinition jobDefinition = jobDefinitionOptional.get();
-                    jobSchedule.setJobDefinition(jobDefinition);
-
-                    // Save new job schedule
-                    jobScheduleNew = jobScheduleRepository.save(jobScheduleNew);
-
-                    // Send command to scheduler
-                    jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleNew);
-                    AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
-
-                    // Send message to agents
-                    jobScheduleNew.getAgents().forEach(agent -> {
-                        agentSchedulerMessageDto.setSender(serverName);
-                        agentSchedulerMessageDto.setHostName(agent.getHostName());
-                        agentSchedulerMessageDto.setNodeName(agent.getNodeName());
-                        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                    });
-                }
+                jobDefinitionOptional.ifPresent(jobSchedule::setJobDefinition);
             }
+
+            // Send message to agents
+            jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleOld);
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+            jobScheduleOld.getAgents().forEach(agent -> {
+                agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setHostName(agent.getHostName());
+                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+            });
             return jobScheduleDto;
         } else {
             logger.error(format("Job schedule not found - id: {0}", jobScheduleId));

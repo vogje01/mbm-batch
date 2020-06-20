@@ -78,7 +78,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
         List<JobDefinition> jobDefinitionList = jobDefinitionRepository.findByFileName(fileName);
         if (jobDefinitionList.isEmpty()) {
             logger.info(format("File not found in job definition repository - name: {0}", fileName));
-            createJobDefinition(filePath);
+            //createJobDefinition(filePath);
         } else {
             try {
 

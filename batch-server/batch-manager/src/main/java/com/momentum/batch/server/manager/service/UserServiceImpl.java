@@ -166,13 +166,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @CachePut(cacheNames = "User", key = "#userDto.id")
     public UserDto updateUser(UserDto userDto) throws ResourceNotFoundException {
+        User userNew = userModelAssembler.toEntity(userDto);
         Optional<User> userOldOptional = userRepository.findById(userDto.getId());
         if (userOldOptional.isPresent()) {
-            User user = userOldOptional.get();
-            User userNew = userOldOptional.get();
-            userNew.update(user);
-            userNew = userRepository.save(userNew);
-            return userModelAssembler.toModel(userNew);
+            User userOld = userOldOptional.get();
+            userOld.update(userNew);
+            return userModelAssembler.toModel(userOld);
         }
         throw new ResourceNotFoundException();
     }

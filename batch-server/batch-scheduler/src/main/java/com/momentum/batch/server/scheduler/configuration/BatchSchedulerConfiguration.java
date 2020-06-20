@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @EnableTransactionManagement
 @EnableEncryptableProperties
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
-@EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
+@EntityScan(basePackages = {"com.momentum.batch.common.domain", "com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration implements WebMvcConfigurer {
 
     private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecutionInfo",
