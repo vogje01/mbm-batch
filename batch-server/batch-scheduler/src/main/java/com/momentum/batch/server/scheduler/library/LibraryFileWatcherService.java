@@ -1,6 +1,9 @@
 package com.momentum.batch.server.scheduler.library;
 
 import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.filewatch.ChangedFile;
+import com.momentum.batch.common.util.filewatch.ChangedFiles;
+import com.momentum.batch.common.util.filewatch.FileChangeListener;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
@@ -9,9 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.devtools.filewatch.ChangedFile;
-import org.springframework.boot.devtools.filewatch.ChangedFiles;
-import org.springframework.boot.devtools.filewatch.FileChangeListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
