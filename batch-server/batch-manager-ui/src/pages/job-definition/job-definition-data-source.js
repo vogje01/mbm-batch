@@ -68,7 +68,7 @@ export const JobDefinitionParamDataSource = (jobDefinition) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = jobDefinition._links.params.href + getParams(loadOptions, 'name', 'asc')
+                let url = jobDefinition._links.params.href + getParams(loadOptions, 'keyName', 'asc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response);

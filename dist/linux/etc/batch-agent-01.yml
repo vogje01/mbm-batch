@@ -32,8 +32,8 @@ spring:
 #   agent: agent configuration
 #     hostName: hostname of the agent host
 #     nodeName: node name for MBM agent
-#     pingInterval: ping interval in ms.
-#     performanceInterval: interval is ms for the performance collector.
+#     pingInterval: ping interval in seconds.
+#     performanceInterval: interval is seconds for the performance collector.
 #
 mbm:
   library:
@@ -49,8 +49,8 @@ mbm:
   agent:
     hostName: batchmanager
     nodeName: batchagent01
-    pingInterval: 300000
-    performanceInterval: 60000
+    pingInterval: 30
+    performanceInterval: 60
     docker:
       network: docker_default
       hostname: hostname

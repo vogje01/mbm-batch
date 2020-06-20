@@ -94,7 +94,6 @@ public class AgentSchedulerMessageConsumer {
                 jobSchedule.setNextExecution(jobScheduleDto.getNextExecution());
                 logger.debug(format("Job schedule updated - name: {0} next: {1}", jobSchedule.getName(), jobScheduleDto.getNextExecution()));
             }
-            jobScheduleRepository.save(jobSchedule);
         }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
     }
 
@@ -103,7 +102,7 @@ public class AgentSchedulerMessageConsumer {
      *
      * @param agentSchedulerMessageDto agent scheduler message.
      */
-    private synchronized void receivedJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
+    private void receivedJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
         JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
         logger.debug(format("Job executed message received - hostName: {0} nodeName: {1} schedule: {2}",
@@ -120,7 +119,6 @@ public class AgentSchedulerMessageConsumer {
                 jobSchedule.setLastExecution(jobScheduleDto.getLastExecution());
                 logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobScheduleDto.getLastExecution()));
             }
-            //jobScheduleRepository.save(jobSchedule);
         }, () -> logger.error(format("Job schedule not found - name: {0}", jobScheduleDto.getName())));
     }
 

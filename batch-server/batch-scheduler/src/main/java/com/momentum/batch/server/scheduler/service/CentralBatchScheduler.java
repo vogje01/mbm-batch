@@ -36,6 +36,15 @@ import static java.text.MessageFormat.format;
 /**
  * The central job scheduler service, checks the job schedules, which have the type CENTRAL as job scheduler
  * type.
+ * <p>
+ * According to the job schedule mode the following actions will be performed:
+ * </p>
+ * <ul>
+ *     <li>FIXED: the central scheduler just assures that the job is scheduled on the agents on which they should run.</li>
+ *     <li>RANDOM: the central scheduler redistributes the job each time to a random agent given in the schedule.</li>
+ *     <li>RANDOM_GROUP: the central scheduler redistributes the job each time to a random agent given in the schedule's agent groups.</li>
+ *     <li>MINIMUM_LOAD: the central scheduler redistributes the job each time to the agent with the least system load.</li>
+ * </ul>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-SNAPSHOT
@@ -104,7 +113,7 @@ public class CentralBatchScheduler {
      * value 'mbm.scheduler.interval'.
      * </p>
      */
-    @Scheduled(fixedRateString = "300000")
+    @Scheduled(fixedRateString = "${mbm.scheduler.interval}000")
     public void checkSchedules() {
         logger.info(format("Check schedules"));
 
@@ -113,7 +122,9 @@ public class CentralBatchScheduler {
         jobScheduleList.forEach(jobSchedule -> {
             switch (jobSchedule.getMode()) {
                 case FIXED -> checkFixed(jobSchedule);
+                case RANDOM -> checkRandom(jobSchedule);
                 case RANDOM_GROUP -> checkRandomGroup(jobSchedule);
+                case MINIMUM_LOAD -> checkMinimumLoad(jobSchedule);
             }
         });
     }
@@ -132,8 +143,19 @@ public class CentralBatchScheduler {
         getAgentList(jobSchedule).stream().filter(Agent::getActive).forEach(agent -> sendRescheduleMessage(agent, jobSchedule));
     }
 
-    private void checkRandomGroup(JobSchedule jobSchedule) {
-        logger.info(format("Checking random group schedule - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+    /**
+     * Check the random schedules.
+     *
+     * <p>
+     * All jobs with this schedule will be randomly distributed among all agents defined for that
+     * schedule. All agents for that schedule are taken into account, whether they are part of a
+     * agent group or not.
+     * </p>
+     *
+     * @param jobSchedule job schedule.
+     */
+    private void checkRandom(JobSchedule jobSchedule) {
+        logger.info(format("Checking random job schedules - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
 
         JobDefinition jobDefinition = jobSchedule.getJobDefinition();
         Optional<Agent> agentOptional = getLastJobExecutionAgent(jobDefinition);
@@ -142,8 +164,69 @@ public class CentralBatchScheduler {
         agentOptional.ifPresent(agent -> sendRemoveScheduleMessage(agent, jobSchedule));
 
         List<Agent> agents = getAgentList(jobSchedule);
-        int nextIndex = random.nextInt(agents.size());
-        sendAddScheduleMessage(agents.get(nextIndex), jobSchedule);
+        if (!agents.isEmpty()) {
+            int nextIndex = random.nextInt(agents.size());
+            sendAddScheduleMessage(agents.get(nextIndex), jobSchedule);
+        } else {
+            logger.warn(format("Schedule does not have appropriate agents for schedule mode - schedule: {0} type: {1}", jobSchedule.getName(), jobSchedule.getMode()));
+        }
+    }
+
+    /**
+     * Check all random agent schedules.
+     *
+     * <p>
+     * All jobs with this schedule will be randomly distributed among all agents defined and are
+     * part of an agent group for that schedule.
+     * </p>
+     *
+     * @param jobSchedule job schedule.
+     */
+    private void checkRandomGroup(JobSchedule jobSchedule) {
+        logger.info(format("Checking random group job schedules - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+
+        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        Optional<Agent> agentOptional = getLastJobExecutionAgent(jobDefinition);
+
+        // Remove from agent schedule
+        agentOptional.ifPresent(agent -> sendRemoveScheduleMessage(agent, jobSchedule));
+
+        List<Agent> agents = getAgentGroupList(jobSchedule);
+        if (!agents.isEmpty()) {
+            int nextIndex = random.nextInt(agents.size());
+            sendAddScheduleMessage(agents.get(nextIndex), jobSchedule);
+        } else {
+            logger.warn(format("Schedule does not have appropriate agents for schedule mode - schedule: {0} type: {1}", jobSchedule.getName(), jobSchedule.getMode()));
+        }
+    }
+
+    /**
+     * Check the minimum load schedules.
+     *
+     * <p>
+     * All jobs of this schedule will be distributed among all agents defined for that
+     * schedule. The agent with the minimum load will be taken as the next target.
+     * </p>
+     *
+     * @param jobSchedule job schedule.
+     */
+    private void checkMinimumLoad(JobSchedule jobSchedule) {
+        logger.info(format("Checking minimum load job schedules - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+
+        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        Optional<Agent> agentOptional = getLastJobExecutionAgent(jobDefinition);
+
+        // Remove from agent schedule
+        agentOptional.ifPresent(agent -> sendRemoveScheduleMessage(agent, jobSchedule));
+
+        // Get all agents and redistribute job
+        List<Agent> agents = getAgentList(jobSchedule);
+        if (!agents.isEmpty()) {
+            Agent leastLoadAgent = agents.stream().reduce((a, b) -> a.getSystemLoad() > b.getSystemLoad() ? a : b).orElse(agents.get(0));
+            sendAddScheduleMessage(leastLoadAgent, jobSchedule);
+        } else {
+            logger.warn(format("Schedule does not have appropriate agents for schedule mode - schedule: {0} type: {1}", jobSchedule.getName(), jobSchedule.getMode()));
+        }
     }
 
     /**
@@ -158,6 +241,24 @@ public class CentralBatchScheduler {
         return agents;
     }
 
+    /**
+     * Collects all agents of a job schedule which are in agentGroups.
+     *
+     * @param jobSchedule job schedules.
+     * @return list of all agents, which are part of a agent group, for the given schedule.
+     */
+    private List<Agent> getAgentGroupList(JobSchedule jobSchedule) {
+        List<Agent> agents = new ArrayList<>();
+        jobSchedule.getAgentGroups().forEach(agentGroup -> agents.addAll(agentGroup.getAgents()));
+        return agents;
+    }
+
+    /**
+     * Returns the agent, where the last execution of an job definition has been.
+     *
+     * @param jobDefinition job definition.
+     * @return agent, where last execution happened of empty.
+     */
     private Optional<Agent> getLastJobExecutionAgent(JobDefinition jobDefinition) {
         Pageable pageable = PageRequest.of(0, 1, Sort.by("startTime").descending());
         Page<JobExecutionInfo> jobExecutionInfos = jobExecutionInfoRepository.findByJobDefinition(jobDefinition.getId(), pageable);

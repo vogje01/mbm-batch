@@ -4,6 +4,7 @@ ARG JAR_FILE
 # Create app directory
 WORKDIR /app/batch/batch-manager
 RUN mkdir ./jobs
+RUN mkdir ./dropins
 
 ADD ${JAR_FILE} batch-manager.jar
 

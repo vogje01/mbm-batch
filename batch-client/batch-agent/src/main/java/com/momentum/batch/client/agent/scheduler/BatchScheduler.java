@@ -218,7 +218,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
                 logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
 
                 // Schedule job
-                if (trigger != null && jobDefinition.isActive()) {
+                if (jobDefinition.isActive()) {
                     jobSchedule.setLastExecution(trigger.getPreviousFireTime());
                     jobSchedule.setNextExecution(trigger.getNextFireTime());
                     addJobToScheduler(jobSchedule, jobDefinition);

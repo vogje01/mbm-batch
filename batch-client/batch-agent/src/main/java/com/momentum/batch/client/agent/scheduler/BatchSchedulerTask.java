@@ -247,7 +247,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
 
         // Get the trigger
         Trigger trigger = jobExecutionContext.getTrigger();
-        logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), trigger.getPreviousFireTime(), trigger.getNextFireTime()));
+        Date last = trigger.getPreviousFireTime();
+        Date next = trigger.getFireTimeAfter(trigger.getNextFireTime());
+        logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), last, next));
 
         // Build agent command
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto();
@@ -256,8 +258,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
             JobScheduleDto jobScheduleDto = new JobScheduleDto();
             jobScheduleDto.setName(jobDataMap.getString(JOB_SCHEDULE_NAME));
             jobScheduleDto.setId(jobDataMap.getString(JOB_SCHEDULE_UUID));
-            jobScheduleDto.setNextExecution(new Date());
-            jobScheduleDto.setLastExecution(trigger.getPreviousFireTime());
+            jobScheduleDto.setNextExecution(next);
+            jobScheduleDto.setLastExecution(last);
             agentSchedulerMessageDto.setHostName(hostName);
             agentSchedulerMessageDto.setNodeName(nodeName);
             agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);

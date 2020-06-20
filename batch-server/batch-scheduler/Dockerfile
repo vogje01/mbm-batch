@@ -3,6 +3,8 @@ ARG JAR_FILE
 
 # Create app directory
 WORKDIR /app/batch/batch-scheduler
+RUN mkdir ./jobs
+RUN mkdir ./dropins
 
 ADD ${JAR_FILE} batch-scheduler.jar
 

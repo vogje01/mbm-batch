@@ -171,7 +171,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             // Get job definition, this is only non-null, when the job definition has been changed for the given job schedule
             if (jobScheduleDto.getJobDefinitionName() != null && !jobScheduleDto.getJobDefinitionName().isEmpty()) {
                 Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName());
-                jobDefinitionOptional.ifPresent(jobSchedule::setJobDefinition);
+                jobDefinitionOptional.ifPresent(jobScheduleOld::setJobDefinition);
             }
 
             // Send message to agents
