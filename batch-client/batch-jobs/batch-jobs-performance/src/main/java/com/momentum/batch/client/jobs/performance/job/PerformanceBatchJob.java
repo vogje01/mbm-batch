@@ -7,6 +7,7 @@ import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.client.jobs.performance.steps.agentload.day.AgentLoadDayStep;
 import com.momentum.batch.client.jobs.performance.steps.agentload.week.AgentLoadWeekStep;
 import com.momentum.batch.client.jobs.performance.steps.daily.DailyStep;
+import com.momentum.batch.client.jobs.performance.steps.daily.removesuplicates.DailyRemoveDuplicatesStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.JobCountNodeStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountCompletedStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountFailedStep;
@@ -47,6 +48,8 @@ public class PerformanceBatchJob {
 
     private final DailyStep dailyStep;
 
+    private final DailyRemoveDuplicatesStep dailyRemoveDuplicatesStep;
+
     private final WeeklyStep weeklyStep;
 
     private final MonthlyStep monthlyStep;
@@ -65,6 +68,7 @@ public class PerformanceBatchJob {
                                JobCountFailedStep jobCountFailedStep,
                                StepCountStep stepCountStep,
                                DailyStep dailyStep,
+                               DailyRemoveDuplicatesStep dailyRemoveDuplicatesStep,
                                WeeklyStep weeklyStep,
                                MonthlyStep monthlyStep,
                                YearlyStep yearlyStep) {
@@ -79,6 +83,7 @@ public class PerformanceBatchJob {
         this.jobCountFailedStep = jobCountFailedStep;
         this.stepCountStep = stepCountStep;
         this.dailyStep = dailyStep;
+        this.dailyRemoveDuplicatesStep = dailyRemoveDuplicatesStep;
         this.weeklyStep = weeklyStep;
         this.monthlyStep = monthlyStep;
         this.yearlyStep = yearlyStep;
@@ -108,6 +113,7 @@ public class PerformanceBatchJob {
                 .nextFlow(new BatchFlowBuilder<>("Job count")
                         .splitSteps(jobCountNodeStep.jobCountProcessing(), jobCountCompletedStep.jobCountProcessing(), jobCountFailedStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
                         .build())
+                .nextStep(dailyRemoveDuplicatesStep.removeDuplicates())
                 .nextStep(dailyStep.dailyConsolidation())
                 .nextStep(weeklyStep.weeklyConsolidation())
                 .nextStep(monthlyStep.monthlyConsolidation())

@@ -6,6 +6,7 @@ import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.repository.AgentRepository;
@@ -28,6 +29,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static java.text.MessageFormat.format;
 
@@ -64,11 +66,15 @@ public class CentralBatchScheduler {
     /**
      * Job execution repository
      */
-    private final JobExecutionInfoRepository jobExecutionRepository;
+    private final JobExecutionInfoRepository jobExecutionInfoRepository;
     /**
      * Agent repository
      */
     private final AgentRepository agentRepository;
+    /**
+     * Random number
+     */
+    private final Random random = new Random(System.currentTimeMillis());
 
     /**
      * Constructor.
@@ -76,11 +82,11 @@ public class CentralBatchScheduler {
      * @param jobScheduleRepository job schedules repository.
      */
     @Autowired
-    public CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, JobExecutionInfoRepository jobExecutionRepository,
+    public CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, JobExecutionInfoRepository jobExecutionInfoRepository,
                                  AgentRepository agentRepository,
                                  AgentSchedulerMessageProducer agentSchedulerMessageProducer, ModelConverter modelConverter) {
         this.jobScheduleRepository = jobScheduleRepository;
-        this.jobExecutionRepository = jobExecutionRepository;
+        this.jobExecutionInfoRepository = jobExecutionInfoRepository;
         this.agentRepository = agentRepository;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.modelConverter = modelConverter;
@@ -123,36 +129,21 @@ public class CentralBatchScheduler {
     private void checkFixed(JobSchedule jobSchedule) {
 
         logger.info(format("Checking fixed agent schedule - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
-        getAgentList(jobSchedule).forEach(agent -> {
-
-            // Create jobSchedule DTO
-            JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-
-            // Send only to active agents
-            if (agent.getActive()) {
-
-                // Create message
-                AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
-                agentSchedulerMessageDto.setHostName(agent.getHostName());
-                agentSchedulerMessageDto.setNodeName(agent.getNodeName());
-                agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                logger.debug(format("Reschedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
-                        agent.getHostName(), agent.getNodeName(), jobSchedule.getJobDefinition().getName()));
-            }
-        });
+        getAgentList(jobSchedule).stream().filter(Agent::getActive).forEach(agent -> sendRescheduleMessage(agent, jobSchedule));
     }
 
     private void checkRandomGroup(JobSchedule jobSchedule) {
-        logger.info(format("Checking random group schedule - name: {0} agents: {}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
+        logger.info(format("Checking random group schedule - name: {0} agents: {1}", jobSchedule.getName(), getAgentList(jobSchedule).size()));
 
-        /*JobDefinition jobDefinition = jobSchedule.getJobDefinition();
-        Optional<Agent> agent = getLastJobExecutionAgent(jobDefinition.getName());
+        JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+        Optional<Agent> agentOptional = getLastJobExecutionAgent(jobDefinition);
 
-        Pageable pageable = PageRequest.of(0, 1, Sort.by("startTime").descending());
-        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(pageable);
-        if(!jobExecutionInfos.isEmpty()) {
+        // Remove from agent schedule
+        agentOptional.ifPresent(agent -> sendRemoveScheduleMessage(agent, jobSchedule));
 
-        }*/
+        List<Agent> agents = getAgentList(jobSchedule);
+        int nextIndex = random.nextInt(agents.size());
+        sendAddScheduleMessage(agents.get(nextIndex), jobSchedule);
     }
 
     /**
@@ -167,15 +158,72 @@ public class CentralBatchScheduler {
         return agents;
     }
 
-    private Optional<Agent> getLastJobExecutionAgent(String jobName) {
+    private Optional<Agent> getLastJobExecutionAgent(JobDefinition jobDefinition) {
         Pageable pageable = PageRequest.of(0, 1, Sort.by("startTime").descending());
-        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(pageable);
+        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionInfoRepository.findByJobDefinition(jobDefinition.getId(), pageable);
         if (!jobExecutionInfos.isEmpty()) {
-            Optional<JobExecutionInfo> jobExecutionInfoOptional = jobExecutionInfos.get().findFirst();
-            if (jobExecutionInfoOptional.isPresent()) {
-                return agentRepository.findByNodeName(jobExecutionInfoOptional.get().getNodeName());
-            }
+            return agentRepository.findByNodeName(jobExecutionInfos.iterator().next().getNodeName());
         }
         return Optional.empty();
+    }
+
+    /**
+     * Sends a schedule message to the agent for a given schedule.
+     *
+     * @param agent       agent to send to.
+     * @param jobSchedule job schedule to add.
+     */
+    private void sendAddScheduleMessage(Agent agent, JobSchedule jobSchedule) {
+
+        // Create data transfer object
+        JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+
+        // Create message
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setHostName(agent.getHostName());
+        agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+        logger.debug(format("Remove schedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
+                agent.getHostName(), agent.getNodeName(), jobScheduleDto.getJobDefinitionDto().getName()));
+    }
+
+    /**
+     * Sends a reschedule message to the agent for a given schedule.
+     *
+     * @param agent       agent to send to.
+     * @param jobSchedule job schedule to add.
+     */
+    private void sendRescheduleMessage(Agent agent, JobSchedule jobSchedule) {
+
+        // Create data transfer object
+        JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+
+        // Create message
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setHostName(agent.getHostName());
+        agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+        logger.debug(format("Remove schedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
+                agent.getHostName(), agent.getNodeName(), jobScheduleDto.getJobDefinitionDto().getName()));
+    }
+
+    /**
+     * Sends a remove schedule message to the agent for a given schedule.
+     *
+     * @param agent       agent to send to.
+     * @param jobSchedule job schedule to remove.
+     */
+    private void sendRemoveScheduleMessage(Agent agent, JobSchedule jobSchedule) {
+
+        // Create data transfer object
+        JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+
+        // Create message
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setHostName(agent.getHostName());
+        agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+        logger.debug(format("Remove schedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
+                agent.getHostName(), agent.getNodeName(), jobScheduleDto.getJobDefinitionDto().getName()));
     }
 }

@@ -150,3 +150,37 @@ services:
     volumes:
       - /usr/local/bin/docker:/usr/bin/docker
       - /var/run/docker.sock:/var/run/docker.sock
+
+  #
+  # Batch agent 03
+  #
+  batch-agent-03:
+    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    hostname: batch-agent-03
+    container_name: batch-agent-03
+    environment:
+      TZ: "Europe/Berlin"
+      HOST_NAME: batch-agent-03
+      NODE_NAME: batch-agent-03
+    depends_on:
+      - batch-kafka
+    volumes:
+      - /usr/local/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  #
+  # Batch agent 03
+  #
+  batch-agent-04:
+    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    hostname: batch-agent-04
+    container_name: batch-agent-04
+    environment:
+      TZ: "Europe/Berlin"
+      HOST_NAME: batch-agent-04
+      NODE_NAME: batch-agent-04
+    depends_on:
+      - batch-kafka
+    volumes:
+      - /usr/local/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock

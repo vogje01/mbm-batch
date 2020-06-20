@@ -19,7 +19,7 @@ spring:
 # bootstrapAddress: Kafka server URL
 # maxRequestSize: Maximal request size (default: 4MB)
 kafka:
-  bootstrapAddress: batchmanager:9092
+  bootstrapAddress: batch-kafka:9092
   maxRequestSize: 4194304
   retentionDays: 1
   deletionDays: 1

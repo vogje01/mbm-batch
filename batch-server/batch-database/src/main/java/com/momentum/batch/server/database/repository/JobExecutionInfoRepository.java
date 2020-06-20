@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,7 +26,7 @@ public interface JobExecutionInfoRepository extends PagingAndSortingRepository<J
     Optional<JobExecutionInfo> findById(String id);
 
     @Query("select j from JobExecutionInfo j where j.jobDefinition.id = :jobDefinitionId")
-    List<JobExecutionInfo> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
+    Page<JobExecutionInfo> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
 
     @Query("select count(j) from JobExecutionInfo j where j.lastUpdated < :cutOff")
     long countByLastUpdated(@Param("cutOff") Date cutOff);

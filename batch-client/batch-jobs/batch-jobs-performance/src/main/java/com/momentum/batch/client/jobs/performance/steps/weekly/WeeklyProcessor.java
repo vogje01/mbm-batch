@@ -23,20 +23,19 @@ public class WeeklyProcessor implements ItemProcessor<Object[], BatchPerformance
     @Override
     public BatchPerformance process(Object[] tuple) {
 
-        // Get metric
-        String metric = tuple[1] + ".weekly";
-
         // Check old record
         Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findExisting((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3], BatchPerformanceType.WEEKLY);
-        BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        batchPerformance.setType(BatchPerformanceType.WEEKLY);
-        batchPerformance.setQualifier((String) tuple[0]);
-        batchPerformance.setMetric((String) tuple[1]);
-        batchPerformance.setValue((Double) tuple[2]);
-        batchPerformance.setTimestamp((Timestamp) tuple[3]);
-
-        return batchPerformance;
+        if (batchPerformanceOptional.isPresent()) {
+            BatchPerformance batchPerformance = batchPerformanceOptional.get();
+            batchPerformance.setType(BatchPerformanceType.WEEKLY);
+            batchPerformance.setQualifier((String) tuple[0]);
+            batchPerformance.setMetric((String) tuple[1]);
+            batchPerformance.setValue((Double) tuple[2]);
+            batchPerformance.setTimestamp((Timestamp) tuple[3]);
+            return batchPerformance;
+        }
+        return null;
     }
 }
