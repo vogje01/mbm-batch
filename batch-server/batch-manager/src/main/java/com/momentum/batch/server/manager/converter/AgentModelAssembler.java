@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.converter;
 
-import com.momentum.batch.common.domain.dto.AgentDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.dto.AgentDto;
 import com.momentum.batch.server.manager.controller.AgentController;
 import com.momentum.batch.server.manager.controller.AgentGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;

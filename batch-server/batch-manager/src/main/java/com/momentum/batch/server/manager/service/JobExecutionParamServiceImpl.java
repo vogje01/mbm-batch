@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionParamDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobExecutionParam;
+import com.momentum.batch.server.database.domain.dto.JobExecutionParamDto;
 import com.momentum.batch.server.database.repository.JobExecutionParamRepository;
 import com.momentum.batch.server.manager.converter.JobExecutionParamModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;

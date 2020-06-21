@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.database.domain.dto.UserGroupDto;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.converter.UserGroupModelAssembler;

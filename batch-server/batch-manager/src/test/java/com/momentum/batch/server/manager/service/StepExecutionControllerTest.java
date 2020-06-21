@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
-import com.momentum.batch.common.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
+import com.momentum.batch.server.database.domain.StepExecutionInfoBuilder;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.controller.StepExecutionController;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

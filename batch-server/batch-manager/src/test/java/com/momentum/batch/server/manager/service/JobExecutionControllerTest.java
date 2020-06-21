@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.JobExecutionInfoBuilder;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
 import org.junit.Before;
@@ -22,9 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

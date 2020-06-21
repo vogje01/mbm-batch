@@ -160,6 +160,13 @@
         </dependency>
         <dependency>
             <groupId>com.momentum.batch</groupId>
+            <artifactId>batch-common</artifactId>
+            <version>0.0.6-RELEASE</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
             <version>0.0.6-RELEASE</version>
             <type>test-jar</type>

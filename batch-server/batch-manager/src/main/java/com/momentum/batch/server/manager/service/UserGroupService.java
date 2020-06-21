@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.database.domain.dto.UserGroupDto;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.PagedModel;

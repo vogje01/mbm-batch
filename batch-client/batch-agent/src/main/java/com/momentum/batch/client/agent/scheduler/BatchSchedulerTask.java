@@ -1,10 +1,10 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;

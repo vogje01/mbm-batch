@@ -1,7 +1,7 @@
 package com.momentum.batch.common.util;
 
-import com.momentum.batch.common.domain.JobDefinitionType;
 import com.momentum.batch.common.util.md5.MD5;
+import com.momentum.batch.server.database.domain.JobDefinitionType;
 
 import java.io.File;
 import java.io.IOException;

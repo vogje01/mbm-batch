@@ -4,16 +4,16 @@ spring:
   jpa:
     show-sql: false
     generate-ddl: false
-    properties:
-      hibernate:
-        dialect: com.momentum.batch.server.database.util.ImprovedH2Dialect
-      javax:
-        persistence:
-          schema-generation:
-            database:
-              action: drop-and-create
-            drop-source: script-then-metadata
-            drop-script-source: drop-tables.sql
+  #    properties:
+  #      hibernate:
+  #        dialect: com.momentum.batch.server.database.util.ImprovedH2Dialect
+  #      javax:
+  #        persistence:
+  #          schema-generation:
+  #            database:
+  #             action: drop-and-create
+  #            drop-source: script-then-metadata
+  #            drop-script-source: drop-tables.sql
   quartz:
     job-store-type: memory
 

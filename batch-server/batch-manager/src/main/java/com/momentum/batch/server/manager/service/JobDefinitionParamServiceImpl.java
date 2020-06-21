@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobDefinitionParam;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.database.repository.JobDefinitionParamRepository;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.manager.converter.JobDefinitionParamModelAssembler;

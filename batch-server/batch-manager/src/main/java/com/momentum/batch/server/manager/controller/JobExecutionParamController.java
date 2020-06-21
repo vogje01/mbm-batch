@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.domain.dto.JobExecutionParamDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionParamDto;
 import com.momentum.batch.server.manager.service.JobExecutionParamService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.library;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;

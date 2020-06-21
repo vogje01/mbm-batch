@@ -1,13 +1,6 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.AgentBuilder;
-import com.momentum.batch.common.domain.JobDefinitionBuilder;
-import com.momentum.batch.common.domain.JobGroupBuilder;
-import com.momentum.batch.common.domain.JobScheduleInfoBuilder;
-import com.momentum.batch.server.database.domain.Agent;
-import com.momentum.batch.server.database.domain.JobDefinition;
-import com.momentum.batch.server.database.domain.JobGroup;
-import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.domain.*;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import com.momentum.batch.server.manager.controller.JobScheduleController;
 import org.junit.Before;

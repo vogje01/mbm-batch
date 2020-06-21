@@ -2,8 +2,7 @@ package com.momentum.batch.server.database.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;

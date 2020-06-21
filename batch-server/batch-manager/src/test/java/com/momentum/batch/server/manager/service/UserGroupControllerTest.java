@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.UserGroupBuilder;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.database.domain.UserGroupBuilder;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.manager.controller.UserGroupController;
 import org.junit.Before;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

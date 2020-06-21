@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.AgentBuilder;
 import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.AgentBuilder;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.manager.controller.AgentController;
 import org.junit.Before;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Optional.*;
+import static java.util.Optional.ofNullable;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

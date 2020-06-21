@@ -1,0 +1,84 @@
+#
+# MBM Batch Management manger configuration file
+#
+# This file is only used by docker images.
+#
+
+#
+# Spring configuration
+#
+spring:
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+  datasource:
+    url: jdbc:mysql://batchmanager:3306/batch
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#
+# REST Server configuration
+#
+server:
+  address: 0.0.0.0
+  port: 8090
+
+#
+# MBM manager configuration
+#
+# Library: job file library.
+#   jobs: job file library directory.
+# listener: batch listener configuration
+#   server: listener server name
+# scheduler: batch scheduler configuration
+#   server: scheduler server name
+# server: batch manager configuration
+#   host: manager server name
+#   port: manager server port
+#   jwt web token configuration
+#     secret: web token secret
+#
+mbm:
+  library:
+    jobs: C:\work\batch\server\jobs
+  listener:
+    server: batchmanager
+  scheduler:
+    server: batchmanager
+  server:
+    host: localhost
+    port: 8090
+    jwt:
+      secret: mU*mJxJ*&31p
+  ldap:
+    server: ldapd-rw.hlcl.com
+    port: 1391
+  mail:
+    server: smtp.gmail.com
+
+# Kafka configuration.
+# bootstrapAddress: Kafka server URL.
+# maxRequestSize: Maximal request size (default: 4MB).
+# retentionDays: Number of days the logs are kept.
+# deletionDays: Number of days after which the logs are deleted.
+# topic: Apache Kafka topic name.
+kafka:
+  bootstrapAddress: batchmanager:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  agentStatus:
+    offsetReset: latest
+    topic: batchAgentStatus
+    group: batchmanager
+    partitions: 5
+    replicas: 1
+  agentScheduler:
+    offsetReset: latest
+    topic: batchAgentScheduler
+    group: batchmanager
+    partitions: 5
+    replicas: 1
