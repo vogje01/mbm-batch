@@ -41,7 +41,7 @@ public class JobExecutionLogListener {
 
     @KafkaListener(topics = "batchJobExecutionLog", containerFactory = "logKafkaListenerContainerFactory")
     public void listen(JobExecutionLogDto jobExecutionLogDto) {
-        logger.debug(format("Received job log - message: {0}", jobExecutionLogDto.getMessage()));
+        logger.debug(format("Received job log - nodeName: {0} message: {1}", jobExecutionLogDto.getNodeName(), jobExecutionLogDto.getMessage()));
         if (Level.valueOf(jobExecutionLogDto.getLevel()).intLevel() <= Level.valueOf(level).intLevel()) {
             JobExecutionLog jobExecutionLog = modelMapper.map(jobExecutionLogDto, JobExecutionLog.class);
             jobExecutionLogRepository.save(jobExecutionLog);

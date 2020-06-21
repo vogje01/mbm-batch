@@ -1,6 +1,6 @@
 package com.momentum.batch.server.database.domain;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
@@ -21,9 +21,6 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_STEP_EXECUTION")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
@@ -165,7 +162,7 @@ public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<
      * @param stepExecutionDto original step execution info.
      */
     public void update(StepExecutionDto stepExecutionDto) {
-        //this.id = stepExecutionDto.getId();
+        this.id = stepExecutionDto.getId();
         this.stepName = stepExecutionDto.getStepName();
         this.stepExecutionId = stepExecutionDto.getStepExecutionId();
         this.status = stepExecutionDto.getStatus();

@@ -21,11 +21,17 @@ import java.util.Date;
 public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     private String id;
-
+    /**
+     * MBM job name
+     */
     private String jobName;
-
+    /**
+     * MBM job UUID
+     */
     private String jobId;
-
+    /**
+     * Spring batch job execution id (long)
+     */
     private Long jobExecutionId;
 
     private String stepName;

@@ -1,9 +1,5 @@
 package com.momentum.batch.server.database.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
@@ -22,9 +18,6 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_JOB_EXECUTION")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
 
     /**
@@ -158,6 +151,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     }
 
     public void update(JobExecutionDto jobExecutionDto) {
+        this.id = jobExecutionDto.getId();
         this.jobPid = jobExecutionDto.getJobPid();
         this.jobVersion = jobExecutionDto.getJobVersion();
         this.hostName = jobExecutionDto.getHostName();
@@ -348,7 +342,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     public void setJobExecutionParams(List<JobExecutionParam> jobExecutionParams) {
         this.jobExecutionParams.clear();
         if (jobExecutionParams != null) {
-            jobExecutionParams.forEach(p -> addJobParameterInfo(p));
+            jobExecutionParams.forEach(this::addJobParameterInfo);
         }
     }
 

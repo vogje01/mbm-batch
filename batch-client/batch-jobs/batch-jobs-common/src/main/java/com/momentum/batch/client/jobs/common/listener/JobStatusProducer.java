@@ -9,6 +9,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.UUID;
+
 import static java.text.MessageFormat.format;
 
 /**
@@ -22,6 +24,8 @@ public class JobStatusProducer {
 
     @Value(value = "${kafka.jobStatus.topic}")
     private String topicName;
+
+    private final String partitionKey = UUID.randomUUID().toString();
 
     private static final Logger logger = LoggerFactory.getLogger(StepNotificationListener.class);
 
@@ -38,7 +42,7 @@ public class JobStatusProducer {
      */
     public void sendTopic(JobStatusDto jobStatusDto) {
 
-        ListenableFuture<SendResult<String, JobStatusDto>> future = template.send(topicName, jobStatusDto);
+        ListenableFuture<SendResult<String, JobStatusDto>> future = template.send(topicName, partitionKey, jobStatusDto);
         future.addCallback(new ListenableFutureCallback<>() {
 
             @Override

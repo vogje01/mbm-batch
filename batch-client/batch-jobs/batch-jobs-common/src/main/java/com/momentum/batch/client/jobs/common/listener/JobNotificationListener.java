@@ -8,7 +8,6 @@ import com.momentum.batch.common.util.DateTimeUtils;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.batch.core.JobParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,7 +62,7 @@ public class JobNotificationListener implements JobExecutionListener {
     public void beforeJob(JobExecution jobExecution) {
 
         // Generate job UUID
-        jobExecution.getJobParameters().getParameters().put(JOB_UUID, new JobParameter(UUID.randomUUID().toString()));
+        setJobUuid(jobExecution, UUID.randomUUID().toString());
 
         // Set logger attributes
         logger.setJobName(getJobName(jobExecution));
@@ -107,6 +106,8 @@ public class JobNotificationListener implements JobExecutionListener {
      * @param jobExecutionDto job execution data transfer object.
      */
     private void addAdditionalProperties(JobExecution jobExecution, JobExecutionDto jobExecutionDto) {
+        jobExecutionDto.setHostName(getHostName(jobExecution));
+        jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setId(getJobUuid(jobExecution));
         jobExecutionDto.setJobName(getJobName(jobExecution));
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
@@ -114,8 +115,6 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setJobExecutionId(jobExecution.getId());
         jobExecutionDto.setJobDefinitionId(getJobDefinitionId(jobExecution));
         jobExecutionDto.setJobDefinitionName(getJobDefinitionName(jobExecution));
-        jobExecutionDto.setHostName(getHostName(jobExecution));
-        jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setStartedBy(getJobStartedBy(jobExecution));
         jobExecutionDto.setRunningTime((new Date().getTime() - jobExecution.getStartTime().getTime()));
     }

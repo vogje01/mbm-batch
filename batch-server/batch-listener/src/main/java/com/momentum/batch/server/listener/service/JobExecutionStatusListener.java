@@ -134,11 +134,9 @@ public class JobExecutionStatusListener {
             jobExecutionInfo.update(jobExecutionDto);
             jobExecutionInfo.setModifiedAt(new Date());
             jobExecutionInfo.setModifiedBy("admin");
-            jobExecutionInfoRepository.save(jobExecutionInfo);
             if (jobExecutionDto.getJobExecutionContextDto() != null) {
                 JobExecutionContext jobExecutionContext = jobExecutionInfo.getJobExecutionContext();
                 jobExecutionContext.update(jobExecutionDto.getJobExecutionContextDto());
-                jobExecutionContextRepository.save(jobExecutionContext);
                 logger.debug(format("Job execution context updated - jobName: {0} jobName: {1}", nodeName, jobName));
             }
             logger.debug(format("Job execution info updated - jobName: {0} jobName: {1}", nodeName, jobName));
@@ -183,6 +181,7 @@ public class JobExecutionStatusListener {
             jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
             logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
 
+            // TODO: ???? fix ????
             // Create job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
             jobExecutionInfo.getJobExecutionParams().forEach(jobExecutionParam -> {
@@ -218,13 +217,11 @@ public class JobExecutionStatusListener {
             // Update step execution info
             StepExecutionInfo stepExecutionInfo = stepExecutionInfoOptional.get();
             stepExecutionInfo.update(stepExecutionDto);
-            stepExecutionInfoRepository.save(stepExecutionInfo);
 
             // Save step execution context
             if (stepExecutionDto.getStepExecutionContextDto() != null) {
                 StepExecutionContext stepExecutionContext = stepExecutionInfo.getStepExecutionContext();
                 stepExecutionContext.update(stepExecutionDto.getStepExecutionContextDto());
-                stepExecutionContextRepository.save(stepExecutionContext);
                 logger.debug(format("Step execution context updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));
             }
             logger.debug(format("Step execution info updated - nodeName: {0} jobName: {1} stepName: {2}", nodeName, jobName, stepName));

@@ -49,7 +49,7 @@ mbm:
   agent:
     hostName: batch-agent-01
     nodeName: batch-agent-01
-    pingInterval: 30
+    pingInterval: 300
     performanceInterval: 60
     docker:
       network: docker_default

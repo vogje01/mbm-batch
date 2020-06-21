@@ -156,8 +156,6 @@ public class AgentStatusMessageConsumer {
         batchPerformanceRepository.save(new BatchPerformance(agentStatusMessageDto.getNodeName(), "host.swap.used", BatchPerformanceType.RAW, agentStatusMessageDto.getUsedSwap()));
         batchPerformanceRepository.save(new BatchPerformance(agentStatusMessageDto.getNodeName(), "host.swap.free.pct", BatchPerformanceType.RAW, (double) agentStatusMessageDto.getFreeSwap() / (double) agentStatusMessageDto.getTotalSwap() * 100.0));
         batchPerformanceRepository.save(new BatchPerformance(agentStatusMessageDto.getNodeName(), "host.swap.used.pct", BatchPerformanceType.RAW, (double) agentStatusMessageDto.getUsedSwap() / (double) agentStatusMessageDto.getTotalSwap() * 100.0));
-
-        receivedPing(agentStatusMessageDto);
     }
 
     /**

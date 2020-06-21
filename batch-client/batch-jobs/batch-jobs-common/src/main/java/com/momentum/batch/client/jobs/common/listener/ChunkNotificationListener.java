@@ -4,7 +4,6 @@ import com.momentum.batch.client.jobs.common.converter.ModelConverter;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.common.domain.dto.JobStatusDto;
 import com.momentum.batch.common.domain.dto.StepExecutionDto;
-import com.momentum.batch.common.util.ExecutionParameter;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.stereotype.Component;
@@ -78,10 +77,10 @@ public class ChunkNotificationListener implements ChunkListener {
     private void addAdditionalProperties(ChunkContext chunkContext) {
         stepExecutionDto.setHostName(getHostName(chunkContext));
         stepExecutionDto.setNodeName(getHostName(chunkContext));
-        stepExecutionDto.setId(getStepUuid(chunkContext));
-        stepExecutionDto.setJobId(ExecutionParameter.getJobUuid(chunkContext));
+        stepExecutionDto.setJobId(getJobUuid(chunkContext));
         stepExecutionDto.setJobName(getJobName(chunkContext));
         stepExecutionDto.setJobExecutionId(getJobExecutionId(chunkContext));
+        stepExecutionDto.setId(getStepUuid(chunkContext));
         stepExecutionDto.setStepName(getStepName(chunkContext));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(chunkContext));
         stepExecutionDto.setTotalCount(getStepExecutionTotalCount(chunkContext));

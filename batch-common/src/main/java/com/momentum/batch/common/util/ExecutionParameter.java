@@ -65,9 +65,9 @@ public class ExecutionParameter {
 
     public static final String JOB_SCHEDULED_TYPE = "job.scheduled.type";
 
-    public static final String STEP_UUID = "stepUuid";
+    public static final String STEP_UUID = "step.uuid";
 
-    public static final String STEP_NAME = "stepName";
+    public static final String STEP_NAME = "step.name";
 
     public static final String STEP_TOTAL_COUNT = "totalCount";
 
@@ -82,7 +82,11 @@ public class ExecutionParameter {
     }
 
     public static String getJobUuid(JobExecution jobExecution) {
-        return jobExecution.getJobParameters().getString(JOB_UUID);
+        return jobExecution.getExecutionContext().getString(JOB_UUID);
+    }
+
+    public static void setJobUuid(JobExecution jobExecution, String jobUuid) {
+        jobExecution.getExecutionContext().putString(JOB_UUID, jobUuid);
     }
 
     public static String getJobName(JobExecution jobExecution) {
@@ -134,7 +138,7 @@ public class ExecutionParameter {
     }
 
     public static String getJobUuid(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getJobParameters().getString(JOB_UUID);
+        return stepExecution.getJobExecution().getExecutionContext().getString(JOB_UUID);
     }
 
     public static String getJobVersion(StepExecution stepExecution) {
@@ -190,7 +194,7 @@ public class ExecutionParameter {
     }
 
     public static String getJobUuid(ChunkContext chunkContext) {
-        return chunkContext.getStepContext().getStepExecution().getJobExecution().getJobParameters().getString(JOB_UUID);
+        return (String) chunkContext.getStepContext().getJobExecutionContext().get(JOB_UUID);
     }
 
     public static long getStepExecutionTotalCount(ChunkContext chunkContext) {
