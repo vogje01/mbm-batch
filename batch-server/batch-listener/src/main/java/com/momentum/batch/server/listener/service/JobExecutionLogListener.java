@@ -18,7 +18,7 @@ import static java.text.MessageFormat.format;
  * Listener for the job execution logs messages send to the Kafka batchJobExecutionLog queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.2
  */
 @Service

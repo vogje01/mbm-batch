@@ -16,7 +16,7 @@ import java.util.Optional;
  * Job execution repository.
  *
  * @author Jens Vogt (jensvogt47@gmail.ccom)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Repository

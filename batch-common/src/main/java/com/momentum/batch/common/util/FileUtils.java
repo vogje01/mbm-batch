@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * File utilities.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
 public class FileUtils {

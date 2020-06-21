@@ -36,7 +36,7 @@ import static java.text.MessageFormat.format;
 /**
  * User service implementation.
  *
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Service
