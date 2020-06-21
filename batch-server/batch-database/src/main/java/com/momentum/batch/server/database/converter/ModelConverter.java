@@ -97,7 +97,9 @@ public class ModelConverter {
     // Step executions
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public StepExecutionDto convertStepExecutionToDto(StepExecutionInfo stepExecutionInfo) {
-        return modelMapper.map(stepExecutionInfo, StepExecutionDto.class);
+        StepExecutionDto stepExecutionDto = modelMapper.map(stepExecutionInfo, StepExecutionDto.class);
+        stepExecutionDto.setJobName(stepExecutionInfo.getJobExecutionInfo().getJobName());
+        return stepExecutionDto;
     }
 
     public StepExecutionInfo convertStepExecutionToEntity(StepExecutionDto stepExecutionDto) {
