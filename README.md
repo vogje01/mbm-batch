@@ -8,7 +8,7 @@ indenpendent pieces of code, which are only loosly coupled with the central syst
 systems, the small agents are the only constantly running pieces of code. The actual batch jobs are implemented as executable JAR files or as docker images,
 which can run in a cloud environment. When they finished their work, they will simple shutdown until the next execution.
 
-See the wiki on how to compile, install and configure the batch management system.
+See the [wiki](https://github.com/vogje01/mbm-batch/wiki) on how to compile, install and configure the batch management system.
 
 # Screenshots
 Job execution list with an open step execution list:

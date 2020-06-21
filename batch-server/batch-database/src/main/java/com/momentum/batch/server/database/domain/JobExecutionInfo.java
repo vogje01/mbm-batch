@@ -128,8 +128,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     /**
      * Job execution instance info from JSR-352
      */
-    @Cascade(CascadeType.ALL)
-    @OneToOne(mappedBy = "jobExecutionInfo", fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "jobExecutionInfo", fetch = FetchType.LAZY, optional = false, cascade = javax.persistence.CascadeType.ALL)
     private JobExecutionContext jobExecutionContext;
     /**
      * Job definition

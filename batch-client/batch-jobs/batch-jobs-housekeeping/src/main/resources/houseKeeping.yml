@@ -4,7 +4,7 @@ houseKeeping:
     # Job execution infos
     jobExecutionInfo:
       entityActive: true
-      houseKeepingDays: 20
+      houseKeepingDays: 2
       chunkSize: 1000
     # Job execution log
     jobExecutionLog:
