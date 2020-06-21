@@ -12,7 +12,7 @@
 
     <groupId>com.momentum.batch</groupId>
     <artifactId>batch-jobs-performance</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.6-RELEASE</version>
     <description>Collection and consolidation of performance data.</description>
     <organization>
         <name>momentumbatch</name>

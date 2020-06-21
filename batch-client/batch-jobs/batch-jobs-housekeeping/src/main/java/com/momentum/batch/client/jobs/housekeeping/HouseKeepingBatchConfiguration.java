@@ -36,16 +36,6 @@ public class HouseKeepingBatchConfiguration extends DefaultBatchConfigurer {
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("houseKeeping.yml")};
 
     /**
-     * Set job name.
-     *
-     * @return job name.
-     */
-    @Bean
-    String jobName() {
-        return "Housekeeping Batch";
-    }
-
-    /**
      * Sets the property sources.
      *
      * @return property source configurer.
@@ -67,6 +57,5 @@ public class HouseKeepingBatchConfiguration extends DefaultBatchConfigurer {
      */
     @Override
     public void setDataSource(DataSource dataSource) {
-
     }
 }

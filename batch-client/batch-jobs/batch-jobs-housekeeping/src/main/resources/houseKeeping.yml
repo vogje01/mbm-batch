@@ -11,11 +11,6 @@ houseKeeping:
       entityActive: true
       houseKeepingDays: 20
       chunkSize: 1000
-    # Step execution log
-    stepExecutionInfo:
-      entityActive: true
-      houseKeepingDays: 20
-      chunkSize: 1000
     # Performance data
     batchPerformance:
       entityActive: true

@@ -67,7 +67,7 @@ services:
   # Batch listener
   #
   batch-listener:
-    image: momentumbatch/batch-listener:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-listener:0.0.6-RELEASE
     container_name: batch-listener
     environment:
       TZ: "Europe/Berlin"
@@ -79,7 +79,7 @@ services:
   # Batch scheduler
   #
   batch-scheduler:
-    image: momentumbatch/batch-scheduler:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-scheduler:0.0.6-RELEASE
     container_name: batch-scheduler
     environment:
       TZ: "Europe/Berlin"
@@ -91,7 +91,7 @@ services:
   #  Batch manager
   #
   batch-manager:
-    image: momentumbatch/batch-manager:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-manager:0.0.6-RELEASE
     hostname: batch-manager
     container_name: batch-manager
     environment:
@@ -107,7 +107,7 @@ services:
   # Batch UI
   #
   batch-manager-ui:
-    image: momentumbatch/batch-manager-ui:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-manager-ui:0.0.6-RELEASE
     container_name: batch-manager-ui
     environment:
       TZ: "Europe/Berlin"
@@ -120,7 +120,7 @@ services:
   # Batch agent 01
   #
   batch-agent-01:
-    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:0.0.6-RELEASE
     hostname: batch-agent-01
     container_name: batch-agent-01
     environment:
@@ -138,7 +138,7 @@ services:
   # Batch agent 02
   #
   batch-agent-02:
-    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:0.0.6-RELEASE
     hostname: batch-agent-02
     container_name: batch-agent-02
     environment:
@@ -155,7 +155,7 @@ services:
   # Batch agent 03
   #
   batch-agent-03:
-    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:0.0.6-RELEASE
     hostname: batch-agent-03
     container_name: batch-agent-03
     environment:
@@ -172,7 +172,7 @@ services:
   # Batch agent 03
   #
   batch-agent-04:
-    image: momentumbatch/batch-agent:0.0.6-SNAPSHOT
+    image: momentumbatch/batch-agent:0.0.6-RELEASE
     hostname: batch-agent-04
     container_name: batch-agent-04
     environment:

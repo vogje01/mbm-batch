@@ -9,9 +9,9 @@ import com.momentum.batch.client.jobs.housekeeping.jobexecution.JobExecutionInfo
 import com.momentum.batch.client.jobs.housekeeping.jobexecutionlog.JobExecutionLogStep;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 import static java.text.MessageFormat.format;
 
@@ -23,9 +23,13 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Component
-public class HouseKeepingBatchJob {
+public class HouseKeepingBatchJob implements CommandLineRunner {
 
-    private final String jobName;
+    /**
+     * Job name, taken from the environment.
+     */
+    @Value("${job.name}")
+    private String jobName;
 
     private final BatchLogger logger;
 
@@ -42,15 +46,13 @@ public class HouseKeepingBatchJob {
     private final BatchPerformanceFailedStep batchPerformanceFailedStep;
 
     @Autowired
-    public HouseKeepingBatchJob(String jobName,
-                                BatchLogger logger,
+    public HouseKeepingBatchJob(BatchLogger logger,
                                 JobExecutionInfoStep jobExecutionInfoStep,
                                 JobExecutionLogStep jobExecutionLogStep,
                                 BatchJobBuilder batchJobBuilder,
                                 BatchJobRunner batchJobRunner,
                                 BatchPerformanceStep batchPerformanceStep,
                                 BatchPerformanceFailedStep batchPerformanceFailedStep) {
-        this.jobName = jobName;
         this.logger = logger;
         this.jobExecutionInfoStep = jobExecutionInfoStep;
         this.jobExecutionLogStep = jobExecutionLogStep;
@@ -61,10 +63,10 @@ public class HouseKeepingBatchJob {
     }
 
     /**
-     * Job initialization
+     * Job command line runner
      */
-    @PostConstruct
-    public void initialize() {
+    @Override
+    public void run(String... args) throws Exception {
         logger.info(format("Initializing job - jobName: {0}", jobName));
         Job job = batchJobBuilder
                 .name(jobName)
@@ -75,6 +77,7 @@ public class HouseKeepingBatchJob {
                         "FAILED",
                         batchPerformanceFailedStep.houseKeepingBatchPerformanceFailed())
                 .build();
+        logger.info(format("Running job - jobName: {0}", jobName));
         batchJobRunner.job(job).start();
     }
 }
