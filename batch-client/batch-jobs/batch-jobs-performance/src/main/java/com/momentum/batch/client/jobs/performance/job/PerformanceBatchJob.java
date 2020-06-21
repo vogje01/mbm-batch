@@ -15,6 +15,7 @@ import com.momentum.batch.client.jobs.performance.steps.stepcount.StepCountStep;
 import com.momentum.batch.common.domain.BatchPerformanceType;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,18 @@ import static java.text.MessageFormat.format;
 
 @Component
 public class PerformanceBatchJob {
+
+    @Value("${performance.batch.consolidation.interval.daily}")
+    private long intervalDaily;
+
+    @Value("${performance.batch.consolidation.interval.weekly}")
+    private long intervalWeekly;
+
+    @Value("${performance.batch.consolidation.interval.monthly}")
+    private long intervalMonthly;
+
+    @Value("${performance.batch.consolidation.interval.yearly}")
+    private long intervalYearly;
 
     private final String jobName;
 
@@ -103,10 +116,10 @@ public class PerformanceBatchJob {
                 .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.WEEKLY))
                 .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.MONTHLY))
                 .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.YEARLY))
-                .nextStep(consolidationStep.getStep(BatchPerformanceType.RAW, BatchPerformanceType.DAILY, 300))
-                .nextStep(consolidationStep.getStep(BatchPerformanceType.DAILY, BatchPerformanceType.WEEKLY, 3600))
-                .nextStep(consolidationStep.getStep(BatchPerformanceType.WEEKLY, BatchPerformanceType.MONTHLY, 24 * 3600L))
-                .nextStep(consolidationStep.getStep(BatchPerformanceType.MONTHLY, BatchPerformanceType.YEARLY, 7 * 24 * 3600L))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.RAW, BatchPerformanceType.DAILY, intervalDaily))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.DAILY, BatchPerformanceType.WEEKLY, intervalWeekly))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.WEEKLY, BatchPerformanceType.MONTHLY, intervalMonthly))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.MONTHLY, BatchPerformanceType.YEARLY, intervalYearly))
                 .build();
     }
 }

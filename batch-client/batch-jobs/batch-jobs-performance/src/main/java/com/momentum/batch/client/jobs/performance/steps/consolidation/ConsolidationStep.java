@@ -15,7 +15,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class ConsolidationStep {
 
-    @Value("${performance.batch.daily.chunkSize}")
+    @Value("${performance.batch.consolidation.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;

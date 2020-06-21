@@ -14,14 +14,10 @@ performance:
     jobStatus:
       chunkSize: 1000
     # Daily consolidation
-    daily:
+    consolidation:
       chunkSize: 10000
-    # Weekly consolidation
-    weekly:
-      chunkSize: 10000
-    # Monthly consolidation
-    monthly:
-      chunkSize: 10000
-    # Yearly consolidation
-    yearly:
-      chunkSize: 10000
+      interval:
+        daily: 300
+        weekly: 3600
+        monthly: 28800
+        yearly: 86400

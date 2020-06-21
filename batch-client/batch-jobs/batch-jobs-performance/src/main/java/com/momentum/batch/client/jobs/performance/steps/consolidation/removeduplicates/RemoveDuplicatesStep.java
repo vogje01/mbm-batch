@@ -15,9 +15,7 @@ import static java.text.MessageFormat.format;
 @Component
 public class RemoveDuplicatesStep {
 
-    private static final String STEP_NAME = "Daily remove duplicates";
-
-    @Value("${performance.batch.daily.chunkSize}")
+    @Value("${performance.batch.consolidation.chunkSize}")
     private int chunkSize;
 
     private final BatchLogger logger;
@@ -46,7 +44,6 @@ public class RemoveDuplicatesStep {
         this.removeDuplicatesReader = removeDuplicatesReader;
         this.removeDuplicatesProcessor = removeDuplicatesProcessor;
         this.removeDuplicatesWriter = removeDuplicatesWriter;
-        logger.debug(format("Step initialized - name: {0}", STEP_NAME));
     }
 
     @SuppressWarnings("unchecked")
