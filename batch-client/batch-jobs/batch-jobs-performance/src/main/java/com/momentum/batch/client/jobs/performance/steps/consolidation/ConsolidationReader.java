@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
+package com.momentum.batch.client.jobs.performance.steps.consolidation;
 
 import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
 import com.momentum.batch.common.domain.BatchPerformanceType;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class DailyRemoveDuplicatesReader {
+public class ConsolidationReader {
 
     @Value("${performance.batch.daily.chunkSize}")
     private int chunkSize;
@@ -20,19 +20,19 @@ public class DailyRemoveDuplicatesReader {
     private final EntityManagerFactory mysqlEmf;
 
     @Autowired
-    DailyRemoveDuplicatesReader(EntityManagerFactory mysqlEmf) {
+    ConsolidationReader(EntityManagerFactory mysqlEmf) {
         this.mysqlEmf = mysqlEmf;
     }
 
-    ItemStreamReader getReader() {
+    ItemStreamReader getReader(BatchPerformanceType batchPerformanceType, long interval) {
         String queryString = "select " +
                 "b.qualifier, b.metric, avg(b.value), from_unixtime(floor((unix_timestamp(b.timestamp) / :interval)) * :interval) as timestamp " +
                 "from BatchPerformance b " +
                 "where b.type = :type " +
                 "group by b.metric, b.qualifier, from_unixtime(floor((unix_timestamp(b.timestamp) / :interval)) * :interval)";
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("type", BatchPerformanceType.RAW);
-        parameters.put("interval", 300L);
+        parameters.put("type", batchPerformanceType);
+        parameters.put("interval", interval);
         return new CursorReaderBuilder(mysqlEmf)
                 .queryString(queryString)
                 .parameters(parameters)

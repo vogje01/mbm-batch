@@ -15,13 +15,13 @@ performance:
       chunkSize: 1000
     # Daily consolidation
     daily:
-      chunkSize: 1000
+      chunkSize: 10000
     # Weekly consolidation
     weekly:
-      chunkSize: 1000
+      chunkSize: 10000
     # Monthly consolidation
     monthly:
-      chunkSize: 1000
+      chunkSize: 10000
     # Yearly consolidation
     yearly:
-      chunkSize: 1000
+      chunkSize: 10000

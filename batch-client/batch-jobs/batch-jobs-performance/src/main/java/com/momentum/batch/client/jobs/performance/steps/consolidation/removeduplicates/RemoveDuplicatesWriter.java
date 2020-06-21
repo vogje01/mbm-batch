@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
+package com.momentum.batch.client.jobs.performance.steps.consolidation.removeduplicates;
 
 import com.momentum.batch.client.jobs.common.writer.MysqlDeleteWriter;
 import com.momentum.batch.server.database.domain.BatchPerformance;
@@ -12,5 +12,5 @@ import org.springframework.stereotype.Component;
  * @since 0.0.3
  */
 @Component
-public class DailyRemoveDuplicatesWriter extends MysqlDeleteWriter<BatchPerformance> {
+public class RemoveDuplicatesWriter extends MysqlDeleteWriter<BatchPerformance> {
 }

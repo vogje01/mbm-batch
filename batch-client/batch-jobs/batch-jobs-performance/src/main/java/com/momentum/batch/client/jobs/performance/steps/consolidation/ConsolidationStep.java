@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
+package com.momentum.batch.client.jobs.performance.steps.consolidation;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 import static java.text.MessageFormat.format;
 
 @Component
-public class DailyRemoveDuplicatesStep {
-
-    private static final String STEP_NAME = "Daily remove duplicates";
+public class ConsolidationStep {
 
     @Value("${performance.batch.daily.chunkSize}")
     private int chunkSize;
@@ -24,41 +22,40 @@ public class DailyRemoveDuplicatesStep {
 
     private final BatchPerformanceRepository batchPerformanceRepository;
 
-    private final DailyRemoveDuplicatesReader dailyRemoveDuplicatesReader;
+    private final ConsolidationReader consolidationReader;
 
-    private final DailyRemoveDuplicatesProcessor dailyRemoveDuplicatesProcessor;
+    private final ConsolidationProcessor consolidationProcessor;
 
-    private final DailyRemoveDuplicatesWriter dailyRemoveDuplicatesWriter;
+    private final ConsolidationWriter consolidationWriter;
 
     private final BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder;
 
     @Autowired
-    public DailyRemoveDuplicatesStep(
+    public ConsolidationStep(
             BatchLogger logger,
             BatchStepBuilder<BatchPerformance, BatchPerformance> stepBuilder,
             BatchPerformanceRepository batchPerformanceRepository,
-            DailyRemoveDuplicatesReader dailyRemoveDuplicatesReader,
-            DailyRemoveDuplicatesProcessor dailyRemoveDuplicatesProcessor,
-            DailyRemoveDuplicatesWriter dailyRemoveDuplicatesWriter) {
+            ConsolidationReader consolidationReader,
+            ConsolidationProcessor consolidationProcessor,
+            ConsolidationWriter consolidationWriter) {
         this.logger = logger;
         this.stepBuilder = stepBuilder;
         this.batchPerformanceRepository = batchPerformanceRepository;
-        this.dailyRemoveDuplicatesReader = dailyRemoveDuplicatesReader;
-        this.dailyRemoveDuplicatesProcessor = dailyRemoveDuplicatesProcessor;
-        this.dailyRemoveDuplicatesWriter = dailyRemoveDuplicatesWriter;
-        logger.debug(format("Step initialized - name: {0}", STEP_NAME));
+        this.consolidationReader = consolidationReader;
+        this.consolidationProcessor = consolidationProcessor;
+        this.consolidationWriter = consolidationWriter;
     }
 
     @SuppressWarnings("unchecked")
-    public Step removeDuplicates() {
-        long totalCount = batchPerformanceRepository.countByType(BatchPerformanceType.RAW);
-        logger.debug(format("Total count - count: {0}", totalCount));
+    public Step getStep(BatchPerformanceType batchPerformanceTypeIn, BatchPerformanceType batchPerformanceTypeOut, long interval) {
+        long totalCount = batchPerformanceRepository.countByType(batchPerformanceTypeIn);
+        logger.debug(format("Consolidation step initialized - in: {0} out: {1} total: {2}", batchPerformanceTypeIn.name(), batchPerformanceTypeOut.name(), totalCount));
         return stepBuilder
-                .name(STEP_NAME)
+                .name("Consolidation " + batchPerformanceTypeIn.name())
                 .chunkSize(chunkSize)
-                .reader(dailyRemoveDuplicatesReader.getReader())
-                .processor(dailyRemoveDuplicatesProcessor)
-                .writer(dailyRemoveDuplicatesWriter.getWriter())
+                .reader(consolidationReader.getReader(batchPerformanceTypeIn, interval))
+                .processor(consolidationProcessor.getProcessor(batchPerformanceTypeOut))
+                .writer(consolidationWriter.getWriter())
                 .total(totalCount)
                 .build();
     }

@@ -6,15 +6,13 @@ import com.momentum.batch.client.jobs.common.builder.BatchJobRunner;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.client.jobs.performance.steps.agentload.day.AgentLoadDayStep;
 import com.momentum.batch.client.jobs.performance.steps.agentload.week.AgentLoadWeekStep;
-import com.momentum.batch.client.jobs.performance.steps.daily.DailyStep;
-import com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates.DailyRemoveDuplicatesStep;
+import com.momentum.batch.client.jobs.performance.steps.consolidation.ConsolidationStep;
+import com.momentum.batch.client.jobs.performance.steps.consolidation.removeduplicates.RemoveDuplicatesStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.JobCountNodeStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountCompletedStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountFailedStep;
-import com.momentum.batch.client.jobs.performance.steps.monthly.MonthlyStep;
 import com.momentum.batch.client.jobs.performance.steps.stepcount.StepCountStep;
-import com.momentum.batch.client.jobs.performance.steps.weekly.WeeklyStep;
-import com.momentum.batch.client.jobs.performance.steps.yearly.YearlyStep;
+import com.momentum.batch.common.domain.BatchPerformanceType;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,15 +44,9 @@ public class PerformanceBatchJob {
 
     private final StepCountStep stepCountStep;
 
-    private final DailyStep dailyStep;
+    private final ConsolidationStep consolidationStep;
 
-    private final DailyRemoveDuplicatesStep dailyRemoveDuplicatesStep;
-
-    private final WeeklyStep weeklyStep;
-
-    private final MonthlyStep monthlyStep;
-
-    private final YearlyStep yearlyStep;
+    private final RemoveDuplicatesStep removeDuplicatesStep;
 
     @Autowired
     public PerformanceBatchJob(String jobName,
@@ -67,11 +59,8 @@ public class PerformanceBatchJob {
                                JobCountCompletedStep jobCountCompletedStep,
                                JobCountFailedStep jobCountFailedStep,
                                StepCountStep stepCountStep,
-                               DailyStep dailyStep,
-                               DailyRemoveDuplicatesStep dailyRemoveDuplicatesStep,
-                               WeeklyStep weeklyStep,
-                               MonthlyStep monthlyStep,
-                               YearlyStep yearlyStep) {
+                               ConsolidationStep consolidationStep,
+                               RemoveDuplicatesStep removeDuplicatesStep) {
         this.jobName = jobName;
         this.logger = logger;
         this.batchJobRunner = batchJobRunner;
@@ -82,26 +71,23 @@ public class PerformanceBatchJob {
         this.jobCountCompletedStep = jobCountCompletedStep;
         this.jobCountFailedStep = jobCountFailedStep;
         this.stepCountStep = stepCountStep;
-        this.dailyStep = dailyStep;
-        this.dailyRemoveDuplicatesStep = dailyRemoveDuplicatesStep;
-        this.weeklyStep = weeklyStep;
-        this.monthlyStep = monthlyStep;
-        this.yearlyStep = yearlyStep;
+        this.consolidationStep = consolidationStep;
+        this.removeDuplicatesStep = removeDuplicatesStep;
     }
 
     @PostConstruct
     public void initialize() {
-        Job job = houseKeepingJob();
+        Job job = performanceJob();
         logger.info(format("Running job - jobName: {0}", jobName));
         batchJobRunner.job(job).start();
     }
 
     /**
-     * Create the agent load day jobs.
+     * Create the performance jobs.
      *
-     * @return agent load day jobs.
+     * @return performance job.
      */
-    public Job houseKeepingJob() {
+    public Job performanceJob() {
         logger.info(format("Initializing job - jobName: {0}", jobName));
         return batchJobBuilder
                 .name(jobName)
@@ -113,11 +99,14 @@ public class PerformanceBatchJob {
                 .nextFlow(new BatchFlowBuilder<>("Job count")
                         .splitSteps(jobCountNodeStep.jobCountProcessing(), jobCountCompletedStep.jobCountProcessing(), jobCountFailedStep.jobCountProcessing(), stepCountStep.stepCountProcessing())
                         .build())
-                .nextStep(dailyRemoveDuplicatesStep.removeDuplicates())
-                .nextStep(dailyStep.dailyConsolidation())
-                .nextStep(weeklyStep.weeklyConsolidation())
-                .nextStep(monthlyStep.monthlyConsolidation())
-                .nextStep(yearlyStep.yearlyConsolidation())
+                .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.DAILY))
+                .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.WEEKLY))
+                .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.MONTHLY))
+                .nextStep(removeDuplicatesStep.getStep(BatchPerformanceType.YEARLY))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.RAW, BatchPerformanceType.DAILY, 300))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.DAILY, BatchPerformanceType.WEEKLY, 3600))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.WEEKLY, BatchPerformanceType.MONTHLY, 24 * 3600L))
+                .nextStep(consolidationStep.getStep(BatchPerformanceType.MONTHLY, BatchPerformanceType.YEARLY, 7 * 24 * 3600L))
                 .build();
     }
 }

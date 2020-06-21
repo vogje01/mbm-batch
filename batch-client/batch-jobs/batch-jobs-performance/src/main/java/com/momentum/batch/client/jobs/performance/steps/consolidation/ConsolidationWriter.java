@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.monthly;
+package com.momentum.batch.client.jobs.performance.steps.consolidation;
 
 import com.momentum.batch.client.jobs.common.writer.MysqlWriterBuilder;
 import com.momentum.batch.server.database.domain.BatchPerformance;
@@ -9,19 +9,19 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * Job execution info delete writer.
+ * Daily performance consolidation writer.
  *
  * @author Jens.Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-SNAPSHOT
  * @since 0.0.3
  */
 @Component
-public class MonthlyWriter {
+public class ConsolidationWriter {
 
-    private EntityManagerFactory entityManagerFactory;
+    private final EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    public MonthlyWriter(EntityManagerFactory entityManagerFactory) {
+    public ConsolidationWriter(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
 
