@@ -17,9 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static java.text.MessageFormat.format;
 
@@ -150,22 +148,16 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
         // Build the trigger
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
-        if (trigger != null) {
-            logger.info(format("Trigger - jobGroup: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
-
-            try {
-                // Build the job details, needed for the scheduler
-                JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
-                scheduler.scheduleJob(jobDetail, trigger);
-                sendJobScheduled(jobSchedule);
-                logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
-                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
-            } catch (SchedulerException | IOException e) {
-                logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                        jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()));
-            }
-        } else {
-            logger.error(format("No suitable schedule found - groupName: {0} jobName: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
+        try {
+            // Build the job details, needed for the scheduler
+            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
+            scheduler.scheduleJob(jobDetail, trigger);
+            sendJobScheduled(jobSchedule, trigger);
+            logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
+                    jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), trigger.getNextFireTime()));
+        } catch (SchedulerException | IOException e) {
+            logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
+                    jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName(), e.getMessage()));
         }
     }
 
@@ -192,42 +184,42 @@ public class BatchScheduler extends BatchSchedulerHelper {
     /**
      * Reschedule one job by job definition. The job is identified by groupName and jobName.
      *
-     * @param jobSchedule job definition.
+     * @param jobScheduleDto job definition.
      */
-    public void rescheduleJob(JobScheduleDto jobSchedule) {
+    public void rescheduleJob(JobScheduleDto jobScheduleDto) {
 
-        JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
-        String jobName = jobDefinition.getName();
-        String groupName = jobDefinition.getJobMainGroupDto().getName();
+        JobDefinitionDto jobDefinitionDto = jobScheduleDto.getJobDefinitionDto();
+        String jobName = jobDefinitionDto.getName();
+        String groupName = jobDefinitionDto.getJobMainGroupDto().getName();
         logger.info(format("Reschedule job - jobGroup: {0} jobName: {1}", groupName, jobName));
 
-        JobKey jobKey = findJob(jobDefinition);
-        if (jobKey != null) {
+        JobKey jobKey = findJob(jobDefinitionDto);
+        if (isScheduled(jobKey)) {
             logger.debug(format("Job key found - jobGroup: {0} jobName: {1}", groupName, jobName));
-            if (isScheduled(jobKey)) {
 
-                // Get trigger
-                Trigger trigger = getTrigger(jobKey);
-                if (compareTriggers(trigger, jobSchedule)) {
-                    logger.debug(format("Triggers are equal - jobGroup: {0} jobName: {1}", groupName, jobName));
-                    return;
-                }
+            // Remove if already schedules
+            removeFromScheduler(jobKey);
+            logger.debug(format("Job is removed from scheduler - jobGroup: {0} jobName: {1}", groupName, jobName));
 
-                // Remove from schedule
-                removeFromScheduler(jobKey);
-                logger.debug(format("Job is scheduled - jobGroup: {0} jobName: {1}", groupName, jobName));
-
-                // Schedule job
-                if (jobDefinition.isActive()) {
-                    jobSchedule.setLastExecution(trigger.getPreviousFireTime());
-                    jobSchedule.setNextExecution(trigger.getNextFireTime());
-                    addJobToScheduler(jobSchedule, jobDefinition);
+            // Schedule job
+            if (jobDefinitionDto.isActive()) {
+                // Build the trigger
+                Trigger trigger = buildTrigger(jobScheduleDto, jobDefinitionDto);
+                jobScheduleDto.setLastExecution(trigger.getPreviousFireTime());
+                jobScheduleDto.setNextExecution(trigger.getFireTimeAfter(trigger.getPreviousFireTime()));
+                try {
+                    // Build the job details, needed for the scheduler
+                    JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobScheduleDto, jobDefinitionDto);
+                    scheduler.scheduleJob(jobDetail, trigger);
+                    sendJobScheduled(jobScheduleDto, trigger);
                     logger.info(format("Job rescheduled - jobGroup: {0} jobName: {1} next: {2}", jobKey.getGroup(), jobKey.getName(), trigger.getNextFireTime()));
+                } catch (SchedulerException | IOException e) {
+                    logger.error(format("Could not reschedule job - groupName: {0} jobName: {1} error: {2}", groupName, jobName, e.getMessage()));
                 }
             }
         } else {
             logger.debug(format("Job key not found, will be added to scheduler - jobGroup: {0} jobName: {1}", groupName, jobName));
-            addJobToScheduler(jobSchedule, jobDefinition);
+            addJobToScheduler(jobScheduleDto, jobDefinitionDto);
         }
     }
 
@@ -266,20 +258,19 @@ public class BatchScheduler extends BatchSchedulerHelper {
      *
      * @param jobSchedule job schedule.
      */
-    private void sendJobScheduled(JobScheduleDto jobSchedule) {
+    private void sendJobScheduled(JobScheduleDto jobSchedule, Trigger trigger) {
         logger.info(format("Sending job execution status - name: {0}", jobSchedule.getJobDefinitionDto().getName()));
-        try {
-            CronExpression cronExpression = new CronExpression(jobSchedule.getSchedule());
-            Date next = cronExpression.getNextValidTimeAfter(new Date());
-            jobSchedule.setNextExecution(next);
 
-            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
-            agentSchedulerMessageDto.setNodeName(nodeName);
-            agentSchedulerMessageDto.setHostName(hostName);
-            agentSchedulerMessageDto.setJobScheduleDto(jobSchedule);
-            agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        // Get triggers
+        jobSchedule.setLastExecution(trigger.getPreviousFireTime());
+        jobSchedule.setNextExecution(trigger.getNextFireTime());
+        logger.info(format("Trigger time - previous: {0} next: {1}", jobSchedule.getLastExecution(), jobSchedule.getNextExecution()));
+
+        // Create and send message
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
+        agentSchedulerMessageDto.setNodeName(nodeName);
+        agentSchedulerMessageDto.setHostName(hostName);
+        agentSchedulerMessageDto.setJobScheduleDto(jobSchedule);
+        agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
     }
 }

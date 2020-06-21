@@ -122,13 +122,10 @@ public abstract class BatchSchedulerHelper {
      * @return trigger for the Quartz scheduler.
      */
     Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
-        if (jobSchedule.getSchedule() != null) {
-            return TriggerBuilder.newTrigger()
-                    .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
-                    .withSchedule(createSchedule(jobSchedule.getSchedule()))
-                    .build();
-        }
-        return null;
+        return TriggerBuilder.newTrigger()
+                .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
+                .withSchedule(createSchedule(jobSchedule.getSchedule()))
+                .build();
     }
 
     /**
@@ -152,7 +149,7 @@ public abstract class BatchSchedulerHelper {
 
     boolean compareTriggers(Trigger trigger, JobScheduleDto jobScheduleDto) {
         Trigger tmpTrigger = buildTrigger(jobScheduleDto, jobScheduleDto.getJobDefinitionDto());
-        return trigger.compareTo(tmpTrigger) == 0;
+        return (new Trigger.TriggerTimeComparator()).compare(trigger, tmpTrigger) == 0;
     }
 
     /**
