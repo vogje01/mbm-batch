@@ -21,6 +21,10 @@ public class ExecutionParameter {
 
     public static final String JOB_NAME = "job.name";
 
+    public static final String JOB_GROUP = "job.group";
+
+    public static final String JOB_KEY = "job.key";
+
     public static final String JOB_VERSION = "job.version";
 
     public static final String JOB_LAUNCH_TIME = "job.launchTime";
@@ -30,8 +34,6 @@ public class ExecutionParameter {
     public static final String JOB_PID = "job.pid";
 
     public static final String JOB_DESCRIPTION = "job.description";
-
-    public static final String JOB_GROUP = "job.group";
 
     public static final String JOB_WORKING_DIRECTORY = "job.workingDirectory";
 
@@ -93,6 +95,14 @@ public class ExecutionParameter {
         return jobExecution.getJobParameters().getString(JOB_NAME);
     }
 
+    public static String getJobGroup(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_GROUP);
+    }
+
+    public static String getJobKey(JobExecution jobExecution) {
+        return jobExecution.getJobParameters().getString(JOB_KEY);
+    }
+
     public static String getJobContext(JobExecution jobExecution) {
         return jobExecution.getJobParameters().getString(JOB_CONTEXT);
     }
@@ -133,12 +143,20 @@ public class ExecutionParameter {
         return jobExecution.getJobParameters().getString(JOB_COMPLETED_EXIT_MESSAGE);
     }
 
+    public static String getJobUuid(StepExecution stepExecution) {
+        return stepExecution.getJobExecution().getExecutionContext().getString(JOB_UUID);
+    }
+
     public static String getJobName(StepExecution stepExecution) {
         return stepExecution.getJobExecution().getJobParameters().getString(JOB_NAME);
     }
 
-    public static String getJobUuid(StepExecution stepExecution) {
-        return stepExecution.getJobExecution().getExecutionContext().getString(JOB_UUID);
+    public static String getJobGroup(StepExecution stepExecution) {
+        return stepExecution.getJobExecution().getJobParameters().getString(JOB_GROUP);
+    }
+
+    public static String getJobKey(StepExecution stepExecution) {
+        return stepExecution.getJobExecution().getJobParameters().getString(JOB_KEY);
     }
 
     public static String getJobVersion(StepExecution stepExecution) {
@@ -195,6 +213,14 @@ public class ExecutionParameter {
 
     public static String getJobUuid(ChunkContext chunkContext) {
         return (String) chunkContext.getStepContext().getJobExecutionContext().get(JOB_UUID);
+    }
+
+    public static String getJobGroup(ChunkContext chunkContext) {
+        return (String) chunkContext.getStepContext().getJobExecutionContext().get(JOB_GROUP);
+    }
+
+    public static String getJobKey(ChunkContext chunkContext) {
+        return (String) chunkContext.getStepContext().getJobExecutionContext().get(JOB_KEY);
     }
 
     public static long getStepExecutionTotalCount(ChunkContext chunkContext) {

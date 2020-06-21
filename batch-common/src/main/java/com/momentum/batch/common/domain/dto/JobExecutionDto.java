@@ -31,6 +31,14 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
      */
     private String jobName;
     /**
+     * Job group
+     */
+    private String jobGroup;
+    /**
+     * Job key
+     */
+    private String jobKey;
+    /**
      * Job execution ID
      */
     private Long jobExecutionId;
@@ -115,10 +123,6 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
      */
     private Date modifiedAt;
     /**
-     * Job instance
-     */
-    private JobInstanceDto jobInstanceDto;
-    /**
      * Job execution context
      */
     private JobExecutionContextDto jobExecutionContextDto;
@@ -148,6 +152,22 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     public void setJobName(String jobName) {
         this.jobName = jobName;
+    }
+
+    public String getJobGroup() {
+        return jobGroup;
+    }
+
+    public void setJobGroup(String jobGroup) {
+        this.jobGroup = jobGroup;
+    }
+
+    public String getJobKey() {
+        return jobKey;
+    }
+
+    public void setJobKey(String jobKey) {
+        this.jobKey = jobKey;
     }
 
     public Long getJobExecutionId() {
@@ -318,14 +338,6 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
         this.modifiedAt = modifiedAt;
     }
 
-    public JobInstanceDto getJobInstanceDto() {
-        return jobInstanceDto;
-    }
-
-    public void setJobInstanceDto(JobInstanceDto jobInstanceDto) {
-        this.jobInstanceDto = jobInstanceDto;
-    }
-
     public JobExecutionContextDto getJobExecutionContextDto() {
         return jobExecutionContextDto;
     }
@@ -350,6 +362,8 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
         JobExecutionDto that = (JobExecutionDto) o;
         return Objects.equal(id, that.id) &&
                 Objects.equal(jobName, that.jobName) &&
+                Objects.equal(jobGroup, that.jobGroup) &&
+                Objects.equal(jobKey, that.jobKey) &&
                 Objects.equal(jobExecutionId, that.jobExecutionId) &&
                 Objects.equal(jobVersion, that.jobVersion) &&
                 Objects.equal(jobPid, that.jobPid) &&
@@ -375,9 +389,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobExecutionId, jobVersion, jobPid, jobDefinitionId, jobDefinitionName, hostName, nodeName,
-                startedBy, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy,
-                modifiedAt);
+        return Objects.hashCode(super.hashCode(), id, jobName, jobGroup, jobKey, jobExecutionId, jobVersion, jobPid, jobDefinitionId, jobDefinitionName, hostName, nodeName, startedBy, status, createTime, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, totalSize, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     @Override
@@ -385,6 +397,8 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("jobName", jobName)
+                .add("jobGroup", jobGroup)
+                .add("jobKey", jobKey)
                 .add("jobExecutionId", jobExecutionId)
                 .add("jobVersion", jobVersion)
                 .add("jobPid", jobPid)
@@ -406,8 +420,7 @@ public class JobExecutionDto extends RepresentationModel<JobExecutionDto> {
                 .add("createdAt", createdAt)
                 .add("modifiedBy", modifiedBy)
                 .add("modifiedAt", modifiedAt)
-                .add("jobInstanceDto", jobInstanceDto)
-                .add("jobExecutionParamDtoes", jobExecutionParamDtoes)
                 .toString();
     }
+
 }

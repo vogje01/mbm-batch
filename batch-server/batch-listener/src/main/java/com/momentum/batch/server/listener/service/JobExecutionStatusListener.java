@@ -46,10 +46,6 @@ public class JobExecutionStatusListener {
      */
     private final JobExecutionContextRepository jobExecutionContextRepository;
     /**
-     * Job execution instance repository
-     */
-    private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
-    /**
      * Job definition repository
      */
     private final JobDefinitionRepository jobDefinitionRepository;
@@ -70,7 +66,6 @@ public class JobExecutionStatusListener {
      * Constructor.
      *
      * @param jobExecutionInfoRepository     job execution info repository.
-     * @param jobExecutionInstanceRepository job execution instance repository.
      * @param jobExecutionParamRepository    job execution parameter repository.
      * @param jobExecutionContextRepository  job execution context repository.
      * @param stepExecutionInfoRepository    step execution info repository.
@@ -78,13 +73,11 @@ public class JobExecutionStatusListener {
      * @param modelConverter                 model converter.
      */
     @Autowired
-    public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository, JobExecutionInstanceRepository jobExecutionInstanceRepository,
-                                      JobExecutionParamRepository jobExecutionParamRepository, JobExecutionContextRepository jobExecutionContextRepository,
-                                      JobDefinitionRepository jobDefinitionRepository,
+    public JobExecutionStatusListener(JobExecutionInfoRepository jobExecutionInfoRepository, JobExecutionParamRepository jobExecutionParamRepository,
+                                      JobExecutionContextRepository jobExecutionContextRepository, JobDefinitionRepository jobDefinitionRepository,
                                       StepExecutionInfoRepository stepExecutionInfoRepository, StepExecutionContextRepository stepExecutionContextRepository,
                                       ModelConverter modelConverter) {
         this.jobExecutionInfoRepository = jobExecutionInfoRepository;
-        this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.jobExecutionContextRepository = jobExecutionContextRepository;
         this.jobExecutionParamRepository = jobExecutionParamRepository;
         this.jobDefinitionRepository = jobDefinitionRepository;
@@ -164,16 +157,6 @@ public class JobExecutionStatusListener {
             // Save job execution
             jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
             logger.debug(format("Job execution info created - nodeName: {0} jobName: {1} id: {2}", jobName, jobName, jobExecutionInfo.getId()));
-
-            // Create job instance
-            JobExecutionInstance jobExecutionInstance = modelConverter.convertJobInstanceToEntity(jobExecutionDto.getJobInstanceDto());
-            jobExecutionInstance.setJobExecutionInfo(jobExecutionInfo);
-            jobExecutionInstance = jobExecutionInstanceRepository.save(jobExecutionInstance);
-            logger.debug(format("Job execution instance created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionInstance.getId()));
-
-            // Second part of the relationship
-            jobExecutionInfo.setJobExecutionInstance(jobExecutionInstance);
-            jobExecutionInfo = jobExecutionInfoRepository.save(jobExecutionInfo);
 
             // Create job execution context
             JobExecutionContext jobExecutionContext = modelConverter.convertJobExecutionContextToEntity(jobExecutionDto.getJobExecutionContextDto());

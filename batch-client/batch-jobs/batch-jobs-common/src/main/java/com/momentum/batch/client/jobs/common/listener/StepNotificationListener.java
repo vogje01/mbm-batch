@@ -127,6 +127,8 @@ public class StepNotificationListener implements StepExecutionListener {
         stepExecutionDto.setNodeName(getNodeName(stepExecution));
         stepExecutionDto.setJobId(getJobUuid(stepExecution));
         stepExecutionDto.setJobName(getJobName(stepExecution));
+        stepExecutionDto.setJobGroup(getJobGroup(stepExecution));
+        stepExecutionDto.setJobKey(getJobKey(stepExecution));
         stepExecutionDto.setJobExecutionId(getJobExecutionId(stepExecution));
         stepExecutionDto.setId(getStepUuid(stepExecution));
         stepExecutionDto.setStepName(getStepName(stepExecution));

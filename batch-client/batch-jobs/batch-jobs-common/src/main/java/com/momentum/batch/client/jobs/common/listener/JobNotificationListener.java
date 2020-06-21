@@ -110,6 +110,8 @@ public class JobNotificationListener implements JobExecutionListener {
         jobExecutionDto.setNodeName(getNodeName(jobExecution));
         jobExecutionDto.setId(getJobUuid(jobExecution));
         jobExecutionDto.setJobName(getJobName(jobExecution));
+        jobExecutionDto.setJobGroup(getJobGroup(jobExecution));
+        jobExecutionDto.setJobKey(getJobKey(jobExecution));
         jobExecutionDto.setJobPid(getJobPid(jobExecution));
         jobExecutionDto.setJobVersion(getJobVersion(jobExecution));
         jobExecutionDto.setJobExecutionId(jobExecution.getId());

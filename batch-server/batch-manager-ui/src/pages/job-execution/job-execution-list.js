@@ -115,16 +115,16 @@ class JobExecutionList extends React.Component {
                                 allowUpdating={true}>
                                 <Form>
                                     <GroupItem colCount={2} caption={"Job Execution Details: " + this.state.currentJobExecution.jobName}>
-                                        <SimpleItem dataField="jobName" readOnly={true}/>
-                                        <SimpleItem dataField="hostName" readOnly={true}/>
-                                        <SimpleItem dataField="nodeName" readOnly={true}/>
-                                        <SimpleItem dataField="status" readOnly={true}/>
-                                        <SimpleItem dataField="jobPid" readOnly={true}/>
-                                        <SimpleItem dataField="id" readOnly={true}/>
-                                        <SimpleItem dataField="jobExecutionId" readOnly={true}/>
-                                        <SimpleItem dataField="jobVersion" readOnly={true}/>
-                                        <SimpleItem dataField="exitCode" readOnly={true}/>
-                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
+                                        <SimpleItem dataField="jobName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="hostName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="nodeName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="status" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="jobPid" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="jobGroup" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="jobKey" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="id" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="jobExecutionId" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
+                                        <SimpleItem dataField="jobVersion" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
                                     </GroupItem>
                                     <GroupItem colCount={2} caption={"Timing"}>
                                         <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
@@ -139,6 +139,8 @@ class JobExecutionList extends React.Component {
                                                     editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
                                         <SimpleItem dataField="startedBy" readOnly={true} editorType="dxTextBox"
                                                     editorOptions={{value: this.state.currentJobExecution.startedBy}}/>
+                                        <SimpleItem dataField="exitCode" readOnly={true}/>
+                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
                                     </GroupItem>
                                     <GroupItem colSpan={2} caption={"Parameters"}>
                                         <JobExecutionParamList jobExecution={this.state.currentJobExecution}/>
@@ -169,6 +171,12 @@ class JobExecutionList extends React.Component {
                                 allowEditing={true}>
                                 <HeaderFilter allowSearch={true}/>
                             </Column>
+                            <Column
+                                dataField={'jobGroup'}
+                                visible={false}/>
+                            <Column
+                                dataField={'jobKey'}
+                                visible={false}/>
                             <Column
                                 caption={'Host name'}
                                 dataField={'hostName'}

@@ -4,7 +4,6 @@ import com.momentum.batch.common.domain.dto.JobExecutionDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
-import com.momentum.batch.server.database.repository.JobExecutionInstanceRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.converter.JobExecutionInfoModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -35,8 +34,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
     private final JobExecutionInfoRepository jobExecutionRepository;
 
-    private final JobExecutionInstanceRepository jobExecutionInstanceRepository;
-
     private final StepExecutionInfoRepository stepExecutionRepository;
 
     private final PagedResourcesAssembler<JobExecutionInfo> pagedResourcesAssembler;
@@ -44,11 +41,9 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     private final JobExecutionInfoModelAssembler jobExecutionInfoModelAssembler;
 
     @Autowired
-    public JobExecutionServiceImpl(
-            JobExecutionInfoRepository jobExecutionRepository, JobExecutionInstanceRepository jobExecutionInstanceRepository, StepExecutionInfoRepository stepExecutionRepository,
-            PagedResourcesAssembler<JobExecutionInfo> pagedResourcesAssembler, JobExecutionInfoModelAssembler jobExecutionInfoModelAssembler) {
+    public JobExecutionServiceImpl(JobExecutionInfoRepository jobExecutionRepository, StepExecutionInfoRepository stepExecutionRepository,
+                                   PagedResourcesAssembler<JobExecutionInfo> pagedResourcesAssembler, JobExecutionInfoModelAssembler jobExecutionInfoModelAssembler) {
         this.jobExecutionRepository = jobExecutionRepository;
-        this.jobExecutionInstanceRepository = jobExecutionInstanceRepository;
         this.stepExecutionRepository = stepExecutionRepository;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.jobExecutionInfoModelAssembler = jobExecutionInfoModelAssembler;
@@ -84,9 +79,6 @@ public class JobExecutionServiceImpl implements JobExecutionService {
         if (jobExecutionInfoOptional.isPresent()) {
 
             JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
-
-            // Delete job execution instance
-            jobExecutionInstanceRepository.delete(jobExecutionInfo.getJobExecutionInstance());
 
             // Delete step executions
             jobExecutionInfo.getStepExecutionInfos().forEach(stepExecutionRepository::delete);

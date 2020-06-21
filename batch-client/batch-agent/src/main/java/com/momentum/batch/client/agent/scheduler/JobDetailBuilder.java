@@ -18,50 +18,52 @@ import static com.momentum.batch.common.util.ExecutionParameter.*;
 public class JobDetailBuilder {
 
 	/**
-	 * Name
-	 */
-	private String name;
-	/**
-	 * Job group
-	 */
-	private String group;
-	/**
-	 * Job description
-	 */
-	private String description;
-	/**
-	 * Library directory
-	 */
-	private String libraryDirectory;
+     * Job name
+     */
+    private String jobName;
+    /**
+     * Job group
+     */
+    private String jobGroup;
+    /**
+     * Job description
+     */
+    private String description;
 	/**
 	 * Job data map
 	 */
 	private final JobDataMap jobDataMap;
 
 	public JobDetailBuilder() {
-		jobDataMap = new JobDataMap();
-		group = JOB_GROUP;
-		description = JOB_DESCRIPTION;
-	}
+        jobDataMap = new JobDataMap();
+        jobGroup = JOB_GROUP;
+        description = JOB_DESCRIPTION;
+    }
 
-	public JobDetailBuilder libraryDirectory(String libraryDirectory) {
-		this.libraryDirectory = libraryDirectory;
-		return this;
-	}
+    public JobDetailBuilder jobName(String name) {
+        this.jobName = name;
+        jobDataMap.put(JOB_NAME, name);
+        return this;
+    }
 
-	public JobDetailBuilder jobName(String name) {
-		this.name = name;
-		jobDataMap.put(JOB_NAME, name);
-		return this;
-	}
+    public JobDetailBuilder jobGroup(String jobGroup) {
+        this.jobGroup = jobGroup;
+        jobDataMap.put(JOB_GROUP, jobGroup);
+        return this;
+    }
 
-	public JobDetailBuilder jobScheduleType(String jobScheduledType) {
-		jobDataMap.put(JOB_SCHEDULED_TYPE, jobScheduledType);
-		return this;
-	}
+    public JobDetailBuilder jobKey(String jobKey) {
+        jobDataMap.put(JOB_KEY, jobKey);
+        return this;
+    }
 
-	public JobDetailBuilder jobScheduleUuid(String jobScheduleUuid) {
-		jobDataMap.put(JOB_SCHEDULE_UUID, jobScheduleUuid);
+    public JobDetailBuilder jobScheduleType(String jobScheduledType) {
+        jobDataMap.put(JOB_SCHEDULED_TYPE, jobScheduledType);
+        return this;
+    }
+
+    public JobDetailBuilder jobScheduleUuid(String jobScheduleUuid) {
+        jobDataMap.put(JOB_SCHEDULE_UUID, jobScheduleUuid);
 		return this;
 	}
 
@@ -105,11 +107,6 @@ public class JobDetailBuilder {
 		return this;
 	}
 
-	public JobDetailBuilder jobGroupName(String group) {
-		this.group = group;
-		return this;
-	}
-
 	public JobDetailBuilder arguments(List<String> arguments) {
 		jobDataMap.put(JOB_ARGUMENTS, arguments);
 		return this;
@@ -136,8 +133,8 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetail build() {
-		return JobBuilder.newJob(BatchSchedulerTask.class)
-				.withIdentity(name, group)
+        return JobBuilder.newJob(BatchSchedulerTask.class)
+                .withIdentity(jobName, jobGroup)
 				.withDescription(description)
 				.usingJobData(jobDataMap)
 				.storeDurably()

@@ -3,7 +3,6 @@ package com.momentum.batch.client.jobs.common.converter;
 import com.momentum.batch.common.domain.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
@@ -37,8 +36,6 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     public JobExecutionDto convertJobExecutionToDto(JobExecution jobExecution) {
         JobExecutionDto jobExecutionDto = modelMapper.map(jobExecution, JobExecutionDto.class);
-        jobExecutionDto.setJobName(jobExecution.getJobInstance().getJobName());
-        jobExecutionDto.setJobInstanceDto(convertJobInstanceToDto(jobExecution.getJobInstance()));
         jobExecutionDto.setJobExecutionContextDto(convertJobExecutionContextToDto(jobExecution.getExecutionContext()));
         List<JobExecutionParamDto> jobExecutionParamDtoes = jobExecution.getJobParameters()
                 .getParameters()
@@ -47,15 +44,6 @@ public class ModelConverter {
                 .map(this::convertJobParameterToDto).collect(toList());
         jobExecutionDto.setJobExecutionParamDtoes(jobExecutionParamDtoes);
         return jobExecutionDto;
-    }
-
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    // Job instance
-    // ---------------------------------------------------------------------------------------------------------------------------------------------------------
-    public JobInstanceDto convertJobInstanceToDto(JobInstance jobInstance) {
-        JobInstanceDto jobInstanceDto = modelMapper.map(jobInstance, JobInstanceDto.class);
-        jobInstanceDto.setId(null);
-        return jobInstanceDto;
     }
 
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

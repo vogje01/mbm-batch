@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -21,9 +22,9 @@ import java.util.Optional;
 @Repository
 public interface JobExecutionInfoRepository extends PagingAndSortingRepository<JobExecutionInfo, String> {
 
-    Page<JobExecutionInfo> findAll(Pageable pageable);
+    Page<JobExecutionInfo> findAll(@NonNull Pageable pageable);
 
-    Optional<JobExecutionInfo> findById(String id);
+    Optional<JobExecutionInfo> findById(@NonNull String id);
 
     @Query("select j from JobExecutionInfo j where j.jobDefinition.id = :jobDefinitionId")
     Page<JobExecutionInfo> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
@@ -34,7 +35,7 @@ public interface JobExecutionInfoRepository extends PagingAndSortingRepository<J
     @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobDefinition.name = :jobName")
     Optional<Long> getLastExecutionId(@Param("jobName") String jobName);
 
-    @Query("select j.jobExecutionId from JobExecutionInfo j where j.jobExecutionInstance.jobName = :jobName order by j.startTime desc")
+    @Query("select j.jobExecutionId from JobExecutionInfo j where j.jobName = :jobName order by j.startTime desc")
     Page<JobExecutionInfo> findLastExecutionInfo(@Param("jobName") String jobName, Pageable pageable);
 }
 

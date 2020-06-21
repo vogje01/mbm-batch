@@ -195,13 +195,13 @@ public abstract class BatchSchedulerHelper {
     JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) throws IOException {
         checkJobLibrary(jobDefinition);
         return new JobDetailBuilder()
-                .libraryDirectory(libraryDirectory)
+                .jobName(jobDefinition.getName())
+                .jobGroup(jobDefinition.getJobMainGroupDto().getName())
+                .jobKey(jobDefinition.getJobMainGroupDto().getName() + ":" + jobDefinition.getName())
+                .jobType(jobDefinition.getType())
                 .jobScheduleUuid(jobSchedule.getId())
                 .jobScheduleName(jobSchedule.getName())
                 .jobScheduleType("Scheduled")
-                .jobName(jobDefinition.getName())
-                .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
-                .jobType(jobDefinition.getType())
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
                 .jarFile(getJarFileName(jobDefinition, libraryDirectory))
@@ -229,12 +229,12 @@ public abstract class BatchSchedulerHelper {
     JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobDefinitionDto jobDefinition) throws IOException {
         checkJobLibrary(jobDefinition);
         return new JobDetailBuilder()
-                .libraryDirectory(libraryDirectory)
                 .jobName(jobDefinition.getName())
+                .jobGroup(jobDefinition.getJobMainGroupDto().getName())
+                .jobKey(jobDefinition.getJobMainGroupDto().getName() + ":" + jobDefinition.getName())
+                .jobType(jobDefinition.getType())
                 .jobDefinitionName(jobDefinition.getName())
                 .jobDefinitionUuid(jobDefinition.getId())
-                .jobGroupName(jobDefinition.getJobMainGroupDto().getName())
-                .jobType(jobDefinition.getType())
                 .jobScheduleType("OnDemand")
                 .command(jobDefinition.getCommand())
                 .workingDirectory(jobDefinition.getWorkingDirectory())
@@ -271,6 +271,8 @@ public abstract class BatchSchedulerHelper {
         arguments.add("-D" + HOST_NAME + "=" + hostName);
         arguments.add("-D" + NODE_NAME + "=" + nodeName);
         arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
+        arguments.add("-D" + JOB_GROUP + "=" + jobDefinition.getJobMainGroupDto().getName());
+        arguments.add("-D" + JOB_KEY + "=" + jobDefinition.getJobMainGroupDto().getName() + ":" + jobDefinition.getName());
         arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getJobVersion());
         arguments.add("-D" + JOB_DEFINITION_NAME + "=" + jobDefinition.getName());
         arguments.add("-D" + JOB_DEFINITION_UUID + "=" + jobDefinition.getId());

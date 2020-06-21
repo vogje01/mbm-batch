@@ -22,13 +22,21 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     private String id;
     /**
+     * MBM job UUID
+     */
+    private String jobId;
+    /**
      * MBM job name
      */
     private String jobName;
     /**
-     * MBM job UUID
+     * MBM job group
      */
-    private String jobId;
+    private String jobGroup;
+    /**
+     * MBM job key
+     */
+    private String jobKey;
     /**
      * Spring batch job execution id (long)
      */
@@ -104,6 +112,14 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
         this.id = id;
     }
 
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
     public String getJobName() {
         return jobName;
     }
@@ -112,12 +128,20 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
         this.jobName = jobName;
     }
 
-    public String getJobId() {
-        return jobId;
+    public String getJobGroup() {
+        return jobGroup;
     }
 
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
+    public void setJobGroup(String jobGroup) {
+        this.jobGroup = jobGroup;
+    }
+
+    public String getJobKey() {
+        return jobKey;
+    }
+
+    public void setJobKey(String jobKey) {
+        this.jobKey = jobKey;
     }
 
     public Long getJobExecutionId() {
@@ -337,48 +361,16 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("jobName", jobName)
-                .add("jobId", jobId)
-                .add("jobExecutionId", jobExecutionId)
-                .add("stepName", stepName)
-                .add("stepExecutionId", stepExecutionId)
-                .add("hostName", hostName)
-                .add("nodeName", nodeName)
-                .add("status", status)
-                .add("totalCount", totalCount)
-                .add("readCount", readCount)
-                .add("writeCount", writeCount)
-                .add("filterCount", filterCount)
-                .add("commitCount", commitCount)
-                .add("rollbackCount", rollbackCount)
-                .add("readSkipCount", readSkipCount)
-                .add("processSkipCount", processSkipCount)
-                .add("writeSkipCount", writeSkipCount)
-                .add("startTime", startTime)
-                .add("endTime", endTime)
-                .add("lastUpdated", lastUpdated)
-                .add("runningTime", runningTime)
-                .add("exitCode", exitCode)
-                .add("exitMessage", exitMessage)
-                .add("createdBy", createdBy)
-                .add("createdAt", createdAt)
-                .add("modifiedBy", modifiedBy)
-                .add("modifiedAt", modifiedAt)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         StepExecutionDto that = (StepExecutionDto) o;
         return Objects.equal(id, that.id) &&
-                Objects.equal(jobName, that.jobName) &&
                 Objects.equal(jobId, that.jobId) &&
+                Objects.equal(jobName, that.jobName) &&
+                Objects.equal(jobGroup, that.jobGroup) &&
+                Objects.equal(jobKey, that.jobKey) &&
                 Objects.equal(jobExecutionId, that.jobExecutionId) &&
                 Objects.equal(stepName, that.stepName) &&
                 Objects.equal(stepExecutionId, that.stepExecutionId) &&
@@ -408,8 +400,42 @@ public class StepExecutionDto extends RepresentationModel<StepExecutionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, jobName, jobId, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount,
-                readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime,
-                lastUpdated, runningTime, exitCode, exitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
+        return Objects.hashCode(super.hashCode(), id, jobId, jobName, jobGroup, jobKey, jobExecutionId, stepName, stepExecutionId, hostName, nodeName, status, totalCount, readCount, writeCount, filterCount, commitCount, rollbackCount, readSkipCount, processSkipCount, writeSkipCount, startTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("jobId", jobId)
+                .add("jobName", jobName)
+                .add("jobGroup", jobGroup)
+                .add("jobKey", jobKey)
+                .add("jobExecutionId", jobExecutionId)
+                .add("stepName", stepName)
+                .add("stepExecutionId", stepExecutionId)
+                .add("hostName", hostName)
+                .add("nodeName", nodeName)
+                .add("status", status)
+                .add("totalCount", totalCount)
+                .add("readCount", readCount)
+                .add("writeCount", writeCount)
+                .add("filterCount", filterCount)
+                .add("commitCount", commitCount)
+                .add("rollbackCount", rollbackCount)
+                .add("readSkipCount", readSkipCount)
+                .add("processSkipCount", processSkipCount)
+                .add("writeSkipCount", writeSkipCount)
+                .add("startTime", startTime)
+                .add("endTime", endTime)
+                .add("lastUpdated", lastUpdated)
+                .add("runningTime", runningTime)
+                .add("exitCode", exitCode)
+                .add("exitMessage", exitMessage)
+                .add("createdBy", createdBy)
+                .add("createdAt", createdAt)
+                .add("modifiedBy", modifiedBy)
+                .add("modifiedAt", modifiedAt)
+                .toString();
     }
 }

@@ -12,9 +12,7 @@ public class JobExecutionDtoBuilder {
     }
 
     public JobExecutionDtoBuilder withName(String name) {
-        JobInstanceDto jobInstanceDto = new JobInstanceDto();
-        jobInstanceDto.setJobName(name);
-        jobExecutionDto.setJobInstanceDto(jobInstanceDto);
+        jobExecutionDto.setJobName(name);
         return this;
     }
 

@@ -14,12 +14,6 @@ public interface JobExecutionLogRepository extends PagingAndSortingRepository<Jo
     @Query("select count(j) from JobExecutionLog j where j.timestamp < :cutOffDate")
     long countByTimestamp(@Param("cutOffDate") long cutOffDate);
 
-    @Query("select count(j) from JobExecutionLog j where j.jobUuid = :jobId and j.stepUuid is null")
-    long countByJobId(@Param("jobId") String jobId);
-
-    @Query("select count(j) from JobExecutionLog j where j.stepUuid = :stepId")
-    long countByStepId(@Param("stepId") String stepId);
-
     @Query("select j from JobExecutionLog j where j.jobUuid = :jobUuid and j.stepUuid is null")
     Page<JobExecutionLog> findByJobId(@Param("jobUuid") String jobUuid, Pageable pageable);
 

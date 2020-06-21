@@ -77,12 +77,14 @@ public class ChunkNotificationListener implements ChunkListener {
     private void addAdditionalProperties(ChunkContext chunkContext) {
         stepExecutionDto.setHostName(getHostName(chunkContext));
         stepExecutionDto.setNodeName(getHostName(chunkContext));
-        stepExecutionDto.setJobId(getJobUuid(chunkContext));
-        stepExecutionDto.setJobName(getJobName(chunkContext));
-        stepExecutionDto.setJobExecutionId(getJobExecutionId(chunkContext));
         stepExecutionDto.setId(getStepUuid(chunkContext));
         stepExecutionDto.setStepName(getStepName(chunkContext));
         stepExecutionDto.setStepExecutionId(getStepExecutionId(chunkContext));
+        stepExecutionDto.setJobId(getJobUuid(chunkContext));
+        stepExecutionDto.setJobName(getJobName(chunkContext));
+        stepExecutionDto.setJobGroup(getJobGroup(chunkContext));
+        stepExecutionDto.setJobKey(getJobKey(chunkContext));
+        stepExecutionDto.setJobExecutionId(getJobExecutionId(chunkContext));
         stepExecutionDto.setTotalCount(getStepExecutionTotalCount(chunkContext));
     }
 }

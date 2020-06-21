@@ -2,6 +2,7 @@ package com.momentum.batch.server.database.repository;
 
 import com.momentum.batch.common.domain.JobScheduleType;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public interface JobScheduleRepository extends PagingAndSortingRepository<JobSchedule, String> {
 
     @Query("select j from JobSchedule j left join j.jobDefinition d left join d.jobGroups g")
-    Page<JobSchedule> findAll(Pageable pageable);
+    Page<JobSchedule> findAll(@NonNull Pageable pageable);
 
     @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g where g.name = :groupName and d.name = :jobName")
     Optional<JobSchedule> findByGroupAndName(@Param("groupName") String groupName, @Param("jobName") String jobName);
