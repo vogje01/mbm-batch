@@ -1,11 +1,14 @@
 package com.momentum.batch.client.jobs.housekeeping.steps;
 
+import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
 import com.momentum.batch.common.util.DateTimeUtils;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
@@ -28,29 +31,47 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Configuration
-public class JobExecutionLogStep {
+public class JobExecutionLogStepConfiguration {
 
-    @Value("${houseKeeping.batch.jobExecutionInfo.chunkSize}")
+    @Value("${houseKeeping.batch.jobExecutionLog.chunkSize}")
     private int chunkSize;
 
-    @Value("${houseKeeping.batch.jobExecutionInfo.houseKeepingDays}")
+    @Value("${houseKeeping.batch.jobExecutionLog.houseKeepingDays}")
     private int houseKeepingDays;
 
     private final EntityManagerFactory mysqlEmf;
 
     private final BatchLogger logger;
 
+    private final BatchStepBuilder<JobExecutionLog, JobExecutionLog> stepBuilder;
+
+    private final JobExecutionLogRepository jobExecutionLogRepository;
+
     @Autowired
-    public JobExecutionLogStep(BatchLogger logger, EntityManagerFactory mysqlEmf) {
+    public JobExecutionLogStepConfiguration(BatchLogger logger, EntityManagerFactory mysqlEmf, BatchStepBuilder<JobExecutionLog, JobExecutionLog> stepBuilder,
+                                            JobExecutionLogRepository jobExecutionLogRepository) {
         this.logger = logger;
         this.mysqlEmf = mysqlEmf;
+        this.stepBuilder = stepBuilder;
+        this.jobExecutionLogRepository = jobExecutionLogRepository;
+    }
+
+    @Bean("JobExecutionLog")
+    public Step jobExecutionLogStep() {
+        long totalCount = jobExecutionLogRepository.countByTimestamp(DateTimeUtils.getCutOffUnixtime(houseKeepingDays));
+        return stepBuilder
+                .name("Housekeeping job execution info")
+                .chunkSize(chunkSize)
+                .reader(jobExecutionLogReader())
+                .processor(jobExecutionLogProcessor())
+                .writer(jobExecutionLogWriter())
+                .total(totalCount)
+                .build();
     }
 
     @Bean
-    public ItemStreamReader<JobExecutionLog> jobExecutionInfoReader() {
-
-        logger.debug(format("Job execution log reader starting - cutOff: {0}", DateTimeUtils.getCutOffDate(houseKeepingDays)));
-
+    public ItemStreamReader<JobExecutionLog> jobExecutionLogReader() {
+        logger.debug(format("Job execution log reader starting - cutOff: {0}", DateTimeUtils.getCutOffUnixtime(houseKeepingDays)));
         String queryString = "select j from JobExecutionLog j where j.timestamp < :cutOff";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("cutOff", DateTimeUtils.getCutOffUnixtime(houseKeepingDays));
@@ -62,12 +83,12 @@ public class JobExecutionLogStep {
     }
 
     @Bean
-    public ItemProcessor<JobExecutionLog, JobExecutionLog> jobExecutionInfoItemProcessor() {
+    public ItemProcessor<JobExecutionLog, JobExecutionLog> jobExecutionLogProcessor() {
         return jobExecutionLog -> jobExecutionLog;
     }
 
     @Bean
-    public ItemWriter<JobExecutionLog> jobExecutionInfoWriter() {
+    public ItemWriter<JobExecutionLog> jobExecutionLogWriter() {
         return list -> {
 
             // Get session
