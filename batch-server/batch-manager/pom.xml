@@ -8,15 +8,16 @@
         <version>2.2.2.RELEASE</version>
         <relativePath/>
     </parent>
+
     <groupId>com.momentum.batch</groupId>
     <artifactId>batch-manager</artifactId>
     <name>batch-manager</name>
     <version>0.0.6-SNAPSHOT</version>
+    <description>Momentum Batch Management REST server</description>
     <organization>
         <name>momentumbatch</name>
         <url>https://hub.docker.com/orgs/momentumbatch</url>
     </organization>
-    <description>Momentum Batch Management REST server</description>
 
     <properties>
         <java.version>14</java.version>
@@ -100,12 +101,12 @@
         <dependency>
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.6-SNAPSHOT</version>
+            <version>0.0.6-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.6-SNAPSHOT</version>
+            <version>0.0.6-RELEASE</version>
         </dependency>
 
         <!-- Apache commons -->
@@ -160,7 +161,7 @@
         <dependency>
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.6-SNAPSHOT</version>
+            <version>0.0.6-RELEASE</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
