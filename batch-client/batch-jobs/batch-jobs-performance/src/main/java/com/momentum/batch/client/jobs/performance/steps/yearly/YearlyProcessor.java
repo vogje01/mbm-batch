@@ -25,17 +25,15 @@ public class YearlyProcessor implements ItemProcessor<Object[], BatchPerformance
 
         // Check old record
         Optional<BatchPerformance> batchPerformanceOptional = batchPerformanceRepository.findExisting((String) tuple[0], (String) tuple[1], (Timestamp) tuple[3], BatchPerformanceType.YEARLY);
+        BatchPerformance batchPerformance = batchPerformanceOptional.orElseGet(BatchPerformance::new);
 
         // General data
-        if (batchPerformanceOptional.isPresent()) {
-            BatchPerformance batchPerformance = batchPerformanceOptional.get();
-            batchPerformance.setType(BatchPerformanceType.WEEKLY);
-            batchPerformance.setQualifier((String) tuple[0]);
-            batchPerformance.setMetric((String) tuple[1]);
-            batchPerformance.setValue((Double) tuple[2]);
-            batchPerformance.setTimestamp((Timestamp) tuple[3]);
-            return batchPerformance;
-        }
-        return null;
+        batchPerformance.setType(BatchPerformanceType.YEARLY);
+        batchPerformance.setQualifier((String) tuple[0]);
+        batchPerformance.setMetric((String) tuple[1]);
+        batchPerformance.setValue((Double) tuple[2]);
+        batchPerformance.setTimestamp((Timestamp) tuple[3]);
+
+        return batchPerformance;
     }
 }

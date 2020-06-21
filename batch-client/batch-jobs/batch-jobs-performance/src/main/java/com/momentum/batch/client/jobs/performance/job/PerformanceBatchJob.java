@@ -7,7 +7,7 @@ import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.client.jobs.performance.steps.agentload.day.AgentLoadDayStep;
 import com.momentum.batch.client.jobs.performance.steps.agentload.week.AgentLoadWeekStep;
 import com.momentum.batch.client.jobs.performance.steps.daily.DailyStep;
-import com.momentum.batch.client.jobs.performance.steps.daily.removesuplicates.DailyRemoveDuplicatesStep;
+import com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates.DailyRemoveDuplicatesStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.JobCountNodeStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountCompletedStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountFailedStep;

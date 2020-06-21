@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removesuplicates;
+package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;

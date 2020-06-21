@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removesuplicates;
+package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
 
 import com.momentum.batch.client.jobs.common.reader.CursorReaderBuilder;
 import com.momentum.batch.common.domain.BatchPerformanceType;

@@ -2,8 +2,6 @@ package com.momentum.batch.server.database.repository;
 
 import com.momentum.batch.common.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.domain.BatchPerformance;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -33,8 +31,8 @@ public interface BatchPerformanceRepository extends PagingAndSortingRepository<B
                                             @Param("timestamp") Timestamp timestamp, @Param("type") BatchPerformanceType type);
 
     @Query("select b from BatchPerformance b where b.qualifier = :qualifier and b.metric = :metric and b.timestamp = :timestamp and b.type = :type")
-    Page<BatchPerformance> findDuplicates(@Param("qualifier") String qualifier, @Param("metric") String metric,
-                                          @Param("timestamp") Timestamp timestamp, @Param("type") BatchPerformanceType type, Pageable pageable);
+    List<BatchPerformance> findDuplicates(@Param("qualifier") String qualifier, @Param("metric") String metric,
+                                          @Param("timestamp") Timestamp timestamp, @Param("type") BatchPerformanceType type);
 
     @Query("select b from BatchPerformance b where b.qualifier = :nodeName and b.type = :type and " +
             "b.metric = :metric and b.timestamp >= :startTime and b.timestamp <= :endTime order by b.timestamp")

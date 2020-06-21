@@ -1,4 +1,4 @@
-package com.momentum.batch.client.jobs.performance.steps.daily.removesuplicates;
+package com.momentum.batch.client.jobs.performance.steps.daily.removeduplicates;
 
 import com.momentum.batch.client.jobs.common.writer.MysqlDeleteWriter;
 import com.momentum.batch.server.database.domain.BatchPerformance;
