@@ -219,4 +219,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub mbm-batch Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/vogje01/mbm-batch</url>
+        </repository>
+    </distributionManagement>
 </project>
