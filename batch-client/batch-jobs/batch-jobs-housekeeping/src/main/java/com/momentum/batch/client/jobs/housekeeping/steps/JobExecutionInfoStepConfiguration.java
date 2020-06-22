@@ -121,10 +121,18 @@ public class JobExecutionInfoStepConfiguration {
             session.getTransaction().begin();
 
             // Delete
-            for (JobExecutionInfo item : list) {
-                item = session.get(JobExecutionInfo.class, item.getId());
-                session.delete(item.getJobExecutionContext());
-                session.delete(item);
+            for (JobExecutionInfo jobExecutionInfo : list) {
+                jobExecutionInfo = session.get(JobExecutionInfo.class, jobExecutionInfo.getId());
+
+                // Delete job execution context
+                session.delete(jobExecutionInfo.getJobExecutionContext());
+
+                // Remove job definition
+                jobExecutionInfo.setJobDefinition(null);
+                session.save(jobExecutionInfo.getJobExecutionContext());
+
+                // Delete job execution
+                session.delete(jobExecutionInfo);
             }
 
             // Commit

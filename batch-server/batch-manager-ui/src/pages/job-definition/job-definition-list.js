@@ -47,6 +47,7 @@ class JobDefinitionList extends React.Component {
         };
         this.toggleExport = this.toggleExport.bind(this);
         this.toggleImport = this.toggleImport.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
         this.hideAgentPopup = this.hideAgentPopup.bind(this);
         this.showAgentPopup = this.showAgentPopup.bind(this);
         this.selectionChanged = this.selectionChanged.bind(this);
@@ -62,6 +63,10 @@ class JobDefinitionList extends React.Component {
 
     toggleImport(e) {
         this.props.history.push('/jobdefinitionimport')
+    }
+
+    uploadFile(e) {
+        this.props.history.push('/jobfileupload')
     }
 
     showAgentPopup(e) {
@@ -114,7 +119,7 @@ class JobDefinitionList extends React.Component {
                                 location="before"
                                 widget="dxButton"
                                 options={{
-                                    icon: "material-icons-outlined ic-refresh", onClick: () => {
+                                    icon: "material-icons-outlined ic-refresh", hint: 'Refresh the job definition list', onClick: () => {
                                         this.setState({})
                                     }
                                 }}/>
@@ -122,16 +127,24 @@ class JobDefinitionList extends React.Component {
                                 location="before"
                                 widget="dxButton"
                                 options={{
-                                    icon: "material-icons-outlined ic-import", onClick: () => {
-                                        this.toggleImport();
+                                    icon: "material-icons-outlined ic-import", hint: 'Import job definition list', onClick: () => {
+                                        this.toggleImport()
                                     }
                                 }}/>
                             <Item
                                 location="before"
                                 widget="dxButton"
                                 options={{
-                                    icon: "material-icons-outlined ic-export", onClick: () => {
+                                    icon: "material-icons-outlined ic-export", hint: 'Export job definition list', onClick: () => {
                                         this.toggleExport();
+                                    }
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-upload", hint: 'Upload a batch job to the server', onClick: () => {
+                                        this.uploadFile();
                                     }
                                 }}/>
                         </Toolbar>

@@ -100,7 +100,8 @@ class Profile extends React.Component {
                         <FileUploader multiple={false} accept={'images/*'} uploadMode={'instantly'}
                                       uploadHeaders={{'Authorization': 'Bearer ' + localStorage.getItem('webToken')}}
                                       uploadUrl={process.env.REACT_APP_API_URL + 'users/avatar/' + this.state.user.id} onUploaded={this.onUploaded.bind(this)}
-                                      labelText={''} uploadedMessage={'You need to logout/login for the changes to take effect!'}/>
+                                      labelText={''} uploadedMessage={'You need to logout/login for the changes to take effect!'}
+                                      allowedFileExtensions={['.jpg', '.jpeg', '.gif', '.png']} maxFileSize={4000000}/>
                         <div className="content" style={{display: this.state.selectedFiles.length > 0 ? 'block' : 'none'}}>
                             <div>
                                 <h4>Selected Files</h4>
