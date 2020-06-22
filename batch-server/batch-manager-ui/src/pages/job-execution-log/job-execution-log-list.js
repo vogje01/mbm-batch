@@ -6,6 +6,7 @@ import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {AgentDataSource} from "../agent/agent-data-source";
 import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
+import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 
 class LogList extends React.Component {
 
@@ -42,6 +43,13 @@ class LogList extends React.Component {
                 }
             }
         }
+        this.levels = [
+            {name: 'TRACE', value: 'TRACE'},
+            {name: 'DEBUG', value: 'DEBUG'},
+            {name: 'INFO', value: 'INFO'},
+            {name: 'WARNING', value: 'WARN'},
+            {name: 'ERROR', value: 'ERROR'}
+        ];
     }
 
     selectionChanged(e) {
@@ -74,7 +82,44 @@ class LogList extends React.Component {
                             <Item
                                 location="before"
                                 widget="dxSelectBox"
-                                options={{dataSource: AgentDataSource(), keyExpr: 'hostName', valueExpr: 'hostName', hint: 'Select host.'}}/>
+                                options={{
+                                    dataSource: AgentDataSource(),
+                                    keyExpr: 'id',
+                                    displayExpr: 'hostName',
+                                    hint: 'Select host.',
+                                    placeholder: 'Select host...'
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxSelectBox"
+                                options={{
+                                    dataSource: AgentDataSource(),
+                                    keyExpr: 'id',
+                                    displayExpr: 'nodeName',
+                                    hint: 'Select node.',
+                                    placeholder: 'Select node...'
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxSelectBox"
+                                options={{
+                                    dataSource: this.levels,
+                                    keyExpr: 'value',
+                                    displayExpr: 'name',
+                                    hint: 'Select level.',
+                                    placeholder: 'Select level...'
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxSelectBox"
+                                options={{
+                                    dataSource: JobDefinitionDataSource(),
+                                    keyExpr: 'id',
+                                    displayExpr: 'name',
+                                    hint: 'Select job.',
+                                    placeholder: 'Select job...',
+                                    cssClass: 'wide-select'
+                                }}/>
                             <Item
                                 location="after"
                                 widget="dxSelectBox"
@@ -94,7 +139,6 @@ class LogList extends React.Component {
                             showBorders={true}
                             rowAlternationEnabled={true}
                             onOptionChanged={this.optionChanged}>
-                            onEditingStart={this.selectionChanged}>
                             <Selection mode={'single'}/>
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
@@ -160,6 +204,7 @@ class LogList extends React.Component {
                             <Column
                                 caption={'Level'}
                                 dataField={'level'}
+                                dataType={'string'}
                                 allowSorting={true}
                                 allowFiltering={true}
                                 allowGrouping={false}
@@ -263,30 +308,6 @@ class LogList extends React.Component {
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
                             {/*<MasterDetail enabled={true} component={StepExecutionListPage}/>*/}
-                            <Column
-                                showInColumnChooser={false}
-                                allowSorting={false}
-                                allowReordering={false}
-                                width={80}
-                                type={'buttons'}
-                                buttons={[
-                                    {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry.',
-                                        icon: 'material-icons-outlined ic-edit',
-                                    },
-                                    {
-                                        name: 'restart',
-                                        hint: 'Restart the job execution entry.',
-                                        icon: 'material-icons-outlined ic-restart',
-                                        onClick: this.restartJob
-                                    },
-                                    {
-                                        name: 'delete',
-                                        hint: 'Delete job execution entry.',
-                                        icon: 'material-icons-outlined ic-delete'
-                                    }
-                                ]}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>
