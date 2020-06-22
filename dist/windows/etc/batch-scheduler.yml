@@ -1,0 +1,103 @@
+#
+# MPM listener configuration file
+#
+
+#
+# Spring configuration
+#
+spring:
+  main:
+    banner-mode: off
+  jpa:
+    open-in-view: false
+  datasource:
+    url: jdbc:mysql://batchmanager:3306/batch
+    username: admin
+    password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
+    driverClassName: com.mysql.cj.jdbc.Driver
+  kafka:
+    listener:
+      concurrency: 5
+
+#
+# Scheduler configuration:
+#   library: job library
+#     jobs: job directory
+#     dropins: dropins directory
+#   scheduler: job scheduler host
+#     server: name of the scheduler host
+#     interval: time interval in seconds for the scheduler checks.
+#   listener: job log, job execution status message listener
+#     server: name of the listener host
+#
+mbm:
+  library:
+    jobs: C:\work\batch\server\jobs
+    dropins: C:\work\batch\server\dropins
+  scheduler:
+    server: batchmanager
+    interval: 3600
+  listener:
+    server: batchmanager
+
+#
+# Kafka configuration.
+#   bootstrapAddress: Kafka server URL.
+#   maxRequestSize: Maximal request size (default: 4MB).
+#   retentionDays: Number of days the logs are kept.
+#   deletionDays: Number of days after which the logs are deleted.
+#   topic: Apache Kafka topic name.
+#   agentStatus: agent status message queue
+#     offsetReset: offset for the message queue
+#     topic: agent status message topic
+#     group: agent status consumer group
+#     partitions: agent status partitions
+#     replicas: agent status replicas
+#   agentScheduler: scheduler message queue
+#     offsetReset: offset for the message queue
+#     topic: scheduler message topic
+#     group: scheduler consumer group
+#     partitions: scheduler partitions
+#     replicas: scheduler replicas
+#   jobStatus: job status message queue
+#     offsetReset: offset for the message queue
+#     topic: job status message topic
+#     group: job status consumer group
+#     partitions: job status partitions
+#     replicas: job status replicas
+#   jobLogging: job logging message queue
+#     offsetReset: offset for the message queue
+#     topic: job logging message topic
+#     group: job logging consumer group
+#     partitions: job logging partitions
+#     replicas: job logging replicas
+#
+kafka:
+  bootstrapAddress: localhost:9092
+  maxRequestSize: 4194304
+  retentionDays: 1
+  deletionDays: 1
+  active: true
+  jobLogging:
+    offsetReset: latest
+    topic: batchJobExecutionLog
+    partitions: 5
+    replicas: 1
+    level: DEBUG
+  jobStatus:
+    offsetReset: latest
+    topic: batchJobStatus
+    partitions: 5
+    replicas: 1
+  agentStatus:
+    offsetReset: latest
+    topic: batchAgentStatus
+    group: batchscheduler
+    partitions: 5
+    replicas: 1
+  agentScheduler:
+    offsetReset: latest
+    topic: batchAgentScheduler
+    group: batchscheduler
+    partitions: 5
+    replicas: 1

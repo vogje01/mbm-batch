@@ -2,8 +2,8 @@ package com.momentum.batch.client.jobs.performance.steps.consolidation.removedup
 
 import com.momentum.batch.client.jobs.common.builder.BatchStepBuilder;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
-import com.momentum.batch.common.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.domain.BatchPerformanceType;
 import com.momentum.batch.server.database.repository.BatchPerformanceRepository;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;

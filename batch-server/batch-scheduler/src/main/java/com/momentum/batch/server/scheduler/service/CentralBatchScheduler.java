@@ -1,6 +1,5 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
@@ -9,6 +8,7 @@ import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
@@ -47,7 +47,7 @@ import static java.text.MessageFormat.format;
  * </ul>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.6
  */
 @Service

@@ -30,7 +30,7 @@ import static java.text.MessageFormat.format;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @RestController

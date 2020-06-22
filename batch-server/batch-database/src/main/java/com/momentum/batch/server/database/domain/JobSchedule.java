@@ -3,9 +3,6 @@ package com.momentum.batch.server.database.domain;
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.JobScheduleMode;
-import com.momentum.batch.common.domain.JobScheduleType;
-import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

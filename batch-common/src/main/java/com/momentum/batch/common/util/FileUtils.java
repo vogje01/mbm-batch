@@ -1,7 +1,7 @@
 package com.momentum.batch.common.util;
 
-import com.momentum.batch.common.domain.JobDefinitionType;
 import com.momentum.batch.common.util.md5.MD5;
+import com.momentum.batch.server.database.domain.JobDefinitionType;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * File utilities.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
 public class FileUtils {

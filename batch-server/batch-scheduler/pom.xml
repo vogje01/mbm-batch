@@ -10,10 +10,11 @@
         <relativePath/>
     </parent>
     <packaging>jar</packaging>
+
     <groupId>com.momentum.batch</groupId>
     <artifactId>batch-scheduler</artifactId>
     <name>batch-scheduler</name>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.6-RELEASE</version>
     <description>Momentum Batch Management scheduler</description>
     <organization>
         <name>momentumbatch</name>
@@ -95,12 +96,12 @@
         <dependency>
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-common</artifactId>
-            <version>0.0.6-SNAPSHOT</version>
+            <version>0.0.6-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
-            <version>0.0.6-SNAPSHOT</version>
+            <version>0.0.6-RELEASE</version>
         </dependency>
 
     </dependencies>

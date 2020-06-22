@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.AgentGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
+import com.momentum.batch.server.database.domain.dto.AgentGroupDto;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.manager.converter.AgentGroupModelAssembler;

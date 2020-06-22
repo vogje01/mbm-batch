@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.PasswordResetToken;
 import com.momentum.batch.server.database.domain.User;
+import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.controller.AvatarController;
@@ -26,7 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Service

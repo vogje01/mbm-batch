@@ -19,7 +19,7 @@ import java.util.Objects;
  * Batch management housekeeping batch job.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Configuration
@@ -34,16 +34,6 @@ public class HouseKeepingBatchConfiguration extends DefaultBatchConfigurer {
      * Class path resources
      */
     private static final ClassPathResource[] configFiles = new ClassPathResource[]{new ClassPathResource("application.yml"), new ClassPathResource("houseKeeping.yml")};
-
-    /**
-     * Set job name.
-     *
-     * @return job name.
-     */
-    @Bean
-    String jobName() {
-        return "Housekeeping Batch";
-    }
 
     /**
      * Sets the property sources.
@@ -67,6 +57,5 @@ public class HouseKeepingBatchConfiguration extends DefaultBatchConfigurer {
      */
     @Override
     public void setDataSource(DataSource dataSource) {
-
     }
 }

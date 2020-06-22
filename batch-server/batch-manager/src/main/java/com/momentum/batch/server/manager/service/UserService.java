@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.server.database.domain.User;
+import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.data.domain.Pageable;

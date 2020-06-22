@@ -1,9 +1,7 @@
 package com.momentum.batch.server.database.converter;
 
-import com.momentum.batch.common.domain.DateTimeFormat;
-import com.momentum.batch.common.domain.NumberFormat;
-import com.momentum.batch.common.domain.dto.*;
 import com.momentum.batch.server.database.domain.*;
+import com.momentum.batch.server.database.domain.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +18,7 @@ import static java.util.stream.Collectors.toList;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Component

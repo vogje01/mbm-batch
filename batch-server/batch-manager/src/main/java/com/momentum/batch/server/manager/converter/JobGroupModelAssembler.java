@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.converter;
 
-import com.momentum.batch.common.domain.dto.JobGroupDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.database.domain.dto.JobGroupDto;
 import com.momentum.batch.server.manager.controller.JobDefinitionController;
 import com.momentum.batch.server.manager.controller.JobGroupController;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
 @Component

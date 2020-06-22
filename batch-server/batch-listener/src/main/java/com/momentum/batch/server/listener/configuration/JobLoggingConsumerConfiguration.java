@@ -1,7 +1,7 @@
 package com.momentum.batch.server.listener.configuration;
 
 import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Deserializer;

@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.domain.dto.AgentDto;
-import com.momentum.batch.common.domain.dto.AgentGroupDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.server.database.domain.dto.AgentDto;
+import com.momentum.batch.server.database.domain.dto.AgentGroupDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.manager.service.JobScheduleService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @RestController

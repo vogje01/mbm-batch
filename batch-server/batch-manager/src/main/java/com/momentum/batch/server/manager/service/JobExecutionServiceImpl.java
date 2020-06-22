@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.converter.JobExecutionInfoModelAssembler;

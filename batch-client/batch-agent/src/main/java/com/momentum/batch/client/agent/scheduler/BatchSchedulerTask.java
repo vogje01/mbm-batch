@@ -1,10 +1,10 @@
 package com.momentum.batch.client.agent.scheduler;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -32,7 +32,7 @@ import static java.text.MessageFormat.format;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Component
@@ -248,7 +248,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         // Get the trigger
         Trigger trigger = jobExecutionContext.getTrigger();
         Date last = trigger.getPreviousFireTime();
-        Date next = trigger.getFireTimeAfter(trigger.getNextFireTime());
+        Date next = trigger.getNextFireTime();
         logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), last, next));
 
         // Build agent command
@@ -258,8 +258,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
             JobScheduleDto jobScheduleDto = new JobScheduleDto();
             jobScheduleDto.setName(jobDataMap.getString(JOB_SCHEDULE_NAME));
             jobScheduleDto.setId(jobDataMap.getString(JOB_SCHEDULE_UUID));
-            jobScheduleDto.setNextExecution(next);
             jobScheduleDto.setLastExecution(last);
+            jobScheduleDto.setNextExecution(next);
             agentSchedulerMessageDto.setHostName(hostName);
             agentSchedulerMessageDto.setNodeName(nodeName);
             agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);

@@ -1,11 +1,11 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.BatchPerformanceDataBuilder;
-import com.momentum.batch.common.domain.BatchPerformanceType;
-import com.momentum.batch.common.domain.dto.BatchPerformanceDto;
-import com.momentum.batch.common.domain.dto.BatchPerformanceDtoBuilder;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.BatchPerformance;
+import com.momentum.batch.server.database.domain.BatchPerformanceDataBuilder;
+import com.momentum.batch.server.database.domain.BatchPerformanceType;
+import com.momentum.batch.server.database.domain.dto.BatchPerformanceDto;
+import com.momentum.batch.server.database.domain.dto.BatchPerformanceDtoBuilder;
 import com.momentum.batch.server.manager.controller.BatchPerformanceController;
 import org.junit.Before;
 import org.junit.Test;

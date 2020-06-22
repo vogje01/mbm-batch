@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.converter;
 
-import com.momentum.batch.common.domain.dto.*;
+import com.momentum.batch.server.database.domain.dto.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class ModelConverter {

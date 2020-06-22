@@ -2,8 +2,8 @@ package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static java.text.MessageFormat.format;
  * commands.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Service

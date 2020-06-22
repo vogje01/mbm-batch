@@ -1,15 +1,15 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.AgentStatus;
-import com.momentum.batch.common.domain.dto.AgentDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.common.message.dto.AgentStatusMessageType;
 import com.momentum.batch.common.producer.AgentStatusMessageProducer;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.AgentGroup;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.domain.dto.AgentDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.AgentGroupRepository;
 import com.momentum.batch.server.database.repository.AgentRepository;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
@@ -42,7 +42,7 @@ import static java.text.MessageFormat.format;
  * On startup the agent cache will be filled.
  * </p>
  *
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Service

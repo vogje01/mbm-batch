@@ -2,10 +2,10 @@ package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
-import com.momentum.batch.common.domain.AgentStatus;
 import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.common.message.dto.AgentStatusMessageType;
 import com.momentum.batch.common.producer.AgentStatusMessageProducer;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import com.sun.management.OperatingSystemMXBean;
 import com.sun.management.UnixOperatingSystemMXBean;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import static java.text.MessageFormat.format;
  * </ul>
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Service

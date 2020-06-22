@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.service.util;
 
-import com.momentum.batch.common.domain.dto.UserDto;
+import com.momentum.batch.server.database.domain.dto.UserDto;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * JWT response entity.
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class JwtResponse extends RepresentationModel<JwtResponse> implements Serializable {

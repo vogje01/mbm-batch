@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.manager.service.JobExecutionLogService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import com.momentum.batch.server.manager.service.common.RestPreconditions;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @RestController

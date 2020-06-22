@@ -2,8 +2,7 @@ package com.momentum.batch.server.database.domain;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.PrimaryKeyIdentifier;
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
@@ -129,8 +128,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
     /**
      * Job execution instance info from JSR-352
      */
-    @Cascade(CascadeType.ALL)
-    @OneToOne(mappedBy = "jobExecutionInfo", fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "jobExecutionInfo", fetch = FetchType.LAZY, optional = false, cascade = javax.persistence.CascadeType.ALL)
     private JobExecutionContext jobExecutionContext;
     /**
      * Job definition

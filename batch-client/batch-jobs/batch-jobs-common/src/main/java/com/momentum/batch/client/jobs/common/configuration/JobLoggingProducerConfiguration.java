@@ -3,8 +3,8 @@ package com.momentum.batch.client.jobs.common.configuration;
 import com.momentum.batch.client.jobs.common.logging.BatchLogProducer;
 import com.momentum.batch.client.jobs.common.logging.BatchLogger;
 import com.momentum.batch.common.configuration.AbstractKafkaConfiguration;
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.common.util.NetworkUtils;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.beans.factory.InjectionPoint;
@@ -22,7 +22,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Configuration

@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.converter;
 
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
 import com.momentum.batch.server.manager.controller.JobExecutionController;
 import com.momentum.batch.server.manager.controller.JobExecutionLogController;
 import com.momentum.batch.server.manager.controller.JobExecutionParamController;
@@ -20,7 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
 @Component

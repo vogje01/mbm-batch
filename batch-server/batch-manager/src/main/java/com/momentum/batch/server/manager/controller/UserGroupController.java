@@ -1,8 +1,8 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.domain.dto.UserGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.database.domain.dto.UserGroupDto;
 import com.momentum.batch.server.manager.converter.UserGroupModelAssembler;
 import com.momentum.batch.server.manager.service.UserGroupService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -29,7 +29,7 @@ import static java.text.MessageFormat.format;
  * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @RestController

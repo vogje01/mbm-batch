@@ -1,7 +1,7 @@
 package com.momentum.batch.server.database.repository;
 
-import com.momentum.batch.common.domain.JobScheduleType;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.domain.JobScheduleType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

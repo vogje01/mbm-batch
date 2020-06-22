@@ -2,14 +2,14 @@ package com.momentum.batch.common.message.dto;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 
 /**
  * Agent scheduler message DTO.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class AgentSchedulerMessageDto {

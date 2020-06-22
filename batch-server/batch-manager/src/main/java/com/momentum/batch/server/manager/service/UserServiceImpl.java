@@ -1,12 +1,8 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.DateTimeFormat;
-import com.momentum.batch.common.domain.NumberFormat;
-import com.momentum.batch.common.domain.dto.UserDto;
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.domain.PasswordResetToken;
-import com.momentum.batch.server.database.domain.User;
-import com.momentum.batch.server.database.domain.UserGroup;
+import com.momentum.batch.server.database.domain.*;
+import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.database.repository.PasswordResetTokenRepository;
 import com.momentum.batch.server.database.repository.UserGroupRepository;
 import com.momentum.batch.server.database.repository.UserRepository;
@@ -40,7 +36,7 @@ import static java.text.MessageFormat.format;
 /**
  * User service implementation.
  *
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Service

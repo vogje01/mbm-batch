@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * Daily performance remove duplicates writer.
  *
  * @author Jens.Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Component

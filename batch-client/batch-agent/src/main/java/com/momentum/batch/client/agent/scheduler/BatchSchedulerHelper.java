@@ -1,10 +1,10 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
-import com.momentum.batch.common.domain.JobDefinitionType;
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobDefinitionParamDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
+import com.momentum.batch.server.database.domain.JobDefinitionType;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import static java.text.MessageFormat.format;
  * Helper class for the job scheduler.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public abstract class BatchSchedulerHelper {
@@ -122,13 +122,10 @@ public abstract class BatchSchedulerHelper {
      * @return trigger for the Quartz scheduler.
      */
     Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
-        if (jobSchedule.getSchedule() != null) {
-            return TriggerBuilder.newTrigger()
-                    .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
-                    .withSchedule(createSchedule(jobSchedule.getSchedule()))
-                    .build();
-        }
-        return null;
+        return TriggerBuilder.newTrigger()
+                .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
+                .withSchedule(createSchedule(jobSchedule.getSchedule()))
+                .build();
     }
 
     /**
@@ -152,7 +149,7 @@ public abstract class BatchSchedulerHelper {
 
     boolean compareTriggers(Trigger trigger, JobScheduleDto jobScheduleDto) {
         Trigger tmpTrigger = buildTrigger(jobScheduleDto, jobScheduleDto.getJobDefinitionDto());
-        return trigger.compareTo(tmpTrigger) == 0;
+        return (new Trigger.TriggerTimeComparator()).compare(trigger, tmpTrigger) == 0;
     }
 
     /**

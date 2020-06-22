@@ -1,10 +1,10 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionDto;
-import com.momentum.batch.common.domain.dto.JobStatusDto;
-import com.momentum.batch.common.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.*;
+import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
+import com.momentum.batch.server.database.domain.dto.JobStatusDto;
+import com.momentum.batch.server.database.domain.dto.StepExecutionDto;
 import com.momentum.batch.server.database.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import static java.text.MessageFormat.format;
  * Listener for the job/step/chunk status notification messages send to the Kafka batchJobStatus queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.2
  */
 @Service

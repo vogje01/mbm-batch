@@ -1,9 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.dto.JobGroupDto;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.database.domain.dto.JobGroupDto;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.database.repository.JobGroupRepository;
 import com.momentum.batch.server.manager.converter.JobGroupModelAssembler;
@@ -28,7 +28,7 @@ import static java.text.MessageFormat.format;
  * Job group service.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.3
  */
 @Service

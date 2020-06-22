@@ -1,8 +1,8 @@
 package com.momentum.batch.client.agent.library;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ import static java.text.MessageFormat.format;
  * File downloader for job library files.
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
 @Component

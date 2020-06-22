@@ -12,7 +12,7 @@ import com.momentum.batch.client.jobs.performance.steps.jobcount.JobCountNodeSte
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountCompletedStep;
 import com.momentum.batch.client.jobs.performance.steps.jobcount.status.JobCountFailedStep;
 import com.momentum.batch.client.jobs.performance.steps.stepcount.StepCountStep;
-import com.momentum.batch.common.domain.BatchPerformanceType;
+import com.momentum.batch.server.database.domain.BatchPerformanceType;
 import org.springframework.batch.core.Job;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,9 +1,9 @@
 package com.momentum.batch.server.scheduler.listener;
 
-import com.momentum.batch.common.domain.dto.JobDefinitionDto;
-import com.momentum.batch.common.domain.dto.JobScheduleDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import static java.text.MessageFormat.format;
  * Listener for the agent scheduler notification messages send to the Kafka batchAgentScheduler message queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.2
  */
 @Service

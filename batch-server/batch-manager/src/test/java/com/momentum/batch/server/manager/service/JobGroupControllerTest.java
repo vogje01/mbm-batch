@@ -1,7 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
-import com.momentum.batch.common.domain.JobGroupBuilder;
 import com.momentum.batch.server.database.domain.JobGroup;
+import com.momentum.batch.server.database.domain.JobGroupBuilder;
 import com.momentum.batch.server.database.repository.JobGroupRepository;
 import com.momentum.batch.server.manager.controller.JobGroupController;
 import org.junit.Before;

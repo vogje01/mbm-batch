@@ -1,7 +1,7 @@
 package com.momentum.batch.server.listener.service;
 
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import org.apache.logging.log4j.Level;
 import org.modelmapper.ModelMapper;
@@ -18,7 +18,7 @@ import static java.text.MessageFormat.format;
  * Listener for the job execution logs messages send to the Kafka batchJobExecutionLog queue.
  *
  * @author Jens vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.2
  */
 @Service

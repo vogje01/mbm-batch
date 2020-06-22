@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.listener;
 
-import com.momentum.batch.common.domain.dto.JobStatusDto;
+import com.momentum.batch.server.database.domain.dto.JobStatusDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,7 @@ import static java.text.MessageFormat.format;
  * Class description.
  *
  * @author Jens Vogt jensvogt47@gmail.com
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class JobStatusProducer {

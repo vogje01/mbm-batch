@@ -1,6 +1,6 @@
 package com.momentum.batch.client.jobs.common.logging;
 
-import com.momentum.batch.common.domain.dto.JobExecutionLogDto;
+import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -12,7 +12,7 @@ import static java.text.MessageFormat.format;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.6-SNAPSHOT
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class BatchLogProducer {
