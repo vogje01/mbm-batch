@@ -8,7 +8,7 @@ import './login-form.scss';
 export default function (props) {
     const {logIn} = useAuth();
     const [loading, setLoading] = useState(false);
-    const formData = useRef({userId: 'vogje01', password: 'Dilbert_01'});
+    const formData = useRef({userId: 'admin', password: 'Secret_123'});
 
     const onSubmit = useCallback(async (e) => {
         e.preventDefault();

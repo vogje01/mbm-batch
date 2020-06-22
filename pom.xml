@@ -39,8 +39,8 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<distributionManagement>
+
+    <distributionManagement>
 		<repository>
 			<id>github</id>
 			<name>GitHub Packages</name>
