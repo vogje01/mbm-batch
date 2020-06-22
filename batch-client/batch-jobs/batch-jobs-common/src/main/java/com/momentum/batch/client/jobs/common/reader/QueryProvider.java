@@ -5,7 +5,7 @@ import org.hibernate.StatelessSession;
 import org.hibernate.query.Query;
 import org.springframework.batch.item.database.orm.HibernateQueryProvider;
 
-public class QueryProvider implements HibernateQueryProvider {
+public class QueryProvider<T> implements HibernateQueryProvider<T> {
 
     private Session session;
 
@@ -30,8 +30,8 @@ public class QueryProvider implements HibernateQueryProvider {
     }
 
     @Override
-    public Query createQuery() {
-        Query query;
+    public Query<T> createQuery() {
+        Query<T> query;
         if (statelessSession != null) {
             query = statelessSession.createQuery(queryString);
         } else {

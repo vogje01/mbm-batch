@@ -16,6 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
+ * Batch step builder.
+ *
+ * <p>
+ * The batch step builder extends the normal spring batch step builder. It attaches the necessary
+ * notification listener to communicate with the MBM batch management server.
+ * </p>
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-RELEASE
  * @since 0.0.1
@@ -35,12 +42,20 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
 
     private ItemWriter<O> writer;
 
-    private PlatformTransactionManager transactionManager;
+    private final PlatformTransactionManager transactionManager;
 
-    private StepNotificationListener stepNotificationListener;
+    private final StepNotificationListener stepNotificationListener;
 
-    private ChunkNotificationListener chunkNotificationListener;
+    private final ChunkNotificationListener chunkNotificationListener;
 
+    /**
+     * Constructor.
+     *
+     * @param jobRepository             spring batch job repository.
+     * @param transactionManager        spring batch transaction manager.
+     * @param stepNotificationListener  MBM step notification listener.
+     * @param chunkNotificationListener MBM chunk notification listener.
+     */
     @Autowired
     private BatchStepBuilder(
             JobRepository jobRepository,
@@ -104,6 +119,11 @@ public class BatchStepBuilder<I, O> extends StepBuilderFactory {
         return this;
     }
 
+    /**
+     * Build the step.
+     *
+     * @return spring batch step.
+     */
     public Step build() {
 
         StepBuilder stepBuilder = get(stepName).listener(stepNotificationListener);

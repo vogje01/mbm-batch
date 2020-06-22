@@ -3,16 +3,18 @@ package com.momentum.batch.client.jobs.common.reader;
 import org.hibernate.SessionFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.HibernateCursorItemReader;
+import org.springframework.batch.item.database.orm.HibernateQueryProvider;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Map;
 
 /**
  * Cursor reader extending the Hibernate cursor reader.
+ *
  * <p>
  * The Hibernate cursor item reader uses an own session, which is kept open as long as the cursor is opened. Therefore
  * the reader does not participate in the usual transaction reader/processor/writer transaction. If this is a problem
- * use the PagedReader.
+ * use a PagedReader.
  * </p>
  *
  * @param <T> entity class.
@@ -146,13 +148,12 @@ public class CursorReaderBuilder<T> {
      * @return item stream cursor reader.
      */
     public ItemStreamReader<T> build() {
-        QueryProvider queryProvider = new QueryProvider();
+        QueryProvider<T> queryProvider = new QueryProvider<>();
         queryProvider.setQueryString(queryString);
         queryProvider.setQueryHint(queryHint);
         queryProvider.setTimeout(timeout);
-        /**
-         * The actual reader
-         */
+
+        // The actual reader
         HibernateCursorItemReader<T> hibernateCursorItemReader = new HibernateCursorItemReader<>();
         hibernateCursorItemReader.setSessionFactory(sessionFactory);
         hibernateCursorItemReader.setMaxItemCount(maxItems);

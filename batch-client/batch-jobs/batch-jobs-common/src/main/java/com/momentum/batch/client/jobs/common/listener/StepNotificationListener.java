@@ -36,31 +36,82 @@ import static java.text.MessageFormat.format;
 @Scope("prototype")
 public class StepNotificationListener implements StepExecutionListener {
 
+    /**
+     * Batch logger, sending the log messages to the MBM listener.
+     */
     private final BatchLogger logger;
-
+    /**
+     * Model converter for the conversion to the MBM message format.
+     */
     private final ModelConverter modelConverter;
-
+    /**
+     * Job status producer, actually sending the messages to Kafka
+     */
     private final JobStatusProducer jobStatusProducer;
+    /**
+     * Map of total counts.
+     */
+    private final Map<String, Long> totalCounts;
+    /**
+     * step execution data transfer object.
+     */
+    private StepExecutionDto stepExecutionDto;
 
-    private StepExecutionDto stepExecutionDto = new StepExecutionDto();
-
-    private final Map<String, Long> totalCounts = new HashMap<>();
-
+    /**
+     * Batch step notification listener.
+     *
+     * <p>
+     * Sets up the necessary messages and the batch logger, which will send all logging output to the
+     * MBM server.
+     * </p>
+     *
+     * @param logger            batch logger.
+     * @param modelConverter    model converter for the conversion to the MBM messaging system.
+     * @param jobStatusProducer job status producer sending the step notification messages to the MBM Kafka messaging system.
+     */
     @Autowired
     public StepNotificationListener(BatchLogger logger, ModelConverter modelConverter, JobStatusProducer jobStatusProducer) {
         this.logger = logger;
         this.modelConverter = modelConverter;
         this.jobStatusProducer = jobStatusProducer;
+        this.stepExecutionDto = new StepExecutionDto();
+        this.totalCounts = new HashMap<>();
     }
 
+    /**
+     * Sets the total item count.
+     *
+     * @param stepName step name.
+     * @param totalCount total number of items to process.
+     */
     public void setTotalCount(String stepName, long totalCount) {
         this.totalCounts.put(stepName, totalCount);
     }
 
+    /**
+     * Save the total number of items to process.
+     *
+     * <p>
+     * The total number of items will be stored in a hash map as well as in the execution context of the
+     * step.
+     * </p>
+     *
+     * @param stepExecution step execution.
+     */
     public void saveTotalCount(StepExecution stepExecution) {
         stepExecution.getExecutionContext().putLong(STEP_TOTAL_COUNT, totalCounts.getOrDefault(stepExecution.getStepName(), 0L));
     }
 
+    /**
+     * Initialize the step notification message.
+     *
+     * <p>
+     * Initializes the step notification message and sets up the necessary attributes for the
+     * batch logger.
+     * </p>
+     *
+     * @param stepExecution step execution.
+     */
     @Override
     public void beforeStep(StepExecution stepExecution) {
 
@@ -85,6 +136,7 @@ public class StepNotificationListener implements StepExecutionListener {
 
     /**
      * Update the step execution infos and send the update to the server.
+     *
      * <p>
      * Additional to the JSR-352 attributes, the running time will be calculated, as well as the end time, as normally
      * the end time will be put after the callback has been executed.

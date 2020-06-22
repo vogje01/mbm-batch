@@ -71,6 +71,11 @@ public class JobExecutionInfoStepConfiguration {
                 .build();
     }
 
+    /**
+     * Batch housekeeping reader.
+     *
+     * @return item reader.
+     */
     @Bean
     public ItemStreamReader<JobExecutionInfo> jobExecutionInfoReader() {
         Date cutOff = DateTimeUtils.getCutOffDate(houseKeepingDays);
@@ -85,21 +90,34 @@ public class JobExecutionInfoStepConfiguration {
                 .build();
     }
 
+    /**
+     * Batch housekeeping processor.
+     *
+     * @return item processor
+     */
     @Bean
     public ItemProcessor<JobExecutionInfo, JobExecutionInfo> jobExecutionInfoItemProcessor() {
         return jobExecutionInfo -> jobExecutionInfo;
     }
 
+    /**
+     * Batch housekeeping delete writer.
+     *
+     * @return item writer.
+     */
     @Bean
     public ItemWriter<JobExecutionInfo> jobExecutionInfoWriter() {
+
+        // Get session
+        Session session = mysqlEmf.unwrap(SessionFactory.class).openSession();
+
         return list -> {
 
+            // Check list
             if (list.isEmpty()) {
                 return;
             }
 
-            // Get session
-            Session session = mysqlEmf.unwrap(SessionFactory.class).openSession();
             session.getTransaction().begin();
 
             // Delete
