@@ -30,6 +30,7 @@ class JobExecutionList extends React.Component {
         super(props);
         this.state = {
             currentJobExecution: {},
+            currentFilter: undefined
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.restartJob = this.restartJob.bind(this);
@@ -92,7 +93,7 @@ class JobExecutionList extends React.Component {
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            dataSource={JobExecutionDataSource(this)}
+                            dataSource={JobExecutionDataSource()}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

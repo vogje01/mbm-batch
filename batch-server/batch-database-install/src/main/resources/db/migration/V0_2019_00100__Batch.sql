@@ -413,7 +413,7 @@ CREATE TABLE BATCH_USER
     THEME         VARCHAR(64),
     DATE_FORMAT   ENUM ('DE', 'ENGB', 'ENUS'),
     NUMBER_FORMAT ENUM ('DE', 'ENGB', 'ENUS'),
-    AVATAR        BLOB,
+    AVATAR        MEDIUMBLOB,
     DESCRIPTION   TEXT,
     ACTIVE        BIT                  DEFAULT FALSE,
     CREATED_BY    VARCHAR(32)          DEFAULT 'admin',

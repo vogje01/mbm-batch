@@ -19,6 +19,7 @@ import {
 } from './pages';
 
 const routes = [
+    {path: '/jobexecutions/:status', component: JobExecutionListPage},
     {path: '/jobexecutions', component: JobExecutionListPage},
     {path: '/stepexecutions', component: StepExecutionListPage},
     {path: '/logs', component: LogListPage},

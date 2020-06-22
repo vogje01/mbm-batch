@@ -1,9 +1,10 @@
 import React from 'react';
 import './profile.scss';
 import Form, {EmailRule, EmptyItem, PatternRule, RequiredRule, SimpleItem, StringLengthRule} from 'devextreme-react/form';
-import {updateItem} from "../../utils/server-connection";
+import {getItem, updateItem} from "../../utils/server-connection";
 import themes from "devextreme/ui/themes";
 import {getFormattedTime} from "../../utils/date-time-util";
+import {FileUploader} from "devextreme-react";
 
 const themesList = [
     'material.blue.dark.compact',
@@ -32,7 +33,8 @@ class Profile extends React.Component {
         super(props);
         this.state = {
             passwordChanged: false,
-            user: JSON.parse(localStorage.getItem('user'))
+            user: JSON.parse(localStorage.getItem('user')),
+            selectedFiles: []
         };
         this.phonePattern = /^\s*\+[0-9]{2,3}\s*-?\s*\d{3}-?\s*[0-9 ]+$/;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,10 +46,9 @@ class Profile extends React.Component {
 
     themeSelectionChanged(e) {
         themes.ready(() => {
-            console.log("theme loaded: " + e.value);
             this.setState({});
+            themes.current(e.value);
         });
-        themes.current(e.value);
     }
 
     passwordChanged(e) {
@@ -60,6 +61,16 @@ class Profile extends React.Component {
 
     numberFormatValueChanged(e) {
         localStorage.setItem('numberFormat', e.value);
+    }
+
+    onUploaded(e) {
+        getItem(process.env.REACT_APP_API_URL + 'users/' + this.state.user.id)
+            .then((data) => {
+                this.setState({
+                    user: data
+                });
+                localStorage.setItem('user', JSON.stringify(data));
+            })
     }
 
     handleSubmit(e) {
@@ -80,12 +91,32 @@ class Profile extends React.Component {
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Profile</h2>
-
                 <div className={'content-block dx-card responsive-paddings'}>
                     <div className={'form-avatar'}>
                         <img alt={''} src={this.state.user._links.avatar.href}/>
                     </div>
                     <span>{this.state.user.description}</span>
+                    <div className="widget-container" style={{marginLeft: '-7px'}}>
+                        <FileUploader multiple={false} accept={'images/*'} uploadMode={'instantly'}
+                                      uploadHeaders={{'Authorization': 'Bearer ' + localStorage.getItem('webToken')}}
+                                      uploadUrl={process.env.REACT_APP_API_URL + 'users/avatar/' + this.state.user.id} onUploaded={this.onUploaded.bind(this)}
+                                      labelText={''} uploadedMessage={'You need to logout/login for the changes to take effect!'}/>
+                        <div className="content" style={{display: this.state.selectedFiles.length > 0 ? 'block' : 'none'}}>
+                            <div>
+                                <h4>Selected Files</h4>
+                                {
+                                    this.state.selectedFiles.map((file, i) => {
+                                        return <div className="selected-item" key={i}>
+                                            <span>{`Name: ${file.name}`}<br/></span>
+                                            <span>{`Size ${file.size}`}<br/></span>
+                                            <span>{`Type ${file.size}`}<br/></span>
+                                            <span>{`Last Modified Date: ${file.lastModifiedDate}`}</span>
+                                        </div>;
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className={'content-block dx-card responsive-paddings'}>
