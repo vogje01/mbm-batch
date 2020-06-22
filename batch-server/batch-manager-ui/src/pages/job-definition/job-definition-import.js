@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, TextArea} from "devextreme-react";
+import {TextArea} from "devextreme-react";
 import {errorMessage, infoMessage} from "../../utils/message-util";
+import Toolbar, {Item} from "devextreme-react/toolbar";
 
 class JobDefinitionImport extends React.Component {
 
@@ -24,7 +25,7 @@ class JobDefinitionImport extends React.Component {
             })
             .then(response => {
                 if (response.status === 200) {
-                    this.setState({currentJobDefinitions: [], importPopupVisible: false})
+                    this.props.history.push('/jobdefinitions')
                     infoMessage('Job definitions imported');
                 }
             })
@@ -39,16 +40,15 @@ class JobDefinitionImport extends React.Component {
                 <h2 className={'content-block'}>Job Definition Import</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="after"
+                                widget="dxButton"
+                                options={{text: "Import", stylingMode: "Contained", onClick: this.importJobDefinitions.bind(this)}}/>
+                        </Toolbar>
                         <TextArea
                             autoResizeEnabled={true}
                             onValueChanged={this.onImportTextAreaChanged}/>
-                        <Button
-                            width={90}
-                            text={'Import'}
-                            type={'normal'}
-                            stylingMode={'contained'}
-                            onClick={this.importJobDefinitions}
-                            style={{float: 'right', margin: '5px 10px 0 0'}}/>
                     </div>
                 </div>
             </React.Fragment>

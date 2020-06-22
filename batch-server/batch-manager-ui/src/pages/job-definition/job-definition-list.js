@@ -20,7 +20,6 @@ import Popup from "devextreme-react/popup";
 import {JobDefinitionDataSource, JobStart} from "./job-definition-data-source";
 import {insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
-import {Redirect} from "react-router-dom";
 import {getFormattedTime} from "../../utils/date-time-util";
 import JobDefinitionJobGroupList from "./job-definition-job-group-list";
 import {AgentDataSource} from "../agent/agent-data-source";
@@ -58,15 +57,11 @@ class JobDefinitionList extends React.Component {
     }
 
     toggleExport(e) {
-        this.setState({
-            showExport: !this.state.showExport
-        });
+        this.props.history.push('/jobdefinitionexport')
     }
 
     toggleImport(e) {
-        this.setState({
-            showImport: !this.state.showImport
-        });
+        this.props.history.push('/jobdefinitionimport')
     }
 
     showAgentPopup(e) {
@@ -426,12 +421,6 @@ class JobDefinitionList extends React.Component {
                         </Popup>
                     </div>
                 </div>
-                {
-                    this.state.showExport ? <Redirect to={'/jobdefinitionexport'}/> : null
-                }
-                {
-                    this.state.showImport ? <Redirect to={'/jobdefinitionimport'}/> : null
-                }
             </React.Fragment>
         );
     }

@@ -1,12 +1,10 @@
 package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.service.AvatarService;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.Optional;
-
-import static java.text.MessageFormat.format;
 
 /**
  * User  REST controller.
@@ -69,33 +62,20 @@ public class AvatarController {
      * </p>
      *
      * @param id ID of user.
-     * @return avatar image as PNG file.
+     * @return avatar image as image file.
      * @throws ResourceNotFoundException when the avatar cannot be found.
      */
     @GetMapping(value = "/{id}", produces = {"image/png"})
     public ResponseEntity<byte[]> avatar(@PathVariable String id) throws ResourceNotFoundException {
 
-        t.restart();
+        byte[] media = avatarService.download(id);
 
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-
-            User user = userOptional.get();
-            if (user.getAvatar() == null) {
-                return ResponseEntity.ok().build();
-            }
-            HttpHeaders headers = new HttpHeaders();
-            byte[] media = new byte[0];
-            try {
-                media = IOUtils.toByteArray(userOptional.get().getAvatar().getBinaryStream());
-            } catch (IOException | SQLException ex) {
-                logger.error(format("Could not read avatar - error: {0}", ex.getMessage()));
-            }
-            headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-
-            return new ResponseEntity<>(media, headers, HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        if (media.length == 0) {
+            return ResponseEntity.ok().build();
         }
-        throw new ResourceNotFoundException();
+        return new ResponseEntity<>(media, headers, HttpStatus.OK);
     }
 
     @PostMapping(value = "/{id}", consumes = {"multipart/form-data"})
@@ -105,6 +85,6 @@ public class AvatarController {
         Iterator<String> it = multipartRequest.getFileNames();
         MultipartFile multipart = multipartRequest.getFile(it.next());
 
-        return ResponseEntity.ok(avatarService.saveAvatar(id, multipart));
+        return ResponseEntity.ok(avatarService.upload(id, multipart));
     }
 }

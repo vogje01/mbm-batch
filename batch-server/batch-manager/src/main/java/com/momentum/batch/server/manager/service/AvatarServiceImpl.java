@@ -7,6 +7,7 @@ import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.converter.UserModelAssembler;
 import com.momentum.batch.server.manager.service.common.BadRequestException;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -48,7 +51,22 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     @Override
-    public UserDto saveAvatar(String id, MultipartFile file) throws ResourceNotFoundException {
+    public byte[] download(String id) throws ResourceNotFoundException {
+
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            try {
+                return IOUtils.toByteArray(user.getAvatar().getBinaryStream());
+            } catch (IOException | SQLException ex) {
+                throw new BadRequestException();
+            }
+        }
+        throw new ResourceNotFoundException();
+    }
+
+    @Override
+    public UserDto upload(String id, MultipartFile file) throws ResourceNotFoundException {
         logger.debug(format("Storing avatar - id: {0}", id));
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {

@@ -11,5 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface AvatarService {
 
-    UserDto saveAvatar(String userId, MultipartFile file) throws ResourceNotFoundException;
+    byte[] download(String id) throws ResourceNotFoundException;
+
+    UserDto upload(String userId, MultipartFile file) throws ResourceNotFoundException;
 }

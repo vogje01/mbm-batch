@@ -2,6 +2,7 @@ import React from 'react';
 import {TextArea} from "devextreme-react";
 
 import {errorMessage, infoMessage} from "../../utils/message-util";
+import Toolbar, {Item} from "devextreme-react/toolbar";
 
 class JobDefinitionExport extends React.Component {
 
@@ -27,12 +28,22 @@ class JobDefinitionExport extends React.Component {
             });
     }
 
+    close() {
+        this.props.history.push('/jobdefinitions')
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Job Definition Export</h2>
                 <div className={'content-block'}>
                     <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item
+                                location="after"
+                                widget="dxButton"
+                                options={{text: "Close", stylingMode: "Contained", onClick: this.close.bind(this)}}/>
+                        </Toolbar>
                         <TextArea
                             autoResizeEnabled={true}
                             value={JSON.stringify(this.state.currentJobDefinitions, null, 4)}/>

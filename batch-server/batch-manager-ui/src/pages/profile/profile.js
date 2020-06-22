@@ -189,7 +189,7 @@ class Profile extends React.Component {
                             <SimpleItem editorType={'dxButton'} colSpan={1} editorOptions={{
                                 horizontalAlignment: 'left',
                                 text: 'Save',
-                                type: 'success',
+                                type: 'normal',
                                 useSubmitBehavior: false,
                                 onClick: this.handleSubmit
                             }}/>
