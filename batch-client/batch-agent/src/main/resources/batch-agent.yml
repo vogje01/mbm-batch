@@ -38,8 +38,8 @@ spring:
 mbm:
   library:
     jobs: /app/batch/batch-agent/jobs
-    server: batch-manager
-    port: 8090
+    server: batch-scheduler
+    port: 8091
     user: admin
     password: ENC(DtIzGPj615i3oxA5xbW+5G5Pf40SrKfCmRDe962SHB5lw9aBR+zdqiylP1Nzt329)
   listener:

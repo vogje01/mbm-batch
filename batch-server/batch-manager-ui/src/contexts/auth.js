@@ -16,7 +16,7 @@ function AuthProvider(props) {
     }, []);
 
     const ping = useCallback(() => {
-        fetch(process.env.REACT_APP_API_URL + 'ping', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}})
+        fetch(process.env.REACT_MANAGER_API_URL + 'ping', {headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}})
             .then((response) => {
                 if (response.status !== 200) {
                     clearInterval(timer);
@@ -29,7 +29,7 @@ function AuthProvider(props) {
         // Send login request
         let authRequest = {userId: userId, password: password, orgUnit: 'EXT'}
         let basicAuthentication = 'Basic ' + new Buffer(userId + ':' + password + ':EXT').toString('base64');
-        fetch(process.env.REACT_APP_API_URL + 'authenticate', {
+        fetch(process.env.REACT_MANAGER_API_URL + 'authenticate', {
             headers: {'Content-Type': 'application/hal+json', 'Authorization': basicAuthentication},
             method: 'POST', body: JSON.stringify(authRequest)
         })

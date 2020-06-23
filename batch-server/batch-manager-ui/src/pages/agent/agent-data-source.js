@@ -11,7 +11,7 @@ export const AgentDataSource = () => {
             },
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'agents' + getParams(loadOptions, 'nodeName', 'asc');
+                let url = process.env.REACT_MANAGER_API_URL + 'agents' + getParams(loadOptions, 'nodeName', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of agents');

@@ -1,5 +1,6 @@
 package com.momentum.batch.server.manager.service.util;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
-    public Optional<String> getCurrentAuditor() {
+    public @NotNull Optional<String> getCurrentAuditor() {
         return Optional.of(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
     }
 }

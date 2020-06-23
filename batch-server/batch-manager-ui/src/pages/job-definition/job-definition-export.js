@@ -14,7 +14,7 @@ class JobDefinitionExport extends React.Component {
     }
 
     componentDidMount() {
-        fetch(process.env.REACT_APP_API_URL + 'jobdefinitions/export', {
+        fetch(process.env.REACT_MANAGER_API_URL + 'jobdefinitions/export', {
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')},
             method: 'GET'
         })

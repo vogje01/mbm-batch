@@ -8,6 +8,7 @@ import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.controller.LoginController;
 import com.momentum.batch.server.manager.service.util.JwtRequest;
 import com.momentum.batch.server.manager.service.util.JwtTokenUtil;
+import com.momentum.batch.server.manager.service.util.JwtUserDetailsService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;

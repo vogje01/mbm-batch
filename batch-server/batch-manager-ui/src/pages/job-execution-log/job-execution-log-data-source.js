@@ -9,7 +9,7 @@ export const JobExecutionLogDataSource = (filterName) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'jobexecutionlogs' + getParams(loadOptions, 'timestamp', 'desc');
+                let url = process.env.REACT_MANAGER_API_URL + 'jobexecutionlogs' + getParams(loadOptions, 'timestamp', 'desc');
                 if (filterName) {
                     url += getFilterString(filterName);
                 }

@@ -17,7 +17,7 @@ export default function (props) {
         const {password} = formData.current;
         setLoading(true);
 
-        fetch(process.env.REACT_APP_API_URL + 'changePassword/' + password + '/' + recoveryCode)
+        fetch(process.env.REACT_MANAGER_API_URL + 'changePassword/' + password + '/' + recoveryCode)
             .then((response) => {
                 if (response.status === 200) {
                     infoMessage(notificationText);

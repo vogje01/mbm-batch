@@ -8,7 +8,7 @@ export const AgentGroupDataSource = () => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'agentgroups' + getParams(loadOptions, 'name', 'asc');
+                let url = process.env.REACT_MANAGER_API_URL + 'agentgroups' + getParams(loadOptions, 'name', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of agent groups');
@@ -20,7 +20,7 @@ export const AgentGroupDataSource = () => {
                     });
             },
             insert: function (agentGroup) {
-                let url = process.env.REACT_APP_API_URL + 'agentgroups/insert';
+                let url = process.env.REACT_MANAGER_API_URL + 'agentgroups/insert';
                 return insertItem(url, JSON.stringify(agentGroup))
             },
             update: function (agentGroup, values) {

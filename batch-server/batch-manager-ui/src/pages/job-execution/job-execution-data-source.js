@@ -37,7 +37,7 @@ export function JobExecutionDataSource(filterName) {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'jobexecutions' + getParams(loadOptions, 'startTime', 'desc')
+                let url = process.env.REACT_MANAGER_API_URL + 'jobexecutions' + getParams(loadOptions, 'startTime', 'desc')
                 if (filterName) {
                     url += getFilterString(filterName);
                 }

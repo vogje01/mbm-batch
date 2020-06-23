@@ -18,12 +18,12 @@ export const JobDefinitionDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             byKey: function (key) {
-                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/byName?name=' + key;
+                let url = process.env.REACT_MANAGER_API_URL + 'jobdefinitions/byName?name=' + key;
                 return getItem(url);
             },
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_APP_API_URL + 'jobdefinitions' + getParams(loadOptions, 'name', 'asc')
+                let url = process.env.REACT_MANAGER_API_URL + 'jobdefinitions' + getParams(loadOptions, 'name', 'asc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response)
@@ -34,7 +34,7 @@ export const JobDefinitionDataSource = () => {
                     .finally(() => EndTimer());
             },
             insert: function (jobDefinition) {
-                let url = process.env.REACT_APP_API_URL + 'jobdefinitions/insert';
+                let url = process.env.REACT_MANAGER_API_URL + 'jobdefinitions/insert';
                 return insertItem(url, JSON.stringify(jobDefinition));
             },
             update: function (jobDefinition, values) {

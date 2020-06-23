@@ -17,7 +17,7 @@ export default function (props) {
     const {userId} = formData.current;
     setLoading(true);
 
-    fetch(process.env.REACT_APP_API_URL + 'resetPassword/' + userId)
+    fetch(process.env.REACT_MANAGER_API_URL + 'resetPassword/' + userId)
         .then((response) => {
           if (response.status === 200) {
             history.push('/login');

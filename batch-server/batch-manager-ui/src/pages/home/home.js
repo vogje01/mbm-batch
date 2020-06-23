@@ -27,7 +27,7 @@ class HomeView extends React.Component {
     }
 
     refreshJobs() {
-        getItem(process.env.REACT_APP_API_URL + 'status/jobstatus')
+        getItem(process.env.REACT_MANAGER_API_URL + 'status/jobstatus')
             .then((data) => {
                 this.setState({jobStatus: data})
             });

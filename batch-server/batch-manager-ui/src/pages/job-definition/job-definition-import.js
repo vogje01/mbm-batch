@@ -17,7 +17,7 @@ class JobDefinitionImport extends React.Component {
     }
 
     importJobDefinitions() {
-        fetch(process.env.REACT_APP_API_URL + 'jobdefinitions/import',
+        fetch(process.env.REACT_MANAGER_API_URL + 'jobdefinitions/import',
             {
                 headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('webToken')},
                 method: 'PUT',

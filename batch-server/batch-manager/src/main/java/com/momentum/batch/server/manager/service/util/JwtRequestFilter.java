@@ -1,6 +1,5 @@
 package com.momentum.batch.server.manager.service.util;
 
-import com.momentum.batch.server.manager.service.JwtUserDetailsService;
 import com.momentum.batch.server.manager.service.common.UnauthorizedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -96,8 +95,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 String[] userFields = basicAuthentication.split(":");
                 String username = userFields[0];
                 String password = userFields[1];
-                String orgUnit = userFields[2];
-                logger.debug(format("Basic authentication - userName: {0} orgUnit: {1}", username, orgUnit));
+                logger.debug(format("Basic authentication - userName: {0}", username));
                 try {
                     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
