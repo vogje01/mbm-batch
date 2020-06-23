@@ -7,6 +7,8 @@ import {Item, Toolbar} from "devextreme-react/toolbar";
 import {AgentDataSource} from "../agent/agent-data-source";
 import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
 import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
+import {addFilter, clearFilter, getFilter} from "../../utils/server-connection";
+import SelectBox from "devextreme-react/select-box";
 
 class LogList extends React.Component {
 
@@ -16,10 +18,20 @@ class LogList extends React.Component {
             currentJobExecution: {},
             isThreadVisible: false,
             isHostVisible: false,
-            isNodeVisible: false
+            isNodeVisible: false,
+            filterName: 'JobExecutionLog',
+            filter: getFilter('JobExecutionLog'),
+            selectedHost: null,
+            selectedNode: null,
+            selectedLevel: null,
+            selectedJobName: null
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.optionChanged = this.optionChanged.bind(this);
+        this.onAddHostNameFilter = this.onAddHostNameFilter.bind(this);
+        this.onAddNodeNameFilter = this.onAddNodeNameFilter.bind(this);
+        this.onAddLevelFilter = this.onAddLevelFilter.bind(this);
+        this.onAddJobDefinitionFilter = this.onAddJobDefinitionFilter.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -50,6 +62,7 @@ class LogList extends React.Component {
             {name: 'WARNING', value: 'WARN'},
             {name: 'ERROR', value: 'ERROR'}
         ];
+        clearFilter('JobExecutionLog');
     }
 
     selectionChanged(e) {
@@ -64,11 +77,55 @@ class LogList extends React.Component {
         }
     }
 
+    onAddHostNameFilter(e) {
+        addFilter(this.state.filterName, 'hostId', e.selectedItem.id, e.selectedItem.hostName);
+        this.setState({filter: getFilter(this.state.filterName), selectedHost: e.selectedItem});
+    }
+
+    onAddNodeNameFilter(e) {
+        addFilter(this.state.filterName, 'nodeId', e.selectedItem.id, e.selectedItem.nodeName);
+        this.setState({filter: getFilter(this.state.filterName)});
+    }
+
+    onAddLevelFilter(e) {
+        addFilter(this.state.filterName, 'level', e.selectedItem.value, e.selectedItem.value);
+        this.setState({filter: getFilter(this.state.filterName)});
+    }
+
+    onAddJobDefinitionFilter(e) {
+        addFilter(this.state.filterName, 'jobName', e.selectedItem.name, e.selectedItem.jobName);
+        this.setState({filter: getFilter(this.state.filterName)});
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Job Execution Logs</h2>
                 <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item location="before">
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='hostName' valueExpr='id'
+                                           selectedItem={this.state.selectedHost}
+                                           onSelectionChanged={this.onAddHostNameFilter}/>
+                            </Item>
+                            <Item location="before">
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='id'
+                                           selectedItem={this.state.selectedNode}
+                                           onSelectionChanged={this.onAddNodeNameFilter}/>
+                            </Item>
+                            <Item location="before">
+                                <SelectBox items={this.levels} displayExpr='name' valueExpr='value'
+                                           selectedItem={this.state.selectedLevel}
+                                           onSelectionChanged={this.onAddLevelFilter}/>
+                            </Item>
+                            <Item location="before">
+                                <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'id'} keyExpr={'id'}
+                                           selectedItem={this.state.selectedJobName}
+                                           onSelectionChanged={this.onAddJobDefinitionFilter}/>
+                            </Item>
+                        </Toolbar>
+                    </div>
                     <div className={'dx-card responsive-paddings'}>
                         <Toolbar>
                             <Item
@@ -80,54 +137,13 @@ class LogList extends React.Component {
                                     }, hint: 'Refresh job execution list.'
                                 }}/>
                             <Item
-                                location="before"
-                                widget="dxSelectBox"
-                                options={{
-                                    dataSource: AgentDataSource(),
-                                    keyExpr: 'id',
-                                    displayExpr: 'hostName',
-                                    hint: 'Select host.',
-                                    placeholder: 'Select host...'
-                                }}/>
-                            <Item
-                                location="before"
-                                widget="dxSelectBox"
-                                options={{
-                                    dataSource: AgentDataSource(),
-                                    keyExpr: 'id',
-                                    displayExpr: 'nodeName',
-                                    hint: 'Select node.',
-                                    placeholder: 'Select node...'
-                                }}/>
-                            <Item
-                                location="before"
-                                widget="dxSelectBox"
-                                options={{
-                                    dataSource: this.levels,
-                                    keyExpr: 'value',
-                                    displayExpr: 'name',
-                                    hint: 'Select level.',
-                                    placeholder: 'Select level...'
-                                }}/>
-                            <Item
-                                location="before"
-                                widget="dxSelectBox"
-                                options={{
-                                    dataSource: JobDefinitionDataSource(),
-                                    keyExpr: 'id',
-                                    displayExpr: 'name',
-                                    hint: 'Select job.',
-                                    placeholder: 'Select job...',
-                                    cssClass: 'wide-select'
-                                }}/>
-                            <Item
                                 location="after"
                                 widget="dxSelectBox"
                                 locateInMenu="auto"
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            dataSource={JobExecutionLogDataSource()}
+                            dataSource={JobExecutionLogDataSource(this.state.filterName)}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}
