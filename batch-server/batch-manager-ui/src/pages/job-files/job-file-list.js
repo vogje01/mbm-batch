@@ -20,16 +20,20 @@ export function provider() {
         },
         uploadFileChunk: function (fileData, chunksInfo, destinationDir) {
             StartTimer();
-            let combinedData = {fileData: fileData, chunksInfo: chunksInfo, destinationDir: destinationDir};
-            let url = process.env.REACT_APP_SCHEDULER_URL + 'library/upload/chunk';
-            return fetch(url, initPut(JSON.stringify(combinedData)))
-                .then(response => {
-                    return handleResponse(response)
-                })
-                .then(data => {
-                    return data
-                })
-                .finally(() => EndTimer());
+            let reader = new FileReader();
+            reader.readAsDataURL(chunksInfo.chunkBlob);
+            reader.onloadend = function () {
+                let uploadDto = {fileName: fileData.name, fileData: reader.result, fileRelativePath: destinationDir.relativeName, fileSize: fileData.size}
+                let url = process.env.REACT_APP_SCHEDULER_URL + 'library/upload/chunk';
+                return fetch(url, initPut(JSON.stringify(uploadDto)))
+                    .then(response => {
+                        return handleResponse(response)
+                    })
+                    .then(data => {
+                        return data
+                    })
+                    .finally(() => EndTimer());
+            };
         },
         uploadChunkSize: 10000
     })

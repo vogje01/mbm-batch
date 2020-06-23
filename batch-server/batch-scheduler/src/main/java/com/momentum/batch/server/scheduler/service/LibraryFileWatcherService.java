@@ -12,8 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -32,8 +31,7 @@ import static java.text.MessageFormat.format;
  * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
-@Component
-@Transactional
+@Service
 public class LibraryFileWatcherService implements FileChangeListener {
 
     @Value("${mbm.library.dropins}")

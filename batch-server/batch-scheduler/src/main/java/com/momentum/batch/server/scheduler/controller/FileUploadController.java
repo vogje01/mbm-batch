@@ -4,20 +4,21 @@ import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.scheduler.service.JobFileUploadService;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
+import com.momentum.batch.server.scheduler.util.dto.UploadDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Iterator;
+
+import static java.text.MessageFormat.format;
 
 /**
  * Job file download controller.
@@ -59,5 +60,13 @@ public class FileUploadController {
         jobFileUploadService.upload(multipart);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/chunk", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
+    public ResponseEntity<UploadDto> chunkUpload(@RequestBody UploadDto uploadDto) throws IOException {
+        t.restart();
+        logger.debug(format("Chunk upload request - path: {0}"));
+        jobFileUploadService.uploadChunk(uploadDto);
+        return ResponseEntity.ok(uploadDto);
     }
 }

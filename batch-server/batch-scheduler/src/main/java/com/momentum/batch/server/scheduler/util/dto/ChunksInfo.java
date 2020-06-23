@@ -5,7 +5,7 @@ package com.momentum.batch.server.scheduler.util.dto;
  * @version 0.0.1
  * @since 0.0.1
  */
-public class ChunksInfoDto {
+public class ChunksInfo {
 
     private long bytesUploaded;
 
@@ -15,7 +15,7 @@ public class ChunksInfoDto {
 
     private long fileIndex;
 
-    private String chunkBlob;
+    private String customData;
 
     public long getBytesUploaded() {
         return bytesUploaded;
@@ -49,11 +49,11 @@ public class ChunksInfoDto {
         this.fileIndex = fileIndex;
     }
 
-    public String getChunkBlob() {
-        return chunkBlob;
+    public String getCustomData() {
+        return customData;
     }
 
-    public void setChunkBlob(String chunkBlob) {
-        this.chunkBlob = chunkBlob;
+    public void setCustomData(String customData) {
+        this.customData = customData;
     }
 }

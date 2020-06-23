@@ -1,7 +1,7 @@
 package com.momentum.batch.server.scheduler.controller;
 
 import com.momentum.batch.common.util.MethodTimer;
-import com.momentum.batch.server.scheduler.service.JobFileUploadService;
+import com.momentum.batch.server.scheduler.service.FileSystemService;
 import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.slf4j.Logger;
@@ -36,24 +36,24 @@ public class FileSystemController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSystemController.class);
 
-    private final JobFileUploadService jobFileUploadService;
+    private final FileSystemService fileSystemService;
 
     /**
      * Constructor.
      *
-     * @param jobFileUploadService job file upload service  avatar service.
+     * @param fileSystemService file system server service.
      */
     @Autowired
-    public FileSystemController(JobFileUploadService jobFileUploadService) {
-        this.jobFileUploadService = jobFileUploadService;
+    public FileSystemController(FileSystemService fileSystemService) {
+        this.fileSystemService = fileSystemService;
     }
 
     @PutMapping(value = "/getItems", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
-    public ResponseEntity<List<FileSystemDto>> getPaths(@RequestBody FilePath filePath) {
+    public ResponseEntity<List<FileSystemDto>> getItems(@RequestBody FilePath filePath) {
         t.restart();
-        logger.debug(format("File path request - path: {1}", filePath.getPath()));
+        logger.debug(format("File path request - path: {0}", filePath.getPath()));
 
-        List<FileSystemDto> files = jobFileUploadService.getDirContents(filePath);
+        List<FileSystemDto> files = fileSystemService.getItems(filePath);
         return ResponseEntity.ok(files);
     }
 }

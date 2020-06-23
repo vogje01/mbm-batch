@@ -5,7 +5,7 @@ package com.momentum.batch.server.scheduler.util.dto;
  * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
-public class FileDataDto {
+public class FileData {
 
     private String name;
 

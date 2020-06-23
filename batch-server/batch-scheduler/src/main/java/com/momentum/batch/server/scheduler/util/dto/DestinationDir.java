@@ -5,7 +5,7 @@ package com.momentum.batch.server.scheduler.util.dto;
  * @version 0.0.1
  * @since 0.0.1
  */
-public class DestinationDirDto {
+public class DestinationDir {
 
     private String name;
 
