@@ -141,7 +141,7 @@ public class LibraryReaderService {
      * @return URL for the job download.
      */
     private String getServerUrl(String fileName) {
-        return "http://" + libraryServer + ":" + libraryPort + "/api/library/" + fileName;
+        return "http://" + libraryServer + ":" + libraryPort + "/api/library/download/" + fileName;
     }
 
     /**
@@ -153,8 +153,10 @@ public class LibraryReaderService {
      */
     private HttpURLConnection getHttpConnection(String jarFileName) {
         try {
-            URL website = new URL(getServerUrl(jarFileName));
+            String url = getServerUrl(jarFileName);
+            URL website = new URL(url);
             HttpURLConnection httpConnection = (HttpURLConnection) website.openConnection();
+            logger.debug(format("Connection started - url: {0}", url));
 
             // Basic authentication
             String auth = libraryUser + ":" + stringEncryptor.encrypt(libraryPassword);

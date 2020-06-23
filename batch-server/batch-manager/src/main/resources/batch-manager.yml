@@ -41,8 +41,6 @@ server:
 #     secret: web token secret
 #
 mbm:
-  library:
-    jobs: /app/batch/batch-manager/jobs
   listener:
     server: batch-listener
   scheduler:
@@ -52,9 +50,6 @@ mbm:
     port: 8090
     jwt:
       secret: mU*mJxJ*&31p
-  ldap:
-    server: ldapd-rw.hlcl.com
-    port: 1391
   mail:
     server: smtp.gmail.com
 

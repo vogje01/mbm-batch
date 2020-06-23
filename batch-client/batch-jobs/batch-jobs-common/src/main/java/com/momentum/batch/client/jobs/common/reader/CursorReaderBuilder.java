@@ -3,7 +3,6 @@ package com.momentum.batch.client.jobs.common.reader;
 import org.hibernate.SessionFactory;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.HibernateCursorItemReader;
-import org.springframework.batch.item.database.orm.HibernateQueryProvider;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Map;

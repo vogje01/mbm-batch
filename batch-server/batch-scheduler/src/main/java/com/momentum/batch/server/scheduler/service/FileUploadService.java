@@ -11,7 +11,7 @@ import java.io.IOException;
  * @version 0.0.1
  * @since 0.0.1
  */
-public interface JobFileUploadService {
+public interface FileUploadService {
 
     void upload(MultipartFile file) throws ResourceNotFoundException, IOException;
 

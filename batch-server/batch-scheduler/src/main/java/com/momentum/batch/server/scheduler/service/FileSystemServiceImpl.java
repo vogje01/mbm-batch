@@ -96,4 +96,8 @@ public class FileSystemServiceImpl implements FileSystemService {
         return allFiles;
     }
 
+    @Override
+    public void deleteItems(FilePath filePath) {
+
+    }
 }

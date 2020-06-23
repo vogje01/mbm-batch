@@ -23,7 +23,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.1
  */
 @Service
-public class JobFileUploadServiceImpl implements JobFileUploadService {
+public class FileUploadServiceImpl implements FileUploadService {
 
     @Value("${mbm.library.root}")
     public String rootDirectory;
@@ -31,7 +31,7 @@ public class JobFileUploadServiceImpl implements JobFileUploadService {
     @Value("${mbm.library.jobs}")
     public String jobsDirectory;
 
-    private static final Logger logger = LoggerFactory.getLogger(JobFileUploadServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FileUploadServiceImpl.class);
 
     private final MethodTimer t = new MethodTimer();
 
@@ -47,7 +47,7 @@ public class JobFileUploadServiceImpl implements JobFileUploadService {
 
     @Override
     public void uploadChunk(UploadDto uploadDto) throws IOException {
-        logger.debug(format("Saving chunk - name: {0}", uploadDto.getFileName()));
+        logger.trace(format("Saving chunk - name: {0}", uploadDto.getFileName()));
 
         String relativeFileName = rootDirectory.substring(0, rootDirectory.lastIndexOf(File.separator)) + File.separator + uploadDto.getFileRelativePath();
 
@@ -56,7 +56,7 @@ public class JobFileUploadServiceImpl implements JobFileUploadService {
         byte[] bytes = Base64Decoder.decode(base64ByteArray, 0, base64ByteArray.length);
 
         FileUtils.writeByteArrayToFile(new File(relativeFileName + File.separator + uploadDto.getFileName()), bytes, true);
-        logger.debug(format("Chunk saving file finished - name: {0}", uploadDto.getFileName()));
+        logger.trace(format("Chunk saving file finished - name: {0}", uploadDto.getFileName()));
 
     }
 }

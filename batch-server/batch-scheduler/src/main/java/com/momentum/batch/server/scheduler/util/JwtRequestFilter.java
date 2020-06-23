@@ -2,7 +2,6 @@ package com.momentum.batch.server.scheduler.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import org.jasypt.encryption.StringEncryptor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,57 +40,50 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
 
-    private final StringEncryptor stringEncryptor;
-
+    /**
+     * Web token request filter.
+     *
+     * @param jwtUserDetailsService user details.
+     * @param jwtTokenUtil          token utilities.
+     */
     @Autowired
-    public JwtRequestFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil, StringEncryptor stringEncryptor) {
+    public JwtRequestFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.stringEncryptor = stringEncryptor;
     }
 
+    /**
+     * Authentication filter.
+     *
+     * @param request  HTTP request object.
+     * @param response HTTP Response object.
+     * @param chain    filter chain.
+     * @throws ServletException        servlet exception, when the request is corrupt.
+     * @throws IOException             IO Exception, when the token cannot be decoded.
+     * @throws AuthenticationException authentication exception, when the user could not be authenticated.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
             throws ServletException, IOException, AuthenticationException {
 
-        /*if (request.getRequestURI().contains("/api/library/download")) {
-            try {
-                String requestTokenHeader = request.getHeader("Authorization");
-                if (requestTokenHeader != null && requestTokenHeader.startsWith("Basic ")) {
-                    String basicAuthentication = new String(Base64.getDecoder().decode(requestTokenHeader.substring(6)));
-                    String[] userFields = basicAuthentication.split(":");
-                    String username = userFields[0];
-                    String password = stringEncryptor.decrypt(userFields[1]);
-                    UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
-                    // Spring Security Configurations successfully.
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    logger.debug(format("User authenticated - userName: {0}", "admin"));
-                }
-            } catch (UnauthorizedException ex) {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                return;
-            }
-        } else {*/
+        // Trying first basic authentication
         String requestTokenHeader = request.getHeader("Authorization");
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Basic ")) {
+
             String basicAuthentication = new String(Base64.getDecoder().decode(requestTokenHeader.substring(6)));
             String[] userFields = basicAuthentication.split(":");
             String username = userFields[0];
             String password = userFields[1];
-            String orgUnit = userFields[2];
-            logger.debug(format("Basic authentication - userName: {0} orgUnit: {1}", username, orgUnit));
+            logger.debug(format("Basic authentication - userName: {0}", username));
+
             try {
                 UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username, password);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                // After setting the Authentication in the context, we specify that the current user is authenticated. So it passes the
-                // Spring Security Configurations successfully.
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 logger.debug(format("User authenticated - userName: {0}", username));
             } catch (UnauthorizedException ex) {
+                logger.debug(format("User could not be authenticated - userName: {0}", username));
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 return;
             }
@@ -130,7 +122,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     return;
                 }
             }
-            // }
         }
         chain.doFilter(request, response);
     }

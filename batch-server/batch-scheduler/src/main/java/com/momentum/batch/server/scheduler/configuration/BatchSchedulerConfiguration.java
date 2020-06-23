@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 @EntityScan(basePackages = {"com.momentum.batch.common.domain", "com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration implements WebMvcConfigurer {
 
-    private static final String[] cacheNames = {"UserDetails"};
+    private static final String[] cacheNames = {"User", "UserDetails"};
 
     @Bean
     public CacheManager cacheManager() {

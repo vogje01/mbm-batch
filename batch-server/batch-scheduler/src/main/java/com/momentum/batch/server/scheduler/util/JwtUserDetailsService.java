@@ -28,12 +28,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtUserDetailsService.class);
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
 
-	private StringEncryptor stringEncryptor;
-
-	public JwtUserDetailsService() {
-	}
+	private final StringEncryptor stringEncryptor;
 
 	@Autowired
 	public JwtUserDetailsService(UserRepository userRepository, StringEncryptor stringEncryptor) {
@@ -51,24 +48,16 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return null;
 	}
 
-	public UserDetails loadUserByUsername(String userId, String password, String userOrg) {
-		logger.debug(format("Starting load user - userId: {0}", userId));
-		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);
-		if (userOptional.isPresent()) {
-			return new User(userId, password, emptyList());
-		}
-		return null;
-	}
-
 	@Cacheable(cacheNames = "User", key = "#userId")
 	public UserDetails loadUserByUsername(String userId, String password) throws UnauthorizedException {
-
+		logger.trace(format("Starting load user - userId: {0}", userId));
 		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);
 		if (userOptional.isPresent()) {
 			String decPassword = stringEncryptor.decrypt(userOptional.get().getPassword());
 			if (password.equals(decPassword)) {
 				return new User(userId, password, emptyList());
 			}
+			logger.warn(format("Wrong password supplied - userId: {0}", userId));
 		}
 		throw new UnauthorizedException();
 	}

@@ -2,7 +2,7 @@ package com.momentum.batch.server.scheduler.controller;
 
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.dto.UserDto;
-import com.momentum.batch.server.scheduler.service.JobFileUploadService;
+import com.momentum.batch.server.scheduler.service.FileUploadService;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
 import com.momentum.batch.server.scheduler.util.dto.UploadDto;
 import org.slf4j.Logger;
@@ -38,16 +38,16 @@ public class FileUploadController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    private final JobFileUploadService jobFileUploadService;
+    private final FileUploadService fileUploadService;
 
     /**
      * Constructor.
      *
-     * @param jobFileUploadService job file upload service  avatar service.
+     * @param fileUploadService job file upload service  avatar service.
      */
     @Autowired
-    public FileUploadController(JobFileUploadService jobFileUploadService) {
-        this.jobFileUploadService = jobFileUploadService;
+    public FileUploadController(FileUploadService fileUploadService) {
+        this.fileUploadService = fileUploadService;
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
@@ -57,7 +57,7 @@ public class FileUploadController {
         Iterator<String> it = multipartRequest.getFileNames();
         MultipartFile multipart = multipartRequest.getFile(it.next());
 
-        jobFileUploadService.upload(multipart);
+        fileUploadService.upload(multipart);
 
         return ResponseEntity.ok().build();
     }
@@ -66,7 +66,7 @@ public class FileUploadController {
     public ResponseEntity<UploadDto> chunkUpload(@RequestBody UploadDto uploadDto) throws IOException {
         t.restart();
         logger.debug(format("Chunk upload request - path: {0}"));
-        jobFileUploadService.uploadChunk(uploadDto);
+        fileUploadService.uploadChunk(uploadDto);
         return ResponseEntity.ok(uploadDto);
     }
 }

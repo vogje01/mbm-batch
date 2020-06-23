@@ -14,4 +14,6 @@ public interface FileSystemService {
 
     List<FileSystemDto> getItems(FilePath paths);
 
+    void deleteItems(FilePath paths);
+
 }
