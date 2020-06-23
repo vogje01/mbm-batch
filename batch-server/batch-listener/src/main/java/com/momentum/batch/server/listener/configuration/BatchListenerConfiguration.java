@@ -13,10 +13,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -25,6 +28,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 @EnableCaching
 @EnableEncryptableProperties
 @EnableTransactionManagement
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan(basePackages = {"com.momentum.batch.server.database.domain"})
 public class BatchListenerConfiguration {
@@ -66,5 +70,10 @@ public class BatchListenerConfiguration {
             this.serverName = NetworkUtils.getHostName();
         }
         return serverName;
+    }
+
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return () -> Optional.of("admin");
     }
 }

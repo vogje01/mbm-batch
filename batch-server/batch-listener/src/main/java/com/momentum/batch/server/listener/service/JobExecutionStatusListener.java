@@ -13,7 +13,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -125,8 +124,6 @@ public class JobExecutionStatusListener {
             // Update existing job execution info
             JobExecutionInfo jobExecutionInfo = jobExecutionInfoOptional.get();
             jobExecutionInfo.update(jobExecutionDto);
-            jobExecutionInfo.setModifiedAt(new Date());
-            jobExecutionInfo.setModifiedBy("admin");
             if (jobExecutionDto.getJobExecutionContextDto() != null) {
                 JobExecutionContext jobExecutionContext = jobExecutionInfo.getJobExecutionContext();
                 jobExecutionContext.update(jobExecutionDto.getJobExecutionContextDto());
@@ -146,8 +143,6 @@ public class JobExecutionStatusListener {
             // Convert to entity
             JobExecutionInfo jobExecutionInfo = modelConverter.convertJobExecutionToEntity(jobExecutionDto);
             jobExecutionInfo.setJobExecutionId(jobExecutionId);
-            jobExecutionInfo.setCreatedAt(new Date());
-            jobExecutionInfo.setCreatedBy("admin");
 
             // Set job definition
             if (jobDefinitionOptional.isPresent()) {
@@ -164,7 +159,6 @@ public class JobExecutionStatusListener {
             jobExecutionContext = jobExecutionContextRepository.save(jobExecutionContext);
             logger.debug(format("Job execution context info created - nodeName: {0} jobName: {1} id: {2}", nodeName, jobName, jobExecutionContext.getId()));
 
-            // TODO: ???? fix ????
             // Create job execution parameter
             JobExecutionInfo finalJobExecutionInfo = jobExecutionInfo;
             jobExecutionInfo.getJobExecutionParams().forEach(jobExecutionParam -> {
@@ -218,8 +212,6 @@ public class JobExecutionStatusListener {
                 // Save job execution info
                 stepExecutionInfo.update(stepExecutionDto);
                 stepExecutionInfo.setJobExecutionInfo(jobExecutionInfoOptional.get());
-                stepExecutionInfo.setCreatedAt(new Date());
-                stepExecutionInfo.setCreatedBy("admin");
                 stepExecutionInfoRepository.save(stepExecutionInfo);
 
                 // Create step execution context

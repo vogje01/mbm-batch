@@ -6,6 +6,7 @@ import com.google.common.base.Objects;
 import com.momentum.batch.server.database.domain.dto.StepExecutionDto;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_STEP_EXECUTION")
+@EntityListeners(AuditingEntityListener.class)
 public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**

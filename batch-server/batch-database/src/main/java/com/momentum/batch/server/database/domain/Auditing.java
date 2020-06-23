@@ -6,11 +6,11 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Date;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -36,6 +36,7 @@ public class Auditing<U> {
      * Created date
      */
     @Column(name = "CREATED_AT")
+    @Temporal(TIMESTAMP)
     @CreatedDate
     private Date createdAt;
     /**
@@ -48,6 +49,7 @@ public class Auditing<U> {
      * Last modification date
      */
     @Column(name = "MODIFIED_AT")
+    @Temporal(TIMESTAMP)
     @LastModifiedDate
     private Date modifiedAt;
 }

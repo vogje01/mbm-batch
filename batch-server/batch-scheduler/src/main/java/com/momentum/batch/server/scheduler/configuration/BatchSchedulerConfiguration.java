@@ -8,12 +8,15 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -22,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 @EnableTransactionManagement
 @EnableEncryptableProperties
+@EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories(basePackages = {"com.momentum.batch.server.database.repository"})
 @EntityScan(basePackages = {"com.momentum.batch.common.domain", "com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration implements WebMvcConfigurer {
@@ -45,4 +49,8 @@ public class BatchSchedulerConfiguration implements WebMvcConfigurer {
                 .recordStats();
     }
 
+    @Bean
+    public AuditorAware<String> auditorProvider() {
+        return () -> Optional.of("admin");
+    }
 }
