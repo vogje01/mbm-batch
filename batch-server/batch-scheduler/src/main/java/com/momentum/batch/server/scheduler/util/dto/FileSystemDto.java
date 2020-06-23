@@ -1,4 +1,4 @@
-package com.momentum.batch.server.database.domain.dto;
+package com.momentum.batch.server.scheduler.util.dto;
 
 import java.util.ArrayList;
 import java.util.List;

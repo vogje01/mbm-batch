@@ -1,7 +1,7 @@
 package com.momentum.batch.server.scheduler.configuration;
 
 import com.momentum.batch.common.util.filewatch.FileSystemWatcher;
-import com.momentum.batch.server.scheduler.library.LibraryFileWatcherService;
+import com.momentum.batch.server.scheduler.service.LibraryFileWatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

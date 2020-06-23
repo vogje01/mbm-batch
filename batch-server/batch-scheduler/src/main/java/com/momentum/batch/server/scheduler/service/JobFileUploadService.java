@@ -1,7 +1,8 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.server.database.domain.dto.FileSystemDto;
+import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
+import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,5 +17,5 @@ public interface JobFileUploadService {
 
     void upload(MultipartFile file) throws ResourceNotFoundException, IOException;
 
-    List<FileSystemDto> getDirContents(String[] paths);
+    List<FileSystemDto> getDirContents(FilePath paths);
 }

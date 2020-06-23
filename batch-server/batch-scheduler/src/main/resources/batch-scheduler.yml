@@ -37,6 +37,7 @@ server:
 #
 mbm:
   library:
+    root: /app/batch/batch-scheduler
     jobs: /app/batch/batch-scheduler/jobs
     dropins: /app/batch/batch-scheduler/dropins
   scheduler:

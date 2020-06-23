@@ -35,6 +35,7 @@ server:
 #
 mbm:
   library:
+    root: /opt/batch/server
     jobs: /opt/batch/server/jobs
     dropins: /opt/batch/server/dropins
   scheduler:

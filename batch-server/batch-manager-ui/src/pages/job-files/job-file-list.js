@@ -2,14 +2,14 @@ import React from "react";
 import FileManager, {Permissions} from "devextreme-react/file-manager";
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import {EndTimer, StartTimer} from "../../utils/method-timer";
-import {handleResponse, initGet} from "../../utils/server-connection";
+import {handleResponse, initPut} from "../../utils/server-connection";
 
 export function provider() {
     return new CustomFileSystemProvider({
         getItems: function (pathInfo) {
             StartTimer();
-            let url = process.env.REACT_APP_SCHEDULER_URL + 'library?command=getItems';
-            return fetch(url, initGet())
+            let url = process.env.REACT_APP_SCHEDULER_URL + 'filesystem/getItems';
+            return fetch(url, initPut(JSON.stringify(pathInfo)))
                 .then(response => {
                     return handleResponse(response)
                 })
@@ -17,9 +17,23 @@ export function provider() {
                     return data
                 })
                 .finally(() => EndTimer());
-        }
+        },
+        uploadFileChunk: function (fileData, chunksInfo, destinationDir) {
+            StartTimer();
+            let combinedData = {fileData: fileData, chunksInfo: chunksInfo, destinationDir: destinationDir};
+            let url = process.env.REACT_APP_SCHEDULER_URL + 'library/upload/chunk';
+            return fetch(url, initPut(JSON.stringify(combinedData)))
+                .then(response => {
+                    return handleResponse(response)
+                })
+                .then(data => {
+                    return data
+                })
+                .finally(() => EndTimer());
+        },
+        uploadChunkSize: 10000
     })
-};
+}
 
 class JobFileList extends React.Component {
 
@@ -39,7 +53,7 @@ class JobFileList extends React.Component {
                     // move={true}
                     // delete={true}
                     // rename={true}
-                    // upload={true}
+                    upload={true}
                     download={true}>
                 </Permissions>
             </FileManager>

@@ -6,17 +6,22 @@ export const initGet = () => {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken')}, method: 'GET'
     }
 };
-const initDelete = () => {
-    return {
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'DELETE'
-    }
-};
-const initInsert = (body) => {
+export const initPut = (body) => {
     return {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'PUT', body: body
     }
 };
-const initUpdate = (body) => {
+export const initDelete = () => {
+    return {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'DELETE'
+    }
+};
+export const initInsert = (body) => {
+    return {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'PUT', body: body
+    }
+};
+export const initUpdate = (body) => {
     return {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('webToken'), 'Content-type': 'application/hal+json'}, method: 'PUT', body: body
     }
