@@ -45,6 +45,11 @@ export const navigation = [
                 icon: 'material-icons-outlined ic-alarm'
             },
             {
+                text: 'Job Files',
+                path: '/jobfilesystem',
+                icon: 'material-icons-outlined ic-folder'
+            },
+            {
                 text: 'Agents',
                 path: '/agents',
                 icon: 'material-icons-outlined ic-agent'

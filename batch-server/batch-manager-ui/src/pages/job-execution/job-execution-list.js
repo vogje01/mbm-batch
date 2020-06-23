@@ -28,6 +28,7 @@ import {AgentDataSource} from "../agent/agent-data-source";
 import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
 import Button from "devextreme-react/button";
 import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
+import {withRouter} from "react-router-dom";
 
 class JobExecutionList extends React.Component {
 
@@ -81,6 +82,12 @@ class JobExecutionList extends React.Component {
             {key: 'Abandoned', value: 'ABANDONED'},
             {key: 'Unknown', value: 'UNKNOWN'}
         ];
+    }
+
+    componentDidMount() {
+        if (this.props.match.params) {
+            this.onAddStatusFilter({value: this.props.match.params.status})
+        }
     }
 
     selectionChanged(e) {
@@ -436,4 +443,4 @@ class JobExecutionList extends React.Component {
     }
 }
 
-export default JobExecutionList;
+export default withRouter(JobExecutionList);

@@ -13,6 +13,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,8 +33,7 @@ import java.util.concurrent.TimeUnit;
 @EntityScan(basePackages = {"com.momentum.batch.common.domain", "com.momentum.batch.server.database.domain"})
 public class BatchSchedulerConfiguration implements WebMvcConfigurer {
 
-    private static final String[] cacheNames = {"JobDefinition", "JobDefinitionParam", "JobExecutionInfo",
-            "JobExecutionLog", "StepExecutionInfo", "JobSchedule"};
+    private static final String[] cacheNames = {"UserDetails"};
 
     @Bean
     public CacheManager cacheManager() {
@@ -52,5 +54,13 @@ public class BatchSchedulerConfiguration implements WebMvcConfigurer {
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> Optional.of("admin");
+    }
+
+    @Bean(name = MultipartFilter.DEFAULT_MULTIPART_RESOLVER_BEAN_NAME)
+    protected MultipartResolver getMultipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(100000000);
+        multipartResolver.setMaxInMemorySize(100000000);
+        return multipartResolver;
     }
 }

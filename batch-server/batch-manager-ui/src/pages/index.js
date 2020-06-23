@@ -9,6 +9,7 @@ export {default as JobDefinitionListPage} from './job-definition/job-definition-
 export {default as JobDefinitionExport} from './job-definition/job-definition-export';
 export {default as JobDefinitionImport} from './job-definition/job-definition-import';
 export {default as JobFileUpload} from './job-definition/job-file-upload';
+export {default as JobFileList} from './job-files/job-file-list';
 export {default as JobGroupListPage} from './job-group/job-group-list';
 export {default as JobScheduleListPage} from './job-schedule/job-schedule-list';
 export {default as AgentListPage} from './agent/agent-list';

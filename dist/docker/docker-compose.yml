@@ -86,6 +86,8 @@ services:
     depends_on:
       - batch-db
       - batch-kafka
+    ports:
+      - '8091:8091'
 
   #
   #  Batch manager

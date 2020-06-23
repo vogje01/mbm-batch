@@ -6,6 +6,7 @@ import {Button} from 'devextreme-react';
 import {Toolbar} from "devextreme-react/toolbar";
 import {getItem} from "../../utils/server-connection";
 import UpdateTimer from "../../utils/update-timer";
+import {withRouter} from "react-router-dom";
 
 class HomeView extends React.Component {
 
@@ -30,42 +31,6 @@ class HomeView extends React.Component {
             .then((data) => {
                 this.setState({jobStatus: data})
             });
-    }
-
-    jobTotalClicked() {
-        this.props.history.push('/jobexecutions')
-    }
-
-    jobStartingClicked() {
-        this.props.history.push('/jobexecutions/STARTING')
-    }
-
-    jobStartedClicked() {
-        this.props.history.push('/jobexecutions/STARTED')
-    }
-
-    jobStoppingClicked() {
-        this.props.history.push('/jobexecutions/STOPPING')
-    }
-
-    jobStoppedClicked() {
-        this.props.history.push('/jobexecutions/STOPPED')
-    }
-
-    jobCompletedClicked() {
-        this.props.history.push('/jobexecutions/COMPLETED')
-    }
-
-    jobFailedClicked() {
-        this.props.history.push('/jobexecutions/FAILED')
-    }
-
-    jobAbandonedClicked() {
-        this.props.history.push('/jobexecutions/ABANDONED')
-    }
-
-    jobUnknownClicked() {
-        this.props.history.push('/jobexecutions/UNKNOWN')
     }
 
     render() {
@@ -97,55 +62,59 @@ class HomeView extends React.Component {
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Total</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.totalJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobTotalClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.push('/jobexecutions')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Started</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.startedJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobStartedClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.push('/jobexecutions/STARTED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Starting</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.startingJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobStartingClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search"
+                                                    onClick={() => this.props.history.push('/jobexecutions/STARTING')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Stopping</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.stoppingJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobStoppingClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search"
+                                                    onClick={() => this.props.history.push('/jobexecutions/STOPPING')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Stopped</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.stoppedJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobStoppedClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.push('/jobexecutions/STOPPED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Completed</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.completedJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobCompletedClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search"
+                                                    onClick={() => this.props.history.push('/jobexecutions/COMPLETED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Failed</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.failedJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobFailedClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.push('/jobexecutions/FAILED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Abandoned</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.abandonedJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobAbandonedClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search"
+                                                    onClick={() => this.props.history.push('/jobexecutions/ABANDONED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Unknown</div>
                                         <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.unknownJobs}
-                                            <Button icon="material-icons-outlined ic-search" onClick={this.jobUnknownClicked.bind(this)}/>
+                                            <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.push('/jobexecutions/UNKNOWN')}/>
                                         </div>
                                     </div>
                                     <UpdateTimer/>
@@ -213,4 +182,4 @@ class HomeView extends React.Component {
     };
 }
 
-export default HomeView;
+export default withRouter(HomeView);

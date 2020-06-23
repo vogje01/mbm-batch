@@ -71,13 +71,6 @@
             <version>0.9.1</version>
         </dependency>
 
-        <!-- LDAP -->
-        <dependency>
-            <groupId>com.unboundid</groupId>
-            <artifactId>unboundid-ldapsdk</artifactId>
-            <version>4.0.14</version>
-        </dependency>
-
         <!-- Quartz framework -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>

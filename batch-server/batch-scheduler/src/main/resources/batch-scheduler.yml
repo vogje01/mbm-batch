@@ -21,6 +21,9 @@ spring:
     listener:
       concurrency: 5
 
+server:
+  port: 8091
+
 #
 # Scheduler configuration:
 #   library: job library
@@ -41,6 +44,11 @@ mbm:
     interval: 3600
   listener:
     server: batch-listener
+  server:
+    host: localhost
+    port: 8091
+    jwt:
+      secret: mU*mJxJ*&31p
 
 #
 # Kafka configuration.

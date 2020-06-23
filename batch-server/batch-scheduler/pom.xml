@@ -92,6 +92,33 @@
             <version>3.0.3</version>
         </dependency>
 
+        <!-- Apache -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+
+        <!-- Jetbrain -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>16.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- WEB token -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
         <!-- Batch -->
         <dependency>
             <groupId>com.momentum.batch</groupId>
@@ -102,6 +129,11 @@
             <groupId>com.momentum.batch</groupId>
             <artifactId>batch-database</artifactId>
             <version>0.0.6-RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
         </dependency>
 
     </dependencies>

@@ -1,4 +1,4 @@
-package com.momentum.batch.server.scheduler.service;
+package com.momentum.batch.server.scheduler.util;
 
 import com.momentum.batch.server.database.repository.UserRepository;
 import org.jasypt.encryption.StringEncryptor;
