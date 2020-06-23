@@ -84,13 +84,6 @@ public class ModelConverter {
         return null;
     }
 
-    public JobExecutionContextDto convertJobExecutionContextToDto(JobExecutionContext jobExecutionContext) {
-        if (jobExecutionContext != null) {
-            return modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
-        }
-        return null;
-    }
-
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Step executions
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------

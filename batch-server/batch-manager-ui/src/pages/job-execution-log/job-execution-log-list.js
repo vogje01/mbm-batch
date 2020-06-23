@@ -132,19 +132,23 @@ class LogList extends React.Component {
                         <Toolbar>
                             <Item location="before">
                                 <SelectBox dataSource={AgentDataSource()} displayExpr='hostName' valueExpr='hostName' showClearButton={true}
-                                           value={this.state.selectedHost} onValueChanged={this.onAddHostNameFilter}/>
+                                           value={this.state.selectedHost} onValueChanged={this.onAddHostNameFilter}
+                                           placeholder={'Select host...'} hint={'Filter job execution logs by host.'}/>
                             </Item>
                             <Item location="before">
                                 <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='nodeName' showClearButton={true}
-                                           value={this.state.selectedNode} onValueChanged={this.onAddNodeNameFilter}/>
+                                           value={this.state.selectedNode} onValueChanged={this.onAddNodeNameFilter}
+                                           placeholder={'Select node...'} hint={'Filter job execution logs by node.'}/>
                             </Item>
                             <Item location="before">
                                 <SelectBox items={this.levels} displayExpr='name' valueExpr='value' showClearButton={true}
-                                           value={this.state.selectedLevel} onValueChanged={this.onAddLevelFilter}/>
+                                           value={this.state.selectedLevel} onValueChanged={this.onAddLevelFilter}
+                                           placeholder={'Select level...'} hint={'Filter job execution logs by level.'}/>
                             </Item>
                             <Item location="before">
                                 <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'name'} showClearButton={true}
-                                           value={this.state.selectedJobName} onValueChanged={this.onAddJobDefinitionFilter}/>
+                                           value={this.state.selectedJobName} onValueChanged={this.onAddJobDefinitionFilter}
+                                           placeholder={'Select job name...'} hint={'Filter job execution logs by job name.'}/>
                             </Item>
                             <Item location="before">
                                 <Button text={'Clear Filter'} onClick={this.onClearFilter.bind(this)}/>

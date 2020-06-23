@@ -2,6 +2,7 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobExecutionInfo;
+import com.momentum.batch.server.database.domain.JobExecutionStatus;
 import com.momentum.batch.server.database.domain.dto.JobExecutionDto;
 import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -50,11 +52,22 @@ public class JobExecutionServiceImpl implements JobExecutionService {
     }
 
     @Override
-    public PagedModel<JobExecutionDto> findAll(Pageable pageable) {
+    public PagedModel<JobExecutionDto> findAll(String status, String nodeName, Pageable pageable) {
 
         t.restart();
+        JobExecutionInfo jobExecutionInfo = new JobExecutionInfo();
+        if (status != null) {
+            jobExecutionInfo.setStatus(JobExecutionStatus.valueOf(status));
+            logger.debug(format("Filter set - status: {0}", status));
+        }
+        if (nodeName != null) {
+            jobExecutionInfo.setNodeName(nodeName);
+            logger.debug(format("Filter set - nodeName: {0}", nodeName));
+        }
 
-        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(pageable);
+        Example<JobExecutionInfo> example = Example.of(jobExecutionInfo);
+        Page<JobExecutionInfo> jobExecutionInfos = jobExecutionRepository.findAll(example, pageable);
+
         PagedModel<JobExecutionDto> collectionModel = pagedResourcesAssembler.toModel(jobExecutionInfos, jobExecutionInfoModelAssembler);
         logger.debug(format("Job execution list request finished - count: {0}/{1} {2}",
                 collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));

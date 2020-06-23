@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_JOB_GROUP")
-public class JobGroup extends Auditing implements PrimaryKeyIdentifier<String> {
+public class JobGroup extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key

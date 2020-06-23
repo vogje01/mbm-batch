@@ -69,7 +69,7 @@ public class JobExecutionControllerTest {
         jobExecutionList.add(jobExecution1);
         jobExecutionList.add(jobExecution2);
 
-        when(jobExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(jobExecutionList));
+        when(jobExecutionInfoRepository.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(jobExecutionList));
 
         this.mockMvc.perform(get("/api/jobexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -84,7 +84,7 @@ public class JobExecutionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(jobExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(jobExecutionInfoRepository.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/jobexecutions?page=0&size=5&sort=startTime,desc")) //
                 //.andDo(print())

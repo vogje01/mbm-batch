@@ -68,7 +68,7 @@ public class JobScheduleModelAssembler extends RepresentationModelAssemblerSuppo
     @Override
     public @NotNull CollectionModel<JobScheduleDto> toCollectionModel(@NotNull Iterable<? extends JobSchedule> entities) {
         CollectionModel<JobScheduleDto> JobScheduleDtos = super.toCollectionModel(entities);
-        JobScheduleDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null)).withSelfRel());
+        JobScheduleDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null, null, null)).withSelfRel());
         return JobScheduleDtos;
     }
 

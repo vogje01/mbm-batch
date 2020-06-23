@@ -67,7 +67,7 @@ public class JobDefinitionModelAssembler extends RepresentationModelAssemblerSup
     @Override
     public @NotNull CollectionModel<JobDefinitionDto> toCollectionModel(@NotNull Iterable<? extends JobDefinition> entities) {
         CollectionModel<JobDefinitionDto> JobDefinitionDtos = super.toCollectionModel(entities);
-        JobDefinitionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null)).withSelfRel());
+        JobDefinitionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null, null, null)).withSelfRel());
         return JobDefinitionDtos;
     }
 

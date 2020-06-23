@@ -1,6 +1,6 @@
 package com.momentum.batch.server.database.domain;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import org.hibernate.annotations.GenericGenerator;
@@ -11,9 +11,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "BATCH_JOB_EXECUTION_PARAMS")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class JobExecutionParam implements PrimaryKeyIdentifier<String> {
 
     /**

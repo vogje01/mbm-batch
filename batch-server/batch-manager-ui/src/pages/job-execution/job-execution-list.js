@@ -23,17 +23,31 @@ import {GroupItem, SimpleItem} from "devextreme-react/form";
 import JobExecutionParamList from "./job-execution-param-list";
 import JobExecutionLogList from "./job-execution-log-list";
 import {getItem} from "../../utils/server-connection";
+import SelectBox from "devextreme-react/select-box";
+import {AgentDataSource} from "../agent/agent-data-source";
+import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
+import Button from "devextreme-react/button";
+import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
 
 class JobExecutionList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            filterName: 'JobExecutionInfo',
             currentJobExecution: {},
-            currentFilter: undefined
+            selectedStatus: null,
+            selectedHost: null,
+            selectedNode: null,
+            selectedJobName: null
         };
         this.selectionChanged = this.selectionChanged.bind(this);
         this.restartJob = this.restartJob.bind(this);
+        this.onAddStatusFilter = this.onAddStatusFilter.bind(this);
+        this.onAddHostNameFilter = this.onAddHostNameFilter.bind(this);
+        this.onAddNodeNameFilter = this.onAddNodeNameFilter.bind(this);
+        this.onAddJobNameFilter = this.onAddJobNameFilter.bind(this);
+        this.onClearFilter = this.onClearFilter.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -57,6 +71,16 @@ class JobExecutionList extends React.Component {
                 }
             }
         }
+        this.statuses = [
+            {key: 'Completed', value: 'COMPLETED'},
+            {key: 'Started', value: 'STARTED'},
+            {key: 'Starting', value: 'STARTING'},
+            {key: 'Stopped', value: 'STOPPED'},
+            {key: 'Stopping', value: 'STOPPING'},
+            {key: 'Failed', value: 'FAILED'},
+            {key: 'Abandoned', value: 'ABANDONED'},
+            {key: 'Unknown', value: 'UNKNOWN'}
+        ];
     }
 
     selectionChanged(e) {
@@ -71,11 +95,82 @@ class JobExecutionList extends React.Component {
             });
     }
 
+    onAddStatusFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'status', e.value);
+            this.setState({selectedStatus: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'status');
+            this.setState({selectedStatus: null});
+        }
+    }
+
+    onAddHostNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'hostName', e.value);
+            this.setState({selectedHost: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'hostName');
+            this.setState({selectedHost: null});
+        }
+    }
+
+    onAddNodeNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'nodeName', e.value);
+            this.setState({selectedNode: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'nodeName');
+            this.setState({selectedNode: null});
+        }
+    }
+
+    onAddJobNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'jobName', e.value);
+            this.setState({selectedJobName: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'jobName');
+            this.setState({selectedJobName: null});
+        }
+    }
+
+    onClearFilter() {
+        clearFilter(this.state.filterName);
+        this.setState({selectedStatus: undefined, selectedNode: undefined, selectedJobName: undefined});
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Job Executions</h2>
                 <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'}>
+                        <Toolbar>
+                            <Item location="before">
+                                <SelectBox items={this.statuses} displayExpr='key' valueExpr='value' showClearButton={true}
+                                           value={this.state.selectedStatus} onValueChanged={this.onAddStatusFilter}
+                                           placeholder={'Select status...'} hint={'Filter job executions by status.'}/>
+                            </Item>
+                            {/*<Item location="before">
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='hostName' valueExpr='hostName' showClearButton={true}
+                                           value={this.state.selectedHost} onValueChanged={this.onAddHostNameFilter}/>
+                            </Item>*/}
+                            <Item location="before">
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='nodeName' showClearButton={true}
+                                           value={this.state.selectedNode} onValueChanged={this.onAddNodeNameFilter}
+                                           placeholder={'Select node...'} hint={'Filter job executions by node.'}/>
+                            </Item>
+                            <Item location="before">
+                                <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'name'} showClearButton={true}
+                                           value={this.state.selectedJobName} onValueChanged={this.onAddJobNameFilter}
+                                           placeholder={'Select job name...'} hint={'Filter job execution logs by job name.'}/>
+                            </Item>
+                            <Item location="before">
+                                <Button text={'Clear Filter'} onClick={this.onClearFilter.bind(this)} hint={'Clear all filter settings.'}/>
+                            </Item>
+                        </Toolbar>
+                    </div>
                     <div className={'dx-card responsive-paddings'}>
                         <Toolbar>
                             <Item
@@ -93,7 +188,7 @@ class JobExecutionList extends React.Component {
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            dataSource={JobExecutionDataSource()}
+                            dataSource={JobExecutionDataSource(this.state.filterName)}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

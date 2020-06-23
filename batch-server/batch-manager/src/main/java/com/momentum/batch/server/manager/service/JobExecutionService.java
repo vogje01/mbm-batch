@@ -7,7 +7,7 @@ import org.springframework.hateoas.PagedModel;
 
 public interface JobExecutionService {
 
-    PagedModel<JobExecutionDto> findAll(Pageable pageable);
+    PagedModel<JobExecutionDto> findAll(String status, String nodeName, Pageable pageable);
 
     JobExecutionDto getById(final String id) throws ResourceNotFoundException;
 

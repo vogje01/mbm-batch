@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @Table(name = "BATCH_AGENT")
 @EntityListeners(AuditingEntityListener.class)
-public class Agent extends Auditing implements PrimaryKeyIdentifier<String> {
+public class Agent extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key

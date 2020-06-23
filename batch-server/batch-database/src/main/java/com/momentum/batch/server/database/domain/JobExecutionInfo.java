@@ -15,9 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "BATCH_JOB_EXECUTION")
-public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
+@EntityListeners(AuditingEntityListener.class)
+public class JobExecutionInfo extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key
@@ -71,7 +71,8 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
      * Job status
      */
     @Column(name = "STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private JobExecutionStatus status;
     /**
      * Job status
      */
@@ -172,7 +173,7 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.lastUpdated = jobExecutionDto.getLastUpdated();
         this.endTime = jobExecutionDto.getEndTime();
         this.runningTime = jobExecutionDto.getRunningTime();
-        this.status = jobExecutionDto.getStatus();
+        this.status = JobExecutionStatus.valueOf(jobExecutionDto.getStatus());
         this.exitCode = jobExecutionDto.getExitCode();
         this.exitMessage = jobExecutionDto.getExitMessage();
     }
@@ -265,11 +266,11 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
         this.jobVersion = jobVersion;
     }
 
-    public String getStatus() {
+    public JobExecutionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(JobExecutionStatus status) {
         this.status = status;
     }
 
@@ -435,14 +436,13 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 Objects.equal(exitCode, that.exitCode) &&
                 Objects.equal(exitMessage, that.exitMessage) &&
                 Objects.equal(jobConfigurationLocation, that.jobConfigurationLocation) &&
-                Objects.equal(executionContext, that.executionContext) &&
                 Objects.equal(failureExceptions, that.failureExceptions);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), id, jobExecutionId, jobPid, hostName, nodeName, jobName, jobGroup, jobKey, jobVersion, status, startedBy,
-                startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, executionContext, failureExceptions);
+                startTime, createTime, endTime, lastUpdated, runningTime, exitCode, exitMessage, jobConfigurationLocation, failureExceptions);
     }
 
     @Override
@@ -467,7 +467,6 @@ public class JobExecutionInfo extends Auditing implements PrimaryKeyIdentifier<S
                 .add("exitCode", exitCode)
                 .add("exitMessage", exitMessage)
                 .add("jobConfigurationLocation", jobConfigurationLocation)
-                .add("executionContext", executionContext)
                 .add("failureExceptions", failureExceptions)
                 .toString();
     }

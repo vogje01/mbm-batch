@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "BATCH_STEP_EXECUTION")
-public class StepExecutionInfo extends Auditing implements PrimaryKeyIdentifier<String> {
+public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key

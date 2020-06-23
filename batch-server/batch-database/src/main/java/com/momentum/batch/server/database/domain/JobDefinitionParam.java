@@ -1,9 +1,5 @@
 package com.momentum.batch.server.database.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.common.base.MoreObjects;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,10 +18,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "BATCH_JOB_DEFINITION_PARAMS")
 @EntityListeners(AuditingEntityListener.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true, value = {"handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class JobDefinitionParam extends Auditing implements PrimaryKeyIdentifier<String> {
+public class JobDefinitionParam extends Auditing<String> implements PrimaryKeyIdentifier<String> {
 
     /**
      * Primary key

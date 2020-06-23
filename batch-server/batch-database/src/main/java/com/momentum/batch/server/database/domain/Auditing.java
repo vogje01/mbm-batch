@@ -1,13 +1,13 @@
 package com.momentum.batch.server.database.domain;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import java.util.Date;
@@ -18,7 +18,8 @@ import java.util.Date;
  * @since 0.0.1
  */
 @MappedSuperclass
-public class Auditing {
+@EntityListeners(AuditingEntityListener.class)
+public class Auditing<U> {
     /**
      * Version
      */
@@ -30,87 +31,23 @@ public class Auditing {
      */
     @Column(name = "CREATED_BY")
     @CreatedBy
-    private String createdBy = "admin";
+    private U createdBy;
     /**
      * Created date
      */
     @Column(name = "CREATED_AT")
     @CreatedDate
-    private Date createdAt = new Date();
+    private Date createdAt;
     /**
      * Last modification user
      */
     @Column(name = "MODIFIED_BY")
     @LastModifiedBy
-    private String modifiedBy = "admin";
+    private U modifiedBy;
     /**
      * Last modification date
      */
     @Column(name = "MODIFIED_AT")
     @LastModifiedDate
-    private Date modifiedAt = new Date();
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    public Date getModifiedAt() {
-        return modifiedAt;
-    }
-
-    public void setModifiedAt(Date modifiedAt) {
-        this.modifiedAt = modifiedAt;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("version", version)
-                .add("createdBy", createdBy)
-                .add("createdAt", createdAt)
-                .add("modifiedBy", modifiedBy)
-                .add("modifiedAt", modifiedAt)
-                .toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Auditing that = (Auditing) o;
-        return Objects.equal(version, that.version) &&
-                Objects.equal(createdBy, that.createdBy) &&
-                Objects.equal(createdAt, that.createdAt) &&
-                Objects.equal(modifiedBy, that.modifiedBy) &&
-                Objects.equal(modifiedAt, that.modifiedAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(version, createdBy, createdAt, modifiedBy, modifiedAt);
-    }
+    private Date modifiedAt;
 }

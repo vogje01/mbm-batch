@@ -57,7 +57,7 @@ public class JobExecutionInfoModelAssembler extends RepresentationModelAssembler
     @Override
     public @NotNull CollectionModel<JobExecutionDto> toCollectionModel(@NotNull Iterable<? extends JobExecutionInfo> entities) {
         CollectionModel<JobExecutionDto> JobExecutionDtos = super.toCollectionModel(entities);
-        JobExecutionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(Pageable.unpaged())).withSelfRel());
+        JobExecutionDtos.add(linkTo(methodOn(JobExecutionController.class).findAll(null, null, Pageable.unpaged())).withSelfRel());
         return JobExecutionDtos;
     }
 

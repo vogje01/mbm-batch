@@ -33,12 +33,15 @@ public class JobExecutionController {
     /**
      * Returns one page of job execution infos.
      *
+     * @param status   status filter value.
      * @param pageable paging parameter.
      * @return on page of job executions.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobExecutionDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(jobExecutionService.findAll(pageable));
+    public ResponseEntity<PagedModel<JobExecutionDto>> findAll(@RequestParam(required = false) String status,
+                                                               @RequestParam(required = false) String nodeName,
+                                                               Pageable pageable) {
+        return ResponseEntity.ok(jobExecutionService.findAll(status, nodeName, pageable));
     }
 
     /**

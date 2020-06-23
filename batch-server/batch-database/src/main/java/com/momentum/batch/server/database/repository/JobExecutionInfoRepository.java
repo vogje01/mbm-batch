@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNull;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -20,11 +20,7 @@ import java.util.Optional;
  * @since 0.0.1
  */
 @Repository
-public interface JobExecutionInfoRepository extends PagingAndSortingRepository<JobExecutionInfo, String> {
-
-    Page<JobExecutionInfo> findAll(@NonNull Pageable pageable);
-
-    Optional<JobExecutionInfo> findById(@NonNull String id);
+public interface JobExecutionInfoRepository extends PagingAndSortingRepository<JobExecutionInfo, String>, QueryByExampleExecutor<JobExecutionInfo> {
 
     @Query("select j from JobExecutionInfo j where j.jobDefinition.id = :jobDefinitionId")
     Page<JobExecutionInfo> findByJobDefinition(@Param("jobDefinitionId") String jobDefinitionId, Pageable pageable);
