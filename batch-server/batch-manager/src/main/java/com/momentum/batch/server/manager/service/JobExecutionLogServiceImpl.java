@@ -2,6 +2,7 @@ package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.JobExecutionLog;
+import com.momentum.batch.server.database.domain.JobLogMessageLevel;
 import com.momentum.batch.server.database.domain.dto.JobExecutionLogDto;
 import com.momentum.batch.server.database.repository.JobExecutionLogRepository;
 import com.momentum.batch.server.manager.converter.JobExecutionLogModelAssembler;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -45,13 +47,32 @@ public class JobExecutionLogServiceImpl implements JobExecutionLogService {
 
     @Override
     @Cacheable("JobExecutionLog")
-    public PagedModel<JobExecutionLogDto> findAll(Pageable pageable) {
+    public PagedModel<JobExecutionLogDto> findAll(String hostName, String nodeName, String level, String jobName, Pageable pageable) {
         t.restart();
 
-        Page<JobExecutionLog> jobExecutionLogs = jobExecutionLogRepository.findAll(pageable);
+        JobExecutionLog jobExecutionLog = new JobExecutionLog();
+        if (hostName != null) {
+            jobExecutionLog.setHostName(hostName);
+            logger.debug(format("Filter set - hostName: {0}", hostName));
+        }
+        if (nodeName != null) {
+            jobExecutionLog.setNodeName(nodeName);
+            logger.debug(format("Filter set - nodeName: {0}", nodeName));
+        }
+        if (level != null) {
+            jobExecutionLog.setLevel(JobLogMessageLevel.valueOf(level));
+            logger.debug(format("Filter set - level: {0}", level));
+        }
+        if (jobName != null) {
+            jobExecutionLog.setJobName(jobName);
+            logger.debug(format("Filter set - jobName: {0}", jobName));
+        }
+
+        Example<JobExecutionLog> example = Example.of(jobExecutionLog);
+        Page<JobExecutionLog> jobExecutionLogs = jobExecutionLogRepository.findAll(example, pageable);
 
         PagedModel<JobExecutionLogDto> collectionModel = pagedResourcesAssembler.toModel(jobExecutionLogs, jobExecutionLogModelAssembler);
-        logger.debug(format("Job execution log list request finished - count: {0}/{1} {2}",
+        logger.info(format("Job execution log list request finished - count: {0}/{1} {2}",
                 Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
         return collectionModel;

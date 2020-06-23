@@ -1,6 +1,7 @@
 import DataSource from "devextreme/data/data_source";
 import CustomStore from "devextreme/data/custom_store";
-import {getFilterString, getParams, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {getParams, handleData, handleResponse, initGet} from "../../utils/server-connection";
+import {getFilterString} from "../../utils/filter-util";
 import {EndTimer, StartTimer} from "../../utils/method-timer";
 
 export const JobExecutionLogDataSource = (filterName) => {

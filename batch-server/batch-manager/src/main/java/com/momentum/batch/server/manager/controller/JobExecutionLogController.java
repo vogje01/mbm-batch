@@ -38,8 +38,12 @@ public class JobExecutionLogController {
      * @return one page of job execution logs.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<JobExecutionLogDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(jobExecutionLogService.findAll(pageable));
+    public ResponseEntity<PagedModel<JobExecutionLogDto>> findAll(@RequestParam(required = false) String hostName,
+                                                                  @RequestParam(required = false) String nodeName,
+                                                                  @RequestParam(required = false) String level,
+                                                                  @RequestParam(required = false) String jobName,
+                                                                  Pageable pageable) {
+        return ResponseEntity.ok(jobExecutionLogService.findAll(hostName, nodeName, level, jobName, pageable));
     }
 
     /**

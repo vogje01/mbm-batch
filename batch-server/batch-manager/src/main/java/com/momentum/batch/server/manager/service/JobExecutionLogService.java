@@ -7,7 +7,7 @@ import org.springframework.hateoas.PagedModel;
 
 public interface JobExecutionLogService {
 
-    PagedModel<JobExecutionLogDto> findAll(Pageable pageable);
+    PagedModel<JobExecutionLogDto> findAll(String hostName, String nodeName, String level, String jobName, Pageable pageable);
 
     PagedModel<JobExecutionLogDto> byJobId(String jobId, Pageable pageable);
 

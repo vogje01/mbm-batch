@@ -7,20 +7,20 @@ import {Item, Toolbar} from "devextreme-react/toolbar";
 import {AgentDataSource} from "../agent/agent-data-source";
 import {JobExecutionLogDataSource} from "./job-execution-log-data-source";
 import {JobDefinitionDataSource} from "../job-definition/job-definition-data-source";
-import {addFilter, clearFilter, getFilter} from "../../utils/server-connection";
+import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
 import SelectBox from "devextreme-react/select-box";
+import Button from "devextreme-react/button";
 
 class LogList extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            filterName: 'JobExecutionLog',
             currentJobExecution: {},
             isThreadVisible: false,
             isHostVisible: false,
             isNodeVisible: false,
-            filterName: 'JobExecutionLog',
-            filter: getFilter('JobExecutionLog'),
             selectedHost: null,
             selectedNode: null,
             selectedLevel: null,
@@ -60,7 +60,8 @@ class LogList extends React.Component {
             {name: 'DEBUG', value: 'DEBUG'},
             {name: 'INFO', value: 'INFO'},
             {name: 'WARNING', value: 'WARN'},
-            {name: 'ERROR', value: 'ERROR'}
+            {name: 'ERROR', value: 'ERROR'},
+            {name: 'FATAL', value: 'FATAL'}
         ];
         clearFilter('JobExecutionLog');
     }
@@ -78,23 +79,48 @@ class LogList extends React.Component {
     }
 
     onAddHostNameFilter(e) {
-        addFilter(this.state.filterName, 'hostId', e.selectedItem.id, e.selectedItem.hostName);
-        this.setState({filter: getFilter(this.state.filterName), selectedHost: e.selectedItem});
+        if (e.value) {
+            addFilter(this.state.filterName, 'hostName', e.value);
+            this.setState({selectedHost: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'hostName');
+            this.setState({selectedHost: null});
+        }
     }
 
     onAddNodeNameFilter(e) {
-        addFilter(this.state.filterName, 'nodeId', e.selectedItem.id, e.selectedItem.nodeName);
-        this.setState({filter: getFilter(this.state.filterName)});
+        if (e.value) {
+            addFilter(this.state.filterName, 'nodeName', e.value);
+            this.setState({selectedNode: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'nodeName');
+            this.setState({selectedNode: null});
+        }
     }
 
     onAddLevelFilter(e) {
-        addFilter(this.state.filterName, 'level', e.selectedItem.value, e.selectedItem.value);
-        this.setState({filter: getFilter(this.state.filterName)});
+        if (e.value) {
+            addFilter(this.state.filterName, 'level', e.value);
+            this.setState({selectedLevel: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'level');
+            this.setState({selectedLevel: null});
+        }
     }
 
     onAddJobDefinitionFilter(e) {
-        addFilter(this.state.filterName, 'jobName', e.selectedItem.name, e.selectedItem.jobName);
-        this.setState({filter: getFilter(this.state.filterName)});
+        if (e.value) {
+            addFilter(this.state.filterName, 'jobName', e.value);
+            this.setState({selectedJobName: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'jobName');
+            this.setState({selectedJobName: null});
+        }
+    }
+
+    onClearFilter() {
+        clearFilter(this.state.filterName);
+        this.setState({selectedHost: undefined, selectedNode: undefined, selectedLevel: undefined, selectedJobName: undefined});
     }
 
     render() {
@@ -105,24 +131,23 @@ class LogList extends React.Component {
                     <div className={'dx-card responsive-paddings'}>
                         <Toolbar>
                             <Item location="before">
-                                <SelectBox dataSource={AgentDataSource()} displayExpr='hostName' valueExpr='id'
-                                           selectedItem={this.state.selectedHost}
-                                           onSelectionChanged={this.onAddHostNameFilter}/>
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='hostName' valueExpr='hostName' showClearButton={true}
+                                           value={this.state.selectedHost} onValueChanged={this.onAddHostNameFilter}/>
                             </Item>
                             <Item location="before">
-                                <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='id'
-                                           selectedItem={this.state.selectedNode}
-                                           onSelectionChanged={this.onAddNodeNameFilter}/>
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='nodeName' showClearButton={true}
+                                           value={this.state.selectedNode} onValueChanged={this.onAddNodeNameFilter}/>
                             </Item>
                             <Item location="before">
-                                <SelectBox items={this.levels} displayExpr='name' valueExpr='value'
-                                           selectedItem={this.state.selectedLevel}
-                                           onSelectionChanged={this.onAddLevelFilter}/>
+                                <SelectBox items={this.levels} displayExpr='name' valueExpr='value' showClearButton={true}
+                                           value={this.state.selectedLevel} onValueChanged={this.onAddLevelFilter}/>
                             </Item>
                             <Item location="before">
-                                <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'id'} keyExpr={'id'}
-                                           selectedItem={this.state.selectedJobName}
-                                           onSelectionChanged={this.onAddJobDefinitionFilter}/>
+                                <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'name'} showClearButton={true}
+                                           value={this.state.selectedJobName} onValueChanged={this.onAddJobDefinitionFilter}/>
+                            </Item>
+                            <Item location="before">
+                                <Button text={'Clear Filter'} onClick={this.onClearFilter.bind(this)}/>
                             </Item>
                         </Toolbar>
                     </div>

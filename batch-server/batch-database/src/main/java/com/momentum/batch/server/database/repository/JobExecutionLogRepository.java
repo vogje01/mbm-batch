@@ -6,10 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JobExecutionLogRepository extends PagingAndSortingRepository<JobExecutionLog, String> {
+public interface JobExecutionLogRepository extends PagingAndSortingRepository<JobExecutionLog, String>, QueryByExampleExecutor<JobExecutionLog> {
 
     @Query("select count(j) from JobExecutionLog j where j.timestamp < :cutOffDate")
     long countByTimestamp(@Param("cutOffDate") long cutOffDate);

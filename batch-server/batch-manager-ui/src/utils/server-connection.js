@@ -78,67 +78,6 @@ const getItem = (url) => {
         });
 };
 
-export const getFilterString = (filterName) => {
-    let filter = JSON.parse(localStorage.getItem(filterName));
-    if (filter == null) {
-        return '';
-    }
-    let filterStr = '';
-    filter.forEach(function (entry) {
-        filterStr += '&' + entry.key + '=' + entry.value;
-    });
-    return filterStr;
-};
-
-export const getFilter = (filterName) => {
-    return JSON.parse(localStorage.getItem(filterName));
-};
-
-export const getFilterValue = (filterName, key) => {
-    let filter = JSON.parse(localStorage.getItem(filterName));
-    if (filter == null) {
-        return null;
-    }
-    filter.forEach(function (entry) {
-        if (entry.key === key) {
-            return entry.value;
-        }
-    });
-    return null;
-};
-
-export const getFilterDisplayValue = (filterName, key) => {
-    let filter = JSON.parse(localStorage.getItem(filterName));
-    if (filter == null) {
-        return null;
-    }
-    filter.forEach(function (entry) {
-        if (entry.key === key) {
-            return entry.displayValue;
-        }
-    });
-    return null;
-};
-
-export const addFilter = (filterName, search, searchValue, displayValue) => {
-    let filter = JSON.parse(localStorage.getItem(filterName));
-    if (filter !== null) {
-        let index = filter.findIndex((x => x.key === search))
-        if (index === -1) {
-            filter.push({key: search, value: searchValue, displayValue: displayValue});
-        } else {
-            filter[index] = {key: search, value: searchValue, displayValue: displayValue}
-        }
-    } else {
-        filter = [{key: search, value: searchValue, displayValue: displayValue}];
-    }
-    localStorage.setItem(filterName, JSON.stringify(filter));
-};
-
-export const clearFilter = (filterName) => {
-    localStorage.removeItem(filterName);
-};
-
 const insertItem = (url, item) => {
     StartTimer();
     return fetch(url, initInsert(item))
