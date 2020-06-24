@@ -119,7 +119,7 @@ public class LibraryReaderService {
             return true;
         }
         try {
-            if (!MbmFileUtils.exists(libraryDirectory + File.separator + fileName)) {
+            if (!MbmFileUtils.fileExists(libraryDirectory + File.separator + fileName)) {
                 return true;
             }
             long fileSize = MbmFileUtils.getSize(libraryDirectory + File.separator + fileName);

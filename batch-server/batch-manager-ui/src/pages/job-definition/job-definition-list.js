@@ -94,7 +94,7 @@ class JobDefinitionList extends React.Component {
         jobDefinition.id = null;
         jobDefinition.name = jobDefinition.name + ' (copy)';
         jobDefinition.label = jobDefinition.label + ' (copy)';
-        let url = process.env.REACT_MANAGER_API_URL + 'jobdefinitions/insert';
+        let url = process.env.REACT_APP_MANAGER_URL + 'jobdefinitions/insert';
         this.setState({currentJobDefinition: insertItem(url, JSON.stringify(jobDefinition))});
     }
 

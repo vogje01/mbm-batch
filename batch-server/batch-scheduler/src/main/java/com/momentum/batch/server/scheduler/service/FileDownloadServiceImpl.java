@@ -42,7 +42,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
 
         // Check file existence
         Path fullPath = Paths.get(jobsDirectory, fileName + ".jar");
-        if (!MbmFileUtils.exists(fullPath.toString())) {
+        if (!MbmFileUtils.fileExists(fullPath.toString())) {
             logger.warn(format("File does not exist - fileName: {0}", fullPath));
             throw new ResourceNotFoundException("File does not exist");
         }

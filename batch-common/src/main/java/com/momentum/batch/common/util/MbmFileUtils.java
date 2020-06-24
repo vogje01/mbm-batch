@@ -5,6 +5,10 @@ import com.momentum.batch.server.database.domain.JobDefinitionType;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,9 +48,20 @@ public class MbmFileUtils {
      * @param fileName fully qualified file name.
      * @return true in case file exists and is not a directory, otherwise false.
      */
-    public static boolean exists(String fileName) {
+    public static boolean fileExists(String fileName) {
         File f = new File(fileName);
         return f.exists() && !f.isDirectory();
+    }
+
+    /**
+     * Check the existence of a directory.
+     *
+     * @param fileName fully qualified file name.
+     * @return true in case file exists and is not a directory, otherwise false.
+     */
+    public static boolean dirExists(String fileName) {
+        File f = new File(fileName);
+        return f.exists() && f.isDirectory();
     }
 
     /**
@@ -101,5 +116,19 @@ public class MbmFileUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Check lock of file.
+     *
+     * @param path path to file.
+     * @return true if file is locked, otherwise false.
+     */
+    public static boolean isLocked(Path path) {
+        try (FileChannel ch = FileChannel.open(path, StandardOpenOption.WRITE); FileLock lock = ch.tryLock()) {
+            return lock == null;
+        } catch (IOException e) {
+            return true;
+        }
     }
 }

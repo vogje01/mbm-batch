@@ -22,7 +22,7 @@ class JobFileUpload extends React.Component {
                     <div className={'dx-card responsive-paddings'}>
                         <FileUploader multiple={false} accept={'application/octet-stream'} uploadMode={'instantly'}
                                       uploadHeaders={{'Authorization': 'Bearer ' + localStorage.getItem('webToken')}}
-                                      uploadUrl={process.env.REACT_MANAGER_API_URL + 'jobfileupload'} onUploaded={this.onUploaded.bind(this)}
+                                      uploadUrl={process.env.REACT_APP_MANAGER_URL + 'jobfileupload'} onUploaded={this.onUploaded.bind(this)}
                                       labelText={''} allowedFileExtensions={['.jar']} maxFileSize={100000000}/>
                         <div className="content" style={{display: this.state.selectedFiles.length > 0 ? 'block' : 'none'}}>
                             <div>

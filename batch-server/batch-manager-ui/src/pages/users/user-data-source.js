@@ -7,7 +7,7 @@ export const UserDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = process.env.REACT_MANAGER_API_URL + 'users' + getParams(loadOptions, 'userId', 'asc');
+                let url = process.env.REACT_APP_MANAGER_URL + 'users' + getParams(loadOptions, 'userId', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of users');
@@ -19,7 +19,7 @@ export const UserDataSource = () => {
                     });
             },
             insert: function (user) {
-                let url = process.env.REACT_MANAGER_API_URL + 'users/insert';
+                let url = process.env.REACT_APP_MANAGER_URL + 'users/insert';
                 return insertItem(url, JSON.stringify(user))
             },
             update: function (user, values) {
@@ -77,7 +77,7 @@ export const UserRestrictedDataSource = (userGroup) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_MANAGER_API_URL + 'users/restricted/' + userGroup.id + getParams(loadOptions, 'userId', 'asc')
+                let url = process.env.REACT_APP_MANAGER_URL + 'users/restricted/' + userGroup.id + getParams(loadOptions, 'userId', 'asc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response)

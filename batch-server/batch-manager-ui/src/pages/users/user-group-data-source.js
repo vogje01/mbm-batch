@@ -7,7 +7,7 @@ export const UserGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = process.env.REACT_MANAGER_API_URL + 'usergroups' + getParams(loadOptions, 'name', 'asc');
+                let url = process.env.REACT_APP_MANAGER_URL + 'usergroups' + getParams(loadOptions, 'name', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of user groups');
@@ -19,7 +19,7 @@ export const UserGroupDataSource = () => {
                     });
             },
             insert: function (userGroup) {
-                let url = process.env.REACT_MANAGER_API_URL + 'usergroups/insert';
+                let url = process.env.REACT_APP_MANAGER_URL + 'usergroups/insert';
                 return insertItem(url, JSON.stringify(userGroup))
             },
             update: function (userGroup, values) {

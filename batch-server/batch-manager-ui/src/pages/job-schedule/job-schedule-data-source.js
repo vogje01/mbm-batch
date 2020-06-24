@@ -7,7 +7,7 @@ export const JobScheduleDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             load: function (loadOptions) {
-                let url = process.env.REACT_MANAGER_API_URL + 'jobschedules' + getParams(loadOptions, 'name', 'asc');
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobschedules' + getParams(loadOptions, 'name', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of job execution logs');
@@ -19,7 +19,7 @@ export const JobScheduleDataSource = () => {
                     });
             },
             insert: function (jobSchedule) {
-                let url = process.env.REACT_MANAGER_API_URL + 'jobschedules/insert';
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobschedules/insert';
                 return insertItem(url, JSON.stringify(jobSchedule))
             },
             update: function (jobSchedule, values) {

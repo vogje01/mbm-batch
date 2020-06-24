@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PreDestroy;
 import java.io.File;
+import java.io.FileFilter;
 
 import static java.text.MessageFormat.format;
 
@@ -25,21 +26,40 @@ public class LibraryWatcherConfiguration {
     @Value("${mbm.library.dropins}")
     private String dropinsDirectory;
 
+    @Value("${mbm.library.jobs}")
+    private String jobsDirectory;
+
+    private final LibraryFileWatcherService libraryFileWatcherService;
+
     @Autowired
-    private LibraryFileWatcherService libraryFileWatcherService;
+    public LibraryWatcherConfiguration(LibraryFileWatcherService libraryFileWatcherService) {
+        this.libraryFileWatcherService = libraryFileWatcherService;
+    }
 
     /**
      * Logger
      */
     private static final Logger logger = LoggerFactory.getLogger(LibraryWatcherConfiguration.class);
 
+    /**
+     * File system watcher for jobs directories.
+     *
+     * <p>
+     * Accepts only JAR files.
+     * </p>
+     *
+     * @return File system watcher instance.
+     */
     @Bean
     public FileSystemWatcher fileSystemWatcher() {
+        FileFilter fileFilter = pathname -> pathname.getName().endsWith(".jar");
         FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
         fileSystemWatcher.addSourceDirectory(new File(dropinsDirectory));
+        fileSystemWatcher.addSourceDirectory(new File(jobsDirectory));
+        fileSystemWatcher.setTriggerFilter(fileFilter);
         fileSystemWatcher.addListener(libraryFileWatcherService);
         fileSystemWatcher.start();
-        logger.info(format("File system watcher started - path: {0}", dropinsDirectory));
+        logger.info(format("File system watcher started - jobs: {0} dropins: {1}", jobsDirectory, dropinsDirectory));
         return fileSystemWatcher;
     }
 

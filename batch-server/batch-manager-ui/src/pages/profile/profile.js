@@ -64,7 +64,7 @@ class Profile extends React.Component {
     }
 
     onUploaded(e) {
-        getItem(process.env.REACT_MANAGER_API_URL + 'users/' + this.state.user.id)
+        getItem(process.env.REACT_APP_MANAGER_URL + 'users/' + this.state.user.id)
             .then((data) => {
                 this.setState({
                     user: data
@@ -77,7 +77,7 @@ class Profile extends React.Component {
         e.event.preventDefault();
         let user = this.state.user;
         user.passwordChanged = this.state.passwordChanged;
-        updateItem(process.env.REACT_MANAGER_API_URL + 'users/' + user.id + '/update', user, 'userDto')
+        updateItem(process.env.REACT_APP_MANAGER_URL + 'users/' + user.id + '/update', user, 'userDto')
             .then((data) => {
                 this.setState({
                     user: data
@@ -99,7 +99,7 @@ class Profile extends React.Component {
                     <div className="widget-container" style={{marginLeft: '-7px'}}>
                         <FileUploader multiple={false} accept={'images/*'} uploadMode={'instantly'}
                                       uploadHeaders={{'Authorization': 'Bearer ' + localStorage.getItem('webToken')}}
-                                      uploadUrl={process.env.REACT_MANAGER_API_URL + 'users/avatar/' + this.state.user.id}
+                                      uploadUrl={process.env.REACT_APP_MANAGER_URL + 'users/avatar/' + this.state.user.id}
                                       onUploaded={this.onUploaded.bind(this)}
                                       labelText={''} uploadedMessage={'You need to logout/login for the changes to take effect!'}
                                       allowedFileExtensions={['.jpg', '.jpeg', '.gif', '.png']} maxFileSize={4000000}/>

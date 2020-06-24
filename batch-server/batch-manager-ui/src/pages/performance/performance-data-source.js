@@ -10,7 +10,7 @@ export const PerformanceDataSource = (nodeName, type, metric, scale, startTime, 
                     return;
                 }
                 let params = getParams(loadOptions) + '&type=' + type + '&metric=' + metric + '&scale=' + scale + '&startTime=' + startTime + '&endTime=' + endTime;
-                return getItem(process.env.REACT_MANAGER_API_URL + 'batchperformance/byNodeName/' + nodeName + params);
+                return getItem(process.env.REACT_APP_MANAGER_URL + 'batchperformance/byNodeName/' + nodeName + params);
             },
             byKey: function (key) {
 

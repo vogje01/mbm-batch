@@ -83,12 +83,12 @@ public class FilePath {
         this.key = key;
     }
 
-    public boolean isDirectory() {
-        return isDirectory;
+    public void setIsDirectory(boolean isDirectory) {
+        this.isDirectory = isDirectory;
     }
 
-    public void setDirectory(boolean directory) {
-        isDirectory = directory;
+    public boolean getIsDirectory() {
+        return isDirectory;
     }
 
     public String getThumbnail() {

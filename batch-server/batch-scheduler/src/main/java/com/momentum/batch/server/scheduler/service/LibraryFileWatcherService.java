@@ -5,6 +5,7 @@ import com.momentum.batch.common.util.filewatch.ChangedFile;
 import com.momentum.batch.common.util.filewatch.ChangedFiles;
 import com.momentum.batch.common.util.filewatch.FileChangeListener;
 import com.momentum.batch.server.database.domain.JobDefinition;
+import com.momentum.batch.server.database.domain.JobDefinitionType;
 import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.repository.JobDefinitionRepository;
 import com.momentum.batch.server.database.repository.JobGroupRepository;
@@ -17,9 +18,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +29,8 @@ import java.util.Set;
 import static java.text.MessageFormat.format;
 
 /**
+ * File system watcher service for the jobs and dropins directories.
+ *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-RELEASE
  * @since 0.0.4
@@ -53,30 +57,49 @@ public class LibraryFileWatcherService implements FileChangeListener {
      */
     private final JobGroupRepository jobGroupRepository;
 
+    /**
+     * Constructor.
+     *
+     * @param jobDefinitionRepository job definition repository
+     * @param jobGroupRepository      job group repository
+     */
     @Autowired
     public LibraryFileWatcherService(JobDefinitionRepository jobDefinitionRepository, JobGroupRepository jobGroupRepository) {
         this.jobDefinitionRepository = jobDefinitionRepository;
         this.jobGroupRepository = jobGroupRepository;
     }
 
+    /**
+     * Initialization
+     */
     @PostConstruct
     public void initialize() {
         try {
             Files.walk(Paths.get(jobsDirectory))
                     .filter(Files::isRegularFile)
+                    .filter(f -> f.endsWith(".jar"))
+                    .forEach(this::checkFile);
+            Files.walk(Paths.get(dropinsDirectory))
+                    .filter(Files::isRegularFile)
+                    .filter(f -> f.endsWith(".jar"))
                     .forEach(this::checkFile);
         } catch (IOException e) {
             logger.error(format("Could not scan directory - name: {0}", dropinsDirectory));
         }
     }
 
+    /**
+     * Check the file for a new size or file hash.
+     *
+     * @param filePath file path.
+     */
     private void checkFile(Path filePath) {
         logger.debug(format("Checking file - path: {0}", filePath.toString()));
         String fileName = filePath.toFile().getName();
         List<JobDefinition> jobDefinitionList = jobDefinitionRepository.findByFileName(fileName);
         if (jobDefinitionList.isEmpty()) {
             logger.info(format("File not found in job definition repository - name: {0}", fileName));
-            //createJobDefinition(filePath);
+            createJobDefinition(filePath);
         } else {
             try {
 
@@ -106,8 +129,14 @@ public class LibraryFileWatcherService implements FileChangeListener {
         }
     }
 
+    /**
+     * Create new job definition, in case a file is found and no corresponding job definition.
+     *
+     * @param filePath file path of new file.
+     */
     private void createJobDefinition(Path filePath) {
         try {
+            // Get hash and file size.
             String currentHash = MbmFileUtils.getHash(filePath.toString());
             long currentFileSize = MbmFileUtils.getSize(filePath.toString());
 
@@ -119,7 +148,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setFileHash(currentHash);
             jobDefinition.setName(jobName);
             jobDefinition.setFileName(fileName);
-            jobDefinition.setType(MbmFileUtils.getJobType(fileName));
+            jobDefinition.setType(JobDefinitionType.UNKNOWN);
             jobDefinition.setCommand("Command missing");
             jobDefinition.setWorkingDirectory("Working directory missing");
             jobDefinition.setLoggingDirectory("Logging directory missing");
@@ -131,7 +160,6 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setDescription("New job definition: " + jobName);
             jobDefinition.setJobVersion(MbmFileUtils.getVersion(fileName));
             jobDefinition.setActive(false);
-
 
             // Save to database
             jobDefinition = jobDefinitionRepository.save(jobDefinition);
@@ -148,6 +176,13 @@ public class LibraryFileWatcherService implements FileChangeListener {
         }
     }
 
+    /**
+     * Update an existing job definition.
+     *
+     * @param jobDefinition job definition to update.
+     * @param fileSize      new file size.
+     * @param fileHash      new file hash.
+     */
     private void updateJobDefinition(JobDefinition jobDefinition, long fileSize, String fileHash) {
         jobDefinition.setFileSize(fileSize);
         jobDefinition.setFileHash(fileHash);
@@ -155,23 +190,19 @@ public class LibraryFileWatcherService implements FileChangeListener {
         logger.info(format("Job definition updated - name: {0} size: {1} hash: {2}", jobDefinition.getName(), fileSize, fileHash));
     }
 
+    /**
+     * File watcher found a change in the directory.
+     *
+     * @param changeSet a set of the {@link ChangedFiles}
+     */
     @Override
     public void onChange(Set<ChangedFiles> changeSet) {
         for (ChangedFiles cfiles : changeSet) {
             for (ChangedFile cfile : cfiles.getFiles()) {
-                if ((cfile.getType().equals(ChangedFile.Type.MODIFY) || cfile.getType().equals(ChangedFile.Type.ADD)) && !isLocked(cfile.getFile().toPath())) {
+                if ((cfile.getType().equals(ChangedFile.Type.MODIFY) || cfile.getType().equals(ChangedFile.Type.ADD)) && !MbmFileUtils.isLocked(cfile.getFile().toPath())) {
                     checkFile(cfile.getFile().toPath());
                 }
             }
         }
     }
-
-    private boolean isLocked(Path path) {
-        try (FileChannel ch = FileChannel.open(path, StandardOpenOption.WRITE); FileLock lock = ch.tryLock()) {
-            return lock == null;
-        } catch (IOException e) {
-            return true;
-        }
-    }
-
 }

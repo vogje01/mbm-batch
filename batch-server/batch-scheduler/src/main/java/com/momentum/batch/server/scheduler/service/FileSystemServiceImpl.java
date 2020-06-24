@@ -2,6 +2,7 @@ package com.momentum.batch.server.scheduler.service;
 
 import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.server.scheduler.util.FilePath;
+import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
 import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -9,7 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.BadRequestException;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +89,19 @@ public class FileSystemServiceImpl implements FileSystemService {
     }
 
     @Override
-    public void deleteItems(FilePath filePath) {
+    public void deleteItems(FilePath filePath) throws ResourceNotFoundException, IOException, BadRequestException {
+        logger.info(format("Delete items - name: {0}", filePath.getPath()));
 
+        Path path = Path.of(rootDirectory.substring(0, rootDirectory.lastIndexOf(File.separator)), filePath.getPath());
+        if (!filePath.getIsDirectory() && !MbmFileUtils.fileExists(path.toString())) {
+            throw new ResourceNotFoundException("File not found");
+        }
+        if (filePath.getIsDirectory() && !MbmFileUtils.dirExists(path.toString())) {
+            throw new ResourceNotFoundException("Directory not found");
+        }
+        if (!filePath.getIsDirectory() && MbmFileUtils.isLocked(path)) {
+            throw new BadRequestException();
+        }
+        Files.delete(path);
     }
 }

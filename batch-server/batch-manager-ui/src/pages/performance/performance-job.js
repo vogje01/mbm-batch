@@ -98,7 +98,7 @@ class PerformanceChart extends React.Component {
     }
 
     componentDidMount() {
-        getItem(process.env.REACT_MANAGER_API_URL + 'agents?page=0&size=-1&sortBy=nodeName&sortDir=asc')
+        getItem(process.env.REACT_APP_MANAGER_URL + 'agents?page=0&size=-1&sortBy=nodeName&sortDir=asc')
             .then((data) => {
                 this.setState({agents: data._embedded.agentDtoes, selectedAgent: data._embedded.agentDtoes[0], nodeName: data._embedded.agentDtoes[0].nodeName})
             });

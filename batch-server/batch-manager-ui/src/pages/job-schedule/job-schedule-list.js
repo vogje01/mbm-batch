@@ -42,7 +42,7 @@ class JobSchedulerList extends React.Component {
         let jobSchedule = e.row.data;
         jobSchedule.id = null;
         jobSchedule.name = jobSchedule.name + ' (copy)';
-        let url = process.env.REACT_MANAGER_API_URL + 'jobschedules/insert';
+        let url = process.env.REACT_APP_MANAGER_URL + 'jobschedules/insert';
         this.setState({currentJobSchedule: insertItem(url, JSON.stringify(jobSchedule))});
     }
 

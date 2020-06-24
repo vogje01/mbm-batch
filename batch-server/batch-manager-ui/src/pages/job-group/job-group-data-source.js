@@ -7,12 +7,12 @@ export const JobGroupDataSource = () => {
     return new DataSource({
         store: new CustomStore({
             byKey: function (key) {
-                let url = process.env.REACT_MANAGER_API_URL + 'jobgroups/byName?name=' + key;
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobgroups/byName?name=' + key;
                 return getItem(url);
             },
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_MANAGER_API_URL + 'jobgroups' + getParams(loadOptions, 'name', 'asc');
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobgroups' + getParams(loadOptions, 'name', 'asc');
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response, 'Could not get list of job groups');
@@ -24,7 +24,7 @@ export const JobGroupDataSource = () => {
                     });
             },
             insert: function (jobGroup) {
-                let url = process.env.REACT_MANAGER_API_URL + 'jobgroups/insert';
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobgroups/insert';
                 return insertItem(url, JSON.stringify(jobGroup));
             },
             update: function (jobGroup, values) {
@@ -71,7 +71,7 @@ export const JobDefinitionRestrictedDataSource = (jobGroup) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = process.env.REACT_MANAGER_API_URL + 'jobdefinitions/restricted/' + jobGroup.id + getParams(loadOptions, 'name', 'asc')
+                let url = process.env.REACT_APP_MANAGER_URL + 'jobdefinitions/restricted/' + jobGroup.id + getParams(loadOptions, 'name', 'asc')
                 return fetch(url, initGet())
                     .then(response => {
                         return handleResponse(response)

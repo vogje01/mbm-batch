@@ -35,7 +35,7 @@ export const StepExecutionDataSource = (jobExecutionInfo) => {
         store: new CustomStore({
             load: function (loadOptions) {
                 StartTimer();
-                let url = jobExecutionInfo !== undefined ? jobExecutionInfo._links.byJobId.href : process.env.REACT_MANAGER_API_URL + 'stepexecutions';
+                let url = jobExecutionInfo !== undefined ? jobExecutionInfo._links.byJobId.href : process.env.REACT_APP_MANAGER_URL + 'stepexecutions';
                 url += getParams(loadOptions, 'startTime', 'desc')
                 return fetch(url, initGet())
                     .then(response => {
