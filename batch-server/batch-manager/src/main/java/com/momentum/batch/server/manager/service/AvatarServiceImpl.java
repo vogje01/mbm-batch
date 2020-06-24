@@ -57,8 +57,12 @@ public class AvatarServiceImpl implements AvatarService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             try {
+                if (user.getAvatar() == null) {
+                    return IOUtils.resourceToByteArray("/images/default_avatar.png");
+                }
                 return IOUtils.toByteArray(user.getAvatar().getBinaryStream());
             } catch (IOException | SQLException ex) {
+                logger.error(format("Could not load avatar image - userId: {0}", user.getUserId()));
                 throw new BadRequestException();
             }
         }

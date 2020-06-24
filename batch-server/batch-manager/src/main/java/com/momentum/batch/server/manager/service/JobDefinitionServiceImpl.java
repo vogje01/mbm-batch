@@ -4,11 +4,9 @@ import com.google.common.collect.Lists;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
-import com.momentum.batch.server.database.domain.JobDefinitionType;
 import com.momentum.batch.server.database.domain.JobGroup;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.repository.AgentRepository;
@@ -19,7 +17,6 @@ import com.momentum.batch.server.manager.service.common.ResourceNotFoundExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,7 +27,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -41,9 +37,6 @@ import static java.text.MessageFormat.format;
 @Service
 @Transactional
 public class JobDefinitionServiceImpl implements JobDefinitionService {
-
-    @Value("${mbm.library.jobs}")
-    private String jobsDirectory;
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionServiceImpl.class);
 
@@ -177,41 +170,16 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
     @CachePut(cacheNames = "JobDefinition", key = "#jobDefinitionDto.id")
     public JobDefinitionDto insertJobDefinition(JobDefinitionDto jobDefinitionDto) throws ResourceNotFoundException, IOException {
 
-        // Check file
-        if (!jobDefinitionDto.getType().equals(JobDefinitionType.DOCKER.name())) {
-            String absoluteFilePath = jobsDirectory + File.separator + jobDefinitionDto.getFileName();
-            if (!MbmFileUtils.exists(absoluteFilePath)) {
-                throw new ResourceNotFoundException(format("File not found - path: {0}", absoluteFilePath));
-            }
-            // Get file size and hash
-            String fileHash = MbmFileUtils.getHash(absoluteFilePath);
-            long fileSize = MbmFileUtils.getSize(absoluteFilePath);
-            logger.debug(format("Job definition parameters found - path: {0}  size: {1} hash: {2}", absoluteFilePath, fileSize, fileHash));
+        // Get job definition
+        JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
+        jobDefinition.setId(UUID.randomUUID().toString());
 
-            // Get job definition
-            JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
-            jobDefinition.setId(UUID.randomUUID().toString());
-            jobDefinition.setFileHash(fileHash);
-            jobDefinition.setFileSize(fileSize);
+        // Insert into database
+        jobDefinition = jobDefinitionRepository.save(jobDefinition);
 
-            // Insert into database
-            jobDefinition = jobDefinitionRepository.save(jobDefinition);
-
-            // Add links
-            jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
-            logger.debug(format("Job definition insert request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
-        } else {
-            // Get job definition
-            JobDefinition jobDefinition = jobDefinitionModelAssembler.toEntity(jobDefinitionDto);
-            jobDefinition.setId(UUID.randomUUID().toString());
-
-            // Insert into database
-            jobDefinition = jobDefinitionRepository.save(jobDefinition);
-
-            // Add links
-            jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
-            logger.debug(format("Job definition insert request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
-        }
+        // Add links
+        jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
+        logger.debug(format("Job definition insert request finished - id: {0} [{1}]", jobDefinition.getId(), t.elapsedStr()));
         return jobDefinitionDto;
     }
 
