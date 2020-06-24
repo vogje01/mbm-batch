@@ -364,7 +364,7 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE, ACTIVE)
 VALUES (UUID(), 'performance-batch-docker', 'Performance Batch Docker',
         (SELECT ID FROM BATCH_JOB_GROUP WHERE NAME = 'Performance'), 'Performance data collection as docker image.',
-        'JAR', '0.0.6-RELEASE', 'docker', 'batch-jobs-performance-0.0.6-RELEASE.jar', '/opt/batch/agent',
+        'DOCKER', '0.0.6-RELEASE', 'docker', 'batch-jobs-performance-0.0.6-RELEASE.jar', '/opt/batch/agent',
         '/opt/batch/agent/log', '0', 'Completed', '-1', 'Failed', 1);
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ((SELECT ID FROM BATCH_JOB_DEFINITION WHERE NAME = 'performance-batch-docker'),
@@ -401,9 +401,9 @@ INSERT INTO BATCH_JOB_DEFINITION_PARAMS (ID, KEY_NAME, TYPE, VALUE, STRING_VAL, 
                                          BOOLEAN_VAL, JOB_DEFINITION_ID)
 VALUES (UUID(), 'performance.batch.agentLoad.chunkSize', 'LONG', NULL, NULL, NULL,
         1000, NULL, NULL, (SELECT ID FROM BATCH_JOB_DEFINITION WHERE NAME = 'performance-batch-docker'));
-INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, ACTIVE, VERSION)
+INSERT INTO BATCH_JOB_SCHEDULE(ID, JOB_DEFINITION_ID, SCHEDULE, NAME, MODE, TYPE, ACTIVE)
 VALUES (UUID(), (SELECT ID FROM BATCH_JOB_DEFINITION WHERE NAME = 'performance-batch-docker'), '0 0/15 * * * ?',
-        'Performance Batch Docker', 1, 0);
+        'Performance Batch Docker', 'RANDOM_GROUP', 'CENTRAL', 1);
 INSERT INTO BATCH_AGENT_SCHEDULE(SCHEDULE_ID, AGENT_ID)
 VALUES ((SELECT ID FROM BATCH_JOB_SCHEDULE WHERE NAME = 'Performance Batch Docker'),
         (SELECT ID FROM BATCH_AGENT WHERE NODE_NAME = 'batch-agent-01'));

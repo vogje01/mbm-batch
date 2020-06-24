@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * @version 0.0.6-RELEASE
  * @since 0.0.4
  */
-public class FileUtils {
+public class MbmFileUtils {
 
     /**
      * Calculates and returns the MD5 hash of a file.
@@ -84,5 +84,22 @@ public class FileUtils {
             return JobDefinitionType.SCRIPT;
         }
         return JobDefinitionType.UNKNOWN;
+    }
+
+    /**
+     * Checks whether a given directory has sub-directories.
+     *
+     * @param directory directory to check
+     * @return true if the given directory has sub-directories.
+     */
+    public static boolean hasSubDirectories(File directory) {
+        if (directory.listFiles() != null) {
+            for (File f : directory.listFiles()) {
+                if (f.isDirectory()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

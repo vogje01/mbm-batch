@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
-import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.Agent;
 import com.momentum.batch.server.database.domain.JobDefinition;
@@ -180,12 +180,12 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
         // Check file
         if (!jobDefinitionDto.getType().equals(JobDefinitionType.DOCKER.name())) {
             String absoluteFilePath = jobsDirectory + File.separator + jobDefinitionDto.getFileName();
-            if (!FileUtils.exists(absoluteFilePath)) {
+            if (!MbmFileUtils.exists(absoluteFilePath)) {
                 throw new ResourceNotFoundException(format("File not found - path: {0}", absoluteFilePath));
             }
             // Get file size and hash
-            String fileHash = FileUtils.getHash(absoluteFilePath);
-            long fileSize = FileUtils.getSize(absoluteFilePath);
+            String fileHash = MbmFileUtils.getHash(absoluteFilePath);
+            long fileSize = MbmFileUtils.getSize(absoluteFilePath);
             logger.debug(format("Job definition parameters found - path: {0}  size: {1} hash: {2}", absoluteFilePath, fileSize, fileHash));
 
             // Get job definition

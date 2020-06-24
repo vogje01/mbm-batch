@@ -14,7 +14,7 @@ import static java.text.MessageFormat.format;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @Component
@@ -82,6 +82,12 @@ public class BatchDatabaseTasks {
 
             String sql = "CREATE DATABASE batch";
             stmt.executeUpdate(sql);
+            sql = "CREATE USER 'admin'@'%' IDENTIFIED BY 'Secret_123'";
+            stmt.executeUpdate(sql);
+            sql = "GRANT ALL PRIVILEGES ON batch.* TO 'admin'@'%'";
+            stmt.executeUpdate(sql);
+            sql = "FLUSH PRIVILEGES";
+            stmt.executeUpdate(sql);
             System.out.println("Batch database created");
 
         } catch (Exception se) {
@@ -104,72 +110,15 @@ public class BatchDatabaseTasks {
         }
     }
 
-    /**
-     * Creates the admin user.
-     *
-     * <p>
-     * In ase it fails:
-     * <pre>
-     *          UPDATE mysql.user SET Grant_priv='Y', Super_priv='Y' WHERE User='root';
-     *          FLUSH PRIVILEGES;
-     *          GRANT ALL ON *.* TO 'root'&amp;'localhost';
-     *     </pre>
-     * and re-login.
-     * </p>
-     *
-     * @param url      database URL.
-     * @param user     root user.
-     * @param password root password.
-     */
-    public static void createAdminUser(String url, String user, String password) {
-        Connection conn = null;
-        Statement stmt = null;
-        try {
-            // Register JDBC driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Open a connection
-            conn = DriverManager.getConnection(url, user, password);
-
-            // Execute a query
-            stmt = conn.createStatement();
-
-            String sql = "CREATE USER 'admin'@'%' IDENTIFIED BY 'Secret_123'";
-            stmt.executeUpdate(sql);
-            sql = "GRANT ALL PRIVILEGES ON batch.* TO 'admin'@'%'";
-            stmt.executeUpdate(sql);
-            sql = "FLUSH PRIVILEGES";
-            stmt.executeUpdate(sql);
-        } catch (Exception se) {
-            //Handle errors for JDBC
-            se.printStackTrace();
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null)
-                    conn.close();
-            } catch (SQLException se) {
-                // do nothing
-            }
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException se) {
-                se.printStackTrace();
-            }
-        }
-        System.out.println("Batch admin user created");
-    }
-
     public static void installDatabase(String url, String user, String password) {
-
-        System.out.println(format("Installing database - user: {0} password: {1} url: {2}", user, password, url));
 
         // Create the Flyway instance and point it to the database
         Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
 
         // Start the migration
         flyway.migrate();
+
+        System.out.println(format("Installing database - version: {0}", flyway.info().current().getVersion()));
     }
 
     public static void updateDatabase(String url, String user, String password) {
@@ -179,6 +128,8 @@ public class BatchDatabaseTasks {
 
         // Start the migration
         flyway.migrate();
+
+        System.out.println(format("Database updated - version: {0}", flyway.info().current().getVersion()));
     }
 
     public void encryptPassword(String userPassword) {

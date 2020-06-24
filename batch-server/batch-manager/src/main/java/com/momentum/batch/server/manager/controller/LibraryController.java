@@ -1,6 +1,6 @@
 package com.momentum.batch.server.manager.controller;
 
-import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class LibraryController {
     @RequestMapping(value = "/{file_name}", method = RequestMethod.GET)
     public FileSystemResource getFile(@PathVariable("file_name") String fileName, HttpServletRequest request) throws ResourceNotFoundException {
         logger.info(format("Starting job download request - fileName: {0} host: {1}", fileName, request.getRemoteHost()));
-        if (FileUtils.exists(jobsDirectory + File.separator + fileName)) {
+        if (MbmFileUtils.exists(jobsDirectory + File.separator + fileName)) {
             throw new ResourceNotFoundException("File not found in jobs library");
         }
         logger.info(format("Sending job jar file to agent - fileName: {0} host: {1}", fileName, request.getRemoteHost()));

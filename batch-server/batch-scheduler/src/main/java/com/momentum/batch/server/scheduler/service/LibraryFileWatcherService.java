@@ -1,6 +1,6 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.common.util.filewatch.ChangedFile;
 import com.momentum.batch.common.util.filewatch.ChangedFiles;
 import com.momentum.batch.common.util.filewatch.FileChangeListener;
@@ -80,8 +80,8 @@ public class LibraryFileWatcherService implements FileChangeListener {
         } else {
             try {
 
-                String currentHash = FileUtils.getHash(filePath.toString());
-                long currentFileSize = FileUtils.getSize(filePath.toString());
+                String currentHash = MbmFileUtils.getHash(filePath.toString());
+                long currentFileSize = MbmFileUtils.getSize(filePath.toString());
                 jobDefinitionList.forEach(jobDefinition -> {
                     // Check hash
                     if (!currentHash.equals(jobDefinition.getFileHash())) {
@@ -108,8 +108,8 @@ public class LibraryFileWatcherService implements FileChangeListener {
 
     private void createJobDefinition(Path filePath) {
         try {
-            String currentHash = FileUtils.getHash(filePath.toString());
-            long currentFileSize = FileUtils.getSize(filePath.toString());
+            String currentHash = MbmFileUtils.getHash(filePath.toString());
+            long currentFileSize = MbmFileUtils.getSize(filePath.toString());
 
             // Create new job definition
             String fileName = filePath.toFile().getName();
@@ -119,7 +119,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setFileHash(currentHash);
             jobDefinition.setName(jobName);
             jobDefinition.setFileName(fileName);
-            jobDefinition.setType(FileUtils.getJobType(fileName));
+            jobDefinition.setType(MbmFileUtils.getJobType(fileName));
             jobDefinition.setCommand("Command missing");
             jobDefinition.setWorkingDirectory("Working directory missing");
             jobDefinition.setLoggingDirectory("Logging directory missing");
@@ -129,7 +129,7 @@ public class LibraryFileWatcherService implements FileChangeListener {
             jobDefinition.setFailedExitMessage("Failed");
             jobDefinition.setLabel("New job definition: " + jobName);
             jobDefinition.setDescription("New job definition: " + jobName);
-            jobDefinition.setJobVersion(FileUtils.getVersion(fileName));
+            jobDefinition.setJobVersion(MbmFileUtils.getVersion(fileName));
             jobDefinition.setActive(false);
 
 

@@ -1,6 +1,6 @@
 package com.momentum.batch.server.scheduler.service;
 
-import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.apache.commons.io.FileUtils;
@@ -32,26 +32,13 @@ public class FileSystemServiceImpl implements FileSystemService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSystemServiceImpl.class);
 
-    private final MethodTimer t = new MethodTimer();
-
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-
-    private boolean hasSubdirs(File file) {
-        if (file.listFiles() != null) {
-            for (File f : file.listFiles()) {
-                if (f.isDirectory()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     private FileSystemDto newDirectory(File file) {
         FileSystemDto fileSystemDto = new FileSystemDto();
         fileSystemDto.setIsDirectory(true);
         fileSystemDto.setName(file.getName());
-        fileSystemDto.setHasSubDirectories(hasSubdirs(file));
+        fileSystemDto.setHasSubDirectories(MbmFileUtils.hasSubDirectories(file));
         fileSystemDto.setDateModified(simpleDateFormat.format(file.lastModified()));
         logger.info(format("Added dir: name: {0}", file.getName()));
         return fileSystemDto;

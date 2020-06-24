@@ -1,6 +1,8 @@
 package com.momentum.batch.server.scheduler.service;
 
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +10,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.text.MessageFormat.format;
@@ -33,12 +36,21 @@ public class FileDownloadServiceImpl implements FileDownloadService {
     private final MethodTimer t = new MethodTimer();
 
     @Override
-    public FileSystemResource download(String fileName) throws IOException {
+    public FileSystemResource download(String fileName) throws IOException, ResourceNotFoundException {
         t.restart();
-        // TODO: Check file existence
         logger.info(format("Sending job jar file to agent - fileName: {0}", fileName));
-        FileSystemResource fileSystemResource = new FileSystemResource(Paths.get(jobsDirectory, fileName + ".jar"));
+
+        // Check file existence
+        Path fullPath = Paths.get(jobsDirectory, fileName + ".jar");
+        if (!MbmFileUtils.exists(fullPath.toString())) {
+            logger.warn(format("File does not exist - fileName: {0}", fullPath));
+            throw new ResourceNotFoundException("File does not exist");
+        }
+
+        // Send file to agent
+        FileSystemResource fileSystemResource = new FileSystemResource(fullPath);
         logger.info(format("Sending job jar file to agent - fileName: {0} size: {1} {2}", fileName, fileSystemResource.contentLength(), t.elapsedStr()));
+
         return fileSystemResource;
     }
 }

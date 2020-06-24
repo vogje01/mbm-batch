@@ -1,6 +1,6 @@
 package com.momentum.batch.client.agent.library;
 
-import com.momentum.batch.common.util.FileUtils;
+import com.momentum.batch.common.util.MbmFileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import org.jasypt.encryption.StringEncryptor;
@@ -119,14 +119,14 @@ public class LibraryReaderService {
             return true;
         }
         try {
-            if (!FileUtils.exists(libraryDirectory + File.separator + fileName)) {
+            if (!MbmFileUtils.exists(libraryDirectory + File.separator + fileName)) {
                 return true;
             }
-            long fileSize = FileUtils.getSize(libraryDirectory + File.separator + fileName);
+            long fileSize = MbmFileUtils.getSize(libraryDirectory + File.separator + fileName);
             if (fileSize != currentSize) {
                 return true;
             }
-            String fileHash = FileUtils.getHash(libraryDirectory + File.separator + fileName);
+            String fileHash = MbmFileUtils.getHash(libraryDirectory + File.separator + fileName);
             return !currentHash.equals(fileHash);
         } catch (IOException e) {
             logger.error(format("Could not read file - file: {0} error: {1}", fileName, e.getMessage()));

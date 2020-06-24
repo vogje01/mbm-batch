@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 public class MD5InputStream extends FilterInputStream {

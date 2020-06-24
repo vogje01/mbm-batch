@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @SpringBootTest
@@ -33,7 +33,7 @@ public class FileUtilsTest {
 
         String fileName = "batch-jobs-abc-0.0.5-RELEASE.jar";
 
-        String version = FileUtils.getVersion(fileName);
+        String version = MbmFileUtils.getVersion(fileName);
         assertEquals("0.0.5-RELEASE", version);
     }
 
@@ -42,7 +42,7 @@ public class FileUtilsTest {
 
         String fileName = "batch-jobs-abc-0.0.5-SNAPSHOT.jar";
 
-        String version = FileUtils.getVersion(fileName);
+        String version = MbmFileUtils.getVersion(fileName);
         assertEquals("0.0.5-SNAPSHOT", version);
     }
 
@@ -51,7 +51,7 @@ public class FileUtilsTest {
 
         String fileName = "batch-jobs-abc-0.0.5.jar";
 
-        String version = FileUtils.getVersion(fileName);
+        String version = MbmFileUtils.getVersion(fileName);
         assertEquals("0.0.5", version);
     }
 
@@ -64,7 +64,7 @@ public class FileUtilsTest {
         bw.write("This is the temporary file content.");
         bw.close();
 
-        String hash = FileUtils.getHash(temp.getAbsolutePath());
+        String hash = MbmFileUtils.getHash(temp.getAbsolutePath());
 
         assertEquals("4584d837d2b8d08de87dc0d75a6ef746", hash);
     }

@@ -13,7 +13,7 @@ import static java.text.MessageFormat.format;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
- * @version 0.0.1
+ * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
 @SpringBootApplication(scanBasePackages = {"com.momentum.batch.common.util", "com.momentum.batch.server.database"})
@@ -66,7 +66,6 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
             case "help" -> usage();
             case "drop" -> BatchDatabaseTasks.dropDatabase(databaseUrl, user, password);
             case "create" -> BatchDatabaseTasks.createDatabase(databaseUrl, user, password);
-            case "createAdmin" -> BatchDatabaseTasks.createAdminUser(databaseUrl, user, password);
             case "install" -> BatchDatabaseTasks.installDatabase(databaseUrl, user, password);
             case "update" -> BatchDatabaseTasks.updateDatabase(databaseUrl, user, password);
             case "encrypt" -> batchDatabaseTasks.encryptPassword(password);
@@ -80,7 +79,6 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
         System.out.println(format("\t\thelp: shows the usage screen"));
         System.out.println(format("\t\tdrop: drop the current database"));
         System.out.println(format("\t\tcreate: create batch database"));
-        System.out.println(format("\t\tcreateAdmin: create admin user"));
         System.out.println(format("\t\tinstall: install batch database schema"));
         System.out.println(format("\t\tupdate: update batch database schema"));
         System.out.println(format("\t\tencrypt: encrypts a password"));
