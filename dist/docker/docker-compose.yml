@@ -53,16 +53,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
 
-  #  kafka-setup:
-  #    image: confluentinc/cp-enterprise-kafka:latest
-  #    hostname: kafka-setup
-  #    container_name: kafka-setup
-  #    depends_on:
-  #      - batch-kafka
-  #    command: "bash -c  'kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 --topic batchJobStatus && \
-  #                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 --topic batchServerCommand && \
-  #                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 --topic batchAgentCommand && \
-  #                        kafka-topics --create --if-not-exists --zookeeper batch-zookeeper:2181 --partitions 1 --replication-factor 1 --topic batchJobExecutionLog'"
   #
   # Batch listener
   #

@@ -3,7 +3,7 @@ Configuration:
   Appenders:
     Console:
       name: Console_Appender
-      target: SYSTEM_OUT
+      target: SYSTEM_ERR
       PatternLayout:
         pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%t] %c{1}:%L - %msg%n"
     RollingFile:
@@ -21,11 +21,10 @@ Configuration:
     Root:
       level: warn
       AppenderRef:
-        - ref: Console_Appender
+        - ref: File_Appender
     Logger:
       - name: com.momentum.batch.database.install
-        level: debug
+        level: info
         additivity: false
         AppenderRef:
           - ref: File_Appender
-          - ref: Console_Appender

@@ -53,8 +53,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 		logger.trace(format("Starting load user - userId: {0}", userId));
 		Optional<com.momentum.batch.server.database.domain.User> userOptional = userRepository.findByUserId(userId);
 		if (userOptional.isPresent()) {
-			String decPassword = stringEncryptor.decrypt(userOptional.get().getPassword());
-			if (password.equals(decPassword)) {
+			String decPassword1 = stringEncryptor.decrypt(password);
+			String decPassword2 = stringEncryptor.decrypt(userOptional.get().getPassword());
+			if (decPassword1.equals(decPassword2)) {
 				return new User(userId, password, emptyList());
 			}
 			logger.warn(format("Wrong password supplied - userId: {0}", userId));

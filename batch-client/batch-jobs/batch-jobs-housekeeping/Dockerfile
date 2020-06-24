@@ -5,6 +5,7 @@ ARG JAR_FILE
 
 # Create app directory
 WORKDIR /app/batch/jobs/housekeeping-batch
+RUN mkdir ./log
 
 # Environment
 ENV TZ=Europe/Berlin

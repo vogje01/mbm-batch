@@ -82,6 +82,7 @@ public class BatchDatabaseTasks {
 
             String sql = "CREATE DATABASE batch";
             stmt.executeUpdate(sql);
+            System.out.println("Batch database created");
 
         } catch (Exception se) {
             //Handle errors for JDBC
@@ -92,7 +93,7 @@ public class BatchDatabaseTasks {
                 if (stmt != null)
                     conn.close();
             } catch (SQLException se) {
-                // do nothing
+                se.printStackTrace();
             }
             try {
                 if (conn != null)
@@ -101,7 +102,6 @@ public class BatchDatabaseTasks {
                 se.printStackTrace();
             }
         }
-        System.out.println("Batch database created");
     }
 
     /**

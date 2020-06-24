@@ -35,6 +35,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
     @Override
     public FileSystemResource download(String fileName) throws IOException {
         t.restart();
+        // TODO: Check file existence
         logger.info(format("Sending job jar file to agent - fileName: {0}", fileName));
         FileSystemResource fileSystemResource = new FileSystemResource(Paths.get(jobsDirectory, fileName + ".jar"));
         logger.info(format("Sending job jar file to agent - fileName: {0} size: {1} {2}", fileName, fileSystemResource.contentLength(), t.elapsedStr()));

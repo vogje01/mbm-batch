@@ -3,7 +3,6 @@ package com.momentum.batch.client.agent.library;
 import com.momentum.batch.common.util.FileUtils;
 import com.momentum.batch.common.util.MethodTimer;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
-import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import static java.text.MessageFormat.format;
 
@@ -160,7 +160,7 @@ public class LibraryReaderService {
 
             // Basic authentication
             String auth = libraryUser + ":" + stringEncryptor.encrypt(libraryPassword);
-            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
+            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
             String authHeaderValue = "Basic " + new String(encodedAuth);
             httpConnection.setRequestProperty("Authorization", authHeaderValue);
 
