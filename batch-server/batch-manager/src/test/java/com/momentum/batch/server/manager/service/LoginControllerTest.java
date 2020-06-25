@@ -6,19 +6,20 @@ import com.momentum.batch.server.database.domain.User;
 import com.momentum.batch.server.database.domain.dto.UserDto;
 import com.momentum.batch.server.database.repository.UserRepository;
 import com.momentum.batch.server.manager.controller.LoginController;
+import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
+import com.momentum.batch.server.manager.service.common.UnauthorizedException;
 import com.momentum.batch.server.manager.service.util.JwtRequest;
+import com.momentum.batch.server.manager.service.util.JwtResponse;
 import com.momentum.batch.server.manager.service.util.JwtTokenUtil;
 import com.momentum.batch.server.manager.service.util.JwtUserDetailsService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,30 +55,31 @@ public class LoginControllerTest {
     @Mock
     private ModelConverter modelConverter;
 
-    @MockBean
-    private UserService userService;
+    @Mock
+    private LoginService loginService;
 
     @InjectMocks
     private LoginController loginController;
 
     @Before
-    public void setup() {
+    public void setup() throws UnauthorizedException, ResourceNotFoundException {
         initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(loginController).build();
         ReflectionTestUtils.setField(jwtTokenUtil, "secret", "javainuse");
 
         // Mock user details
         User user = new User();
-        user.setUserId("vogje01");
+        user.setUserId("admin");
         UserDto userDto = new UserDto();
-        userDto.setUserId("vogje01");
-        when(userDetails.getUsername()).thenReturn("vogje01");
+        userDto.setUserId("admin");
+        final String token = jwtTokenUtil.generateToken(user);
+        when(userDetails.getUsername()).thenReturn("admin");
         when(userRepository.findByUserId(any())).thenReturn(java.util.Optional.of(user));
         when(modelConverter.convertUserToDto(any(User.class))).thenReturn(userDto);
+        when(loginService.createAuthenticationToken(any())).thenReturn(new JwtResponse(token, userDto));
         when(jwtUserDetailsService.loadUserByUsername(any(), any(), any())).thenReturn(userDetails);
     }
 
-    @Ignore
     @Test
     public void whenAuthenticateThenReturnWebToken() throws Exception {
 
@@ -86,8 +88,9 @@ public class LoginControllerTest {
         String json = mapper.writeValueAsString(request);
 
         mockMvc.perform(post("/api/authenticate").contentType(HAL_JSON).content(json)) //
-            //.andDo(print())
-            .andExpect(status().isOk()).andExpect(content().contentType(HAL_JSON))
-            .andExpect(jsonPath("token", Matchers.notNullValue()));
+                //.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(HAL_JSON))
+                .andExpect(jsonPath("token", Matchers.notNullValue()));
     }
 }

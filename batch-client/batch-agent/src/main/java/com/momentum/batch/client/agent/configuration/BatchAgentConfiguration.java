@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchAgentConfiguration {
 
-    private static final AgentStatus agentStatus = AgentStatus.UNKNOWN;
+    private AgentStatus agentStatus = AgentStatus.UNKNOWN;
 
     @Bean
     public AgentStatus agentStatus() {
