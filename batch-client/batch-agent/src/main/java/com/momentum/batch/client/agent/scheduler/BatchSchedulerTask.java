@@ -1,5 +1,6 @@
 package com.momentum.batch.client.agent.scheduler;
 
+import com.momentum.batch.client.agent.util.BatchAgentStatus;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
@@ -39,15 +40,21 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchSchedulerTask extends QuartzJobBean {
 
+    /**
+     * Scheduler name
+     */
     @Value("${mbm.scheduler.server}")
     private String schedulerName;
-
+    /**
+     * Agent host name
+     */
     @Value("${mbm.agent.hostName}")
     private String hostName;
-
+    /**
+     * Agent node name
+     */
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
-
     /**
      * Logger
      */
@@ -80,7 +87,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Agent status
      */
-    private final AgentStatus agentStatus;
+    private final BatchAgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -88,7 +95,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param agentSchedulerMessageProducer Kafka scheduler message producer.
      */
     @Autowired
-    public BatchSchedulerTask(AgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+    public BatchSchedulerTask(BatchAgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentStatus = agentStatus;
     }
@@ -103,7 +110,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
         logger.info(format("Executing Job - key: {0}", jobExecutionContext.getJobDetail().getKey()));
 
         // Check agent status
-        if (agentStatus != AgentStatus.RUNNING) {
+        if (agentStatus.getAgentStatus() != AgentStatus.RUNNING) {
             logger.info(format("Agent is not running - key: {0} status: {1}", jobExecutionContext.getJobDetail().getKey(), agentStatus));
             return;
         }

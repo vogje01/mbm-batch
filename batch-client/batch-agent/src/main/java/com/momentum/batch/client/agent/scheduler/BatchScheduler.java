@@ -256,12 +256,12 @@ public class BatchScheduler extends BatchSchedulerHelper {
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
             logger.info(format("Next execution - groupName: {0} jobName: {1} nextExecution: {2}",
-                    jobDefinition.getJobGroupName(), jobDefinition.getName(), LocalDateTime.now()));
+                    jobDefinition.getJobGroupId(), jobDefinition.getName(), LocalDateTime.now()));
         } catch (SchedulerException | IOException e) {
             logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinition.getJobGroupName(), jobDefinition.getName(), e.getMessage()), e);
+                    jobDefinition.getJobGroupId(), jobDefinition.getName(), e.getMessage()), e);
         }
-        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupName(), jobDefinition.getName()));
+        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupId(), jobDefinition.getName()));
     }
 
     /**

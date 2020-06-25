@@ -73,7 +73,7 @@ public class AgentStatusService {
 
     private final AgentStatusMessageProducer agentStatusMessageProducer;
 
-    private BatchAgentStatus agentStatus;
+    private final BatchAgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -116,6 +116,7 @@ public class AgentStatusService {
         // Send registration
         registerAgent();
         logger.info(format("Agent status message listener initialized - nodeName: {0} listenerName: {1} pid: {2}", nodeName, listenerName, ProcessHandle.current().pid()));
+        setStatus(AgentStatus.RUNNING);
     }
 
     @PreDestroy

@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface JobGroupRepository extends PagingAndSortingRepository<JobGroup, String> {
 
-    @Query("select g from JobGroup g where g.name = :name")
+    @Query("select distinct(g) from JobGroup g where g.name = :name")
     Optional<JobGroup> findByName(@Param("name") String name);
 
     @Query("select jg from JobGroup jg left join jg.jobDefinitions j where j.id = :jobDefinitionId")

@@ -18,14 +18,13 @@ import {EmptyItem, GroupItem, PatternRule, SimpleItem} from "devextreme-react/fo
 import Toolbar, {Item} from "devextreme-react/toolbar";
 import Popup from "devextreme-react/popup";
 import {JobDefinitionDataSource, JobStart} from "./job-definition-data-source";
-import {insertItem} from "../../utils/server-connection";
+import {getItem, insertItem} from "../../utils/server-connection";
 import JobDefinitionParamList from "./job-definition-param-list";
 import {getFormattedTime} from "../../utils/date-time-util";
 import JobDefinitionJobGroupList from "./job-definition-job-group-list";
 import {AgentDataSource} from "../agent/agent-data-source";
 import SelectBox from "devextreme-react/select-box";
 import Button from "devextreme-react/button";
-import {JobGroupDataSource} from "../job-group/job-group-data-source";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -41,6 +40,7 @@ class JobDefinitionList extends React.Component {
         this.state = {
             currentJobDefinition: {},
             currentAgent: {},
+            jobGroups: [],
             agentPopupVisible: false,
             showExport: false,
             showImport: false
@@ -55,6 +55,13 @@ class JobDefinitionList extends React.Component {
         this.startJobDefinition = this.startJobDefinition.bind(this);
         this.agentSelectionChanged = this.agentSelectionChanged.bind(this);
         this.versionPattern = /^\s*\d+\.\d+\.\d+\s*$/;
+    }
+
+    componentDidMount() {
+        getItem(process.env.REACT_APP_MANAGER_URL + 'jobgroups?page=0&size=-1&sortBy=name&sortDir=asc')
+            .then((data) => {
+                this.setState({jobGroups: data._embedded.jobGroupDtoes})
+            });
     }
 
     toggleExport(e) {
@@ -184,9 +191,9 @@ class JobDefinitionList extends React.Component {
                                             <PatternRule pattern={this.versionPattern} message="Version must have correct format."/>
                                         </SimpleItem>
                                         <SimpleItem
-                                            dataField={'jobGroupName'}
+                                            dataField={'jobGroupId'}
                                             editorType={'dxSelectBox'}
-                                            editorOptions={{dataSource: JobGroupDataSource(), valueExpr: 'name', displayExpr: 'name'}}>
+                                            editorOptions={{dataSource: this.state.jobGroups, valueExpr: 'id', displayExpr: 'name'}}>
                                             <RequiredRule/>
                                         </SimpleItem>
                                         <SimpleItem dataField="active" editorType={"dxCheckBox"}/>
@@ -253,11 +260,16 @@ class JobDefinitionList extends React.Component {
                                 allowReordering={true}/>
                             <Column
                                 caption={'Group Name'}
-                                dataField={'jobGroupName'}
+                                dataField={'jobGroupId'}
                                 allowEditing={true}
                                 allowFiltering={true}
                                 allowSorting={true}
-                                allowReordering={true}/>
+                                allowReordering={true}>
+                                <Lookup
+                                    dataSource={this.state.jobGroups}
+                                    valueExpr={'id'}
+                                    displayExpr={'name'}/>
+                            </Column>
                             <Column
                                 dataField={'jobVersion'}
                                 caption={'Job Version'}
@@ -267,13 +279,14 @@ class JobDefinitionList extends React.Component {
                                 allowReordering={true}
                                 width={80}/>
                             <Column
-                                dataField={'jobGroupName'}
+                                dataField={'jobGroupId'}
                                 caption={'Main Group'}
                                 dataType={'string'}
                                 allowEditing={true}
                                 allowSorting={true}
                                 allowReordering={true}
-                                width={80}/>
+                                width={80}
+                                visible={false}/>
                             <Column
                                 dataField={'type'}
                                 caption={'Type'}

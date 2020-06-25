@@ -140,7 +140,6 @@
                 <version>2.8.2</version>
                 <configuration>
                     <url>https://maven.pkg.github.com/vogje01/mbm-batch</url>
-                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

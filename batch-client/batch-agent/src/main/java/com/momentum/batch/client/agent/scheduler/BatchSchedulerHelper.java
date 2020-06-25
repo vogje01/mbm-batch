@@ -54,7 +54,7 @@ public abstract class BatchSchedulerHelper {
     public JobKey findJob(JobDefinitionDto jobDefinitionDto) {
         AtomicReference<JobKey> jobKey = new AtomicReference<>(null);
         getGroupNames().forEach(g -> getJobsForGroup(g).forEach(job -> {
-            if (job.getGroup().equals(jobDefinitionDto.getJobGroupName()) && job.getName().equals(jobDefinitionDto.getName())) {
+            if (job.getGroup().equals(jobDefinitionDto.getJobGroupId()) && job.getName().equals(jobDefinitionDto.getName())) {
                 jobKey.set(job);
             }
         }));
@@ -123,7 +123,7 @@ public abstract class BatchSchedulerHelper {
      */
     Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
         return TriggerBuilder.newTrigger()
-                .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupName())
+                .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupId())
                 .withSchedule(createSchedule(jobSchedule.getSchedule()))
                 .build();
     }

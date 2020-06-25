@@ -210,13 +210,8 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
             JobDefinition jobDefinitionNew = jobDefinitionOld.get();
             jobDefinitionNew.update(jobDefinition);
 
-            Optional<JobGroup> jobGroup = jobGroupRepository.findByName(jobDefinitionDto.getJobGroupName());
-            if (jobGroup.isPresent()) {
-                jobDefinitionNew.setJobMainGroup(jobGroup.get());
-            }
-
-            // Save new job definition
-            jobDefinitionNew = jobDefinitionRepository.save(jobDefinitionNew);
+            Optional<JobGroup> jobGroup = jobGroupRepository.findById(jobDefinitionDto.getJobGroupId());
+            jobGroup.ifPresent(jobDefinitionNew::setJobMainGroup);
 
             // Update scheduler
             jobScheduleService.updateJobDefinition(jobDefinitionNew);

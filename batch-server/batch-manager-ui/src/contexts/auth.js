@@ -29,7 +29,6 @@ function AuthProvider(props) {
         // Send login request
         let authRequest = {userId: userId, password: password, orgUnit: 'EXT'}
         let basicAuthentication = 'Basic ' + new Buffer(userId + ':' + password + ':EXT').toString('base64');
-        console.log(process.env.REACT_APP_MANAGER_URL)
         fetch(process.env.REACT_APP_MANAGER_URL + 'authenticate', {
             headers: {'Content-Type': 'application/hal+json', 'Authorization': basicAuthentication},
             method: 'POST', body: JSON.stringify(authRequest)

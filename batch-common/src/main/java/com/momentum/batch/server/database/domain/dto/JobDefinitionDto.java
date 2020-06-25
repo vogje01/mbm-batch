@@ -71,9 +71,9 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
      */
     private String loggingDirectory;
     /**
-     * Job group.
+     * Job group ID.
      */
-    private String jobGroupName;
+    private String jobGroupId;
     /**
      * Failed exit code
      */
@@ -230,12 +230,12 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
         this.loggingDirectory = loggingDirectory;
     }
 
-    public String getJobGroupName() {
-        return jobGroupName;
+    public String getJobGroupId() {
+        return jobGroupId;
     }
 
-    public void setJobGroupName(String jobGroupName) {
-        this.jobGroupName = jobGroupName;
+    public void setJobGroupId(String jobGroupId) {
+        this.jobGroupId = jobGroupId;
     }
 
     public JobGroupDto getJobMainGroupDto() {
@@ -357,7 +357,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 Objects.equal(command, that.command) &&
                 Objects.equal(workingDirectory, that.workingDirectory) &&
                 Objects.equal(loggingDirectory, that.loggingDirectory) &&
-                Objects.equal(jobGroupName, that.jobGroupName) &&
+                Objects.equal(jobGroupId, that.jobGroupId) &&
                 Objects.equal(failedExitCode, that.failedExitCode) &&
                 Objects.equal(failedExitMessage, that.failedExitMessage) &&
                 Objects.equal(completedExitCode, that.completedExitCode) &&
@@ -370,7 +370,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, jobGroupName, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
+        return Objects.hashCode(super.hashCode(), id, name, label, type, jobVersion, description, active, fileName, fileHash, fileSize, command, workingDirectory, loggingDirectory, jobGroupId, failedExitCode, failedExitMessage, completedExitCode, completedExitMessage, createdBy, createdAt, modifiedBy, modifiedAt);
     }
 
     @Override
@@ -389,7 +389,7 @@ public class JobDefinitionDto extends RepresentationModel<JobDefinitionDto> {
                 .add("command", command)
                 .add("workingDirectory", workingDirectory)
                 .add("loggingDirectory", loggingDirectory)
-                .add("jobGroupName", jobGroupName)
+                .add("jobGroupName", jobGroupId)
                 .add("failedExitCode", failedExitCode)
                 .add("failedExitMessage", failedExitMessage)
                 .add("completedExitCode", completedExitCode)

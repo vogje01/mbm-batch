@@ -30,6 +30,18 @@ export function provider() {
                 })
                 .finally(() => EndTimer());
         },
+        downloadItems: function (fileSystemItem) {
+            StartTimer();
+            let url = process.env.REACT_APP_SCHEDULER_URL + 'filesystem/deleteItem';
+            return fetch(url, initPut(JSON.stringify(fileSystemItem)))
+                .then(response => {
+                    return handleResponse(response)
+                })
+                .then(data => {
+                    return data
+                })
+                .finally(() => EndTimer());
+        },
         uploadFileChunk: function (fileData, chunksInfo, destinationDir) {
             StartTimer();
             let reader = new FileReader();

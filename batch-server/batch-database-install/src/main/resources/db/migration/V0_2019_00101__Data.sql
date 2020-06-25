@@ -308,7 +308,8 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION
 VALUES (UUID(), 'housekeeping-batch-docker', 'Housekeeping Batch Docker',
         (SELECT ID FROM BATCH_JOB_GROUP WHERE NAME = 'Housekeeping'),
         'Housekeeping of batch data schema as docker image.', 'DOCKER', '0.0.6-RELEASE', 'docker',
-        'batch-jobs-housekeeping:0.0.6-RELEASE', '/app/batch', '/app/batch/log', '0', 'Completed', '-1', 'Failed',
+        'momentumbatch/batch-jobs-housekeeping:latest', '/app/batch/batch-agent', '/app/batch/batch-agent/log',
+        '0', 'Completed', '-1', 'Failed',
         1);
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ((SELECT ID FROM BATCH_JOB_DEFINITION WHERE NAME = 'housekeeping-batch-docker'),
@@ -364,8 +365,8 @@ INSERT INTO BATCH_JOB_DEFINITION(ID, NAME, LABEL, JOB_MAIN_GROUP_ID, DESCRIPTION
                                  COMPLETED_EXIT_MESSAGE, FAILED_EXIT_CODE, FAILED_EXIT_MESSAGE, ACTIVE)
 VALUES (UUID(), 'performance-batch-docker', 'Performance Batch Docker',
         (SELECT ID FROM BATCH_JOB_GROUP WHERE NAME = 'Performance'), 'Performance data collection as docker image.',
-        'DOCKER', '0.0.6-RELEASE', 'docker', 'batch-jobs-performance:0.0.6-RELEASE', '/opt/batch/agent',
-        '/opt/batch/agent/log', '0', 'Completed', '-1', 'Failed', 1);
+        'DOCKER', '0.0.6-RELEASE', 'docker', 'momentumbatch/batch-jobs-performance:latest',
+        '/app/batch/batch-agent', '/app/batch/batch-agent/log', '0', 'Completed', '-1', 'Failed', 1);
 INSERT INTO BATCH_JOB_DEFINITION_JOB_GROUP(JOB_DEFINITION_ID, JOB_GROUP_ID)
 VALUES ((SELECT ID FROM BATCH_JOB_DEFINITION WHERE NAME = 'performance-batch-docker'),
         (SELECT ID FROM BATCH_JOB_GROUP WHERE NAME = 'Performance'));
