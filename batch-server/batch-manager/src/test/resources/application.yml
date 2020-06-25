@@ -4,6 +4,10 @@ spring:
   jpa:
     show-sql: false
     generate-ddl: false
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-only
   quartz:
     job-store-type: memory
 

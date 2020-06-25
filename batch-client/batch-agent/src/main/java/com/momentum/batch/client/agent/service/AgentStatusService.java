@@ -2,6 +2,7 @@ package com.momentum.batch.client.agent.service;
 
 import com.momentum.batch.client.agent.scheduler.BatchScheduler;
 import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.client.agent.util.BatchAgentStatus;
 import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.common.message.dto.AgentStatusMessageType;
 import com.momentum.batch.common.producer.AgentStatusMessageProducer;
@@ -72,7 +73,7 @@ public class AgentStatusService {
 
     private final AgentStatusMessageProducer agentStatusMessageProducer;
 
-    private AgentStatus agentStatus;
+    private BatchAgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -83,7 +84,7 @@ public class AgentStatusService {
      * @param agentStatusMessageProducer Kafka message producer
      */
     @Autowired
-    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, AgentStatus agentStatus, AgentStatusMessageProducer agentStatusMessageProducer) {
+    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, BatchAgentStatus agentStatus, AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
         this.agentStatus = agentStatus;
@@ -138,7 +139,7 @@ public class AgentStatusService {
     private void ping() {
         agentStatusMessageDto.setSender(nodeName);
         agentStatusMessageDto.setReceiver(listenerName);
-        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setStatus(agentStatus.getAgentStatus().name());
         agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
         agentStatusMessageDto.setPid(ProcessHandle.current().pid());
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PING);
@@ -151,7 +152,7 @@ public class AgentStatusService {
         // Initialize
         agentStatusMessageDto.setSender(nodeName);
         agentStatusMessageDto.setReceiver(listenerName);
-        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setStatus(agentStatus.getAgentStatus().name());
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PERFORMANCE);
 
         // Set performance attributes
@@ -181,7 +182,7 @@ public class AgentStatusService {
         scheduler.pauseScheduler();
 
         // Pause ping
-        agentStatus = AgentStatus.PAUSED;
+        agentStatus.setAgentStatus(AgentStatus.PAUSED);
 
         // Send shutdown message to server
         setStatus(AgentStatus.PAUSED);
@@ -208,14 +209,14 @@ public class AgentStatusService {
     /**
      * Sets the current status.
      *
-     * @param agentStatus current agent status.
+     * @param newStatus current agent status.
      */
-    public void setStatus(AgentStatus agentStatus) {
-        this.agentStatus = agentStatus;
+    public void setStatus(AgentStatus newStatus) {
+        agentStatus.setAgentStatus(newStatus);
         agentStatusMessageDto.setSender(nodeName);
         agentStatusMessageDto.setReceiver(listenerName);
         agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
-        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setStatus(agentStatus.getAgentStatus().name());
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_STATUS);
         agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
     }

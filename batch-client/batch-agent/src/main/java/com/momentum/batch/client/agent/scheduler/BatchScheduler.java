@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
+import com.momentum.batch.client.agent.util.BatchAgentStatus;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
@@ -50,7 +51,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
     private final LibraryReaderService libraryReaderService;
 
-    private AgentStatus agentStatus;
+    private BatchAgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -63,7 +64,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param libraryReaderService          library downloader.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService, AgentStatus agentStatus) {
+    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService, BatchAgentStatus agentStatus) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.libraryReaderService = libraryReaderService;
@@ -96,7 +97,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     private void startScheduler() {
         try {
             scheduler.start();
-            agentStatus = AgentStatus.RUNNING;
+            agentStatus.setAgentStatus(AgentStatus.RUNNING);
             logger.info(format("Quartz scheduler started"));
         } catch (SchedulerException e) {
             logger.error(format("Could not start scheduler - error: {0}", e.getMessage()), e);
@@ -243,7 +244,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
         // Check agent status
-        if (agentStatus != AgentStatus.RUNNING) {
+        if (agentStatus.getAgentStatus() != AgentStatus.RUNNING) {
             logger.info(format("Job not started on demand, agent is paused - name: {0}", jobDefinition.getName()));
             return;
         }
