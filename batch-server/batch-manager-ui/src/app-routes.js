@@ -35,6 +35,7 @@ const routes = [
     {path: '/agents', component: AgentListPage},
     {path: '/agentgroups', component: AgentGroupListPage},
     {path: '/performanceagent', component: PerformanceAgentPage},
+    {path: '/performanceagent/:agentId', component: PerformanceAgentPage},
     {path: '/performancejob', component: PerformanceJobPage},
     {path: '/profile', component: ProfilePage},
     {path: '/users', component: UserListPage},

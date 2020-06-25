@@ -65,6 +65,7 @@ class PerformanceChart extends React.Component {
             customRangeHidden: true,
             nodeName: '',
             selectedAgent: {},
+            selectedAgentId: undefined,
             yAxisTitle: 'System Load [%]',
             title: 'System Load',
             agents: [],
@@ -111,9 +112,19 @@ class PerformanceChart extends React.Component {
     }
 
     componentDidMount() {
+        if (this.props.match.params) {
+            this.setState({selectedAgentId: this.props.match.params.agentId});
+        }
         getItem(process.env.REACT_APP_MANAGER_URL + 'agents?page=0&size=-1&sortBy=nodeName&sortDir=asc')
             .then((data) => {
-                this.setState({agents: data._embedded.agentDtoes, selectedAgent: data._embedded.agentDtoes[0], nodeName: data._embedded.agentDtoes[0].nodeName})
+                let selectedAgent = undefined;
+                if (this.state.selectedAgentId !== undefined) {
+                    selectedAgent = data._embedded.agentDtoes.find(x => x.id === this.state.selectedAgentId)
+                } else {
+                    selectedAgent = data._embedded.agentDtoes[0];
+                }
+                this.setState({agents: data._embedded.agentDtoes, selectedAgent: selectedAgent, nodeName: selectedAgent.nodeName})
+
             });
     }
 

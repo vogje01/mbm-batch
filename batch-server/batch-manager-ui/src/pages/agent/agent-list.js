@@ -24,6 +24,7 @@ class AgentView extends React.Component {
         this.selectionChanged = this.selectionChanged.bind(this);
         this.pauseAgent = this.pauseAgent.bind(this);
         this.stopAgent = this.stopAgent.bind(this);
+        this.chartAgent = this.chartAgent.bind(this);
     }
 
     selectionChanged(e) {
@@ -44,6 +45,11 @@ class AgentView extends React.Component {
             .then((data) => {
                 this.setState({currentAgent: data});
             });
+    }
+
+    chartAgent(e) {
+        let agent = e.row.data;
+        this.props.history.push('/performanceagent/' + agent.id)
     }
 
     render() {
@@ -241,7 +247,7 @@ class AgentView extends React.Component {
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={100}
+                                width={120}
                                 type={'buttons'}
                                 buttons={[
                                     {
@@ -260,6 +266,12 @@ class AgentView extends React.Component {
                                         hint: 'Stop agent.',
                                         icon: 'material-icons-outlined ic-stop',
                                         onClick: this.stopAgent
+                                    },
+                                    {
+                                        name: 'chart',
+                                        hint: 'Show agent performance.',
+                                        icon: 'material-icons-outlined ic-chart',
+                                        onClick: this.chartAgent
                                     },
                                     {
                                         name: 'delete',
