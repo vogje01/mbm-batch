@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './job-schedule-list.scss'
 import 'devextreme/data/odata/store';
 import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {JobScheduleDataSource, JobScheduleStart} from "./job-schedule-data-source";
@@ -254,7 +254,7 @@ class JobSchedulerList extends React.Component {
                                     {
                                         name: 'start',
                                         hint: 'Starts the job schedule as on demand jobs.',
-                                        icon: 'material-icons-outlined ic-start',
+                                        icon: 'material-icons-outlined ic-on-demand',
                                         onClick: this.startJobSchedule
                                     },
                                     {

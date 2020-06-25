@@ -403,7 +403,7 @@ class JobDefinitionList extends React.Component {
                                     {
                                         name: 'start',
                                         hint: 'Starts the job as on demand job.',
-                                        icon: 'material-icons-outlined ic-start',
+                                        icon: 'material-icons-outlined ic-on-demand',
                                         onClick: this.showAgentPopup
                                     },
                                     {
