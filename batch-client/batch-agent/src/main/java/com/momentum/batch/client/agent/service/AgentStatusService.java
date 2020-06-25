@@ -149,7 +149,6 @@ public class AgentStatusService {
     private void performance() {
 
         // Initialize
-        agentStatus = AgentStatus.RUNNING;
         agentStatusMessageDto.setSender(nodeName);
         agentStatusMessageDto.setReceiver(listenerName);
         agentStatusMessageDto.setStatus(agentStatus.name());

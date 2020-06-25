@@ -3,6 +3,7 @@ package com.momentum.batch.client.agent.scheduler;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.quartz.JobDataMap;
@@ -76,6 +77,10 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * Random number generator for job name.
      */
     private final Random rand = new Random(System.currentTimeMillis());
+    /**
+     * Agent status
+     */
+    private final AgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -83,8 +88,9 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param agentSchedulerMessageProducer Kafka scheduler message producer.
      */
     @Autowired
-    public BatchSchedulerTask(AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+    public BatchSchedulerTask(AgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
+        this.agentStatus = agentStatus;
     }
 
     /**
@@ -95,6 +101,12 @@ public class BatchSchedulerTask extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         logger.info(format("Executing Job - key: {0}", jobExecutionContext.getJobDetail().getKey()));
+
+        // Check agent status
+        if (agentStatus != AgentStatus.RUNNING) {
+            logger.info(format("Agent is not running - key: {0} status: {1}", jobExecutionContext.getJobDetail().getKey(), agentStatus));
+            return;
+        }
 
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
         switch (jobDataMap.getString("job.type")) {

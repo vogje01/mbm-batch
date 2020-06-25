@@ -96,6 +96,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
     private void startScheduler() {
         try {
             scheduler.start();
+            agentStatus = AgentStatus.RUNNING;
             logger.info(format("Quartz scheduler started"));
         } catch (SchedulerException e) {
             logger.error(format("Could not start scheduler - error: {0}", e.getMessage()), e);
@@ -118,10 +119,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void scheduleJob(JobScheduleDto jobSchedule) {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
-        if (agentStatus != AgentStatus.RUNNING) {
-            logger.info(format("Agent is paused, not scheduled - name: {0}", jobSchedule.getName()));
-            return;
-        }
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
             try {
@@ -199,11 +196,6 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void rescheduleJob(JobScheduleDto jobScheduleDto) {
 
-        if (agentStatus != AgentStatus.RUNNING) {
-            logger.info(format("Agent is paused, not rescheduled - name: {0}", jobScheduleDto.getName()));
-            return;
-        }
-
         JobDefinitionDto jobDefinitionDto = jobScheduleDto.getJobDefinitionDto();
         String jobName = jobDefinitionDto.getName();
         String groupName = jobDefinitionDto.getJobMainGroupDto().getName();
@@ -252,7 +244,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
         // Check agent status
         if (agentStatus != AgentStatus.RUNNING) {
-            logger.info(format("Agent is paused, not started - name: {0}", jobDefinition.getName()));
+            logger.info(format("Job not started on demand, agent is paused - name: {0}", jobDefinition.getName()));
             return;
         }
 

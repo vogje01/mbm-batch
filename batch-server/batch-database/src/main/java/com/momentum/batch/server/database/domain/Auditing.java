@@ -52,4 +52,36 @@ public class Auditing<U> {
     @Temporal(TIMESTAMP)
     @LastModifiedDate
     private Date modifiedAt;
+
+    public U getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(U createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public U getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(U modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
+    public Date getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        this.modifiedAt = modifiedAt;
+    }
 }

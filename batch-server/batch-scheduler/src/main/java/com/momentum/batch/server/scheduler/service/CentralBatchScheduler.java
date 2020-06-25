@@ -61,7 +61,7 @@ public class CentralBatchScheduler {
     /**
      * Logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(LibraryFileWatcherService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CentralBatchScheduler.class);
     /**
      * Agent message producer
      */
@@ -288,7 +288,7 @@ public class CentralBatchScheduler {
         agentSchedulerMessageDto.setHostName(agent.getHostName());
         agentSchedulerMessageDto.setNodeName(agent.getNodeName());
         agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-        logger.debug(format("Remove schedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
+        logger.debug(format("Add schedule message send to agent - hostName: {0} nodeName: {1} jobName: {2}",
                 agent.getHostName(), agent.getNodeName(), jobScheduleDto.getJobDefinitionDto().getName()));
     }
 
