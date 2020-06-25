@@ -2,6 +2,7 @@ package com.momentum.batch.common.util;
 
 import com.momentum.batch.server.database.domain.dto.FileSystemDto;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +72,7 @@ public class FileUtilsTest {
         assertEquals("4584d837d2b8d08de87dc0d75a6ef746", hash);
     }
 
+    @Ignore
     @Test
     public void shouldReturnDirectoryTree_whenFileSupplied() {
 
