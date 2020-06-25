@@ -23,6 +23,10 @@ public class AgentSchedulerMessageDto {
      */
     private String sender;
     /**
+     * Receiver of the message
+     */
+    private String receiver;
+    /**
      * Host name
      */
     private String hostName;
@@ -89,6 +93,14 @@ public class AgentSchedulerMessageDto {
         this.sender = sender;
     }
 
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
     public String getHostName() {
         return hostName;
     }
@@ -121,38 +133,6 @@ public class AgentSchedulerMessageDto {
         this.jobDefinitionDto = jobDefinitionDto;
     }
 
-    /*public Date getPreviousFireTime() {
-        return previousFireTime;
-    }
-
-    public void setPreviousFireTime(Date previousFireTime) {
-        this.previousFireTime = previousFireTime;
-    }
-
-    public Date getNextFireTime() {
-        return nextFireTime;
-    }
-
-    public void setNextFireTime(Date nextFireTime) {
-        this.nextFireTime = nextFireTime;
-    }
-
-    public String getJobScheduleName() {
-        return jobScheduleName;
-    }
-
-    public void setJobScheduleName(String jobScheduleName) {
-        this.jobScheduleName = jobScheduleName;
-    }
-
-    public String getJobScheduleUuid() {
-        return jobScheduleUuid;
-    }
-
-    public void setJobScheduleUuid(String jobScheduleUuid) {
-        this.jobScheduleUuid = jobScheduleUuid;
-    }*/
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -160,13 +140,14 @@ public class AgentSchedulerMessageDto {
         AgentSchedulerMessageDto that = (AgentSchedulerMessageDto) o;
         return type == that.type &&
                 Objects.equal(sender, that.sender) &&
+                Objects.equal(receiver, that.receiver) &&
                 Objects.equal(hostName, that.hostName) &&
                 Objects.equal(nodeName, that.nodeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(type, sender, hostName, nodeName);
+        return Objects.hashCode(type, sender, receiver, hostName, nodeName);
     }
 
     @Override
@@ -174,6 +155,7 @@ public class AgentSchedulerMessageDto {
         return MoreObjects.toStringHelper(this)
                 .add("type", type)
                 .add("sender", sender)
+                .add("receiver", receiver)
                 .add("hostName", hostName)
                 .add("nodeName", nodeName)
                 .toString();

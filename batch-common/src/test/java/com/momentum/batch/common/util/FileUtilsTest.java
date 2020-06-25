@@ -1,5 +1,7 @@
 package com.momentum.batch.common.util;
 
+import com.momentum.batch.server.database.domain.dto.FileSystemDto;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,5 +69,25 @@ public class FileUtilsTest {
         String hash = MbmFileUtils.getHash(temp.getAbsolutePath());
 
         assertEquals("4584d837d2b8d08de87dc0d75a6ef746", hash);
+    }
+
+    @Test
+    public void shouldReturnDirectoryTree_whenFileSupplied() {
+
+        File root = new File("C:\\work\\mysql");
+        IOFileFilter filter = new IOFileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return true;
+            }
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        FileSystemDto rootDto = DirectoryTree.getDirectoryTree(root, filter, filter);
+
+        assertEquals("C:\\work", rootDto.getName());
     }
 }

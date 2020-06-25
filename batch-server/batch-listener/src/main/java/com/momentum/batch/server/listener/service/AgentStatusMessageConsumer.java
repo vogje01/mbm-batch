@@ -13,6 +13,7 @@ import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,9 @@ import static java.text.MessageFormat.format;
 @Service
 @Transactional
 public class AgentStatusMessageConsumer {
+
+    @Value("${mbm.listener.server}")
+    private String listenerName;
 
     private static final Logger logger = LoggerFactory.getLogger(AgentStatusMessageConsumer.class);
 
@@ -68,6 +72,7 @@ public class AgentStatusMessageConsumer {
      *     <li>AGENT_STATUS: an agent sends status information.</li>
      *     <li>AGENT_PING: a ping received from an agent.</li>
      *     <li>AGENT_PERFORMANCE: performance data collected from an agent.</li>
+     *     <li>AGENT_STOP: shutdown of the agent.</li>
      * </ul>
      *
      * @param agentStatusMessageDto agent command data transfer object.
@@ -81,6 +86,7 @@ public class AgentStatusMessageConsumer {
             case AGENT_STATUS -> receivedAgentStatus(agentStatusMessageDto);
             case AGENT_PING -> receivedPing(agentStatusMessageDto);
             case AGENT_PERFORMANCE -> receivedPerformance(agentStatusMessageDto);
+            case AGENT_STOP -> receivedShutdown(agentStatusMessageDto);
         }
     }
 
@@ -219,8 +225,10 @@ public class AgentStatusMessageConsumer {
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
 
                 // Send command
+                agentSchedulerMessageDto.setSender(listenerName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                logger.info(format("Job start command send to agent - nodeName: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
+                logger.info(format("Job start command send to agent - receiver: {0} jobName: {1}", agent.getNodeName(), s.getJobDefinition().getName()));
             });
         }
     }

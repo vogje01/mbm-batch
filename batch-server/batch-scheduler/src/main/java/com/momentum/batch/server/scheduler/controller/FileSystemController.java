@@ -1,10 +1,10 @@
 package com.momentum.batch.server.scheduler.controller;
 
 import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.server.database.domain.dto.FileSystemDto;
 import com.momentum.batch.server.scheduler.service.FileSystemService;
 import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
-import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

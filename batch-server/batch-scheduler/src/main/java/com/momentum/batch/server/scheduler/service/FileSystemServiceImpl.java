@@ -1,9 +1,9 @@
 package com.momentum.batch.server.scheduler.service;
 
 import com.momentum.batch.common.util.MbmFileUtils;
+import com.momentum.batch.server.database.domain.dto.FileSystemDto;
 import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
-import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -34,7 +34,9 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -42,6 +44,9 @@ import static java.text.MessageFormat.format;
 @Service
 @Transactional
 public class JobScheduleServiceImpl implements JobScheduleService {
+
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
 
     @Value("${mbm.server.host}")
     private String serverName;
@@ -103,7 +108,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
         Page<JobSchedule> jobSchedules = jobScheduleRepository.findAll(pageable);
         PagedModel<JobScheduleDto> collectionModel = jobSchedulePagedResourcesAssembler.toModel(jobSchedules, jobScheduleModelAssembler);
         logger.debug(format("Job schedule list request finished - count: {0}/{1} {2}",
-                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
         return collectionModel;
     }
@@ -177,8 +182,9 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             // Send message to agents
             jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleOld);
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
-            jobScheduleOld.getAgents().forEach(agent -> {
-                agentSchedulerMessageDto.setSender(serverName);
+            getAgentList(jobSchedule).forEach(agent -> {
+                agentSchedulerMessageDto.setSender(schedulerName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -209,9 +215,11 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
 
             // Send message to agents
-            jobSchedule.getAgents().forEach(agent -> {
+            getAgentList(jobSchedule).forEach(agent -> {
 
                 agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
 
@@ -229,7 +237,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             Page<Agent> agents = agentRepository.findByScheduleId(jobScheduleOptional.get().getId(), pageable);
             PagedModel<AgentDto> collectionModel = agentPagedResourcesAssembler.toModel(agents, agentModelAssembler);
             logger.debug(format("Agent list for job schedule list request finished - count: {0}/{1} {2}",
-                    collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+                    Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
             return collectionModel;
         }
         throw new ResourceNotFoundException();
@@ -259,6 +267,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Send to agent
                 agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -299,6 +308,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 // Send message to agent
                 agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -324,7 +334,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             Page<AgentGroup> agentGroups = agentGroupRepository.findByScheduleId(jobScheduleOptional.get().getId(), pageable);
             PagedModel<AgentGroupDto> collectionModel = agentGroupPagedResourcesAssembler.toModel(agentGroups, agentGroupModelAssembler);
             logger.debug(format("Agent group list for job schedule list request finished - count: {0}/{1} {2}",
-                    collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+                    Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
             return collectionModel;
         }
         throw new ResourceNotFoundException();
@@ -353,8 +363,9 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULE, jobScheduleDto);
 
                 // Send message to agents
-                agentGroup.getAgents().forEach(agent -> {
+                getAgentList(jobSchedule).forEach(agent -> {
                     agentSchedulerMessageDto.setSender(serverName);
+                    agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                     agentSchedulerMessageDto.setHostName(agent.getHostName());
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -397,6 +408,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
                 // Send message to agents
                 agentGroup.getAgents().forEach(agent -> {
                     agentSchedulerMessageDto.setSender(serverName);
+                    agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                     agentSchedulerMessageDto.setHostName(agent.getHostName());
                     agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                     agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -433,24 +445,14 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto.getJobDefinitionDto());
 
-            // Send to all agents
-            jobSchedule.getAgents().forEach(agent -> {
+            // Send to all necessary agents
+            getAgentList(jobSchedule).forEach(agent -> {
                 agentSchedulerMessageDto.setSender(serverName);
+                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
                 agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
                 logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_ON_DEMAND));
-            });
-
-            // Send message to agents in agent group
-            jobSchedule.getAgentGroups().forEach(agentGroup -> {
-                agentGroup.getAgents().forEach(agent -> {
-                    agentSchedulerMessageDto.setSender(serverName);
-                    agentSchedulerMessageDto.setHostName(agent.getHostName());
-                    agentSchedulerMessageDto.setNodeName(agent.getNodeName());
-                    agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
-                    logger.debug(format("Job schedule on demand message send to agent - hostName: {0} nodeName: {1} type: {2}", agent.getHostName(), agent.getNodeName(), AgentSchedulerMessageType.JOB_ON_DEMAND));
-                });
             });
 
             jobScheduleDto = jobScheduleModelAssembler.toModel(jobSchedule);
@@ -459,4 +461,17 @@ public class JobScheduleServiceImpl implements JobScheduleService {
             throw new ResourceNotFoundException();
         }
     }
+
+    /**
+     * Collects all agents of a job schedule plus all agents, which are part of a agentGroup.
+     *
+     * @param jobSchedule job schedules.
+     * @return list of all agents, for the given schedule.
+     */
+    private List<Agent> getAgentList(JobSchedule jobSchedule) {
+        List<Agent> agents = new ArrayList<>(jobSchedule.getAgents());
+        jobSchedule.getAgentGroups().forEach(agentGroup -> agents.addAll(agentGroup.getAgents()));
+        return agents;
+    }
+
 }

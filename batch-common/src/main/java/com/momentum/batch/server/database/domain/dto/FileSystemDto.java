@@ -1,5 +1,6 @@
-package com.momentum.batch.server.scheduler.util.dto;
+package com.momentum.batch.server.database.domain.dto;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class FileSystemDto {
     private boolean hasSubDirectories;
 
     private List<FileSystemDto> items = new ArrayList();
+
+    private File parent;
 
     public String getName() {
         return name;
@@ -90,5 +93,13 @@ public class FileSystemDto {
         if (items.contains(item)) {
             items.remove(item);
         }
+    }
+
+    public File getParent() {
+        return parent;
+    }
+
+    public void setParent(File parent) {
+        this.parent = parent;
     }
 }

@@ -367,7 +367,7 @@ class JobDefinitionList extends React.Component {
                                 dataField={'fileHash'}
                                 dataType={'string'}
                                 visible={false}/>
-                            <Paging defaultPageSize={5}/>
+                            <Paging defaultPageSize={10}/>
                             <Pager allowedPageSizes={[5, 10, 20, 50, 100]} showPageSizeSelector={true}/>
                             <RemoteOperations sorting={true} paging={true}/>
                             <Column

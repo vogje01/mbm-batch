@@ -127,6 +127,8 @@ public class AgentStatusService {
      */
     private void registerAgent() {
         setStatus(AgentStatus.STARTING);
+        agentStatusMessageDto.setSender(nodeName);
+        agentStatusMessageDto.setReceiver(listenerName);
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_REGISTER);
         agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
         logger.info(format("Agent registration message send - hostName: {0} nodeName: {1}", hostName, nodeName));
@@ -134,41 +136,39 @@ public class AgentStatusService {
 
     @Scheduled(fixedRateString = "${mbm.agent.pingInterval}000")
     private void ping() {
-        if (agentStatus != AgentStatus.STOPPED) {
-            agentStatus = AgentStatus.RUNNING;
-            agentStatusMessageDto.setStatus(agentStatus.name());
-            agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
-            agentStatusMessageDto.setPid(ProcessHandle.current().pid());
-            agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PING);
-            agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
-        }
+        agentStatusMessageDto.setSender(nodeName);
+        agentStatusMessageDto.setReceiver(listenerName);
+        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
+        agentStatusMessageDto.setPid(ProcessHandle.current().pid());
+        agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PING);
+        agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
     }
 
     @Scheduled(fixedRateString = "${mbm.agent.performanceInterval}000", initialDelay = 60000L)
     private void performance() {
 
-        if (agentStatus != AgentStatus.STOPPED) {
+        // Initialize
+        agentStatus = AgentStatus.RUNNING;
+        agentStatusMessageDto.setSender(nodeName);
+        agentStatusMessageDto.setReceiver(listenerName);
+        agentStatusMessageDto.setStatus(agentStatus.name());
+        agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PERFORMANCE);
 
-            // Initialize
-            agentStatus = AgentStatus.RUNNING;
-            agentStatusMessageDto.setStatus(agentStatus.name());
-            agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_PERFORMANCE);
+        // Set performance attributes
+        agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
+        agentStatusMessageDto.setTotalRealMemory(osBean.getTotalMemorySize());
+        agentStatusMessageDto.setFreeRealMemory(osBean.getFreeMemorySize());
+        agentStatusMessageDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
 
-            // Set performance attributes
-            agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
-            agentStatusMessageDto.setTotalRealMemory(osBean.getTotalMemorySize());
-            agentStatusMessageDto.setFreeRealMemory(osBean.getFreeMemorySize());
-            agentStatusMessageDto.setUsedRealMemory(osBean.getTotalMemorySize() - osBean.getFreeMemorySize());
+        agentStatusMessageDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
+        agentStatusMessageDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
+        agentStatusMessageDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
 
-            agentStatusMessageDto.setTotalVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize());
-            agentStatusMessageDto.setFreeVirtMemory(osBean.getTotalMemorySize() + osBean.getTotalSwapSpaceSize() - osBean.getCommittedVirtualMemorySize());
-            agentStatusMessageDto.setUsedVirtMemory(osBean.getCommittedVirtualMemorySize());
-
-            agentStatusMessageDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
-            agentStatusMessageDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
-            agentStatusMessageDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
-            agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
-        }
+        agentStatusMessageDto.setTotalSwap(osBean.getTotalSwapSpaceSize());
+        agentStatusMessageDto.setFreeSwap(osBean.getFreeSwapSpaceSize());
+        agentStatusMessageDto.setUsedSwap(osBean.getTotalSwapSpaceSize() - osBean.getFreeSwapSpaceSize());
+        agentStatusMessageProducer.sendMessage(agentStatusMessageDto);
     }
 
     /**
@@ -213,6 +213,8 @@ public class AgentStatusService {
      */
     public void setStatus(AgentStatus agentStatus) {
         this.agentStatus = agentStatus;
+        agentStatusMessageDto.setSender(nodeName);
+        agentStatusMessageDto.setReceiver(listenerName);
         agentStatusMessageDto.setSystemLoad(osBean.getCpuLoad());
         agentStatusMessageDto.setStatus(agentStatus.name());
         agentStatusMessageDto.setType(AgentStatusMessageType.AGENT_STATUS);
@@ -226,9 +228,9 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        if (agentStatusMessageDto.getSender().equals(listenerName) && agentStatusMessageDto.getNodeName().equals(nodeName)) {
-            logger.info(format("Received agent status message - hostName: {0} nodeName: {1} type: {2}", agentStatusMessageDto.getHostName(),
-                    agentStatusMessageDto.getNodeName(), agentStatusMessageDto.getType()));
+        if (agentStatusMessageDto.getSender().equals(listenerName) && agentStatusMessageDto.getReceiver().equals(nodeName)) {
+            logger.info(format("Received agent status message - sender: {0} receiver: {1} type: {2}", agentStatusMessageDto.getSender(),
+                    agentStatusMessageDto.getReceiver(), agentStatusMessageDto.getType()));
 
             switch (agentStatusMessageDto.getType()) {
                 case AGENT_PAUSE -> pauseAgent();

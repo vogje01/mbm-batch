@@ -17,6 +17,7 @@ import com.momentum.batch.server.manager.service.common.ResourceNotFoundExceptio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +38,9 @@ import static java.text.MessageFormat.format;
 @Service
 @Transactional
 public class JobDefinitionServiceImpl implements JobDefinitionService {
+
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
 
     private static final Logger logger = LoggerFactory.getLogger(JobDefinitionServiceImpl.class);
 
@@ -273,6 +277,8 @@ public class JobDefinitionServiceImpl implements JobDefinitionService {
             JobDefinitionDto jobDefinitionDto = jobDefinitionModelAssembler.toModel(jobDefinition);
 
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND);
+            agentSchedulerMessageDto.setSender(schedulerName);
+            agentSchedulerMessageDto.setReceiver(agent.getNodeName());
             agentSchedulerMessageDto.setNodeName(agent.getHostName());
             agentSchedulerMessageDto.setNodeName(agent.getNodeName());
             agentSchedulerMessageDto.setJobDefinitionDto(jobDefinitionDto);

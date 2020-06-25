@@ -53,6 +53,9 @@ import static java.text.MessageFormat.format;
 @Transactional
 public class CentralBatchScheduler {
 
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
+
     @Value("${mbm.scheduler.interval}")
     private long interval;
     /**
@@ -280,6 +283,8 @@ public class CentralBatchScheduler {
 
         // Create message
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setSender(schedulerName);
+        agentSchedulerMessageDto.setReceiver(agent.getNodeName());
         agentSchedulerMessageDto.setHostName(agent.getHostName());
         agentSchedulerMessageDto.setNodeName(agent.getNodeName());
         agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -300,6 +305,8 @@ public class CentralBatchScheduler {
 
         // Create message
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setSender(schedulerName);
+        agentSchedulerMessageDto.setReceiver(agent.getNodeName());
         agentSchedulerMessageDto.setHostName(agent.getHostName());
         agentSchedulerMessageDto.setNodeName(agent.getNodeName());
         agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
@@ -320,6 +327,8 @@ public class CentralBatchScheduler {
 
         // Create message
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_REMOVE_SCHEDULE, jobScheduleDto);
+        agentSchedulerMessageDto.setSender(schedulerName);
+        agentSchedulerMessageDto.setReceiver(agent.getNodeName());
         agentSchedulerMessageDto.setHostName(agent.getHostName());
         agentSchedulerMessageDto.setNodeName(agent.getNodeName());
         agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);

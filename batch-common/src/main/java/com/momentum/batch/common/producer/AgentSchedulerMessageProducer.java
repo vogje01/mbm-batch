@@ -27,10 +27,7 @@ public class AgentSchedulerMessageProducer {
 
     private final KafkaTemplate<String, AgentSchedulerMessageDto> template;
 
-    private final String nodeName;
-
-    public AgentSchedulerMessageProducer(String nodeName, KafkaTemplate<String, AgentSchedulerMessageDto> template) {
-        this.nodeName = nodeName;
+    public AgentSchedulerMessageProducer(KafkaTemplate<String, AgentSchedulerMessageDto> template) {
         this.template = template;
     }
 
@@ -45,7 +42,6 @@ public class AgentSchedulerMessageProducer {
      */
     public void sendMessage(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
-        agentSchedulerMessageDto.setSender(nodeName);
         ListenableFuture<SendResult<String, AgentSchedulerMessageDto>> future = template.send(agentCommandTopic, agentSchedulerMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 

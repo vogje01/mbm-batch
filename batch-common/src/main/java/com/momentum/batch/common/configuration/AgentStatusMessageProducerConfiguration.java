@@ -21,9 +21,6 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfiguration {
 
-    @Value("${mbm.listener.server}")
-    private String listenerName;
-
     @Value(value = "${kafka.agentStatus.topic}")
     private String topic;
 
@@ -50,7 +47,7 @@ public class AgentStatusMessageProducerConfiguration extends AbstractKafkaConfig
 
     @Bean
     public AgentStatusMessageProducer agentStatusMessageProducer() {
-        return new AgentStatusMessageProducer(listenerName, agentStatusMessageKafkaTemplate());
+        return new AgentStatusMessageProducer(agentStatusMessageKafkaTemplate());
     }
 
     @Bean

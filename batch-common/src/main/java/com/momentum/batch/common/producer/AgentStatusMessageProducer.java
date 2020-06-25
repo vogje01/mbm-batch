@@ -23,12 +23,9 @@ public class AgentStatusMessageProducer {
     @Value(value = "${kafka.agentStatus.topic}")
     private String agentStatusTopic;
 
-    private final String nodeName;
-
     private final KafkaTemplate<String, AgentStatusMessageDto> template;
 
-    public AgentStatusMessageProducer(String nodeName, KafkaTemplate<String, AgentStatusMessageDto> template) {
-        this.nodeName = nodeName;
+    public AgentStatusMessageProducer(KafkaTemplate<String, AgentStatusMessageDto> template) {
         this.template = template;
     }
 
@@ -43,7 +40,6 @@ public class AgentStatusMessageProducer {
      */
     public void sendMessage(AgentStatusMessageDto agentStatusMessageDto) {
 
-        agentStatusMessageDto.setSender(nodeName);
         ListenableFuture<SendResult<String, AgentStatusMessageDto>> future = template.send(agentStatusTopic, agentStatusMessageDto);
         future.addCallback(new ListenableFutureCallback<>() {
 

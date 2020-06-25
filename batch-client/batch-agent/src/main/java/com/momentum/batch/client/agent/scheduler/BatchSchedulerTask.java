@@ -38,6 +38,9 @@ import static java.text.MessageFormat.format;
 @Component
 public class BatchSchedulerTask extends QuartzJobBean {
 
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
+
     @Value("${mbm.agent.hostName}")
     private String hostName;
 
@@ -253,6 +256,8 @@ public class BatchSchedulerTask extends QuartzJobBean {
 
         // Build agent command
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto();
+        agentSchedulerMessageDto.setSender(nodeName);
+        agentSchedulerMessageDto.setReceiver(schedulerName);
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
         if (jobDataMap.getString(JOB_SCHEDULED_TYPE).equals("Scheduled")) {
             JobScheduleDto jobScheduleDto = new JobScheduleDto();

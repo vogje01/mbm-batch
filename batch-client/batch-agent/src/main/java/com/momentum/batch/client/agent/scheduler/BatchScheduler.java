@@ -4,6 +4,7 @@ import com.momentum.batch.client.agent.library.LibraryReaderService;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import com.momentum.batch.server.database.domain.JobDefinitionType;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
@@ -31,6 +32,9 @@ import static java.text.MessageFormat.format;
 @Service
 public class BatchScheduler extends BatchSchedulerHelper {
 
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
+
     @Value("${mbm.agent.hostName}")
     private String hostName;
 
@@ -46,6 +50,8 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
     private final LibraryReaderService libraryReaderService;
 
+    private AgentStatus agentStatus;
+
     /**
      * Constructor.
      * <p>
@@ -57,10 +63,11 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param libraryReaderService          library downloader.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService) {
+    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService, AgentStatus agentStatus) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.libraryReaderService = libraryReaderService;
+        this.agentStatus = agentStatus;
     }
 
     /**
@@ -111,6 +118,10 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void scheduleJob(JobScheduleDto jobSchedule) {
         logger.info(format("Starting job definition - name: {0}, id: {1}", jobSchedule.getName(), jobSchedule.getId()));
+        if (agentStatus != AgentStatus.RUNNING) {
+            logger.info(format("Agent is paused, not scheduled - name: {0}", jobSchedule.getName()));
+            return;
+        }
         JobDefinitionDto jobDefinition = jobSchedule.getJobDefinitionDto();
         if (jobDefinition.isActive()) {
             try {
@@ -188,6 +199,11 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void rescheduleJob(JobScheduleDto jobScheduleDto) {
 
+        if (agentStatus != AgentStatus.RUNNING) {
+            logger.info(format("Agent is paused, not rescheduled - name: {0}", jobScheduleDto.getName()));
+            return;
+        }
+
         JobDefinitionDto jobDefinitionDto = jobScheduleDto.getJobDefinitionDto();
         String jobName = jobDefinitionDto.getName();
         String groupName = jobDefinitionDto.getJobMainGroupDto().getName();
@@ -234,6 +250,12 @@ public class BatchScheduler extends BatchSchedulerHelper {
      */
     public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
+        // Check agent status
+        if (agentStatus != AgentStatus.RUNNING) {
+            logger.info(format("Agent is paused, not started - name: {0}", jobDefinition.getName()));
+            return;
+        }
+
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName());
         try {
@@ -268,6 +290,8 @@ public class BatchScheduler extends BatchSchedulerHelper {
 
         // Create and send message
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_SCHEDULED);
+        agentSchedulerMessageDto.setSender(nodeName);
+        agentSchedulerMessageDto.setReceiver(schedulerName);
         agentSchedulerMessageDto.setNodeName(nodeName);
         agentSchedulerMessageDto.setHostName(hostName);
         agentSchedulerMessageDto.setJobScheduleDto(jobSchedule);

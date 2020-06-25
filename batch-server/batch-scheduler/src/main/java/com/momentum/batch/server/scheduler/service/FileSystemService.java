@@ -1,8 +1,8 @@
 package com.momentum.batch.server.scheduler.service;
 
+import com.momentum.batch.server.database.domain.dto.FileSystemDto;
 import com.momentum.batch.server.scheduler.util.FilePath;
 import com.momentum.batch.server.scheduler.util.ResourceNotFoundException;
-import com.momentum.batch.server.scheduler.util.dto.FileSystemDto;
 
 import javax.ws.rs.BadRequestException;
 import java.io.IOException;
