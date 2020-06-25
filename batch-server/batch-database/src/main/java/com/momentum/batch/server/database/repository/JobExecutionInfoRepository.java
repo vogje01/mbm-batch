@@ -30,8 +30,5 @@ public interface JobExecutionInfoRepository extends PagingAndSortingRepository<J
 
     @Query("select max(j.jobExecutionId) from JobExecutionInfo j where j.jobDefinition.name = :jobName")
     Optional<Long> getLastExecutionId(@Param("jobName") String jobName);
-
-    @Query("select j.jobExecutionId from JobExecutionInfo j where j.jobName = :jobName order by j.startTime desc")
-    Page<JobExecutionInfo> findLastExecutionInfo(@Param("jobName") String jobName, Pageable pageable);
 }
 

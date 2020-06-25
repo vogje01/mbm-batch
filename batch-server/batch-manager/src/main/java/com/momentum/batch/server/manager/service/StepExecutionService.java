@@ -7,7 +7,7 @@ import org.springframework.hateoas.PagedModel;
 
 public interface StepExecutionService {
 
-    PagedModel<StepExecutionDto> findAll(Pageable pageable);
+    PagedModel<StepExecutionDto> findAll(String status, String nodeName, String jobId, Pageable pageable);
 
     PagedModel<StepExecutionDto> findByJobId(final String jobId, Pageable pageable);
 

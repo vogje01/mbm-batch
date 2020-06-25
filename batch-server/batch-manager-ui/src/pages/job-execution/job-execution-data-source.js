@@ -31,7 +31,6 @@ const getParams = (loadOptions, defaultSortBy, defaultSortDir) => {
     return params;
 };
 
-
 export function JobExecutionDataSource(filterName) {
     return new DataSource({
         store: new CustomStore({

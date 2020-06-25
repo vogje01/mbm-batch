@@ -46,7 +46,8 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
      * Status of the step.
      */
     @Column(name = "STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private JobExecutionStatus status;
     /**
      * Host name.
      */
@@ -61,47 +62,47 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
      * Total number of records to be processed.
      */
     @Column(name = "TOTAL_COUNT")
-    private long totalCount;
+    private Long totalCount;
     /**
      * Total number of record read.
      */
     @Column(name = "READ_COUNT")
-    private long readCount;
+    private Long readCount;
     /**
      * Total number of record written.
      */
     @Column(name = "WRITE_COUNT")
-    private long writeCount;
+    private Long writeCount;
     /**
      * Total number of record filtered.
      */
     @Column(name = "FILTER_COUNT")
-    private long filterCount;
+    private Long filterCount;
     /**
      * Total number of record committed.
      */
     @Column(name = "COMMIT_COUNT")
-    private long commitCount;
+    private Long commitCount;
     /**
      * Total number of record rolled back.
      */
     @Column(name = "ROLLBACK_COUNT")
-    private long rollbackCount;
+    private Long rollbackCount;
     /**
      * Total number of record skipped during read.
      */
     @Column(name = "READ_SKIP_COUNT")
-    private long readSkipCount;
+    private Long readSkipCount;
     /**
      * Total number of record skipped during processing.
      */
     @Column(name = "PROCESS_SKIP_COUNT")
-    private long processSkipCount;
+    private Long processSkipCount;
     /**
      * Total number of record skipped during write.
      */
     @Column(name = "WRITE_SKIP_COUNT")
-    private long writeSkipCount;
+    private Long writeSkipCount;
     /**
      * Start time of the step
      */
@@ -166,7 +167,7 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
         this.id = stepExecutionDto.getId();
         this.stepName = stepExecutionDto.getStepName();
         this.stepExecutionId = stepExecutionDto.getStepExecutionId();
-        this.status = stepExecutionDto.getStatus();
+        this.status = JobExecutionStatus.valueOf(stepExecutionDto.getStatus());
         this.hostName = stepExecutionDto.getHostName();
         this.nodeName = stepExecutionDto.getNodeName();
         this.totalCount = stepExecutionDto.getTotalCount() != null ? stepExecutionDto.getTotalCount() : 0;
@@ -210,11 +211,11 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
         this.stepName = stepName;
     }
 
-    public String getStatus() {
+    public JobExecutionStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(JobExecutionStatus status) {
         this.status = status;
     }
 
@@ -242,67 +243,67 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
         this.stepExecutionContext = stepExecutionContext;
     }
 
-    public long getReadCount() {
+    public Long getReadCount() {
         return readCount;
     }
 
-    public void setReadCount(long readCount) {
+    public void setReadCount(Long readCount) {
         this.readCount = readCount;
     }
 
-    public long getWriteCount() {
+    public Long getWriteCount() {
         return writeCount;
     }
 
-    public void setWriteCount(long writeCount) {
+    public void setWriteCount(Long writeCount) {
         this.writeCount = writeCount;
     }
 
-    public long getTotalCount() {
+    public Long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(long totalCount) {
+    public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;
     }
 
-    public long getCommitCount() {
+    public Long getCommitCount() {
         return commitCount;
     }
 
-    public void setCommitCount(long commitCount) {
+    public void setCommitCount(Long commitCount) {
         this.commitCount = commitCount;
     }
 
-    public long getRollbackCount() {
+    public Long getRollbackCount() {
         return rollbackCount;
     }
 
-    public void setRollbackCount(long rollbackCount) {
+    public void setRollbackCount(Long rollbackCount) {
         this.rollbackCount = rollbackCount;
     }
 
-    public long getReadSkipCount() {
+    public Long getReadSkipCount() {
         return readSkipCount;
     }
 
-    public void setReadSkipCount(long readSkipCount) {
+    public void setReadSkipCount(Long readSkipCount) {
         this.readSkipCount = readSkipCount;
     }
 
-    public long getProcessSkipCount() {
+    public Long getProcessSkipCount() {
         return processSkipCount;
     }
 
-    public void setProcessSkipCount(long processSkipCount) {
+    public void setProcessSkipCount(Long processSkipCount) {
         this.processSkipCount = processSkipCount;
     }
 
-    public long getWriteSkipCount() {
+    public Long getWriteSkipCount() {
         return writeSkipCount;
     }
 
-    public void setWriteSkipCount(long writeSkipCount) {
+    public void setWriteSkipCount(Long writeSkipCount) {
         this.writeSkipCount = writeSkipCount;
     }
 
@@ -354,11 +355,11 @@ public class StepExecutionInfo extends Auditing<String> implements PrimaryKeyIde
         this.exitMessage = exitMessage;
     }
 
-    public long getFilterCount() {
+    public Long getFilterCount() {
         return filterCount;
     }
 
-    public void setFilterCount(long filterCount) {
+    public void setFilterCount(Long filterCount) {
         this.filterCount = filterCount;
     }
 

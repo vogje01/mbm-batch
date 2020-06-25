@@ -51,7 +51,7 @@ public class StepExecutionInfoModelAssembler extends RepresentationModelAssemble
     @Override
     public @NotNull CollectionModel<StepExecutionDto> toCollectionModel(@NotNull Iterable<? extends StepExecutionInfo> entities) {
         CollectionModel<StepExecutionDto> StepExecutionDtos = super.toCollectionModel(entities);
-        StepExecutionDtos.add(linkTo(methodOn(StepExecutionController.class).findAll(null)).withSelfRel());
+        StepExecutionDtos.add(linkTo(methodOn(StepExecutionController.class).findAll(null, null, null, null)).withSelfRel());
         return StepExecutionDtos;
     }
 

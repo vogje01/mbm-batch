@@ -1,8 +1,10 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.common.util.MethodTimer;
+import com.momentum.batch.server.database.domain.JobExecutionStatus;
 import com.momentum.batch.server.database.domain.StepExecutionInfo;
 import com.momentum.batch.server.database.domain.dto.StepExecutionDto;
+import com.momentum.batch.server.database.repository.JobExecutionInfoRepository;
 import com.momentum.batch.server.database.repository.StepExecutionInfoRepository;
 import com.momentum.batch.server.manager.converter.StepExecutionInfoModelAssembler;
 import com.momentum.batch.server.manager.service.common.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -32,24 +35,38 @@ public class StepExecutionServiceImpl implements StepExecutionService {
 
 	private final StepExecutionInfoRepository stepExecutionRepository;
 
+	private final JobExecutionInfoRepository jobExecutionRepository;
+
 	private final PagedResourcesAssembler<StepExecutionInfo> pagedResourcesAssembler;
 
 	private final StepExecutionInfoModelAssembler stepExecutionInfoModelAssembler;
 
 	@Autowired
-	public StepExecutionServiceImpl(StepExecutionInfoRepository stepExecutionRepository, PagedResourcesAssembler<StepExecutionInfo> pagedResourcesAssembler,
-									StepExecutionInfoModelAssembler stepExecutionInfoModelAssembler) {
+	public StepExecutionServiceImpl(StepExecutionInfoRepository stepExecutionRepository, JobExecutionInfoRepository jobExecutionRepository,
+									PagedResourcesAssembler<StepExecutionInfo> pagedResourcesAssembler, StepExecutionInfoModelAssembler stepExecutionInfoModelAssembler) {
 		this.stepExecutionRepository = stepExecutionRepository;
+		this.jobExecutionRepository = jobExecutionRepository;
 		this.pagedResourcesAssembler = pagedResourcesAssembler;
 		this.stepExecutionInfoModelAssembler = stepExecutionInfoModelAssembler;
 	}
 
 	@Override
 	@Cacheable(cacheNames = "StepExecution")
-	public PagedModel<StepExecutionDto> findAll(Pageable pageable) {
+	public PagedModel<StepExecutionDto> findAll(String status, String nodeName, String jobId, Pageable pageable) {
 		t.restart();
 
-		Page<StepExecutionInfo> stepExecutionInfos = stepExecutionRepository.findAll(pageable);
+		StepExecutionInfo stepExecutionInfo = new StepExecutionInfo();
+		if (status != null) {
+			stepExecutionInfo.setStatus(JobExecutionStatus.valueOf(status));
+			logger.debug(format("Filter set - status: {0}", status));
+		}
+		if (nodeName != null) {
+			stepExecutionInfo.setNodeName(nodeName);
+			logger.debug(format("Filter set - nodeName: {0}", nodeName));
+		}
+		Example<StepExecutionInfo> example = Example.of(stepExecutionInfo);
+
+		Page<StepExecutionInfo> stepExecutionInfos = stepExecutionRepository.findAll(example, pageable);
 		PagedModel<StepExecutionDto> collectionModel = pagedResourcesAssembler.toModel(stepExecutionInfos, stepExecutionInfoModelAssembler);
 		logger.debug(format("Step execution list request finished - count: {0}/{1} {2}",
 				Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));

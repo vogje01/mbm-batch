@@ -8,14 +8,28 @@ import {getPctCounter} from "../../utils/counter-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
 import StepExecutionLogList from "./step-execution-log-list";
+import SelectBox from "devextreme-react/select-box";
+import {AgentDataSource} from "../agent/agent-data-source";
+import Button from "devextreme-react/button";
+import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
 
 class StepExecutionList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentStepExecution: {}
+            filterName: 'StepExecutionInfo',
+            currentStepExecution: {},
+            selectedStatus: undefined,
+            selectedHost: undefined,
+            selectedNode: undefined,
+            selectedStepName: undefined
         }
         this.selectionChanged = this.selectionChanged.bind(this);
+        this.onAddStatusFilter = this.onAddStatusFilter.bind(this);
+        this.onAddHostNameFilter = this.onAddHostNameFilter.bind(this);
+        this.onAddNodeNameFilter = this.onAddNodeNameFilter.bind(this);
+        this.onAddStepNameFilter = this.onAddStepNameFilter.bind(this);
+        this.onClearFilter = this.onClearFilter.bind(this);
         this.intervals = [
             {interval: 0, text: 'None'},
             {interval: 30000, text: '30 sec'},
@@ -38,6 +52,22 @@ class StepExecutionList extends React.Component {
                     this.render();
                 }
             }
+        }
+        this.statuses = [
+            {key: 'Completed', value: 'COMPLETED'},
+            {key: 'Started', value: 'STARTED'},
+            {key: 'Starting', value: 'STARTING'},
+            {key: 'Stopped', value: 'STOPPED'},
+            {key: 'Stopping', value: 'STOPPING'},
+            {key: 'Failed', value: 'FAILED'},
+            {key: 'Abandoned', value: 'ABANDONED'},
+            {key: 'Unknown', value: 'UNKNOWN'}
+        ];
+    }
+
+    componentDidMount() {
+        if (this.props.match && this.props.match.params) {
+            this.onAddStatusFilter({value: this.props.match.params.status})
         }
     }
 
@@ -65,13 +95,88 @@ class StepExecutionList extends React.Component {
         return rowData ? getPctCounter(rowData.totalCount, rowData.filterCount) : null;
     }
 
+    onAddStatusFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'status', e.value);
+            this.setState({selectedStatus: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'status');
+            this.setState({selectedStatus: null});
+        }
+    }
+
+    onAddHostNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'hostName', e.value);
+            this.setState({selectedHost: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'hostName');
+            this.setState({selectedHost: null});
+        }
+    }
+
+    onAddNodeNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'nodeName', e.value);
+            this.setState({selectedNode: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'nodeName');
+            this.setState({selectedNode: null});
+        }
+    }
+
+    onAddStepNameFilter(e) {
+        if (e.value) {
+            addFilter(this.state.filterName, 'jobName', e.value);
+            this.setState({selectedStepName: e.value});
+        } else {
+            dropFilter(this.state.filterName, 'jobName');
+            this.setState({selectedStepName: null});
+        }
+    }
+
+    onClearFilter() {
+        clearFilter(this.state.filterName);
+        this.setState({selectedStatus: undefined, selectedNode: undefined, selectedStepName: undefined});
+    }
+
     render() {
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Step Executions</h2>
                 <div className={'content-block'}>
+                    <div className={'dx-card responsive-paddings'} hidden={this.props.data !== undefined}>
+                        <Toolbar>
+                            <Item location="before">
+                                <SelectBox items={this.statuses} displayExpr='key' valueExpr='value' showClearButton={true}
+                                           value={this.state.selectedStatus} onValueChanged={this.onAddStatusFilter}
+                                           placeholder={'Select status...'} hint={'Filter job executions by status.'}/>
+                            </Item>
+                            <Item location="before">
+                                <SelectBox dataSource={AgentDataSource()} displayExpr='nodeName' valueExpr='nodeName' showClearButton={true}
+                                           value={this.state.selectedNode} onValueChanged={this.onAddNodeNameFilter}
+                                           placeholder={'Select node...'} hint={'Filter job executions by node.'}/>
+                            </Item>
+                            {/*<Item location="before">
+                                <SelectBox dataSource={JobDefinitionDataSource()} displayExpr={'name'} valueExpr={'name'} showClearButton={true}
+                                           value={this.state.selectedStepName} onValueChanged={this.onAddStepNameFilter}
+                                           placeholder={'Select job name...'} hint={'Filter job execution logs by job name.'}/>
+                            </Item>*/}
+                            <Item location="before">
+                                <Button text={'Clear Filter'} onClick={this.onClearFilter.bind(this)} hint={'Clear all filter settings.'}/>
+                            </Item>
+                        </Toolbar>
+                    </div>
                     <div className={'dx-card responsive-paddings'}>
                         <Toolbar>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
+                                    icon: "material-icons-outlined ic-back", onClick: () => {
+                                        this.props.history.goBack()
+                                    }, hint: 'Go back to previous page.'
+                                }}/>
                             <Item
                                 location="before"
                                 widget="dxButton"
@@ -87,7 +192,7 @@ class StepExecutionList extends React.Component {
                                 options={this.intervalSelectOptions}/>
                         </Toolbar>
                         <DataGrid
-                            dataSource={StepExecutionDataSource(this.props.data !== undefined ? this.props.data.data : undefined)}
+                            dataSource={StepExecutionDataSource(this.props.data !== undefined ? this.props.data.data : undefined, this.state.filterName)}
                             hoverStateEnabled={true}
                             allowColumnReordering={true}
                             allowColumnResizing={true}

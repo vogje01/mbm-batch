@@ -184,6 +184,14 @@ class JobExecutionList extends React.Component {
                                 location="before"
                                 widget="dxButton"
                                 options={{
+                                    icon: "material-icons-outlined ic-back", onClick: () => {
+                                        this.props.history.goBack()
+                                    }, hint: 'Go back to previous page.'
+                                }}/>
+                            <Item
+                                location="before"
+                                widget="dxButton"
+                                options={{
                                     icon: "material-icons-outlined ic-refresh", onClick: () => {
                                         this.setState({})
                                     }, hint: 'Refresh job execution list.'

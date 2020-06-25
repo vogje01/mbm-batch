@@ -23,6 +23,7 @@ import {
 const routes = [
     {path: '/jobexecutions/:status', component: JobExecutionListPage},
     {path: '/jobexecutions', component: JobExecutionListPage},
+    {path: '/stepexecutions/:status', component: StepExecutionListPage},
     {path: '/stepexecutions', component: StepExecutionListPage},
     {path: '/logs', component: LogListPage},
     {path: '/jobdefinitions', component: JobDefinitionListPage},

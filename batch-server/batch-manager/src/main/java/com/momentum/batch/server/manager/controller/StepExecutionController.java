@@ -42,8 +42,11 @@ public class StepExecutionController {
      * @return list of step execution infos.
      */
     @GetMapping(produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<StepExecutionDto>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(stepExecutionService.findAll(pageable));
+    public ResponseEntity<PagedModel<StepExecutionDto>> findAll(@RequestParam(required = false) String status,
+                                                                @RequestParam(required = false) String nodeName,
+                                                                @RequestParam(required = false) String jobName,
+                                                                Pageable pageable) {
+        return ResponseEntity.ok(stepExecutionService.findAll(status, nodeName, jobName, pageable));
     }
 
     /**

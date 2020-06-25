@@ -22,6 +22,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -70,7 +71,7 @@ public class JobExecutionServiceImpl implements JobExecutionService {
 
         PagedModel<JobExecutionDto> collectionModel = pagedResourcesAssembler.toModel(jobExecutionInfos, jobExecutionInfoModelAssembler);
         logger.debug(format("Job execution list request finished - count: {0}/{1} {2}",
-                collectionModel.getMetadata().getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
+                Objects.requireNonNull(collectionModel.getMetadata()).getSize(), collectionModel.getMetadata().getTotalElements(), t.elapsedStr()));
 
         return collectionModel;
     }
