@@ -8,7 +8,7 @@ class StepExecutionLogList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentStepExecutionInfo: this.props.stepExecution
+            currentStepExecution: this.props.currentStepExecution
         };
     }
 
@@ -20,7 +20,7 @@ class StepExecutionLogList extends React.Component {
             <React.Fragment>
                 <DataGrid
                     id={'stepExecutionLogTable'}
-                    dataSource={StepExecutionLogDataSource(this.props.stepExecution)}
+                    dataSource={StepExecutionLogDataSource(this.props.currentStepExecution)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}

@@ -6,6 +6,7 @@ import JobExecutionParamList from "./job-execution-param-list";
 import JobExecutionLogList from "./job-execution-log-list";
 import JobExecutionDetailsTiming from "./job-execution-details-timing";
 import JobExecutionDetailsSteps from "./job-execution-details-steps";
+import JobExecutionDetailsMain from "./job-execution-details-main";
 
 function CustomTitle(data) {
     return (
@@ -22,6 +23,7 @@ class JobExecutionDetailsPage extends React.Component {
         };
         this.customItem = this.customItem.bind(this);
         this.pages = [
+            {title: 'Main', item: 'Main'},
             {title: 'Timing', item: 'Timing'},
             {title: 'Step Executions', item: 'StepExecutionList'},
             {title: 'Parameter', item: 'JobExecutionParameter'},
@@ -32,6 +34,8 @@ class JobExecutionDetailsPage extends React.Component {
 
     customItem(data) {
         switch (data.item) {
+            case 'Main':
+                return (<JobExecutionDetailsMain currentJobExecution={this.state.currentJobExecution.data}/>);
             case 'StepExecutionList':
                 return (<JobExecutionDetailsSteps currentJobExecution={this.state.currentJobExecution.data}/>);
             case 'JobExecutionParameter':

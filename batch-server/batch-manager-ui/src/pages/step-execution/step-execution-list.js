@@ -1,17 +1,15 @@
 import React from "react";
-import {Column, DataGrid, Editing, FilterRow, Form, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {Column, DataGrid, FilterRow, HeaderFilter, MasterDetail, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
-import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
-import {getPctCounter} from "../../utils/counter-util";
+import {dateTimeCellTemplate, getRunningTime} from "../../utils/date-time-util";
 import {Item, Toolbar} from "devextreme-react/toolbar";
-import {GroupItem, SimpleItem} from "devextreme-react/form";
-import StepExecutionLogList from "./step-execution-log-list";
 import SelectBox from "devextreme-react/select-box";
 import {AgentDataSource} from "../agent/agent-data-source";
 import Button from "devextreme-react/button";
 import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
+import StepExecutionDetailsPage from "./step-execution-details";
 
 class StepExecutionList extends React.Component {
     constructor(props) {
@@ -24,7 +22,6 @@ class StepExecutionList extends React.Component {
             selectedNode: undefined,
             selectedStepName: undefined
         }
-        this.selectionChanged = this.selectionChanged.bind(this);
         this.onAddStatusFilter = this.onAddStatusFilter.bind(this);
         this.onAddHostNameFilter = this.onAddHostNameFilter.bind(this);
         this.onAddNodeNameFilter = this.onAddNodeNameFilter.bind(this);
@@ -69,30 +66,6 @@ class StepExecutionList extends React.Component {
         if (this.props.match && this.props.match.params) {
             this.onAddStatusFilter({value: this.props.match.params.status})
         }
-    }
-
-    selectionChanged(e) {
-        this.setState({currentStepExecution: e.data});
-    }
-
-    getReadCount(rowData) {
-        return rowData ? getPctCounter(rowData.totalCount, rowData.readCount) : null;
-    }
-
-    getReadSkipCount(rowData) {
-        return rowData ? getPctCounter(rowData.totalCount, rowData.readSkipCount) : null;
-    }
-
-    getWriteCount(rowData) {
-        return rowData ? getPctCounter(rowData.totalCount, rowData.writeCount) : null;
-    }
-
-    getWriteSkipCount(rowData) {
-        return rowData ? getPctCounter(rowData.totalCount, rowData.writeSkipCount) : null;
-    }
-
-    getFilterCount(rowData) {
-        return rowData ? getPctCounter(rowData.totalCount, rowData.filterCount) : null;
     }
 
     onAddStatusFilter(e) {
@@ -202,67 +175,12 @@ class StepExecutionList extends React.Component {
                             showColumnLines={true}
                             showRowLines={true}
                             showBorders={true}
-                            rowAlternationEnabled={true}
-                            onEditingStart={this.selectionChanged}>
+                            rowAlternationEnabled={true}>
                             <FilterRow visible={true}/>
                             <Selection mode={'single'}/>
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
                             <Sorting mode={'multiple'}/>
-                            <Editing
-                                mode={'form'}
-                                useIcons={true}
-                                allowUpdating={true}
-                                allowDeleting={true}>
-                                <Form>
-                                    <GroupItem colCount={2} caption={"Step Execution Details: " + this.state.currentStepExecution.stepName}>
-                                        <SimpleItem dataField="jobName" readOnly={true}/>
-                                        <SimpleItem dataField="stepName" readOnly={true}/>
-                                        <SimpleItem dataField="hostName" readOnly={true}/>
-                                        <SimpleItem dataField="nodeName" readOnly={true}/>
-                                        <SimpleItem dataField="status" readOnly={true}/>
-                                        <SimpleItem dataField="stepExecutionId" readOnly={true}/>
-                                        <SimpleItem dataField="exitCode" readOnly={true}/>
-                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
-                                    </GroupItem>
-                                    <GroupItem colCount={2} caption={"Timing"}>
-                                        <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentStepExecution, 'startTime')}}/>
-                                        <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentStepExecution, 'endTime')}}/>
-                                        <SimpleItem dataField="lastUpdated" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentStepExecution, 'lastUpdated')}}/>
-                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getRunningTime(this.state.currentStepExecution)}}/>
-                                    </GroupItem>
-                                    <GroupItem colSpan={2} colCount={4} caption={"Counter"}>
-                                        <SimpleItem dataField="totalCount" readOnly={true}/>
-                                        <SimpleItem dataField="readCount" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.getReadCount(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="readSkipCount" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.getReadSkipCount(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="writeCount" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.getWriteCount(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="writeSkipCount" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.getWriteSkipCount(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="filtered" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.getFilterCount(this.state.currentStepExecution)}}/>
-                                        <SimpleItem dataField="commitCount" readOnly={true}/>
-                                        <SimpleItem dataField="rollbackCount" readOnly={true}/>
-                                    </GroupItem>
-                                    <GroupItem colSpan={2} caption={"Logs"}>
-                                        <StepExecutionLogList stepExecution={this.state.currentStepExecution}/>
-                                    </GroupItem>
-                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
-                                        <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentStepExecution, 'createdAt'), readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentStepExecution, 'modifiedAt'), readOnly: true}}/>
-                                    </GroupItem>
-                                </Form>
-                            </Editing>
                             <Column
                                 caption={'Job Name'}
                                 dataField={'jobName'}
@@ -449,11 +367,6 @@ class StepExecutionList extends React.Component {
                                 type={'buttons'}
                                 buttons={[
                                     {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry',
-                                        icon: 'material-icons-outlined ic-edit md-18',
-                                    },
-                                    {
                                         name: 'delete',
                                         hint: 'Delete job execution entry',
                                         icon: 'material-icons-outlined ic-delete md-18'
@@ -463,6 +376,7 @@ class StepExecutionList extends React.Component {
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
+                            <MasterDetail enabled={true} component={StepExecutionDetailsPage}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>
