@@ -1,5 +1,17 @@
 import React from "react";
-import {Column, DataGrid, FilterRow, HeaderFilter, MasterDetail, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {
+    Column,
+    DataGrid,
+    Editing,
+    FilterRow,
+    HeaderFilter,
+    MasterDetail,
+    Pager,
+    Paging,
+    RemoteOperations,
+    Selection,
+    Sorting
+} from "devextreme-react/data-grid";
 import {StepExecutionDataSource} from "./step-execution-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import './step-execution-list.scss'
@@ -181,6 +193,7 @@ class StepExecutionList extends React.Component {
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
                             <Sorting mode={'multiple'}/>
+                            <Editing mode={'form'} useIcons={true} allowDeleting={true}/>
                             <Column
                                 caption={'Job Name'}
                                 dataField={'jobName'}
@@ -363,13 +376,13 @@ class StepExecutionList extends React.Component {
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={80}
+                                width={20}
                                 type={'buttons'}
                                 buttons={[
                                     {
                                         name: 'delete',
                                         hint: 'Delete job execution entry',
-                                        icon: 'material-icons-outlined ic-delete md-18'
+                                        icon: 'material-icons-outlined ic-delete'
                                     }
                                 ]}/>
                             <RemoteOperations sorting={true} paging={true}/>

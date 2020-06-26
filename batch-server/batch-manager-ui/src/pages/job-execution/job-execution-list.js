@@ -5,7 +5,6 @@ import {
     DataGrid,
     Editing,
     FilterRow,
-    Form,
     HeaderFilter,
     MasterDetail,
     Pager,
@@ -14,13 +13,10 @@ import {
     Selection,
     Sorting
 } from "devextreme-react/data-grid";
-import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
+import {dateTimeCellTemplate, getRunningTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {Item, Toolbar} from "devextreme-react/toolbar";
-import {GroupItem, SimpleItem} from "devextreme-react/form";
-import JobExecutionParamList from "./job-execution-param-list";
-import JobExecutionLogList from "./job-execution-log-list";
 import {getItem} from "../../utils/server-connection";
 import SelectBox from "devextreme-react/select-box";
 import {AgentDataSource} from "../agent/agent-data-source";
@@ -219,56 +215,7 @@ class JobExecutionList extends React.Component {
                             <FilterRow visible={true} applyFilter={'auto'}/>
                             <HeaderFilter visible={true}/>
                             <Sorting mode={'multiple'}/>
-                            <Editing
-                                mode={'form'}
-                                useIcons={true}
-                                allowDeleting={true}
-                                allowUpdating={true}>
-                                <Form>
-                                    <GroupItem colCount={2} caption={"Job Execution Details: " + this.state.currentJobExecution.jobName}>
-                                        <SimpleItem dataField="jobName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="hostName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="nodeName" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="status" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="jobPid" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="jobGroup" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="jobKey" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="id" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="jobExecutionId" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="jobVersion" editorType="dxTextBox" editorOptions={{readOnly: true}}/>
-                                    </GroupItem>
-                                    <GroupItem colCount={2} caption={"Timing"}>
-                                        <SimpleItem dataField="startTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'startTime'), readOnly: true}}/>
-                                        <SimpleItem dataField="endTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'endTime'), readOnly: true}}/>
-                                        <SimpleItem dataField="createTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'createTime'), readOnly: true}}/>
-                                        <SimpleItem dataField="lastUpdated" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'lastUpdated'), readOnly: true}}/>
-                                        <SimpleItem dataField="runningTime" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: getRunningTime(this.state.currentJobExecution)}}/>
-                                        <SimpleItem dataField="startedBy" readOnly={true} editorType="dxTextBox"
-                                                    editorOptions={{value: this.state.currentJobExecution.startedBy}}/>
-                                        <SimpleItem dataField="exitCode" readOnly={true}/>
-                                        <SimpleItem dataField="exitMessage" readOnly={true}/>
-                                    </GroupItem>
-                                    <GroupItem colSpan={2} caption={"Parameters"}>
-                                        <JobExecutionParamList jobExecution={this.state.currentJobExecution}/>
-                                    </GroupItem>
-                                    <GroupItem colSpan={2} caption={"Logs"}>
-                                        <JobExecutionLogList jobExecution={this.state.currentJobExecution}/>
-                                    </GroupItem>
-                                    <GroupItem caption={'Auditing'} colSpan={2} colCount={4}>
-                                        <SimpleItem dataField="createdBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="createdAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'createdAt'), readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedBy" editorOptions={{readOnly: true}}/>
-                                        <SimpleItem dataField="modifiedAt" editorType="dxTextBox"
-                                                    editorOptions={{value: getFormattedTime(this.state.currentJobExecution, 'modifiedAt'), readOnly: true}}/>
-                                    </GroupItem>
-                                </Form>
-                            </Editing>
+                            <Editing mode={'form'} useIcons={true} allowDeleting={true}/>
                             <Column
                                 caption={'ID'}
                                 dataField={'id'}
