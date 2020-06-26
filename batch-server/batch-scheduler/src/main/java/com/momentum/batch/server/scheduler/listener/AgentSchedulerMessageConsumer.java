@@ -139,7 +139,9 @@ public class AgentSchedulerMessageConsumer {
             jobScheduleList.forEach(jobSchedule -> {
                 if (jobSchedule.getLastExecution() != null) {
                     jobSchedule.setLastExecution(jobSchedule.getLastExecution());
-                    logger.debug(format("Job schedule updated - name: {0} previous: {1}", jobSchedule.getName(), jobSchedule.getLastExecution()));
+                    jobSchedule.setNextExecution(jobSchedule.getNextExecution());
+                    logger.debug(format("Job schedule updated - name: {0} previous: {1} next: {2}", jobSchedule.getName(),
+                            jobSchedule.getLastExecution(), jobSchedule.getNextExecution()));
                 }
                 jobScheduleRepository.save(jobSchedule);
             });

@@ -159,7 +159,7 @@ public class LocalBatchScheduler extends LocalBatchSchedulerHelper {
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         try {
             // Build the job details, needed for the scheduler
-            JobDetail jobDetail = buildJobDetail(jobDefinition);
+            JobDetail jobDetail = buildJobDetail(jobSchedule, jobDefinition);
             scheduler.scheduleJob(jobDetail, trigger);
             sendJobScheduled(jobSchedule, trigger);
             logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
@@ -218,7 +218,7 @@ public class LocalBatchScheduler extends LocalBatchSchedulerHelper {
                 jobScheduleDto.setNextExecution(trigger.getFireTimeAfter(trigger.getPreviousFireTime()));
                 try {
                     // Build the job details, needed for the scheduler
-                    JobDetail jobDetail = buildJobDetail(jobDefinitionDto);
+                    JobDetail jobDetail = buildJobDetail(jobScheduleDto, jobDefinitionDto);
                     scheduler.scheduleJob(jobDetail, trigger);
                     sendJobScheduled(jobScheduleDto, trigger);
                     logger.info(format("Job rescheduled - jobGroup: {0} jobName: {1} next: {2}", jobKey.getGroup(), jobKey.getName(), trigger.getNextFireTime()));
@@ -239,31 +239,32 @@ public class LocalBatchScheduler extends LocalBatchSchedulerHelper {
      * Trigger time will be now.
      * </p>
      *
-     * @param jobDefinition job definition to add to the scheduler.
+     * @param jobScheduleDto job schedule to add to the scheduler.
      */
-    public void addOnDemandJob(JobDefinitionDto jobDefinition) {
+    public void addOnDemandJob(JobScheduleDto jobScheduleDto) {
 
-        logger.info(format("Starting job on demand - group: {0} name: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
+        JobDefinitionDto jobDefinitionDto = jobScheduleDto.getJobDefinitionDto();
+        logger.info(format("Starting job on demand - group: {0} name: {1}", jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName()));
 
         // Check agent status
         if (agentStatus.getAgentStatus() != AgentStatus.RUNNING) {
-            logger.info(format("Job not started on demand, agent is paused - name: {0}", jobDefinition.getName()));
+            logger.info(format("Job not started on demand, agent is paused - name: {0}", jobDefinitionDto.getName()));
             return;
         }
 
         // Build the job details, needed for the scheduler
-        JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName());
+        JobKey jobKey = JobKey.jobKey(jobDefinitionDto.getName(), jobDefinitionDto.getJobMainGroupDto().getName());
         try {
-            JobDetail jobDetail = buildJobDetail(jobDefinition);
+            JobDetail jobDetail = buildJobDetail(jobScheduleDto, jobDefinitionDto);
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
             logger.info(format("Next execution - groupName: {0} jobName: {1} nextExecution: {2}",
-                    jobDefinition.getJobGroupId(), jobDefinition.getName(), LocalDateTime.now()));
+                    jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName(), LocalDateTime.now()));
         } catch (SchedulerException | IOException e) {
             logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
-                    jobDefinition.getJobGroupId(), jobDefinition.getName(), e.getMessage()), e);
+                    jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName(), e.getMessage()), e);
         }
-        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupId(), jobDefinition.getName()));
+        logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinitionDto.getJobMainGroupDto().getName(), jobDefinitionDto.getName()));
     }
 
     /**

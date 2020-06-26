@@ -1,11 +1,10 @@
-package com.momentum.batch.server.scheduler.service;
+package com.momentum.batch.server.scheduler.scheduler;
 
 import com.momentum.batch.common.util.ExecutionParameter;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.domain.JobScheduleType;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
-import com.momentum.batch.server.scheduler.builder.CentralJobLauncher;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
 import org.slf4j.Logger;

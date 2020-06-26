@@ -5,9 +5,11 @@ import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.domain.AgentStatus;
+import com.momentum.batch.server.database.domain.JobScheduleType;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
@@ -275,34 +277,31 @@ public class LocalJobLauncher extends QuartzJobBean {
      */
     private void sendJobExecuted(JobExecutionContext jobExecutionContext) {
 
-        // Get the trigger
-        Trigger trigger = jobExecutionContext.getTrigger();
-        Date last = trigger.getPreviousFireTime();
-        Date next = trigger.getNextFireTime();
-        logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), last, next));
-
         // Build agent command
         AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto();
         agentSchedulerMessageDto.setSender(nodeName);
         agentSchedulerMessageDto.setReceiver(schedulerName);
+        agentSchedulerMessageDto.setHostName(hostName);
+        agentSchedulerMessageDto.setNodeName(nodeName);
+
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
-        if (jobDataMap.getString(JOB_SCHEDULED_TYPE).equals("Scheduled")) {
-            JobScheduleDto jobScheduleDto = new JobScheduleDto();
-            jobScheduleDto.setName(jobDataMap.getString(JOB_SCHEDULE_NAME));
-            jobScheduleDto.setId(jobDataMap.getString(JOB_SCHEDULE_UUID));
-            jobScheduleDto.setLastExecution(last);
-            jobScheduleDto.setNextExecution(next);
-            agentSchedulerMessageDto.setHostName(hostName);
-            agentSchedulerMessageDto.setNodeName(nodeName);
-            agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);
+        JobScheduleDto jobScheduleDto = (JobScheduleDto) jobDataMap.get(JOB_SCHEDULE);
+        JobDefinitionDto jobDefinitionDto = (JobDefinitionDto) jobDataMap.get(JOB_DEFINITION);
+
+        // Get the trigger
+        Trigger trigger = CronScheduleBuilder.cronSchedule(jobScheduleDto.getSchedule()).build();
+        Date last = new Date();
+        Date next = trigger.getFireTimeAfter(new Date());
+        logger.info(format("Sending job status - key: {0} last: {1} next: {2}", jobExecutionContext.getJobDetail().getKey(), last, next));
+
+        jobScheduleDto.setLastExecution(last);
+        jobScheduleDto.setNextExecution(next);
+        agentSchedulerMessageDto.setJobScheduleDto(jobScheduleDto);
+        agentSchedulerMessageDto.setJobDefinitionDto(jobDefinitionDto);
+
+        if (jobScheduleDto.getType() == JobScheduleType.LOCAL) {
             agentSchedulerMessageDto.setType(AgentSchedulerMessageType.JOB_EXECUTED);
         } else {
-            JobDefinitionDto jobDefinitionDto = new JobDefinitionDto();
-            jobDefinitionDto.setName(jobDataMap.getString(JOB_DEFINITION_NAME));
-            jobDefinitionDto.setId(jobDataMap.getString(JOB_DEFINITION_UUID));
-            agentSchedulerMessageDto.setHostName(hostName);
-            agentSchedulerMessageDto.setNodeName(nodeName);
-            agentSchedulerMessageDto.setJobDefinitionDto(jobDefinitionDto);
             agentSchedulerMessageDto.setType(AgentSchedulerMessageType.JOB_ON_DEMAND_EXECUTED);
         }
 

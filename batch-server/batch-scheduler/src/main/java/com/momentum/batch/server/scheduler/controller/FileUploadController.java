@@ -65,7 +65,7 @@ public class FileUploadController {
     @PutMapping(value = "/chunk", consumes = {"application/hal+json"}, produces = {"application/hal+json"})
     public ResponseEntity<UploadDto> chunkUpload(@RequestBody UploadDto uploadDto) throws IOException {
         t.restart();
-        logger.debug(format("Chunk upload request - path: {0}"));
+        logger.trace(format("Chunk upload request - file: {0}", uploadDto.getFileName()));
         fileUploadService.uploadChunk(uploadDto);
         return ResponseEntity.ok(uploadDto);
     }

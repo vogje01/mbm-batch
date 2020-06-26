@@ -1,4 +1,4 @@
-package com.momentum.batch.server.scheduler.builder;
+package com.momentum.batch.server.scheduler.scheduler;
 
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
@@ -69,6 +69,14 @@ public class CentralJobLauncher extends QuartzJobBean {
     @Qualifier("transactionManager")
     protected PlatformTransactionManager txManager;
 
+    /**
+     * Constrcutor.
+     *
+     * @param jobScheduleRepository         job schedule repository.
+     * @param agentSchedulerMessageProducer message producer.
+     * @param modelConverter                model converter.
+     * @param txManager                     transaction manager.
+     */
     @Autowired
     public CentralJobLauncher(JobScheduleRepository jobScheduleRepository, AgentSchedulerMessageProducer agentSchedulerMessageProducer,
                               ModelConverter modelConverter, PlatformTransactionManager txManager) {
@@ -78,10 +86,16 @@ public class CentralJobLauncher extends QuartzJobBean {
         this.txManager = txManager;
     }
 
+    /**
+     * Internal launcher, started by the Quartz scheduler.
+     *
+     * @param jobExecutionContext Quartz scheduler job execution context.
+     */
     @Override
     protected void executeInternal(@NotNull JobExecutionContext jobExecutionContext) {
         TransactionTemplate tmpl = new TransactionTemplate(txManager);
         tmpl.execute(new TransactionCallbackWithoutResult() {
+
             @Override
             protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
                 JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
@@ -186,7 +200,7 @@ public class CentralJobLauncher extends QuartzJobBean {
         JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
 
         // Create message
-        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto.getJobDefinitionDto());
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto);
         agentSchedulerMessageDto.setSender(schedulerName);
         agentSchedulerMessageDto.setReceiver(agent.getNodeName());
         agentSchedulerMessageDto.setHostName(agent.getHostName());

@@ -184,9 +184,10 @@ public abstract class LocalBatchSchedulerHelper {
      * @param jobDefinition job definition.
      * @return Quartz scheduler job details.
      */
-    JobDetail buildJobDetail(JobDefinitionDto jobDefinition) throws IOException {
+    JobDetail buildJobDetail(JobScheduleDto jobScheduleDto, JobDefinitionDto jobDefinition) throws IOException {
         checkJobLibrary(jobDefinition);
         JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(ExecutionParameter.JOB_SCHEDULE, jobScheduleDto);
         jobDataMap.put(ExecutionParameter.JOB_DEFINITION, jobDefinition);
         return JobBuilder.newJob(LocalJobLauncher.class)
                 .withIdentity(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName())

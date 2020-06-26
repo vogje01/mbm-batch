@@ -81,7 +81,7 @@ public class AgentSchedulerService {
                 case JOB_SCHEDULE -> localBatchScheduler.scheduleJob(jobScheduleDto);
                 case JOB_RESCHEDULE -> localBatchScheduler.rescheduleJob(jobScheduleDto);
                 case JOB_REMOVE_SCHEDULE -> localBatchScheduler.removeJobFromScheduler(jobScheduleDto);
-                case JOB_ON_DEMAND -> localBatchScheduler.addOnDemandJob(agentSchedulerMessageDto.getJobDefinitionDto());
+                case JOB_ON_DEMAND -> localBatchScheduler.addOnDemandJob(jobScheduleDto);
                 case JOB_SHUTDOWN -> localJobLauncher.killProcess(jobScheduleDto);
             }
         }
