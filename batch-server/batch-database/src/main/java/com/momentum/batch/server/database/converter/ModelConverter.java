@@ -41,6 +41,9 @@ public class ModelConverter {
                 .stream()
                 .map(this::convertJobExecutionParamToDto)
                 .collect(toList()));
+        if (jobExecutionInfo.getJobExecutionContext() != null) {
+            jobExecutionDto.setJobExecutionContextDto(convertJobExecutionContextToDto(jobExecutionInfo.getJobExecutionContext()));
+        }
         return jobExecutionDto;
     }
 
@@ -77,6 +80,10 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Job context
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public JobExecutionContextDto convertJobExecutionContextToDto(JobExecutionContext jobExecutionContext) {
+        return modelMapper.map(jobExecutionContext, JobExecutionContextDto.class);
+    }
+
     public JobExecutionContext convertJobExecutionContextToEntity(JobExecutionContextDto jobExecutionContextDto) {
         if (jobExecutionContextDto != null) {
             return modelMapper.map(jobExecutionContextDto, JobExecutionContext.class);
@@ -90,6 +97,9 @@ public class ModelConverter {
     public StepExecutionDto convertStepExecutionToDto(StepExecutionInfo stepExecutionInfo) {
         StepExecutionDto stepExecutionDto = modelMapper.map(stepExecutionInfo, StepExecutionDto.class);
         stepExecutionDto.setJobName(stepExecutionInfo.getJobExecutionInfo().getJobName());
+        if (stepExecutionInfo.getStepExecutionContext() != null) {
+            stepExecutionDto.setStepExecutionContextDto(convertStepExecutionContextToDto(stepExecutionInfo.getStepExecutionContext()));
+        }
         return stepExecutionDto;
     }
 
@@ -100,6 +110,10 @@ public class ModelConverter {
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
     // Step context
     // ---------------------------------------------------------------------------------------------------------------------------------------------------------
+    public StepExecutionContextDto convertStepExecutionContextToDto(StepExecutionContext stepExecutionContext) {
+        return modelMapper.map(stepExecutionContext, StepExecutionContextDto.class);
+    }
+
     public StepExecutionContext convertStepExecutionContextToEntity(StepExecutionContextDto stepExecutionContextDto) {
         if (stepExecutionContextDto != null) {
             return modelMapper.map(stepExecutionContextDto, StepExecutionContext.class);

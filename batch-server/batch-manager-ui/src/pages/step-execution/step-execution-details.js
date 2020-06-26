@@ -1,15 +1,11 @@
 import React from "react";
 import Accordion from "devextreme-react/accordion";
-/*import StepExecutionDetailsAuditing from "./step-execution-details-auditing";
-import StepExecutionParamList from "./step-execution-param-list";
-import StepExecutionLogList from "./step-execution-log-list";
-import StepExecutionDetailsTiming from "./step-execution-details-timing";
-import StepExecutionDetailsSteps from "./step-execution-details-steps";*/
 import StepExecutionDetailsMain from "./step-execution-details-main";
 import StepExecutionDetailsTiming from "./step-execution-details-timing";
 import StepExecutionDetailsCounter from "./step-execution-details-counter";
 import StepExecutionDetailsAuditing from "./step-execution-details-auditing";
 import StepExecutionLogList from "./step-execution-log-list";
+import StepExecutionDetailsContext from "./step-execution-details-context";
 
 class StepExecutionDetailsPage extends React.Component {
 
@@ -24,8 +20,7 @@ class StepExecutionDetailsPage extends React.Component {
             {title: 'Main', item: 'Main'},
             {title: 'Counter', item: 'Counter'},
             {title: 'Timing', item: 'Timing'},
-            /* {title: 'Step Executions', item: 'StepExecutionList'},
-             {title: 'Parameter', item: 'StepExecutionParameter'},*/
+            {title: 'Context', item: 'Context'},
             {title: 'Logs', item: 'StepExecutionLogs'},
             {title: 'Auditing', item: 'Auditing'}
         ];
@@ -41,14 +36,12 @@ class StepExecutionDetailsPage extends React.Component {
         switch (data.item) {
             case 'Main':
                 return (<StepExecutionDetailsMain currentStepExecution={this.state.currentStepExecution.data}/>);
-            case 'Timing':
-                return (<StepExecutionDetailsTiming currentStepExecution={this.state.currentStepExecution.data}/>)
             case 'Counter':
                 return (<StepExecutionDetailsCounter currentStepExecution={this.state.currentStepExecution.data}/>)
-            /*case 'StepExecutionList':
-                return (<StepExecutionDetailsSteps currentStepExecution={this.state.currentStepExecution.data}/>);
-            case 'StepExecutionParameter':
-                return (<StepExecutionParamList currentStepExecution={this.state.currentStepExecution.data}/>);*/
+            case 'Timing':
+                return (<StepExecutionDetailsTiming currentStepExecution={this.state.currentStepExecution.data}/>)
+            case 'Context':
+                return (<StepExecutionDetailsContext currentStepExecution={this.state.currentStepExecution.data}/>)
             case 'StepExecutionLogs':
                 return (<StepExecutionLogList currentStepExecution={this.state.currentStepExecution.data}/>);
             case 'Auditing':

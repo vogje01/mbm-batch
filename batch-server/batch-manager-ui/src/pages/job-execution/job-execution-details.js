@@ -7,6 +7,7 @@ import JobExecutionLogList from "./job-execution-log-list";
 import JobExecutionDetailsTiming from "./job-execution-details-timing";
 import JobExecutionDetailsSteps from "./job-execution-details-steps";
 import JobExecutionDetailsMain from "./job-execution-details-main";
+import JobExecutionDetailsContext from "./job-execution-details-context";
 
 function CustomTitle(data) {
     return (
@@ -26,6 +27,7 @@ class JobExecutionDetailsPage extends React.Component {
             {title: 'Main', item: 'Main'},
             {title: 'Timing', item: 'Timing'},
             {title: 'Step Executions', item: 'StepExecutionList'},
+            {title: 'Context', item: 'Context'},
             {title: 'Parameter', item: 'JobExecutionParameter'},
             {title: 'Logs', item: 'JobExecutionLogs'},
             {title: 'Auditing', item: 'Auditing'}
@@ -40,6 +42,8 @@ class JobExecutionDetailsPage extends React.Component {
                 return (<JobExecutionDetailsSteps currentJobExecution={this.state.currentJobExecution.data}/>);
             case 'JobExecutionParameter':
                 return (<JobExecutionParamList currentJobExecution={this.state.currentJobExecution.data}/>);
+            case 'Context':
+                return (<JobExecutionDetailsContext currentJobExecution={this.state.currentJobExecution.data}/>);
             case 'JobExecutionLogs':
                 return (<JobExecutionLogList currentJobExecution={this.state.currentJobExecution.data}/>);
             case 'Auditing':
