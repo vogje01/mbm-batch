@@ -31,7 +31,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Service
-public class LocalBatchScheduler extends BatchSchedulerHelper {
+public class LocalBatchScheduler extends LocalBatchSchedulerHelper {
 
     @Value("${mbm.scheduler.server}")
     private String schedulerName;
@@ -159,7 +159,7 @@ public class LocalBatchScheduler extends BatchSchedulerHelper {
         Trigger trigger = buildTrigger(jobSchedule, jobDefinition);
         try {
             // Build the job details, needed for the scheduler
-            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobSchedule, jobDefinition);
+            JobDetail jobDetail = buildJobDetail(jobDefinition);
             scheduler.scheduleJob(jobDetail, trigger);
             sendJobScheduled(jobSchedule, trigger);
             logger.info(format("Job added to scheduler - groupName: {0} jobName: {1} nextExecution: {2}",
@@ -218,7 +218,7 @@ public class LocalBatchScheduler extends BatchSchedulerHelper {
                 jobScheduleDto.setNextExecution(trigger.getFireTimeAfter(trigger.getPreviousFireTime()));
                 try {
                     // Build the job details, needed for the scheduler
-                    JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobScheduleDto, jobDefinitionDto);
+                    JobDetail jobDetail = buildJobDetail(jobDefinitionDto);
                     scheduler.scheduleJob(jobDetail, trigger);
                     sendJobScheduled(jobScheduleDto, trigger);
                     logger.info(format("Job rescheduled - jobGroup: {0} jobName: {1} next: {2}", jobKey.getGroup(), jobKey.getName(), trigger.getNextFireTime()));
@@ -243,6 +243,8 @@ public class LocalBatchScheduler extends BatchSchedulerHelper {
      */
     public void addOnDemandJob(JobDefinitionDto jobDefinition) {
 
+        logger.info(format("Starting job on demand - group: {0} name: {1}", jobDefinition.getJobMainGroupDto().getName(), jobDefinition.getName()));
+
         // Check agent status
         if (agentStatus.getAgentStatus() != AgentStatus.RUNNING) {
             logger.info(format("Job not started on demand, agent is paused - name: {0}", jobDefinition.getName()));
@@ -252,7 +254,7 @@ public class LocalBatchScheduler extends BatchSchedulerHelper {
         // Build the job details, needed for the scheduler
         JobKey jobKey = JobKey.jobKey(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName());
         try {
-            JobDetail jobDetail = buildJobDetail(hostName, nodeName, libraryDirectory, jobDefinition);
+            JobDetail jobDetail = buildJobDetail(jobDefinition);
             scheduler.addJob(jobDetail, true);
             scheduler.triggerJob(jobKey);
             logger.info(format("Next execution - groupName: {0} jobName: {1} nextExecution: {2}",

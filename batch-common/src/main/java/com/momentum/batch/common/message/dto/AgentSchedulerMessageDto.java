@@ -42,22 +42,6 @@ public class AgentSchedulerMessageDto {
      * Job definition
      */
     private JobDefinitionDto jobDefinitionDto;
-    /**
-     * Schedule Name
-     */
-   // private String jobScheduleName;
-    /**
-     * Schedule UUID
-     */
-    //private String jobScheduleUuid;
-    /**
-     * Previous
-     */
-    //private Date previousFireTime;
-    /**
-     * Next fire time
-     */
-    //private Date nextFireTime;
 
     public AgentSchedulerMessageDto() {
         // Intentionally empty

@@ -6,6 +6,7 @@ import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.common.util.ExecutionParameter;
 import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.Agent;
+import com.momentum.batch.server.database.domain.AgentStatus;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
 
@@ -111,7 +113,7 @@ public class CentralJobLauncher extends QuartzJobBean {
     private void startRandom(JobSchedule jobSchedule) {
         logger.info(format("Checking random job schedules - name: {0}", jobSchedule.getName()));
 
-        List<Agent> agents = jobSchedule.getAgents();
+        List<Agent> agents = jobSchedule.getAgents().stream().filter(a -> a.getStatus().equals(AgentStatus.RUNNING)).collect(Collectors.toList());
         if (!agents.isEmpty()) {
             int nextIndex = random.nextInt(agents.size());
             sendScheduleMessage(agents.get(nextIndex), jobSchedule);
@@ -135,8 +137,8 @@ public class CentralJobLauncher extends QuartzJobBean {
         logger.info(format("Checking random group job schedules - name: {0}", jobSchedule.getName()));
 
         List<Agent> agentList = new ArrayList<>();
-        jobSchedule.getAgentGroups().forEach(agentGroup -> agentList.addAll(agentGroup.getAgents()));
-
+        jobSchedule.getAgentGroups().forEach(agentGroup ->
+                agentList.addAll(agentGroup.getAgents().stream().filter(a -> a.getStatus().equals(AgentStatus.RUNNING)).collect(Collectors.toList())));
         if (!agentList.isEmpty()) {
             int nextIndex = random.nextInt(agentList.size());
             sendScheduleMessage(agentList.get(nextIndex), jobSchedule);
@@ -161,7 +163,8 @@ public class CentralJobLauncher extends QuartzJobBean {
 
         // Get all agents and redistribute job
         List<Agent> agents = jobSchedule.getAgents();
-        jobSchedule.getAgentGroups().forEach(agentGroup -> agents.addAll(agentGroup.getAgents()));
+        jobSchedule.getAgentGroups().forEach(agentGroup ->
+                agents.addAll(agentGroup.getAgents().stream().filter(a -> a.getStatus().equals(AgentStatus.RUNNING)).collect(Collectors.toList())));
         if (!agents.isEmpty()) {
             Agent leastLoadAgent = agents.stream().reduce((a, b) -> a.getSystemLoad() > b.getSystemLoad() ? a : b).orElse(agents.get(0));
             sendScheduleMessage(leastLoadAgent, jobSchedule);
@@ -183,7 +186,7 @@ public class CentralJobLauncher extends QuartzJobBean {
         JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
 
         // Create message
-        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto);
+        AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto.getJobDefinitionDto());
         agentSchedulerMessageDto.setSender(schedulerName);
         agentSchedulerMessageDto.setReceiver(agent.getNodeName());
         agentSchedulerMessageDto.setHostName(agent.getHostName());

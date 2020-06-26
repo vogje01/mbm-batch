@@ -6,6 +6,7 @@ import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
 import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.server.database.domain.AgentStatus;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
+import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +58,11 @@ public class LocalJobLauncher extends QuartzJobBean {
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
     /**
+     * Docker network
+     */
+    @Value("${mbm.agent.docker.network}")
+    private String dockerNetwork;
+    /**
      * Logger
      */
     private static final Logger logger = LoggerFactory.getLogger(LocalJobLauncher.class);
@@ -63,11 +70,6 @@ public class LocalJobLauncher extends QuartzJobBean {
      * Default working directory
      */
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
-    /**
-     * Docker network
-     */
-    @Value("${mbm.agent.docker.network}")
-    private String dockerNetwork;
     /**
      * Kafka producer for agent commands.
      */
@@ -88,6 +90,10 @@ public class LocalJobLauncher extends QuartzJobBean {
      * Agent status
      */
     private final BatchAgentStatus agentStatus;
+    /**
+     * Applicaiton context
+     */
+    private final ApplicationContext context;
 
     /**
      * Constructor.
@@ -95,7 +101,8 @@ public class LocalJobLauncher extends QuartzJobBean {
      * @param agentSchedulerMessageProducer Kafka scheduler message producer.
      */
     @Autowired
-    public LocalJobLauncher(BatchAgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+    public LocalJobLauncher(ApplicationContext context, BatchAgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+        this.context = context;
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentStatus = agentStatus;
     }
@@ -116,12 +123,13 @@ public class LocalJobLauncher extends QuartzJobBean {
         }
 
         JobDataMap jobDataMap = jobExecutionContext.getMergedJobDataMap();
-        switch (jobDataMap.getString("job.type")) {
+        JobDefinitionDto jobDefinitionDto = (JobDefinitionDto) jobDataMap.get(JOB_DEFINITION);
+        switch (jobDefinitionDto.getType()) {
             case "JAR":
-                startJarFile(jobDataMap);
+                startJarFile(jobDefinitionDto);
                 break;
             case "DOCKER":
-                startDockerImage(jobDataMap);
+                startDockerImage(jobDefinitionDto);
                 break;
             default:
                 break;
@@ -137,18 +145,18 @@ public class LocalJobLauncher extends QuartzJobBean {
     /**
      * Start a simple executable jar file.
      *
-     * @param jobDataMap job data map, with parameters.
+     * @param jobDefinitionDto job definition.
      */
-    @SuppressWarnings("unchecked")
-    private void startJarFile(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString(JOB_NAME);
-        String jarFile = jobDataMap.getString(JOB_JAR_FILE);
-        String command = jobDataMap.getString(JOB_COMMAND);
-        File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get(JOB_ARGUMENTS);
+    private void startJarFile(JobDefinitionDto jobDefinitionDto) {
+
+        String jobName = jobDefinitionDto.getName();
+        String jarFile = jobDefinitionDto.getFileName();
+        String command = jobDefinitionDto.getCommand();
+        File workingDirectory = jobDefinitionDto.getWorkingDirectory() != null ? new File(jobDefinitionDto.getWorkingDirectory()) : new File(TMP_DIR);
+
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
-        commandList.addAll(arguments);
+        commandList.addAll(buildArguments(jobDefinitionDto));
         commandList.add("-jar");
         commandList.add(jarFile);
         logger.info(format("Starting job - name: {0} workingDirectory: {1} command: {2} jarFile: {3}", jobName, workingDirectory, command, jarFile));
@@ -167,15 +175,15 @@ public class LocalJobLauncher extends QuartzJobBean {
     /**
      * Starts a docker image.
      *
-     * @param jobDataMap job data map, with parameters.
+     * @param jobDefinitionDto job definition.
      */
-    @SuppressWarnings("unchecked")
-    private void startDockerImage(JobDataMap jobDataMap) {
-        String jobName = jobDataMap.getString(JOB_NAME);
-        String dockerImage = jobDataMap.getString(JOB_JAR_FILE);
-        String command = jobDataMap.getString(JOB_COMMAND);
-        File workingDirectory = jobDataMap.getString(JOB_WORKING_DIRECTORY) != null ? new File(jobDataMap.getString(JOB_WORKING_DIRECTORY)) : new File(TMP_DIR);
-        List<String> arguments = (List<String>) jobDataMap.get(JOB_ARGUMENTS);
+    private void startDockerImage(JobDefinitionDto jobDefinitionDto) {
+
+        String jobName = jobDefinitionDto.getName();
+        String dockerImage = jobDefinitionDto.getFileName();
+        String command = jobDefinitionDto.getCommand();
+        File workingDirectory = jobDefinitionDto.getWorkingDirectory() != null ? new File(jobDefinitionDto.getWorkingDirectory()) : new File(TMP_DIR);
+
         List<String> commandList = new ArrayList<>();
         commandList.add(command);
         commandList.add("run");
@@ -184,7 +192,7 @@ public class LocalJobLauncher extends QuartzJobBean {
         commandList.add("--hostname");
         commandList.add(nodeName + '_' + rand.nextInt(65536));
         commandList.add("--env");
-        commandList.add(getArgumentString(arguments));
+        commandList.add(getArgumentString(buildArguments(jobDefinitionDto)));
         commandList.add(dockerImage);
         logger.info(format("Starting job - name: {0} workingDirectory: {1} command: {2} dockerImage: {3}", jobName, workingDirectory, command, dockerImage));
         try {
@@ -310,5 +318,63 @@ public class LocalJobLauncher extends QuartzJobBean {
         }
         logger.debug(format("Converted arguments to options string - args: {0}", result.toString()));
         return result.toString();
+    }
+
+    private List<String> buildArguments(JobDefinitionDto jobDefinition) {
+
+        // Add default parameters
+        List<String> arguments = new ArrayList<>();
+        arguments.add("-D" + HOST_NAME + "=" + hostName);
+        arguments.add("-D" + NODE_NAME + "=" + nodeName);
+        arguments.add("-D" + JOB_NAME + "=" + jobDefinition.getName());
+        arguments.add("-D" + JOB_GROUP + "=" + jobDefinition.getJobMainGroupDto().getName());
+        arguments.add("-D" + JOB_KEY + "=" + jobDefinition.getJobMainGroupDto().getName() + ":" + jobDefinition.getName());
+        arguments.add("-D" + JOB_VERSION + "=" + jobDefinition.getJobVersion());
+        arguments.add("-D" + JOB_DEFINITION_NAME + "=" + jobDefinition.getName());
+        arguments.add("-D" + JOB_DEFINITION_UUID + "=" + jobDefinition.getId());
+        arguments.add("-D" + JOB_LOGGING_DIRECTORY + "=" + jobDefinition.getLoggingDirectory());
+        arguments.add("-D" + JOB_WORKING_DIRECTORY + "=" + jobDefinition.getWorkingDirectory());
+        arguments.add("-D" + JOB_FAILED_EXIT_CODE + "=" + jobDefinition.getFailedExitCode());
+        arguments.add("-D" + JOB_FAILED_EXIT_MESSAGE + "=" + jobDefinition.getFailedExitMessage());
+        arguments.add("-D" + JOB_COMPLETED_EXIT_CODE + "=" + jobDefinition.getCompletedExitCode());
+        arguments.add("-D" + JOB_COMPLETED_EXIT_MESSAGE + "=" + jobDefinition.getCompletedExitMessage());
+
+        // Add jasypt password
+        String jasyptPassword = context.getEnvironment().getProperty(JASYPT_PASSWORD);
+        if (jasyptPassword != null && !jasyptPassword.isEmpty()) {
+            arguments.add(format("-D{0}={1}", JASYPT_PASSWORD, jasyptPassword));
+        }
+
+        // Add job definition parameters
+        List<JobDefinitionParamDto> params = jobDefinition.getJobDefinitionParamDtos();
+        if (!params.isEmpty()) {
+            params.forEach(p -> arguments.add(format("-D{0}={1}", p.getKeyName(), getParamValue(p))));
+        }
+        logger.debug(format("Arguments build - size: {0}", arguments.size()));
+        arguments.forEach(a -> logger.debug(format("Argument list - arg: {0}", a)));
+        return arguments;
+    }
+
+    /**
+     * Returns the parameter value, depending on the parameter type.
+     *
+     * @param param job definition parameter
+     * @return parameter value as string.
+     */
+    private String getParamValue(JobDefinitionParamDto param) {
+        if (param.getStringValue() != null && param.getStringValue().isEmpty()) {
+            return param.getStringValue();
+        } else if (param.getLongValue() != null) {
+            return param.getLongValue().toString();
+        } else if (param.getDoubleValue() != null) {
+            return param.getDoubleValue().toString();
+        } else if (param.getDateValue() != null) {
+            return param.getDateValue().toString();
+        } else if (param.getBooleanValue() != null) {
+            return param.getBooleanValue().toString();
+        } else {
+            logger.error(format("Invalid parameter type - name: {0}", param.getKeyName()));
+        }
+        return null;
     }
 }
