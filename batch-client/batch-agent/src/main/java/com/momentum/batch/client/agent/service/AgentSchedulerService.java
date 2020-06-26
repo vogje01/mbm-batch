@@ -33,6 +33,9 @@ public class AgentSchedulerService {
     @Value("${mbm.scheduler.server}")
     private String schedulerName;
 
+    @Value("${mbm.listener.server}")
+    private String listenerName;
+
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
 
@@ -67,7 +70,9 @@ public class AgentSchedulerService {
      */
     @KafkaListener(topics = "${kafka.agentScheduler.topic}", containerFactory = "agentSchedulerMessageListenerFactory")
     public void listen(AgentSchedulerMessageDto agentSchedulerMessageDto) {
-        if (agentSchedulerMessageDto.getSender().equals(schedulerName) && agentSchedulerMessageDto.getNodeName().equals(nodeName)) {
+        logger.info(format("Received agent scheduler message - sender: {0} receiver: {1} type: {2}", agentSchedulerMessageDto.getSender(),
+                agentSchedulerMessageDto.getReceiver(), agentSchedulerMessageDto.getType()));
+        if (agentSchedulerMessageDto.getReceiver().equals(nodeName)) {
             logger.info(format("Received agent scheduler message - sender: {0} receiver: {1} type: {2}", agentSchedulerMessageDto.getSender(),
                     agentSchedulerMessageDto.getReceiver(), agentSchedulerMessageDto.getType()));
 

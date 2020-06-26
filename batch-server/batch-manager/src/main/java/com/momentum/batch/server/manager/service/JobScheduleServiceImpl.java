@@ -167,20 +167,19 @@ public class JobScheduleServiceImpl implements JobScheduleService {
         if (jobScheduleOptional.isPresent()) {
 
             // Get job schedule
-            JobSchedule jobSchedule = jobScheduleModelAssembler.toEntity(jobScheduleDto);
+            JobSchedule jobSchedule = jobScheduleOptional.get();
 
             // Update job schedule
-            JobSchedule jobScheduleOld = jobScheduleOptional.get();
-            jobScheduleOld.update(jobSchedule);
+            jobSchedule.update(jobScheduleDto);
 
             // Get job definition, this is only non-null, when the job definition has been changed for the given job schedule
             if (jobScheduleDto.getJobDefinitionName() != null && !jobScheduleDto.getJobDefinitionName().isEmpty()) {
                 Optional<JobDefinition> jobDefinitionOptional = jobDefinitionRepository.findByName(jobScheduleDto.getJobDefinitionName());
-                jobDefinitionOptional.ifPresent(jobScheduleOld::setJobDefinition);
+                jobDefinitionOptional.ifPresent(jobSchedule::setJobDefinition);
             }
 
             // Send message to agents
-            jobScheduleDto = modelConverter.convertJobScheduleToDto(jobScheduleOld);
+            jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
             AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
             getAgentList(jobSchedule).forEach(agent -> {
                 agentSchedulerMessageDto.setSender(schedulerName);

@@ -2,7 +2,6 @@ package com.momentum.batch.server.scheduler.listener;
 
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.JobSchedule;
-import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static java.text.MessageFormat.format;
@@ -129,24 +127,20 @@ public class AgentSchedulerMessageConsumer {
      */
     private void receivedOnDemandJobExecuted(AgentSchedulerMessageDto agentSchedulerMessageDto) {
 
-        JobDefinitionDto jobDefinitionDto = agentSchedulerMessageDto.getJobDefinitionDto();
+        JobScheduleDto jobScheduleDto = agentSchedulerMessageDto.getJobScheduleDto();
         logger.debug(format("Job executed on demand message received - hostName: {0} nodeName: {1} name: {2}",
-                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobDefinitionDto.getName()));
+                agentSchedulerMessageDto.getHostName(), agentSchedulerMessageDto.getNodeName(), jobScheduleDto.getName()));
 
         // Get the schedules
-        List<JobSchedule> jobScheduleList = jobScheduleRepository.findByJobDefinitionId(jobDefinitionDto.getId());
-        if (!jobScheduleList.isEmpty()) {
-            jobScheduleList.forEach(jobSchedule -> {
-                if (jobSchedule.getLastExecution() != null) {
-                    jobSchedule.setLastExecution(jobSchedule.getLastExecution());
-                    jobSchedule.setNextExecution(jobSchedule.getNextExecution());
-                    logger.debug(format("Job schedule updated - name: {0} previous: {1} next: {2}", jobSchedule.getName(),
-                            jobSchedule.getLastExecution(), jobSchedule.getNextExecution()));
-                }
-                jobScheduleRepository.save(jobSchedule);
-            });
+        Optional<JobSchedule> jobScheduleOptional = jobScheduleRepository.findById(jobScheduleDto.getId());
+        if (jobScheduleOptional.isPresent()) {
+
+            JobSchedule jobSchedule = jobScheduleOptional.get();
+            jobSchedule.update(jobScheduleDto);
+            logger.debug(format("Job schedule updated - name: {0} previous: {1} next: {2}", jobSchedule.getName(),
+                    jobSchedule.getLastExecution(), jobSchedule.getNextExecution()));
         } else {
-            logger.info(format("Empty job schedule list - name: {0} id: {1}", jobDefinitionDto.getName(), jobDefinitionDto.getId()));
+            logger.info(format("Empty job schedule list - name: {0} id: {1}", jobScheduleDto.getName(), jobScheduleDto.getId()));
         }
     }
 }

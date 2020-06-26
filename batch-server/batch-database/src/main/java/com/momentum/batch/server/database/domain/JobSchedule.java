@@ -3,6 +3,7 @@ package com.momentum.batch.server.database.domain;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -71,16 +72,16 @@ public class JobSchedule extends Auditing<String> implements PrimaryKeyIdentifie
     /**
      * Updates only the native data, not the relationships.
      *
-     * @param origin original to copy from.
+     * @param jobScheduleDto original to copy from.
      */
-    public void update(JobSchedule origin) {
-        this.schedule = origin.schedule;
-        this.lastExecution = origin.lastExecution;
-        this.nextExecution = origin.nextExecution;
-        this.name = origin.name;
-        this.active = origin.active;
-        this.mode = origin.mode;
-        this.type = origin.type;
+    public void update(JobScheduleDto jobScheduleDto) {
+        this.schedule = jobScheduleDto.getSchedule();
+        this.lastExecution = jobScheduleDto.getLastExecution();
+        this.nextExecution = jobScheduleDto.getNextExecution();
+        this.name = jobScheduleDto.getName();
+        this.active = jobScheduleDto.getActive();
+        this.mode = jobScheduleDto.getMode();
+        this.type = jobScheduleDto.getType();
     }
 
     public String getId() {
