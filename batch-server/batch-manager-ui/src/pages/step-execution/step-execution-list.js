@@ -143,9 +143,9 @@ class StepExecutionList extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <h2 className={'content-block'}>Step Executions</h2>
+                <h2 className={'content-block'} hidden={this.props.currentJobExecution !== undefined}>Step Executions</h2>
                 <div className={'content-block'}>
-                    <div className={'dx-card responsive-paddings'} hidden={this.props.data !== undefined}>
+                    <div className={'dx-card responsive-paddings'} hidden={this.props.currentJobExecution !== undefined}>
                         <Toolbar>
                             <Item location="before">
                                 <SelectBox items={this.statuses} displayExpr='key' valueExpr='value' showClearButton={true}

@@ -8,19 +8,16 @@ class JobExecutionLogList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentJobExecution: this.props.jobExecution
+            currentJobExecution: this.props.currentJobExecution
         };
     }
 
     render() {
-        if (this.props.hidden) {
-            return null;
-        }
         return (
             <React.Fragment>
                 <DataGrid
                     id={'jobExecutionLogTable'}
-                    dataSource={JobExecutionLogDataSource(this.props.jobExecution)}
+                    dataSource={JobExecutionLogDataSource(this.props.currentJobExecution)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}

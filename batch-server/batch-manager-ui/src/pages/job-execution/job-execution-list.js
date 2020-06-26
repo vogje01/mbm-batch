@@ -17,7 +17,6 @@ import {
 import {dateTimeCellTemplate, getFormattedTime, getRunningTime} from "../../utils/date-time-util";
 import {JobExecutionDataSource} from "./job-execution-data-source";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
-import {StepExecutionListPage} from "../index";
 import {Item, Toolbar} from "devextreme-react/toolbar";
 import {GroupItem, SimpleItem} from "devextreme-react/form";
 import JobExecutionParamList from "./job-execution-param-list";
@@ -29,6 +28,7 @@ import {JobDefinitionDataSource} from "../job-definition/job-definition-data-sou
 import Button from "devextreme-react/button";
 import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
 import {withRouter} from "react-router-dom";
+import JobExecutionDetailsPage from "./job-execution-details";
 
 class JobExecutionList extends React.Component {
 
@@ -418,7 +418,7 @@ class JobExecutionList extends React.Component {
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
-                            <MasterDetail enabled={true} component={StepExecutionListPage}/>
+                            <MasterDetail enabled={true} component={JobExecutionDetailsPage}/>
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
@@ -426,14 +426,9 @@ class JobExecutionList extends React.Component {
                                 type={'buttons'}
                                 buttons={[
                                     {
-                                        name: 'edit',
-                                        hint: 'Edit job execution entry.',
-                                        icon: 'material-icons-outlined ic-edit',
-                                    },
-                                    {
                                         name: 'restart',
                                         hint: 'Restart the job execution entry.',
-                                        icon: 'material-icons-outlined ic-restart',
+                                        icon: 'material-icons-outlined ic-restart-job',
                                         onClick: this.restartJob
                                     },
                                     {

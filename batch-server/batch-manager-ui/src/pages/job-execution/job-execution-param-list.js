@@ -7,7 +7,7 @@ class JobDefinitionParamList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentJobExecution: this.props.jobExecution
+            currentJobExecution: this.props.currentJobExecution
         };
     }
 
@@ -35,7 +35,7 @@ class JobDefinitionParamList extends React.Component {
         return (
             <React.Fragment>
                 <DataGrid
-                    dataSource={JobExecutionParamDataSource(this.props.jobExecution)}
+                    dataSource={JobExecutionParamDataSource(this.props.currentJobExecution)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}
