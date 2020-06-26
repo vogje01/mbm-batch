@@ -1,7 +1,7 @@
 package com.momentum.batch.client.agent.service;
 
-import com.momentum.batch.client.agent.scheduler.BatchScheduler;
-import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.client.agent.scheduler.LocalBatchScheduler;
+import com.momentum.batch.client.agent.scheduler.LocalJobLauncher;
 import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import org.slf4j.Logger;
@@ -36,20 +36,20 @@ public class AgentSchedulerService {
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
 
-    private final BatchScheduler batchScheduler;
+    private final LocalBatchScheduler localBatchScheduler;
 
-    private final BatchSchedulerTask batchSchedulerTask;
+    private final LocalJobLauncher localJobLauncher;
 
     /**
      * Constructor.
      *
-     * @param batchScheduler     batch scheduler.
-     * @param batchSchedulerTask batch scheduler task executor.
+     * @param localBatchScheduler batch scheduler.
+     * @param localJobLauncher    batch scheduler task executor.
      */
     @Autowired
-    public AgentSchedulerService(BatchScheduler batchScheduler, BatchSchedulerTask batchSchedulerTask) {
-        this.batchScheduler = batchScheduler;
-        this.batchSchedulerTask = batchSchedulerTask;
+    public AgentSchedulerService(LocalBatchScheduler localBatchScheduler, LocalJobLauncher localJobLauncher) {
+        this.localBatchScheduler = localBatchScheduler;
+        this.localJobLauncher = localJobLauncher;
     }
 
     /**
@@ -78,11 +78,11 @@ public class AgentSchedulerService {
                 return;
             }
             switch (agentSchedulerMessageDto.getType()) {
-                case JOB_SCHEDULE -> batchScheduler.scheduleJob(jobScheduleDto);
-                case JOB_RESCHEDULE -> batchScheduler.rescheduleJob(jobScheduleDto);
-                case JOB_REMOVE_SCHEDULE -> batchScheduler.removeJobFromScheduler(jobScheduleDto);
-                case JOB_ON_DEMAND -> batchScheduler.addOnDemandJob(agentSchedulerMessageDto.getJobDefinitionDto());
-                case JOB_SHUTDOWN -> batchSchedulerTask.killProcess(jobScheduleDto);
+                case JOB_SCHEDULE -> localBatchScheduler.scheduleJob(jobScheduleDto);
+                case JOB_RESCHEDULE -> localBatchScheduler.rescheduleJob(jobScheduleDto);
+                case JOB_REMOVE_SCHEDULE -> localBatchScheduler.removeJobFromScheduler(jobScheduleDto);
+                case JOB_ON_DEMAND -> localBatchScheduler.addOnDemandJob(agentSchedulerMessageDto.getJobDefinitionDto());
+                case JOB_SHUTDOWN -> localJobLauncher.killProcess(jobScheduleDto);
             }
         }
     }

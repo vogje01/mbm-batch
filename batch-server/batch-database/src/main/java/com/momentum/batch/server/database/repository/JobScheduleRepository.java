@@ -2,6 +2,7 @@ package com.momentum.batch.server.database.repository;
 
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.domain.JobScheduleType;
+import com.momentum.batch.server.database.domain.projection.JobScheduleAgents;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
     @Query("select j from JobSchedule j join fetch j.jobDefinition d join fetch d.jobGroups g where g.name = :groupName and d.name = :jobName")
     Optional<JobSchedule> findByGroupAndName(@Param("groupName") String groupName, @Param("jobName") String jobName);
 
-    @Query("select j from JobSchedule j where j.type = :type")
+    @Query("select j from JobSchedule j join fetch j.jobDefinition d left join d.jobGroups where j.type = :type")
     List<JobSchedule> findByType(@Param("type") JobScheduleType type);
 
     @Query("select j from JobSchedule j join j.jobDefinition d left join d.jobGroups g join j.agents a where a.id = :agentId")
@@ -35,4 +36,6 @@ public interface JobScheduleRepository extends PagingAndSortingRepository<JobSch
     @Query("select j from JobSchedule j where j.name = :name")
     Optional<JobSchedule> findByName(@Param("name") String name);
 
+    @Query("select js from JobSchedule js left join js.agents a left join js.agentGroups ag where js.id = :id")
+    Optional<JobScheduleAgents> findScheduledById(@Param("id") String id);
 }

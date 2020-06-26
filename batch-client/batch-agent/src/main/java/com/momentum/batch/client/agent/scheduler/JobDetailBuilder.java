@@ -133,8 +133,8 @@ public class JobDetailBuilder {
 	}
 
 	public JobDetail build() {
-        return JobBuilder.newJob(BatchSchedulerTask.class)
-                .withIdentity(jobName, jobGroup)
+        return JobBuilder.newJob(LocalJobLauncher.class)
+				.withIdentity(jobName, jobGroup)
 				.withDescription(description)
 				.usingJobData(jobDataMap)
 				.storeDurably()

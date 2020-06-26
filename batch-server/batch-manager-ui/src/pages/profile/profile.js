@@ -128,7 +128,7 @@ class Profile extends React.Component {
                             formData={this.state.user}
                             validationGroup="customerData">
                             <SimpleItem itemType="group" colCount={4} caption={"User Details: " + this.state.user.userId}>
-                                <SimpleItem id={'userId'} dataField="userId" colSpan={2}>
+                                <SimpleItem id={'userId'} dataField="userId">
                                     <RequiredRule message="UserId is required"/>
                                     <StringLengthRule min={5} max={7} message="UserId must be exactly 7 characters long."/>
                                 </SimpleItem>
@@ -148,6 +148,8 @@ class Profile extends React.Component {
                                 <SimpleItem dataField="phone">
                                     <PatternRule message="The phone must have a correct phone format" pattern={this.phonePattern}/>
                                 </SimpleItem>
+                                <EmptyItem/>
+                                <EmptyItem/>
                                 <SimpleItem dataField="theme"
                                             editorType={"dxSelectBox"}
                                             editorOptions={{
@@ -176,7 +178,6 @@ class Profile extends React.Component {
                                     }}>
                                     <RequiredRule/>
                                 </SimpleItem>
-                                <EmptyItem/>
                                 <EmptyItem/>
                                 <SimpleItem dataField="description" editorType="dxTextArea" colSpan={4} editorOptions={{height: 100}}/>
                             </SimpleItem>

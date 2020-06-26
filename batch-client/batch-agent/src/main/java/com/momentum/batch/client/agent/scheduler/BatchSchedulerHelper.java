@@ -1,6 +1,7 @@
 package com.momentum.batch.client.agent.scheduler;
 
 import com.momentum.batch.client.agent.library.LibraryReaderService;
+import com.momentum.batch.common.util.ExecutionParameter;
 import com.momentum.batch.server.database.domain.JobDefinitionType;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionDto;
 import com.momentum.batch.server.database.domain.dto.JobDefinitionParamDto;
@@ -191,7 +192,16 @@ public abstract class BatchSchedulerHelper {
      */
     JobDetail buildJobDetail(String hostName, String nodeName, String libraryDirectory, JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) throws IOException {
         checkJobLibrary(jobDefinition);
-        return new JobDetailBuilder()
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(ExecutionParameter.JOB_SCHEDULE, jobSchedule.getId());
+        jobDataMap.put(ExecutionParameter.JOB_DEFINITION, jobDefinition.getId());
+        return JobBuilder.newJob(LocalJobLauncher.class)
+                .withIdentity(jobDefinition.getName(), jobDefinition.getJobMainGroupDto().getName())
+                .withDescription(jobDefinition.getDescription())
+                .usingJobData(jobDataMap)
+                .storeDurably()
+                .build();
+        /*return new JobDetailBuilder()
                 .jobName(jobDefinition.getName())
                 .jobGroup(jobDefinition.getJobMainGroupDto().getName())
                 .jobKey(jobDefinition.getJobMainGroupDto().getName() + ":" + jobDefinition.getName())
@@ -208,7 +218,7 @@ public abstract class BatchSchedulerHelper {
                 .completedExitCode(jobDefinition.getCompletedExitCode())
                 .completedExitMessage(jobDefinition.getCompletedExitMessage())
                 .description(jobDefinition.getDescription())
-                .build();
+                .build();*/
     }
 
     /**

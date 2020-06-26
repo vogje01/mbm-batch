@@ -31,7 +31,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Service
-public class BatchScheduler extends BatchSchedulerHelper {
+public class LocalBatchScheduler extends BatchSchedulerHelper {
 
     @Value("${mbm.scheduler.server}")
     private String schedulerName;
@@ -45,13 +45,13 @@ public class BatchScheduler extends BatchSchedulerHelper {
     @Value("${mbm.library.jobs}")
     private String libraryDirectory;
 
-    private static final Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalBatchScheduler.class);
 
     private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
 
     private final LibraryReaderService libraryReaderService;
 
-    private BatchAgentStatus agentStatus;
+    private final BatchAgentStatus agentStatus;
 
     /**
      * Constructor.
@@ -64,7 +64,7 @@ public class BatchScheduler extends BatchSchedulerHelper {
      * @param libraryReaderService          library downloader.
      */
     @Autowired
-    public BatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService, BatchAgentStatus agentStatus) {
+    public LocalBatchScheduler(Scheduler scheduler, AgentSchedulerMessageProducer agentSchedulerMessageProducer, LibraryReaderService libraryReaderService, BatchAgentStatus agentStatus) {
         super(scheduler);
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.libraryReaderService = libraryReaderService;
@@ -262,6 +262,20 @@ public class BatchScheduler extends BatchSchedulerHelper {
                     jobDefinition.getJobGroupId(), jobDefinition.getName(), e.getMessage()), e);
         }
         logger.info(format("On demand job scheduled - groupName: {0} jobName: {1}", jobDefinition.getJobGroupId(), jobDefinition.getName()));
+    }
+
+    /**
+     * Build a trigger by job schedule.
+     *
+     * @param jobSchedule   job schedule.
+     * @param jobDefinition job definition.
+     * @return trigger for the Quartz scheduler.
+     */
+    Trigger buildTrigger(JobScheduleDto jobSchedule, JobDefinitionDto jobDefinition) {
+        return TriggerBuilder.newTrigger()
+                .withIdentity(jobDefinition.getName(), jobDefinition.getJobGroupId())
+                .withSchedule(CronScheduleBuilder.cronSchedule(jobSchedule.getSchedule()))
+                .build();
     }
 
     /**

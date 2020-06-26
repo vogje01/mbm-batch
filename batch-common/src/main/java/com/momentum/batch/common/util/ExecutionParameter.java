@@ -67,6 +67,10 @@ public class ExecutionParameter {
 
     public static final String JOB_SCHEDULED_TYPE = "job.scheduled.type";
 
+    public static final String JOB_SCHEDULE = "job.schedule";
+
+    public static final String JOB_DEFINITION = "job.definition";
+
     public static final String STEP_UUID = "step.uuid";
 
     public static final String STEP_NAME = "step.name";

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface AgentGroupRepository extends PagingAndSortingRepository<AgentGroup, String> {
 
-    @Query("select ag from AgentGroup ag left join ag.schedules s where s.id = :jobScheduleId")
+    @Query("select ag from AgentGroup ag left join ag.schedules s left join ag.agents a where s.id = :jobScheduleId")
     Page<AgentGroup> findByScheduleId(@Param("jobScheduleId") String jobScheduleId, Pageable pageable);
 
     @Query("select ag from AgentGroup ag where ag.name = :name and ag.active = true")

@@ -38,7 +38,7 @@ import static java.text.MessageFormat.format;
  * @since 0.0.3
  */
 @Component
-public class BatchSchedulerTask extends QuartzJobBean {
+public class LocalJobLauncher extends QuartzJobBean {
 
     /**
      * Scheduler name
@@ -58,7 +58,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
     /**
      * Logger
      */
-    private static final Logger logger = LoggerFactory.getLogger(BatchSchedulerTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalJobLauncher.class);
     /**
      * Default working directory
      */
@@ -95,7 +95,7 @@ public class BatchSchedulerTask extends QuartzJobBean {
      * @param agentSchedulerMessageProducer Kafka scheduler message producer.
      */
     @Autowired
-    public BatchSchedulerTask(BatchAgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
+    public LocalJobLauncher(BatchAgentStatus agentStatus, AgentSchedulerMessageProducer agentSchedulerMessageProducer) {
         this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.agentStatus = agentStatus;
     }

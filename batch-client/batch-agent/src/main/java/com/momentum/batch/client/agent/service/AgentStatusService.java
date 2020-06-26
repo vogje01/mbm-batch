@@ -1,7 +1,7 @@
 package com.momentum.batch.client.agent.service;
 
-import com.momentum.batch.client.agent.scheduler.BatchScheduler;
-import com.momentum.batch.client.agent.scheduler.BatchSchedulerTask;
+import com.momentum.batch.client.agent.scheduler.LocalBatchScheduler;
+import com.momentum.batch.client.agent.scheduler.LocalJobLauncher;
 import com.momentum.batch.client.agent.util.BatchAgentStatus;
 import com.momentum.batch.common.message.dto.AgentStatusMessageDto;
 import com.momentum.batch.common.message.dto.AgentStatusMessageType;
@@ -65,9 +65,9 @@ public class AgentStatusService {
 
     private final OperatingSystemMXBean osBean;
 
-    private final BatchScheduler scheduler;
+    private final LocalBatchScheduler scheduler;
 
-    private final BatchSchedulerTask schedulerTask;
+    private final LocalJobLauncher schedulerTask;
 
     private final AgentStatusMessageDto agentStatusMessageDto;
 
@@ -84,7 +84,7 @@ public class AgentStatusService {
      * @param agentStatusMessageProducer Kafka message producer
      */
     @Autowired
-    public AgentStatusService(BatchScheduler scheduler, BatchSchedulerTask schedulerTask, BatchAgentStatus agentStatus, AgentStatusMessageProducer agentStatusMessageProducer) {
+    public AgentStatusService(LocalBatchScheduler scheduler, LocalJobLauncher schedulerTask, BatchAgentStatus agentStatus, AgentStatusMessageProducer agentStatusMessageProducer) {
         this.scheduler = scheduler;
         this.schedulerTask = schedulerTask;
         this.agentStatus = agentStatus;
