@@ -70,8 +70,6 @@ public class AgentSchedulerService {
      */
     @KafkaListener(topics = "${kafka.agentScheduler.topic}", containerFactory = "agentSchedulerMessageListenerFactory")
     public void listen(AgentSchedulerMessageDto agentSchedulerMessageDto) {
-        logger.info(format("Received agent scheduler message - sender: {0} receiver: {1} type: {2}", agentSchedulerMessageDto.getSender(),
-                agentSchedulerMessageDto.getReceiver(), agentSchedulerMessageDto.getType()));
         if (agentSchedulerMessageDto.getReceiver().equals(nodeName)) {
             logger.info(format("Received agent scheduler message - sender: {0} receiver: {1} type: {2}", agentSchedulerMessageDto.getSender(),
                     agentSchedulerMessageDto.getReceiver(), agentSchedulerMessageDto.getType()));

@@ -229,7 +229,7 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
-        if (agentStatusMessageDto.getSender().equals(listenerName) && agentStatusMessageDto.getReceiver().equals(nodeName)) {
+        if (agentStatusMessageDto.getReceiver().equals(nodeName)) {
             logger.info(format("Received agent status message - sender: {0} receiver: {1} type: {2}", agentStatusMessageDto.getSender(),
                     agentStatusMessageDto.getReceiver(), agentStatusMessageDto.getType()));
 
