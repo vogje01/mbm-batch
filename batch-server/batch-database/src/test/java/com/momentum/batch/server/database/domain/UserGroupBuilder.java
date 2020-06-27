@@ -31,6 +31,16 @@ public class UserGroupBuilder {
         return this;
     }
 
+    public UserGroupBuilder withActive(boolean active) {
+        userGroup.setActive(active);
+        return this;
+    }
+
+    public UserGroupBuilder withUser(User user) {
+        userGroup.addUser(user);
+        return this;
+    }
+
     public UserGroup build() {
         return userGroup;
     }

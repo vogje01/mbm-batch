@@ -59,17 +59,17 @@ export default function ({title, children}) {
     }
   }, [history, menuStatus, isLarge]);
 
-  return (
-      <div className={'side-nav-inner-toolbar'}>
-        <Drawer
-            className={['drawer', patchCssClass].join(' ')}
-            position={'before'}
-            closeOnOutsideClick={onOutsideClick}
-            openedStateMode={isLarge ? 'shrink' : 'overlap'}
-            revealMode={isXSmall ? 'slide' : 'expand'}
-            minSize={isXSmall ? 0 : 60}
-            maxSize={250}
-            shading={!isLarge}
+   return (
+       <div className={'side-nav-inner-toolbar'}>
+         <Drawer
+             className={['drawer', patchCssClass].join(' ')}
+             position={'before'}
+             closeOnOutsideClick={onOutsideClick}
+             openedStateMode={isLarge ? 'shrink' : 'overlap'}
+             revealMode={isXSmall ? 'slide' : 'expand'}
+             minSize={isXSmall ? 0 : 60}
+             maxSize={250}
+             shading={!isLarge}
             opened={menuStatus !== MenuStatus.Closed}
             template={'menu'}>
           <div className={'container'}>

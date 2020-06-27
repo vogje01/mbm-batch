@@ -1,6 +1,18 @@
 import React from "react";
 import './job-execution-log-list.scss'
-import {Column, ColumnChooser, DataGrid, FilterRow, HeaderFilter, Pager, Paging, RemoteOperations, Selection, Sorting} from "devextreme-react/data-grid";
+import {
+    Column,
+    ColumnChooser,
+    DataGrid,
+    FilterRow,
+    HeaderFilter,
+    MasterDetail,
+    Pager,
+    Paging,
+    RemoteOperations,
+    Selection,
+    Sorting
+} from "devextreme-react/data-grid";
 import {getTimestamp} from "../../utils/date-time-util";
 import UpdateTimer, {updateIntervals} from "../../utils/update-timer";
 import {Item, Toolbar} from "devextreme-react/toolbar";
@@ -10,6 +22,7 @@ import {JobDefinitionDataSource} from "../job-definition/job-definition-data-sou
 import {addFilter, clearFilter, dropFilter} from "../../utils/filter-util";
 import SelectBox from "devextreme-react/select-box";
 import Button from "devextreme-react/button";
+import JobExecutionLogDetailsPage from "./job-execution-log-details";
 
 class LogList extends React.Component {
 
@@ -352,7 +365,7 @@ class LogList extends React.Component {
                             <Paging defaultPageSize={10}/>
                             <Pager showPageSizeSelector={true} allowedPageSizes={[5, 10, 20, 50, 100]}
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
-                            {/*<MasterDetail enabled={true} component={StepExecutionListPage}/>*/}
+                            <MasterDetail enabled={true} component={JobExecutionLogDetailsPage}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>

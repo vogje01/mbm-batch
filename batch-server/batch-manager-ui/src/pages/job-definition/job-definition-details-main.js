@@ -50,7 +50,7 @@ class JobDefinitionDetailsMain extends React.Component {
                     <EmptyItem/>
                     <EmptyItem/>
                     <EmptyItem/>
-                    <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 90}}/>s
+                    <SimpleItem dataField="description" colSpan={2} editorType={'dxTextArea'} editorOptions={{height: 90}}/>
                 </Form>
             </React.Fragment>
         );

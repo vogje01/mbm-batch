@@ -28,8 +28,6 @@ public class JobExecutionContextDto extends RepresentationModel<JobExecutionCont
 
     private String serializedContext;
 
-    private JobExecutionDto jobExecutionDto;
-
     public String getId() {
         return id;
     }

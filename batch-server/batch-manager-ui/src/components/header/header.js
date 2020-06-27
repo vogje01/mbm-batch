@@ -5,7 +5,7 @@ import UserPanel from '../user-panel/user-panel';
 import './header.scss';
 import {Template} from 'devextreme-react/core/template';
 
-export default ({menuToggleEnabled, title, toggleMenu, userMenuItems}) => (
+export default ({menuToggleEnabled, title, toggleMenu}) => (
     <header className={'header-component'}>
         <Toolbar className={'header-toolbar'}>
             <Item
@@ -35,6 +35,16 @@ export default ({menuToggleEnabled, title, toggleMenu, userMenuItems}) => (
             <Template name={'userPanelTemplate'}>
                 <UserPanel menuMode={'list'}/>
             </Template>
+            <Item
+                location={'after'}
+                locateInMenu={'auto'}
+                menuItemTemplate={'userPanelTemplate'}>
+                <Button
+                    stylingMode={'text'}
+                    icon={'material-icons-outlined ic-help'}
+                    onclick={() => window.open("https://github.com/vogje01/mbm-batch/wiki", "_blank")}>
+                </Button>
+            </Item>
         </Toolbar>
     </header>
 );

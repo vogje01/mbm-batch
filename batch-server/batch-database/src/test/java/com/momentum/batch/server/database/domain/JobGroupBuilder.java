@@ -31,6 +31,16 @@ public class JobGroupBuilder {
         return this;
     }
 
+    public JobGroupBuilder withDescription(String description) {
+        jobGroup.setDescription(description);
+        return this;
+    }
+
+    public JobGroupBuilder withJobDefinition(JobDefinition jobDefinition) {
+        jobGroup.addJobDefinition(jobDefinition);
+        return this;
+    }
+
     public JobGroup build() {
         return jobGroup;
     }
