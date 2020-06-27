@@ -106,21 +106,33 @@ public class JobStatisticDto {
         if (o == null || getClass() != o.getClass()) return false;
         JobStatisticDto that = (JobStatisticDto) o;
         return totalJobs == that.totalJobs &&
+                abandonedJobs == that.abandonedJobs &&
                 completedJobs == that.completedJobs &&
-                failedJobs == that.failedJobs;
+                failedJobs == that.failedJobs &&
+                startedJobs == that.startedJobs &&
+                startingJobs == that.startingJobs &&
+                stoppedJobs == that.stoppedJobs &&
+                stoppingJobs == that.stoppingJobs &&
+                unknownJobs == that.unknownJobs;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(totalJobs, completedJobs, failedJobs);
+        return Objects.hashCode(totalJobs, abandonedJobs, completedJobs, failedJobs, startedJobs, startingJobs, stoppedJobs, stoppingJobs, unknownJobs);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("totalJobs", totalJobs)
+                .add("abandonedJobs", abandonedJobs)
                 .add("completedJobs", completedJobs)
                 .add("failedJobs", failedJobs)
+                .add("startedJobs", startedJobs)
+                .add("startingJobs", startingJobs)
+                .add("stoppedJobs", stoppedJobs)
+                .add("stoppingJobs", stoppingJobs)
+                .add("unknownJobs", unknownJobs)
                 .toString();
     }
 }

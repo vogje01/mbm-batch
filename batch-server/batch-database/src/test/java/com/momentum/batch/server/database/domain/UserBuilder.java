@@ -46,6 +46,11 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder withActive(boolean active) {
+        user.setActive(active);
+        return this;
+    }
+
     public User build() {
         return user;
     }

@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.controller;
 
 import com.momentum.batch.server.database.domain.dto.JobStatisticDto;
+import com.momentum.batch.server.database.domain.dto.StepStatisticDto;
 import com.momentum.batch.server.manager.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,15 @@ public class StatusController {
     @GetMapping(value = "/jobstatus", produces = {"application/hal+json"})
     public ResponseEntity<JobStatisticDto> getJobStatistics() {
         return ResponseEntity.ok(statusService.getJobStatistics());
+    }
+
+    /**
+     * Returns the step statistics.
+     *
+     * @return step statistics.
+     */
+    @GetMapping(value = "/stepstatus", produces = {"application/hal+json"})
+    public ResponseEntity<StepStatisticDto> getStepStatistics() {
+        return ResponseEntity.ok(statusService.getStepStatistics());
     }
 }

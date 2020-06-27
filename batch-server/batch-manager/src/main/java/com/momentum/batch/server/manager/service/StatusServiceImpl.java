@@ -1,7 +1,9 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.server.database.domain.dto.JobStatisticDto;
+import com.momentum.batch.server.database.domain.dto.StepStatisticDto;
 import com.momentum.batch.server.database.domain.projection.JobStatusProjection;
+import com.momentum.batch.server.database.domain.projection.StepStatusProjection;
 import com.momentum.batch.server.database.repository.JobStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +45,27 @@ public class StatusServiceImpl implements StatusService {
         }
         jobStatisticDto.setTotalJobs(jobStatisticDto.getStartedJobs() + jobStatisticDto.getCompletedJobs() + jobStatisticDto.getFailedJobs());
         return jobStatisticDto;
+    }
+
+    @Override
+    public StepStatisticDto getStepStatistics() {
+
+        StepStatisticDto stepStatisticDto = new StepStatisticDto();
+        List<StepStatusProjection> stepStatusProjections = jobStatusRepository.findStepStatus();
+
+        for (StepStatusProjection p : stepStatusProjections) {
+            switch (p.getStatus()) {
+                case "ABANDONED" -> stepStatisticDto.setAbandonedSteps(p.getValue() != null ? p.getValue() : 0);
+                case "COMPLETED" -> stepStatisticDto.setCompletedSteps(p.getValue() != null ? p.getValue() : 0);
+                case "FAILED" -> stepStatisticDto.setFailedSteps(p.getValue() != null ? p.getValue() : 0);
+                case "STARTED" -> stepStatisticDto.setStartedSteps(p.getValue() != null ? p.getValue() : 0);
+                case "STARTING" -> stepStatisticDto.setStartingSteps(p.getValue() != null ? p.getValue() : 0);
+                case "STOPPED" -> stepStatisticDto.setStoppedSteps(p.getValue() != null ? p.getValue() : 0);
+                case "STOPPING" -> stepStatisticDto.setStoppingSteps(p.getValue() != null ? p.getValue() : 0);
+                case "UNKNOWN" -> stepStatisticDto.setUnknownSteps(p.getValue() != null ? p.getValue() : 0);
+            }
+        }
+        stepStatisticDto.setTotalSteps(stepStatisticDto.getStartedSteps() + stepStatisticDto.getCompletedSteps() + stepStatisticDto.getFailedSteps());
+        return stepStatisticDto;
     }
 }

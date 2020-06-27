@@ -26,8 +26,18 @@ public class AgentGroupBuilder {
         return this;
     }
 
+    public AgentGroupBuilder withActive(boolean active) {
+        agentGroup.setActive(active);
+        return this;
+    }
+
     public AgentGroupBuilder withDescription(String description) {
         agentGroup.setDescription(description);
+        return this;
+    }
+
+    public AgentGroupBuilder withAgent(Agent agent) {
+        agentGroup.addAgent(agent);
         return this;
     }
 

@@ -14,6 +14,7 @@ class HomeView extends React.Component {
         super(props);
         this.state = {
             jobStatus: {},
+            stepStatus: {},
             status: undefined,
             routed: false
         }
@@ -30,6 +31,10 @@ class HomeView extends React.Component {
         getItem(process.env.REACT_APP_MANAGER_URL + 'status/jobstatus')
             .then((data) => {
                 this.setState({jobStatus: data})
+            });
+        getItem(process.env.REACT_APP_MANAGER_URL + 'status/stepstatus')
+            .then((data) => {
+                this.setState({stepStatus: data})
             });
     }
 
@@ -141,62 +146,62 @@ class HomeView extends React.Component {
                                     <div className="dx-fieldset-header"><b>Step execution status</b></div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Total</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.totalJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.totalSteps}
                                             <Button icon="material-icons-outlined ic-search" onClick={() => this.props.history.replace('/stepexecutions')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Started</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.startedJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.startedSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/STARTED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Starting</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.startingJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.startingSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/STARTING')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Stopping</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.stoppingJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.stoppingSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/STOPPING')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Stopped</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.stoppedJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.stoppedSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/STOPPED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Completed</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.completedJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.completedSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/COMPLETED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Failed</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.failedJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.failedSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/FAILED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Abandoned</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.abandonedJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.abandonedSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/ABANDONED')}/>
                                         </div>
                                     </div>
                                     <div className="dx-field" style={this.fieldStyle}>
                                         <div className="dx-field-label">Unknown</div>
-                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.jobStatus.unknownJobs}
+                                        <div className="dx-field-value-static" style={this.valueStyle}>{this.state.stepStatus.unknownSteps}
                                             <Button icon="material-icons-outlined ic-search"
                                                     onClick={() => this.props.history.replace('/stepexecutions/UNKNOWN')}/>
                                         </div>

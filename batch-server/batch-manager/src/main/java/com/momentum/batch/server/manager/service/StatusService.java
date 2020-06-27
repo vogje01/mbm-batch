@@ -1,6 +1,7 @@
 package com.momentum.batch.server.manager.service;
 
 import com.momentum.batch.server.database.domain.dto.JobStatisticDto;
+import com.momentum.batch.server.database.domain.dto.StepStatisticDto;
 
 /**
  * @author Jens Vogt (jensvogt47@gmail.com)
@@ -10,4 +11,6 @@ import com.momentum.batch.server.database.domain.dto.JobStatisticDto;
 public interface StatusService {
 
     JobStatisticDto getJobStatistics();
+
+    StepStatisticDto getStepStatistics();
 }
