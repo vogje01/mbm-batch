@@ -6,6 +6,7 @@ import DataGrid, {
     FilterRow,
     Form,
     Lookup,
+    MasterDetail,
     Pager,
     Paging,
     RemoteOperations,
@@ -25,6 +26,7 @@ import JobDefinitionJobGroupList from "./job-definition-job-group-list";
 import {AgentDataSource} from "../agent/agent-data-source";
 import SelectBox from "devextreme-react/select-box";
 import Button from "devextreme-react/button";
+import JobDefinitionDetailsPage from "./job-definition-details";
 
 const types = [
     {type: 'JAR', name: 'JAR'},
@@ -412,6 +414,7 @@ class JobDefinitionList extends React.Component {
                                         icon: 'material-icons-outlined ic-delete'
                                     }
                                 ]}/>
+                            <MasterDetail enabled={true} component={JobDefinitionDetailsPage}/>
                         </DataGrid>
                         <UpdateTimer/>
                         <Popup
