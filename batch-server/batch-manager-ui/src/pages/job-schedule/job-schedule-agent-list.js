@@ -10,18 +10,15 @@ class JobScheduleAgentList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentJobSchedule: this.props.data,
+            currentJobSchedule: props.currentJobSchedule,
         };
     }
 
     render() {
-        if (this.props.hidden) {
-            return null;
-        }
         return (
             <React.Fragment>
                 <DataGrid
-                    dataSource={JobScheduleAgentDataSource(this.props.schedule)}
+                    dataSource={JobScheduleAgentDataSource(this.props.currentJobSchedule)}
                     hoverStateEnabled={true}
                     allowColumnReordering={true}
                     allowColumnResizing={true}

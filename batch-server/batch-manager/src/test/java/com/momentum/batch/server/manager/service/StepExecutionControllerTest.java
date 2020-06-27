@@ -34,22 +34,41 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Step controller end-to-end tests.
+ *
+ * @author Jens Vogt (jensvogt47@gmail.com)
+ * @version 0.0.6-RELEASE
+ * @since 0.0.1
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 public class StepExecutionControllerTest {
 
+    /**
+     * Mocking infrastructure
+     */
     private MockMvc mockMvc;
-
-    @MockBean
-    private StepExecutionInfoRepository stepExecutionInfoRepository;
-
+    /**
+     * Job execution repository
+     */
     @MockBean
     private JobExecutionInfoRepository jobExecutionInfoRepository;
-
+    /**
+     * Step execution repository
+     */
+    @MockBean
+    private StepExecutionInfoRepository stepExecutionInfoRepository;
+    /**
+     * Step execution controller.
+     */
     @Autowired
     private StepExecutionController stepExecutionController;
 
+    /**
+     * Initializations
+     */
     @Before
     public void setup() {
         initMocks(this);
@@ -81,7 +100,7 @@ public class StepExecutionControllerTest {
         stepExecutionList.add(stepExecution1);
         stepExecutionList.add(stepExecution2);
 
-        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(stepExecutionList));
+        when(stepExecutionInfoRepository.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(stepExecutionList));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -97,7 +116,7 @@ public class StepExecutionControllerTest {
     @Test
     public void whenCalledWithInvalidParameters_thenReturnEmptyList() throws Exception {
 
-        when(stepExecutionInfoRepository.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
+        when(stepExecutionInfoRepository.findAll(any(), any(Pageable.class))).thenReturn(new PageImpl<>(Collections.emptyList()));
 
         this.mockMvc.perform(get("/api/stepexecutions?page=0&size=5")) //
                 //.andDo(print())
@@ -147,14 +166,14 @@ public class StepExecutionControllerTest {
     public void whenCalledWithValidId_thenReturnStepExecutionInfo() throws Exception {
 
         JobExecutionInfo jobExecution1 = new JobExecutionInfoBuilder()
-            .withRandomId()
-            .withName("Job1")
-            .build();
+                .withRandomId()
+                .withName("Job1")
+                .build();
         StepExecutionInfo stepExecution1 = new StepExecutionInfoBuilder()
-            .withRandomId()
-            .withName("Step1")
-            .withJob(jobExecution1)
-            .build();
+                .withRandomId()
+                .withName("Step1")
+                .withJob(jobExecution1)
+                .build();
 
         when(stepExecutionInfoRepository.findById(any())).thenReturn(ofNullable(stepExecution1));
 

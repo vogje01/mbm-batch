@@ -1,7 +1,7 @@
 import React from 'react';
 import './job-schedule-list.scss'
 import 'devextreme/data/odata/store';
-import DataGrid, {Column, Editing, FilterRow, Form, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
+import DataGrid, {Column, Editing, FilterRow, Form, MasterDetail, Pager, Paging, RemoteOperations, Selection} from 'devextreme-react/data-grid';
 import {JobScheduleDataSource, JobScheduleStart} from "./job-schedule-data-source";
 import UpdateTimer from "../../utils/update-timer";
 import {Item} from "devextreme-react/autocomplete";
@@ -13,6 +13,7 @@ import {Toolbar} from "devextreme-react/toolbar";
 import {insertItem} from "../../utils/server-connection";
 import {dateTimeCellTemplate, getFormattedTime} from "../../utils/date-time-util";
 import JobScheduleAgentGroupList from "./job-schedule-agentgroup-list";
+import JobScheduleDetailsPage from "./job-schedule-details";
 
 class JobSchedulerList extends React.Component {
 
@@ -54,10 +55,7 @@ class JobSchedulerList extends React.Component {
     }
 
     validateType(e) {
-        if (e.value === 'LOCAL' && this.state.currentJobSchedule.mode !== 'FIXED') {
-            return false;
-        }
-        return true;
+        return !(e.value === 'LOCAL' && this.state.currentJobSchedule.mode !== 'FIXED');
     }
 
     render() {
@@ -267,6 +265,7 @@ class JobSchedulerList extends React.Component {
                                    showNavigationButtons={true} showInfo={true} visible={true}/>
                             <Paging defaultPageSize={10}/>
                             <RemoteOperations sorting={true} paging={true}/>
+                            <MasterDetail enabled={true} component={JobScheduleDetailsPage}/>
                         </DataGrid>
                         <UpdateTimer/>
                     </div>
