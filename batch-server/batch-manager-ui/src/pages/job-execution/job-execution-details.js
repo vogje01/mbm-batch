@@ -1,6 +1,5 @@
 import React from "react";
 import Accordion from "devextreme-react/accordion";
-import StepExecutionList from "../step-execution/step-execution-list";
 import JobExecutionDetailsAuditing from "./job-execution-details-auditing";
 import JobExecutionParamList from "./job-execution-param-list";
 import JobExecutionLogList from "./job-execution-log-list";

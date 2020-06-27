@@ -2,7 +2,7 @@ package com.momentum.batch.client.jobs.common.reader;
 
 import org.hibernate.SessionFactory;
 import org.springframework.batch.item.ItemStreamReader;
-import org.springframework.batch.item.database.HibernateCursorItemReader;
+import org.springframework.batch.item.database.builder.HibernateCursorItemReaderBuilder;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Map;
@@ -151,16 +151,14 @@ public class CursorReaderBuilder<T> {
         queryProvider.setQueryString(queryString);
         queryProvider.setQueryHint(queryHint);
         queryProvider.setTimeout(timeout);
-
-        // The actual reader
-        HibernateCursorItemReader<T> hibernateCursorItemReader = new HibernateCursorItemReader<>();
-        hibernateCursorItemReader.setSessionFactory(sessionFactory);
-        hibernateCursorItemReader.setMaxItemCount(maxItems);
-        hibernateCursorItemReader.setFetchSize(fetchSize);
-        hibernateCursorItemReader.setUseStatelessSession(true);
-        hibernateCursorItemReader.setQueryProvider(queryProvider);
-        hibernateCursorItemReader.setParameterValues(params);
-        hibernateCursorItemReader.setCurrentItemCount(currentItem);
-        return hibernateCursorItemReader;
+        return new HibernateCursorItemReaderBuilder<T>()
+                .sessionFactory(sessionFactory)
+                .maxItemCount(maxItems)
+                .fetchSize(fetchSize)
+                .useStatelessSession(true)
+                .queryProvider(queryProvider)
+                .parameterValues(params)
+                .currentItemCount(currentItem)
+                .build();
     }
 }

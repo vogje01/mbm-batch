@@ -19,6 +19,11 @@ import static java.text.MessageFormat.format;
 /**
  * Listens for batch command notification messages in the corresponding Kafka topic and executes the corresponding
  * commands.
+ * <p>
+ * Depending on the type of the schedule the job will be scheduled internally using a Quartz scheduler or the
+ * Agent will get only job start notification, when the central scheduler triggers the job. In this case the
+ * agent will start the job onl demand.
+ * </p>
  *
  * @author Jens Vogt (jensvogt47@gmail.com)
  * @version 0.0.6-RELEASE
@@ -38,9 +43,13 @@ public class AgentSchedulerService {
 
     @Value("${mbm.agent.nodeName}")
     private String nodeName;
-
+    /**
+     * Local scheduler.
+     */
     private final LocalBatchScheduler localBatchScheduler;
-
+    /**
+     * Job launcher.
+     */
     private final LocalJobLauncher localJobLauncher;
 
     /**
