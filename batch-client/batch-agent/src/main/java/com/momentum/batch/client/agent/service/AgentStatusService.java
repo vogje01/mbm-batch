@@ -111,6 +111,7 @@ public class AgentStatusService {
         this.agentStatusMessageDto.setHostName(hostName);
         this.agentStatusMessageDto.setNodeName(nodeName);
         this.agentStatusMessageDto.setSender(nodeName);
+        this.agentStatusMessageDto.setReceiver(listenerName);
         this.agentStatusMessageDto.setPid(ProcessHandle.current().pid());
 
         // Send registration
@@ -229,6 +230,10 @@ public class AgentStatusService {
      */
     @KafkaListener(topics = "${kafka.agentStatus.topic}", containerFactory = "agentStatusMessageListenerFactory")
     public void listen(AgentStatusMessageDto agentStatusMessageDto) {
+        if (agentStatusMessageDto.getReceiver() == null) {
+            logger.error(format("Missing receiver - sender: {0} type: {1}", agentStatusMessageDto.getSender(), agentStatusMessageDto.getType()));
+            return;
+        }
         if (agentStatusMessageDto.getReceiver().equals(nodeName)) {
             logger.info(format("Received agent status message - sender: {0} receiver: {1} type: {2}", agentStatusMessageDto.getSender(),
                     agentStatusMessageDto.getReceiver(), agentStatusMessageDto.getType()));

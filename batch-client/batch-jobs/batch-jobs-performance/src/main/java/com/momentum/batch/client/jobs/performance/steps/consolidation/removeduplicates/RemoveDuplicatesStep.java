@@ -48,7 +48,7 @@ public class RemoveDuplicatesStep {
 
     @SuppressWarnings("unchecked")
     public Step getStep(BatchPerformanceType batchPerformanceType) {
-        long totalCount = batchPerformanceRepository.countByType(BatchPerformanceType.RAW);
+        long totalCount = batchPerformanceRepository.countByType(batchPerformanceType);
         logger.debug(format("Remove duplicates step initialized - type: {0} total: {1}", batchPerformanceType.name(), totalCount));
         return stepBuilder
                 .name("Remove duplicates " + batchPerformanceType.name())

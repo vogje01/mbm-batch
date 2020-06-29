@@ -218,7 +218,6 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
                 agentSchedulerMessageDto.setSender(serverName);
                 agentSchedulerMessageDto.setReceiver(agent.getNodeName());
-                agentSchedulerMessageDto.setReceiver(agent.getNodeName());
                 agentSchedulerMessageDto.setHostName(agent.getHostName());
                 agentSchedulerMessageDto.setNodeName(agent.getNodeName());
 

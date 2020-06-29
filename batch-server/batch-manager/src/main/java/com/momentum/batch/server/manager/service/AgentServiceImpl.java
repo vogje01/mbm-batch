@@ -279,11 +279,11 @@ public class AgentServiceImpl implements AgentService {
             // Update database
             Agent agent = agentOptional.get();
             agent.setStatus(AgentStatus.PAUSED);
-            agent = agentRepository.save(agent);
 
             // Send command to agent
             AgentStatusMessageDto agentStatusMessageDto = new AgentStatusMessageDto(AgentStatusMessageType.AGENT_PAUSE);
             agentStatusMessageDto.setSender(serverName);
+            agentStatusMessageDto.setReceiver(agent.getNodeName());
             agentStatusMessageDto.setHostName(agent.getHostName());
             agentStatusMessageDto.setNodeName(agent.getNodeName());
 

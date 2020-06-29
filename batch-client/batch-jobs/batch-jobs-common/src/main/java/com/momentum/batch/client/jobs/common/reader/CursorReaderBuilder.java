@@ -158,6 +158,7 @@ public class CursorReaderBuilder<T> {
                 .useStatelessSession(true)
                 .queryProvider(queryProvider)
                 .parameterValues(params)
+                .saveState(false)
                 .currentItemCount(currentItem)
                 .build();
     }
