@@ -1,178 +1,192 @@
 version: '3.8'
 services:
 
-  # MySQL Database for the batch manager
+  # Oracle Database for the batch manager
   batch-db:
-    image: mysql:latest
+    image: oracle/database:19.3.0-se2
     container_name: batch-db
-    command: --lower_case_table_names=1
     environment:
-      MYSQL_ROOT_PASSWORD: Secret_123
-      MYSQL_DATABASE: batch
+      ORACLE_SID: BATCH
+      ORACLE_PDB: BATCHPDB1
+      ORACLE_PWD: Secret_123
     volumes:
-      - /C/work/mysql/Data:/var/lib/mysql
+      - /C/work/oracle/oradata:/opt/oracle/oradata
     ports:
-      - "3306:3306"
-    cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
+      - "1521:1521"
+      - "5500:5500"
+
+  # MySQL Database for the batch manager
+  #  batch-db:
+  #    image: mysql:latest
+  #    container_name: batch-db
+  #    command: --lower_case_table_names=1
+  #    environment:
+  #      MYSQL_ROOT_PASSWORD: Secret_123
+  #      MYSQL_DATABASE: batch
+  #    volumes:
+  #      - /C/work/mysql/Data:/var/lib/mysql
+  #    ports:
+  #      - "3306:3306"
+  #    cap_add:
+  #      - SYS_NICE  # CAP_SYS_NICE
+  #    healthcheck:
+  #      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+  #      timeout: 20s
+  #      retries: 10
 
   # Apache zookeeper
-  batch-zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: batch-zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      TZ: "Europe/Berlin"
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-
-  #
-  # Kafka
-  #
-  batch-kafka:
-    image: confluentinc/cp-enterprise-kafka:latest
-    container_name: batch-kafka
-    ports:
-      - "9092:9092"
-    depends_on:
-      - batch-zookeeper
-    environment:
-      TZ: "Europe/Berlin"
-      KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: batch-zookeeper:2181
-      KAFKA_LISTENERS: LISTENER://batch-kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: LISTENER://batch-kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
-
-  #
-  # Batch listener
-  #
-  batch-listener:
-    image: momentumbatch/batch-listener:0.0.6-RELEASE
-    container_name: batch-listener
-    environment:
-      TZ: "Europe/Berlin"
-    depends_on:
-      - batch-db
-      - batch-kafka
-
-  #
-  # Batch scheduler
-  #
-  batch-scheduler:
-    image: momentumbatch/batch-scheduler:0.0.6-RELEASE
-    container_name: batch-scheduler
-    environment:
-      TZ: "Europe/Berlin"
-    depends_on:
-      - batch-db
-      - batch-kafka
-    ports:
-      - '8091:8091'
-
-  #
-  #  Batch manager
-  #
-  batch-manager:
-    image: momentumbatch/batch-manager:0.0.6-RELEASE
-    hostname: batch-manager
-    container_name: batch-manager
-    environment:
-      TZ: "Europe/Berlin"
-    user: root
-    depends_on:
-      - batch-db
-      - batch-kafka
-    ports:
-      - '8090:8090'
-
-  #
-  # Batch UI
-  #
-  batch-manager-ui:
-    image: momentumbatch/batch-manager-ui:0.0.6-RELEASE
-    container_name: batch-manager-ui
-    environment:
-      TZ: "Europe/Berlin"
-    depends_on:
-      - batch-manager
-    ports:
-      - '80:80'
-
-  #
-  # Batch agent 01
-  #
-  batch-agent-01:
-    image: momentumbatch/batch-agent:0.0.6-RELEASE
-    hostname: batch-agent-01
-    container_name: batch-agent-01
-    environment:
-      TZ: "Europe/Berlin"
-      HOST_NAME: batch-agent-01
-      NODE_NAME: batch-agent-01
-    depends_on:
-      - batch-kafka
-    volumes:
-      - /usr/local/bin/docker:/usr/bin/docker
-      - /var/run/docker.sock:/var/run/docker.sock
-
-
-  #
-  # Batch agent 02
-  #
-  batch-agent-02:
-    image: momentumbatch/batch-agent:0.0.6-RELEASE
-    hostname: batch-agent-02
-    container_name: batch-agent-02
-    environment:
-      TZ: "Europe/Berlin"
-      HOST_NAME: batch-agent-02
-      NODE_NAME: batch-agent-02
-    depends_on:
-      - batch-kafka
-    volumes:
-      - /usr/local/bin/docker:/usr/bin/docker
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  #
-  # Batch agent 03
-  #
-  batch-agent-03:
-    image: momentumbatch/batch-agent:0.0.6-RELEASE
-    hostname: batch-agent-03
-    container_name: batch-agent-03
-    environment:
-      TZ: "Europe/Berlin"
-      HOST_NAME: batch-agent-03
-      NODE_NAME: batch-agent-03
-    depends_on:
-      - batch-kafka
-    volumes:
-      - /usr/local/bin/docker:/usr/bin/docker
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  #
-  # Batch agent 03
-  #
-  batch-agent-04:
-    image: momentumbatch/batch-agent:0.0.6-RELEASE
-    hostname: batch-agent-04
-    container_name: batch-agent-04
-    environment:
-      TZ: "Europe/Berlin"
-      HOST_NAME: batch-agent-04
-      NODE_NAME: batch-agent-04
-    depends_on:
-      - batch-kafka
-    volumes:
-      - /usr/local/bin/docker:/usr/bin/docker
-      - /var/run/docker.sock:/var/run/docker.sock
+#  batch-zookeeper:
+#    image: confluentinc/cp-zookeeper:latest
+#    container_name: batch-zookeeper
+#    ports:
+#      - "2181:2181"
+#    environment:
+#      TZ: "Europe/Berlin"
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#
+#  #
+#  # Kafka
+#  #
+#  batch-kafka:
+#    image: confluentinc/cp-enterprise-kafka:latest
+#    container_name: batch-kafka
+#    ports:
+#      - "9092:9092"
+#    depends_on:
+#      - batch-zookeeper
+#    environment:
+#      TZ: "Europe/Berlin"
+#      KAFKA_BROKER_ID: 0
+#      KAFKA_ZOOKEEPER_CONNECT: batch-zookeeper:2181
+#      KAFKA_LISTENERS: LISTENER://batch-kafka:9092
+#      KAFKA_ADVERTISED_LISTENERS: LISTENER://batch-kafka:9092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER:PLAINTEXT
+#      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER
+#      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+#
+#  #
+#  # Batch listener
+#  #
+#  batch-listener:
+#    image: momentumbatch/batch-listener:0.0.6-RELEASE
+#    container_name: batch-listener
+#    environment:
+#      TZ: "Europe/Berlin"
+#    depends_on:
+#      - batch-db
+#      - batch-kafka
+#
+#  #
+#  # Batch scheduler
+#  #
+#  batch-scheduler:
+#    image: momentumbatch/batch-scheduler:0.0.6-RELEASE
+#    container_name: batch-scheduler
+#    environment:
+#      TZ: "Europe/Berlin"
+#    depends_on:
+#      - batch-db
+#      - batch-kafka
+#    ports:
+#      - '8091:8091'
+#
+#  #
+#  #  Batch manager
+#  #
+#  batch-manager:
+#    image: momentumbatch/batch-manager:0.0.6-RELEASE
+#    hostname: batch-manager
+#    container_name: batch-manager
+#    environment:
+#      TZ: "Europe/Berlin"
+#    user: root
+#    depends_on:
+#      - batch-db
+#      - batch-kafka
+#    ports:
+#      - '8090:8090'
+#
+#  #
+#  # Batch UI
+#  #
+#  batch-manager-ui:
+#    image: momentumbatch/batch-manager-ui:0.0.6-RELEASE
+#    container_name: batch-manager-ui
+#    environment:
+#      TZ: "Europe/Berlin"
+#    depends_on:
+#      - batch-manager
+#    ports:
+#      - '80:80'
+#
+#  #
+#  # Batch agent 01
+#  #
+#  batch-agent-01:
+#    image: momentumbatch/batch-agent:0.0.6-RELEASE
+#    hostname: batch-agent-01
+#    container_name: batch-agent-01
+#    environment:
+#      TZ: "Europe/Berlin"
+#      HOST_NAME: batch-agent-01
+#      NODE_NAME: batch-agent-01
+#    depends_on:
+#      - batch-kafka
+#    volumes:
+#      - /usr/local/bin/docker:/usr/bin/docker
+#      - /var/run/docker.sock:/var/run/docker.sock
+#
+#
+#  #
+#  # Batch agent 02
+#  #
+#  batch-agent-02:
+#    image: momentumbatch/batch-agent:0.0.6-RELEASE
+#    hostname: batch-agent-02
+#    container_name: batch-agent-02
+#    environment:
+#      TZ: "Europe/Berlin"
+#      HOST_NAME: batch-agent-02
+#      NODE_NAME: batch-agent-02
+#    depends_on:
+#      - batch-kafka
+#    volumes:
+#      - /usr/local/bin/docker:/usr/bin/docker
+#      - /var/run/docker.sock:/var/run/docker.sock
+#
+#  #
+#  # Batch agent 03
+#  #
+#  batch-agent-03:
+#    image: momentumbatch/batch-agent:0.0.6-RELEASE
+#    hostname: batch-agent-03
+#    container_name: batch-agent-03
+#    environment:
+#      TZ: "Europe/Berlin"
+#      HOST_NAME: batch-agent-03
+#      NODE_NAME: batch-agent-03
+#    depends_on:
+#      - batch-kafka
+#    volumes:
+#      - /usr/local/bin/docker:/usr/bin/docker
+#      - /var/run/docker.sock:/var/run/docker.sock
+#
+#  #
+#  # Batch agent 03
+#  #
+#  batch-agent-04:
+#    image: momentumbatch/batch-agent:0.0.6-RELEASE
+#    hostname: batch-agent-04
+#    container_name: batch-agent-04
+#    environment:
+#      TZ: "Europe/Berlin"
+#      HOST_NAME: batch-agent-04
+#      NODE_NAME: batch-agent-04
+#    depends_on:
+#      - batch-kafka
+#    volumes:
+#      - /usr/local/bin/docker:/usr/bin/docker
+#      - /var/run/docker.sock:/var/run/docker.sock

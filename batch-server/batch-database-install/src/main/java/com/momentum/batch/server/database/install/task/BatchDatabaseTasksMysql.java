@@ -18,12 +18,12 @@ import static java.text.MessageFormat.format;
  * @since 0.0.1
  */
 @Component
-public class BatchDatabaseTasks {
+public class BatchDatabaseTasksMysql {
 
     private final StringEncryptor stringEncryptor;
 
     @Autowired
-    public BatchDatabaseTasks(StringEncryptor stringEncryptor) {
+    public BatchDatabaseTasksMysql(StringEncryptor stringEncryptor) {
         this.stringEncryptor = stringEncryptor;
     }
 
@@ -113,7 +113,11 @@ public class BatchDatabaseTasks {
     public static void installDatabase(String url, String user, String password) {
 
         // Create the Flyway instance and point it to the database
-        Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(url, user, password)
+                .locations("classpath:db.migration.mysql")
+                .load();
 
         // Start the migration
         flyway.migrate();
@@ -124,7 +128,11 @@ public class BatchDatabaseTasks {
     public static void updateDatabase(String url, String user, String password) {
 
         // Create the Flyway instance and point it to the database
-        Flyway flyway = Flyway.configure().dataSource(url, user, password).load();
+        Flyway flyway = Flyway
+                .configure()
+                .dataSource(url, user, password)
+                .locations("classpath:db.migration.mysql")
+                .load();
 
         // Start the migration
         flyway.migrate();

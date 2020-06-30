@@ -1,6 +1,7 @@
 package com.momentum.batch.server.database.install;
 
-import com.momentum.batch.server.database.install.task.BatchDatabaseTasks;
+import com.momentum.batch.server.database.install.task.BatchDatabaseTasksMysql;
+import com.momentum.batch.server.database.install.task.BatchDatabaseTasksOracle;
 import com.momentum.batch.server.database.install.types.DatabaseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 
 import static java.text.MessageFormat.format;
 
@@ -16,11 +19,12 @@ import static java.text.MessageFormat.format;
  * @version 0.0.6-RELEASE
  * @since 0.0.1
  */
-@SpringBootApplication(scanBasePackages = {"com.momentum.batch.common.util", "com.momentum.batch.server.database"})
+@SpringBootApplication(scanBasePackages = {"com.momentum.batch.common.util", "com.momentum.batch.server.database"},
+        exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 public class BatchDatabaseInstallation implements CommandLineRunner {
 
     @Autowired
-    private BatchDatabaseTasks batchDatabaseTasks;
+    private BatchDatabaseTasksMysql batchDatabaseTasksMysql;
 
     private static final Logger logger = LoggerFactory.getLogger(BatchDatabaseInstallation.class);
 
@@ -62,13 +66,24 @@ public class BatchDatabaseInstallation implements CommandLineRunner {
             }
         }
 
-        switch (command) {
-            case "help" -> usage();
-            case "drop" -> BatchDatabaseTasks.dropDatabase(databaseUrl, user, password);
-            case "create" -> BatchDatabaseTasks.createDatabase(databaseUrl, user, password);
-            case "install" -> BatchDatabaseTasks.installDatabase(databaseUrl, user, password);
-            case "update" -> BatchDatabaseTasks.updateDatabase(databaseUrl, user, password);
-            case "encrypt" -> batchDatabaseTasks.encryptPassword(password);
+        if (databaseType == DatabaseType.MYSQL) {
+            switch (command) {
+                case "help" -> usage();
+                case "drop" -> BatchDatabaseTasksMysql.dropDatabase(databaseUrl, user, password);
+                case "create" -> BatchDatabaseTasksMysql.createDatabase(databaseUrl, user, password);
+                case "install" -> BatchDatabaseTasksMysql.installDatabase(databaseUrl, user, password);
+                case "update" -> BatchDatabaseTasksMysql.updateDatabase(databaseUrl, user, password);
+                case "encrypt" -> batchDatabaseTasksMysql.encryptPassword(password);
+            }
+        } else {
+            switch (command) {
+                case "help" -> usage();
+                case "drop" -> BatchDatabaseTasksOracle.dropDatabase(databaseUrl, user, password);
+                case "create" -> BatchDatabaseTasksOracle.createDatabase(databaseUrl, user, password);
+                case "install" -> BatchDatabaseTasksOracle.installDatabase(databaseUrl, user, password);
+                case "update" -> BatchDatabaseTasksOracle.updateDatabase(databaseUrl, user, password);
+                case "encrypt" -> batchDatabaseTasksMysql.encryptPassword(password);
+            }
         }
     }
 
