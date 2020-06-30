@@ -115,9 +115,6 @@ class JobDefinitionList extends React.Component {
     }
 
     render() {
-        if (this.props.hidden) {
-            return null;
-        }
         return (
             <React.Fragment>
                 <h2 className={'content-block'}>Job Definitions</h2>
@@ -388,13 +385,18 @@ class JobDefinitionList extends React.Component {
                             <Column
                                 allowSorting={false}
                                 allowReordering={false}
-                                width={100}
+                                width={120}
                                 type={'buttons'}
                                 buttons={[
                                     {
                                         name: 'edit',
                                         hint: 'Edit job definition.',
                                         icon: 'material-icons-outlined ic-edit'
+                                    },
+                                    {
+                                        name: 'diagram',
+                                        hint: 'Show the flow diagram.',
+                                        icon: 'material-icons-outlined ic-diagram'
                                     },
                                     {
                                         name: 'copy',

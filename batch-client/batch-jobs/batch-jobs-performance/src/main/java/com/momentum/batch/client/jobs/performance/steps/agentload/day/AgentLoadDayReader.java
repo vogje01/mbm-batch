@@ -39,6 +39,7 @@ public class AgentLoadDayReader {
         return new CursorReaderBuilder(mysqlEmf)
                 .queryString(queryString)
                 .parameters(parameters)
+                .timeout(900)
                 .fetchSize(chunkSize)
                 .build();
     }

@@ -1,9 +1,14 @@
 package com.momentum.batch.server.scheduler.scheduler;
 
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageDto;
+import com.momentum.batch.common.message.dto.AgentSchedulerMessageType;
+import com.momentum.batch.common.producer.AgentSchedulerMessageProducer;
 import com.momentum.batch.common.util.ExecutionParameter;
+import com.momentum.batch.server.database.converter.ModelConverter;
 import com.momentum.batch.server.database.domain.JobDefinition;
 import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.domain.JobScheduleType;
+import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
@@ -47,6 +52,8 @@ public class CentralBatchScheduler {
 
     @Value("${mbm.scheduler.interval}")
     private long interval;
+    @Value("${mbm.scheduler.server}")
+    private String schedulerName;
     /**
      * Logger
      */
@@ -64,6 +71,14 @@ public class CentralBatchScheduler {
      */
     @Qualifier("transactionManager")
     protected PlatformTransactionManager txManager;
+    /**
+     * Message producer
+     */
+    private final AgentSchedulerMessageProducer agentSchedulerMessageProducer;
+    /**
+     * Model converter
+     */
+    private final ModelConverter modelConverter;
 
     /**
      * Constructor.
@@ -71,9 +86,12 @@ public class CentralBatchScheduler {
      * @param scheduler Quartz job scheduler.
      */
     @Autowired
-    public CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, Scheduler scheduler, PlatformTransactionManager txManager) {
+    public CentralBatchScheduler(JobScheduleRepository jobScheduleRepository, Scheduler scheduler, ModelConverter modelConverter,
+                                 AgentSchedulerMessageProducer agentSchedulerMessageProducer, PlatformTransactionManager txManager) {
         this.jobScheduleRepository = jobScheduleRepository;
         this.scheduler = scheduler;
+        this.modelConverter = modelConverter;
+        this.agentSchedulerMessageProducer = agentSchedulerMessageProducer;
         this.txManager = txManager;
     }
 
@@ -82,6 +100,7 @@ public class CentralBatchScheduler {
         try {
             scheduler.start();
             startJobs();
+            startLocalJobs();
         } catch (SchedulerException e) {
             logger.error(format("Could not start Quartz scheduler - error: {0}", e.getMessage()));
         }
@@ -117,6 +136,46 @@ public class CentralBatchScheduler {
                             logger.error(format("Could not add job - groupName: {0} jobName: {1} error: {2}",
                                     jobDefinition.getJobMainGroup().getName(), jobDefinition.getName(), e.getMessage()));
                         }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * During startup make sure the agents have all they need.
+     */
+    private void startLocalJobs() {
+        logger.info(format("Starting local jobs"));
+        TransactionTemplate tmpl = new TransactionTemplate(txManager);
+        tmpl.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(@NotNull TransactionStatus status) {
+                List<JobSchedule> jobScheduleList = jobScheduleRepository.findByType(JobScheduleType.LOCAL);
+                if (jobScheduleList.isEmpty()) {
+                    logger.info("Local scheduler list is empty");
+                    return;
+                }
+
+                // Start job schedules
+                jobScheduleList.stream().filter(JobSchedule::isActive).forEach(jobSchedule -> {
+
+                    JobDefinition jobDefinition = jobSchedule.getJobDefinition();
+                    if (jobDefinition.isActive()) {
+                        JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
+
+                        jobSchedule.getAgents().forEach(agent -> {
+                            // Convert server command
+                            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_RESCHEDULE, jobScheduleDto);
+                            agentSchedulerMessageDto.setHostName(agent.getHostName());
+                            agentSchedulerMessageDto.setNodeName(agent.getNodeName());
+
+                            // Send command
+                            agentSchedulerMessageDto.setSender(schedulerName);
+                            agentSchedulerMessageDto.setReceiver(agent.getNodeName());
+                            agentSchedulerMessageProducer.sendMessage(agentSchedulerMessageDto);
+                            logger.info(format("Job start command send to agent - receiver: {0} jobName: {1}", agent.getNodeName(), jobSchedule.getJobDefinition().getName()));
+                        });
                     }
                 });
             }
