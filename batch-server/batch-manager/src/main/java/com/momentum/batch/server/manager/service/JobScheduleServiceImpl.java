@@ -441,7 +441,7 @@ public class JobScheduleServiceImpl implements JobScheduleService {
 
             // Create server command
             JobScheduleDto jobScheduleDto = modelConverter.convertJobScheduleToDto(jobSchedule);
-            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto.getJobDefinitionDto());
+            AgentSchedulerMessageDto agentSchedulerMessageDto = new AgentSchedulerMessageDto(AgentSchedulerMessageType.JOB_ON_DEMAND, jobScheduleDto);
 
             // Send to all necessary agents
             getAgentList(jobSchedule).forEach(agent -> {

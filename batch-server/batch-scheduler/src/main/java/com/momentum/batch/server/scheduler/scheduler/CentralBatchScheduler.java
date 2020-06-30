@@ -10,7 +10,6 @@ import com.momentum.batch.server.database.domain.JobSchedule;
 import com.momentum.batch.server.database.domain.JobScheduleType;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
 import com.momentum.batch.server.database.repository.JobScheduleRepository;
-import org.jetbrains.annotations.NotNull;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,7 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static java.text.MessageFormat.format;

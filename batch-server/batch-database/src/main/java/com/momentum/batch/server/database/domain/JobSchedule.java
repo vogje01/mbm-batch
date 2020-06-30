@@ -1,6 +1,5 @@
 package com.momentum.batch.server.database.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.momentum.batch.server.database.domain.dto.JobScheduleDto;
@@ -35,11 +34,11 @@ public class JobSchedule extends Auditing<String> implements PrimaryKeyIdentifie
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "MODE")
+    @Column(name = "SCHEDULE_MODE")
     @Enumerated(EnumType.STRING)
     private JobScheduleMode mode;
 
-    @Column(name = "TYPE")
+    @Column(name = "SCHEDULE_TYPE")
     @Enumerated(EnumType.STRING)
     private JobScheduleType type;
 
@@ -64,7 +63,6 @@ public class JobSchedule extends Auditing<String> implements PrimaryKeyIdentifie
             inverseJoinColumns = @JoinColumn(name = "AGENT_GROUP_ID"))
     private List<AgentGroup> agentGroups = new ArrayList<>();
 
-    @JsonCreator
     public JobSchedule() {
         // JSON constructor
     }

@@ -68,6 +68,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 				return new User(userId, password, emptyList());
 			}
 		}
+		logger.error(format("User not found - userId: {0}", userId));
 		throw new UnauthorizedException();
 	}
 }

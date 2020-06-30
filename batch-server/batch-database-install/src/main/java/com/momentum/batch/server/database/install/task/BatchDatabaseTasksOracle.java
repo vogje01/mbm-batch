@@ -119,10 +119,9 @@ public class BatchDatabaseTasksOracle {
                 .load();
 
         // Start the migration
-
         flyway.migrate();
 
-        System.out.println(format("Installing database - version: {0}", flyway.info().current().getVersion()));
+        System.out.println(format("Database installed - version: {0}", flyway.info().current().getVersion()));
     }
 
     public static void updateDatabase(String url, String user, String password) {
